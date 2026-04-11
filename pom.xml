@@ -43,10 +43,23 @@
         <easyexcel.version>3.3.2</easyexcel.version>
         <dashscope.sdk.java.version>2.18.2</dashscope.sdk.java.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
+        <!-- Mybatis-plus -->
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <!-- hutool -->
+        <hutool.version>5.8.26</hutool.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Spring boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <dependency>
                 <groupId>com.todo</groupId>
@@ -70,7 +83,7 @@
             <!-- MyBatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
@@ -154,6 +167,13 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
