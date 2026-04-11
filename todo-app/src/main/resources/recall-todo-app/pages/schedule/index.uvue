@@ -1,0 +1,17 @@
+<template>
+	<page-layout>
+		<navbar title="工具"></navbar>
+		
+		<page-main></page-main>
+		
+		<tabbar path="schedule"></tabbar>
+	</page-layout>
+</template>
+
+<script setup>
+	
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,79 @@
+<template>
+	<page-layout>
+		<navbar>
+			<template #left>
+				<text class="data-title">{{ formatDateTime(currentDate, 'yyyy年MM月') }}</text>
+			</template>
+		</navbar>
+		
+		<page-main>
+			<calendar-box @select="selectDate"></calendar-box>
+			
+			<view class="task-box">
+				<text class="task-box-title">今日待办</text>
+				<view class="">
+					
+					<content-null></content-null>
+				</view>
+				<text class="task-box-title">全部待办</text>
+				
+				<view class="">
+					<content-null></content-null>
+				</view>
+			</view>
+		</page-main>
+		
+		<tabbar path="home" />
+	</page-layout>
+</template>
+
+<script setup lang="uts">
+	import { ref } from 'vue'
+	import { formatDateTime } from '@bwyxy/utils'
+
+	const currentDate = ref<Date>(new Date())
+
+	const selectDate = (date :Date) => {
+		currentDate.value = date
+	}
+	// 跳转到添加任务页面
+	const navigateToAddTask = () => {
+		
+	}
+</script>
+
+<style lang="scss">
+.user-info {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text {
+		font-size: 28rpx;
+		color: #1f1f1f;
+		letter-spacing: 1px;
+		margin-left: 8rpx;
+	}
+}
+
+.data-title {
+	font-size: 34rpx;
+	font-weight: 700;
+	color: #1f1f1f;
+	letter-spacing: 1px;
+}
+
+.task-box {
+	width: 100%;
+	min-height: 240rpx;
+	background: #fff;
+	box-sizing: border-box;
+	border-bottom: 1rpx solid #f0f0f0;
+	padding: 24rpx 32rpx;
+}
+
+.task-box-title {
+	font-size: 24rpx;
+	color: #888;
+	letter-spacing: 1px;
+}
+</style>

@@ -1,0 +1,19 @@
+import App from './App.uvue'
+import store from '@/store/index.uts'
+import * as Pinia from 'pinia';
+import { createUnistorage } from '@/uni_modules/pinia-plugin-unistorage/index.js'
+import uviewPlus from '@/uni_modules/uview-plus'
+
+import { createSSRApp } from 'vue'
+export function createApp() {
+	const app = createSSRApp(App)
+	
+	store.use(createUnistorage())
+	
+	app.use(store)
+	app.use(uviewPlus)
+	return {
+		app,
+		Pinia
+	}
+}

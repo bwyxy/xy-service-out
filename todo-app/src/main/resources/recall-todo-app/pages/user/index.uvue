@@ -1,0 +1,263 @@
+<template>
+	<page-layout>
+		<navbar :fixed="true" bg-color="transparent" :shadow="false"></navbar>
+		
+		<page-main>
+			<view class="user-head">
+				<view class="user-head-content">
+					<navbar bg-color="transparent" :shadow="false"></navbar>
+					<view class="user-info">
+						<view class="user-info-lt">
+							<up-avatar
+								text="游"
+								fontSize="18"
+								randomBgColor
+								shape="square"
+							></up-avatar>
+							<view class="user-info-content">
+								<text>游客</text>
+								<up-button class="login-btn">立即登录</up-button>
+							</view>
+						</view>
+						<view class="user-info-rt">
+							<text>今日任务: 0/0</text>
+						</view>
+					</view>
+				</view>
+				<view class="user-head-mask"></view>
+			</view>
+		
+			<view class="user-main">
+				<view class="user-title">
+					<text>全部待办</text>
+					<up-icon name="arrow-right" color="#1f1f1f" size="28rpx"></up-icon>
+				</view>
+				<view class="user-main-box">
+					<view class="task-item">
+						<image src="@/static/task/draft-task.png" mode="scaleToFill"></image>
+						<text>草稿箱</text>
+					</view>
+					<view class="task-item">
+						<image src="@/static/task/to-completed-task.png" mode="scaleToFill"></image>
+						<text>待完成</text>
+					</view>
+					<view class="task-item">
+						<image src="@/static/task/completed-task.png" mode="scaleToFill"></image>
+						<text>已完成</text>
+					</view>
+					<view class="task-item">
+						<image src="@/static/task/close-task.png" mode="scaleToFill"></image>
+						<text>已取消</text>
+					</view>
+				</view>
+				
+				<view class="cell-main">
+					<view class="cell-item" style="--color: #FF8C00;">
+						<view class="cell-item-icon">
+							<image src="@/static/user/cache.png" mode="scaleToFill"></image>
+						</view>
+						<text>本地缓存</text>
+						<up-icon name="arrow-right" color="#1f1f1f" size="28rpx"></up-icon>
+					</view>
+					<view class="cell-item" style="--color: #9932CC;">
+						<view class="cell-item-icon">
+							<image src="@/static/user/friend.png" mode="scaleToFill"></image>
+						</view>
+						<text>好友</text>
+						<up-icon name="arrow-right" color="#1f1f1f" size="28rpx"></up-icon>
+					</view>
+					<view class="cell-item" style="--color: #D2B48C;">
+						<view class="cell-item-icon">
+							<image src="@/static/user/setting.png" mode="scaleToFill"></image>
+						</view>
+						<text>设置</text>
+						<up-icon name="arrow-right" color="#1f1f1f" size="28rpx"></up-icon>
+					</view>
+					<view class="cell-item" style="--color: #007aff;">
+						<view class="cell-item-icon">
+							<image src="@/static/user/about.png" mode="scaleToFill"></image>
+						</view>
+						<text>关于我</text>
+						<up-icon name="arrow-right" color="#1f1f1f" size="28rpx"></up-icon>
+					</view>
+				</view>
+			</view>
+		</page-main>
+		
+		<tabbar path="user"></tabbar>
+	</page-layout>
+</template>
+
+<script setup>
+	
+</script>
+
+<style lang="scss">
+.user-head {
+	width: 100%;
+	height: 363rpx;
+	position: relative;
+}
+
+.user-head-content {
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.user-head-mask {
+	width: 120%;
+	height: 363rpx;
+	background: linear-gradient( 120deg, #d9f1fc 0%,#b9e0fc 10%,#c7e7fc 20% ,#e4f6fc 30%,#ecf8fc 40%,#f5fcfc 50%,#dafcfc 60%, #cbf4fc 70% , #f4f4fc 80%,#d4e4fc 90%,#b9e0fc 100%);
+	opacity: 0.6;
+	filter: blur(40px);
+	position: fixed;
+	left: -10%;
+	top: -30rpx;
+}
+
+.user-info {
+	box-sizing: border-box;
+	padding: 24rpx 32rpx 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	&-content {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		font-size: 28rpx;
+		color: #1f1f1f;
+		margin-left: 16rpx;
+		text {
+			flex: 1;
+			margin-left: 16rpx;
+		}
+	}
+}
+
+.user-info-lt {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.user-info-rt {
+	flex: 1;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	text {
+		font-size: 26rpx;
+		font-weight: 600;
+		color: #1f1f1f;
+		letter-spacing: 1px;
+	}
+}
+
+.login-btn {
+	width: 100rpx;
+	height: 40rpx !important;
+	background: linear-gradient( 270deg, #227EFF 0%, #6BAAFF 100%);
+	border-radius: 50rpx !important;
+	padding: 0;
+	font-size: 18rpx !important;
+	color: #fff !important;
+	letter-spacing: 1px;
+	line-height: 0 !important;
+}
+
+.user-title {
+	height: 60rpx;
+	box-sizing: border-box;
+	padding: 0 32rpx;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text {
+		flex: 1;
+		font-size: 28rpx;
+		font-weight: 700;
+		color: #1f1f1f;
+		letter-spacing: 1px;
+	}
+}
+
+.user-main {
+	width: 100%;
+	min-height: calc(100% - 363rpx + 48rpx);
+	background: #fff;
+	box-sizing: border-box;
+	border-radius: 35rpx 35rpx 0 0;
+	padding: 32rpx 0;
+	position: absolute;
+	left: 0;
+	top: calc(363rpx - 48rpx);
+}
+
+.user-main-box {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 24rpx 0;
+	.task-item {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-right: 1rpx solid #f1f1f1;
+		image {
+			width: 48rpx;
+			height: 48rpx;
+		}
+		text {
+			font-size: 24rpx;
+			color: #1f1f1f;
+			letter-spacing: 1px;
+			margin-top: 8rpx;
+		}
+		&:last-child {
+			border-right: none;
+		}
+	}
+}
+
+.cell-main {
+	box-sizing: border-box;
+	padding: 0 32rpx;
+	.cell-item {
+		height: 100rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		border-bottom: 1rpx solid #f2f2f2;
+		&-icon {
+			width: 54rpx;
+			height: 54rpx;
+			background: var(--color);
+			border-radius: 8rpx;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			image {
+				width: 38rpx;
+				height: 38rpx;
+			}
+		}
+	
+		text {
+			flex: 1;
+			font-size: 28rpx;
+			color: #1f1f1f;
+			letter-spacing: 1px;
+			margin-left: 24rpx;
+		}
+	}
+}
+</style>

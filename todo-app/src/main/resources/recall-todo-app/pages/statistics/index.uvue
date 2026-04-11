@@ -1,0 +1,17 @@
+<template>
+	<page-layout>
+		<navbar title="统计"></navbar>
+		
+		<page-main></page-main>
+		
+		<tabbar path="statistics"></tabbar>
+	</page-layout>
+</template>
+
+<script setup>
+	
+</script>
+
+<style>
+
+</style>

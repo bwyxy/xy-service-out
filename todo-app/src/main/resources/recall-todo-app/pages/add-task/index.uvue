@@ -1,0 +1,164 @@
+<template>
+	<page-layout>
+		<navbar title="添加任务">
+			<template #left>
+				<view @click="closePage">
+					<up-icon name="arrow-down" color="#1f1f1f" size="36rpx"></up-icon>
+				</view>
+			</template>
+		</navbar>
+		
+		<scroll-view :scroll-y="true" class="add-task-main">
+			<view class="task-title">
+				<input type="text" placeholder="准备做什么?" placeholder-class="task-title-placeholder" />
+			</view>
+			
+			<view class="add-task-title">
+				<up-icon name="file-text" size="34rpx" color="#495057"></up-icon>
+				<text>添加详细说明</text>
+			</view>
+			
+			<textarea 
+				v-model="params.remark" 
+				placeholder="添加备注, 清单或灵感" 
+				placeholder-class="remark-placeholder"
+				class="task-remark"
+			></textarea>
+		</scroll-view>
+		
+		<view class="add-task-cell">
+			<text>保存至云端</text>
+			<up-switch v-model="params.isSaveCloud"></up-switch>
+		</view>
+		
+		<page-footer>
+			<view class="add-task-footer">
+				<text class="task-save">保存草稿</text>
+				<up-button type="primary" shape="circle" class="task-submit">提交</up-button>
+			</view>
+		</page-footer>
+	</page-layout>
+</template>
+
+<script lang="uts" setup>
+
+const params = reactive({
+	isSaveCloud: true,
+	title: '',
+	remark: ''
+})
+const emit = defineEmits(['close'])
+
+const closePage = () => {
+	uni.navigateBack({
+		delta: 1,
+		fail() {
+			emit('close')
+		}
+	})
+}
+</script>
+
+<style lang="scss">
+
+.add-task-main {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+
+.add-task-title {
+	width: 623rpx;
+	margin: 24rpx 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text {
+		font-size: 28rpx;
+		color: #495057;
+		margin-left: 8rpx;
+	}
+}
+
+.task-remark {
+	width: 623rpx;
+	height: 184rpx;
+	background: rgba(255, 255, 255, .3);
+	box-sizing: border-box;
+	border: 6rpx solid #F3F4F6;
+	border-radius: 24rpx;
+	padding: 24rpx;
+}
+
+.remark-placeholder {
+	color: #9CA3AF;
+}
+
+.add-task-footer {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 0 24rpx;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.task-submit {
+	flex: 1;
+}
+
+.task-save {
+	width: 180rpx;
+	font-size: 32rpx;
+	color: #9CA3AF;
+	letter-spacing: 1px;
+	text-align: center;
+}
+
+.add-task-cell {
+	height: 80rpx;
+	background: #fff;
+	box-sizing: border-box;
+	padding: 0 24rpx;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text {
+		flex: 1;
+		font-size: 28rpx;
+		color: #1f1f1f;
+		letter-spacing: 1px;
+	}
+}
+
+.task-title {
+	width: 623rpx;
+	height: 120rpx;
+	position: relative;
+	margin-top: 48rpx;
+	input {
+		width: 100%;
+		height: 100%;
+		font-size: 48rpx;
+		color: #1f1f1f;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	&-placeholder {
+		color: #D1D5DB;
+		font-size: 48rpx;
+	}
+	&::after {
+		content: '';
+		width: 100%;
+		height: 8rpx;
+		background: #F3F4F6;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+	}
+}
+</style>

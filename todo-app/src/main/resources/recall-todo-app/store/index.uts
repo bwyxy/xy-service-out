@@ -1,0 +1,5 @@
+import * as pinia from 'pinia'
+
+const store = pinia.createPinia()
+
+export default store;

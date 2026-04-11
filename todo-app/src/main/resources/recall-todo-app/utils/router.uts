@@ -1,0 +1,8 @@
+/**
+ * 返回界面
+ */
+export const backPage = (delta :number) => {
+	uni.navigateBack({
+		delta
+	})
+}

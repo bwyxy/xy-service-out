@@ -1,0 +1,24 @@
+<template>
+	<view 
+		class="page-footer"
+		:style="{paddingBottom: (safeAreaInsets ? (`calc(${safeAreaInsets.bottom || 12}px)`) : '24rpx')}"
+	>
+		<slot></slot>
+	</view>
+</template>
+
+<script lang="uts" setup>
+import { state } from '@/store/modules/app';
+
+const safeAreaInsets = computed(() => {
+	return state.safeAreaInsets
+})
+</script>
+
+<style lang="scss">
+.page-footer {
+	padding-top: 24rpx;
+	background: #fff;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3rpx 8rpx;
+}
+</style>
