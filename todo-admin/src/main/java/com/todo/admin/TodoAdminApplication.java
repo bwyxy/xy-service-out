@@ -7,9 +7,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.ManagedBean;
 
-@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class },
-scanBasePackages = {
-        "com.todo.admin.*"
+@SpringBootApplication(scanBasePackages = {
+        "com.todo"
 })
 @EnableScheduling
 @ManagedBean("com.todo.admin.mapper")

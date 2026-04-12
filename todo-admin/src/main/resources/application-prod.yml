@@ -9,7 +9,7 @@ site-manager:
   # 获取ip地址开关
   addressEnabled: false
 
-# 生产环境配置
+# 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
   port: ${SERVER_PORT:8080}
@@ -54,11 +54,16 @@ spring:
       max-file-size: 10MB
       # 设置总上传的文件大小
       max-request-size: 20MB
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL:jdbc:mysql://localhost:3306/todo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8}
+    url: ${DB_URL:jdbc:mysql://localhost:13306/todo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
     druid:
@@ -115,6 +120,20 @@ spring:
           temperature: 0.7
           # 最大 token
           max-tokens: 2000
+  # Redis 配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DB:0}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
 
 # MyBatis配置
 mybatis:
@@ -138,6 +157,14 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志配置
+logging:
+  level:
+    com.todo: debug
+    org.springframework: warn
+
+
 # token配置
 token:
   # 令牌自定义标识
@@ -146,10 +173,12 @@ token:
   secret: ${TOKEN_SECRET:siteManager}
   # 令牌有效期（默认30分钟 - 改为1天）
   expireTime: ${TOKEN_EXPIRE_TIME:1440}
+  refresh-expiration: 604800000
 
 jwt:
   secret: your-secret-key-at-least-32-characters-long
   expiration: 86400000
+  refresh-expiration: 604800000
   prefix: Bearer
 
 # Swagger配置

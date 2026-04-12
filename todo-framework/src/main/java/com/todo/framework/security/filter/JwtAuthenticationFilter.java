@@ -1,6 +1,6 @@
 package com.todo.framework.security.filter;
 
-import com.todo.common.provider.JwtTokenProvider;
+import com.todo.framework.provider.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.todo.common.provider;
+package com.todo.framework.provider;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

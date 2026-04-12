@@ -63,9 +63,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL:jdbc:mysql://localhost:13306/todo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:123456}
+    url: ${DB_URL:jdbc:mysql://110.42.255.106:13306/todo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8}
+    username: ${DB_USERNAME:xy}
+    password: ${DB_PASSWORD:Wy.123567}
     druid:
       # 初始连接数
       initialSize: 5
@@ -120,6 +120,20 @@ spring:
           temperature: 0.7
           # 最大 token
           max-tokens: 2000
+  # Redis 配置
+  data:
+    redis:
+          host: ${REDIS_HOST:localhost}
+          port: ${REDIS_PORT:6379}
+          password: ${REDIS_PASSWORD:}
+          database: ${REDIS_DB:0}
+          timeout: 2000ms
+          lettuce:
+            pool:
+              max-active: 8
+              max-idle: 8
+              min-idle: 0
+              max-wait: -1ms
 
 # MyBatis配置
 mybatis:
@@ -164,6 +178,7 @@ jwt:
   secret: your-secret-key-at-least-32-characters-long
   expiration: 86400000
   prefix: Bearer
+  refresh-expiration: 604800000
 
 # Swagger配置
 swagger:

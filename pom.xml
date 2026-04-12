@@ -18,11 +18,11 @@
     </parent>
 
     <modules>
-        <module>todo-admin</module>
-        <module>todo-app</module>
-        <module>todo-common</module>
         <module>todo-pojo</module>
         <module>todo-framework</module>
+        <module>todo-common</module>
+        <module>todo-admin</module>
+        <module>todo-app</module>
     </modules>
 
     <properties>
@@ -176,6 +176,19 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+
+            <!-- Bucket4j for rate limiting -->
+            <dependency>
+                <groupId>com.github.vladimir-bukhtoyarov</groupId>
+                <artifactId>bucket4j-core</artifactId>
+                <version>8.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.vladimir-bukhtoyarov</groupId>
+                <artifactId>bucket4j-redis</artifactId>
+                <version>8.0.1</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
