@@ -130,6 +130,20 @@ mybatis:
   # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
 
+# Mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.todo.**.entity
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 # 日志配置
 logging:
   level:
@@ -145,6 +159,11 @@ token:
   secret: ${TOKEN_SECRET:siteManager}
   # 令牌有效期（默认30分钟 - 改为1天）
   expireTime: ${TOKEN_EXPIRE_TIME:1440}
+
+jwt:
+  secret: your-secret-key-at-least-32-characters-long
+  expiration: 86400000
+  prefix: Bearer
 
 # Swagger配置
 swagger:

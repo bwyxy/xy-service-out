@@ -22,6 +22,7 @@
         <module>todo-app</module>
         <module>todo-common</module>
         <module>todo-pojo</module>
+        <module>todo-framework</module>
     </modules>
 
     <properties>
