@@ -1,5 +1,5 @@
 import { Layout, Menu, theme } from 'antd'
-import { Suspense, useMemo } from 'react'
+import {Suspense, useMemo, useState} from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { buildMenuItems } from '@/layouts/buildMenuItems'
 // import { useAuth } from '@/store/authStore'
@@ -9,6 +9,7 @@ import BaseUser from "@/layouts/BaseUser.tsx";
 import BaseLogo from "@/layouts/BaseLogo.tsx";
 import BaseTags from "@/layouts/BaseTags.tsx";
 import BaseOption from "@/layouts/BaseOption.tsx";
+import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 
 const { Header, Sider, Content } = Layout
 
@@ -21,11 +22,28 @@ export default function BasicLayout() {
   const { colorBgContainer, borderRadiusLG } = token
 
   const menuItems = useMemo(() => buildMenuItems(menus), [menus])
+    const [ isCollapsed, setIsCollapsed ] = useState(false)
 
   const selectedKeys = useMemo(() => {
     const p = location.pathname
     return [p === '/' ? '/' : p]
   }, [location.pathname])
+
+    const handleSlide = (e :any) => {
+      e.stopPropagation()
+    }
+
+    const handleCollapse = () => {
+      if (window.innerWidth <= 1000) {
+          setIsCollapsed(false)
+      }
+    }
+
+    const handleOnBreakpoint = () => {
+      if (window.innerWidth <= 1000) {
+          setIsCollapsed(false)
+      }
+    }
 
   return (
     <Layout
@@ -39,23 +57,38 @@ export default function BasicLayout() {
       }}
     >
       <Sider
-        breakpoint="lg"
-        collapsedWidth={0}
-        width={260}
-        style={{ height: '100%', overflow: 'auto' }}
+          className="sider-phone"
+          breakpoint="lg"
+          collapsedWidth={0}
+          collapsed={isCollapsed}
+          width={260}
+          style={{
+              height: '100%',
+              overflow: 'auto',
+              display: window.innerWidth <= 1000 ? isCollapsed ? 'block' : 'none' : 'block'
+          }}
+          trigger={['click']}
+          onBreakpoint={() => handleOnBreakpoint()}
+          onClick={() => handleCollapse()}
       >
-         <BaseLogo />
-          <div className="menu-main">
-              <Menu
-                  mode="inline"
-                  selectedKeys={selectedKeys}
-                  items={menuItems}
-                  onClick={({ key }) => {
-                      navigate(key === '/' ? '/' : key)
-                  }}
-              />
+          <div
+              className="sider-content"
+              style={{ height: '100%' }}
+              onClick={(e) => handleSlide(e)}
+          >
+              <BaseLogo />
+              <div className="menu-main">
+                  <Menu
+                      mode="inline"
+                      selectedKeys={selectedKeys}
+                      items={menuItems}
+                      onClick={({ key }) => {
+                          navigate(key === '/' ? '/' : key)
+                      }}
+                  />
+              </div>
+              <BaseUser />
           </div>
-          <BaseUser />
       </Sider>
       <Layout
         style={{
@@ -77,6 +110,12 @@ export default function BasicLayout() {
             gap: 16,
           }}
         >
+            <div
+                style={{fontSize: '24px', cursor: 'pointer'}}
+                onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+                { isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined /> }
+            </div>
             <BaseTags />
 
             <BaseOption />
