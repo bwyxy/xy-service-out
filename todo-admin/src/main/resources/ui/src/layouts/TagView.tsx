@@ -20,6 +20,12 @@ const TagView: React.FC<TagViewProps> = ({ tags, activeTag, onClose, onCloseOthe
         navigate(tag.path)
     }
 
+    const handleClose = (tag :RouteItem, event :any) => {
+        event.stopPropagation();
+
+        onClose(tag)
+    }
+
     useEffect(() => {
         console.log(tags)
     }, [tags]);
@@ -51,6 +57,7 @@ const TagView: React.FC<TagViewProps> = ({ tags, activeTag, onClose, onCloseOthe
                 <Dropdown
                     key={tag.path}
                     menu={{ items: tag.path === '/' ? [] : getMenuItems(tag) }}
+                    disabled={true}
                     trigger={['contextMenu']}
                 >
                     <div
@@ -60,7 +67,10 @@ const TagView: React.FC<TagViewProps> = ({ tags, activeTag, onClose, onCloseOthe
                         <span>{tag.meta?.title}</span>
                         {
                             (tag.path === activeTag?.path || tag.path === '/') ? <div className="tag-view-box"></div>
-                                : <div className="tag-view-close">
+                                : <div
+                                    className="tag-view-close"
+                                    onClick={(e) => handleClose(tag, e)}
+                                >
                                     <CloseOutlined />
                                 </div>
                         }
