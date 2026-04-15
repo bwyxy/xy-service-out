@@ -1,0 +1,38 @@
+.ant-layout-sider {
+  background: #fff !important;
+  .ant-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    .menu-main {
+      flex: 1;
+      box-sizing: border-box;
+      padding: 0 16px;
+      overflow: hidden;
+      overflow-y: auto;
+      .ant-menu {
+        height: 100%;
+        background: #f5f5f5;
+        border-right: none;
+        box-sizing: border-box;
+        border-radius: 6px;
+        padding: 16px 10px;
+        overflow: hidden;
+        overflow-y: scroll;
+        .ant-menu-item-selected {
+          color: #fff !important;
+          background-color: var(--theme-color) !important;
+        }
+        .ant-menu-submenu-selected>.ant-menu-submenu-title {
+          color: var(--theme-color) !important;
+        }
+        .ant-menu-submenu > .ant-menu {
+          padding: 0 10px;
+        }
+      }
+      &::-webkit-scrollbar {
+        appearance: none;
+        width: 0;
+      }
+    }
+  }
+}

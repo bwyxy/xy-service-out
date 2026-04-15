@@ -1,0 +1,45 @@
+{
+  "name": "react-admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.1",
+    "@bwyxy/utils": "^1.0.0-alpha.0",
+    "antd": "^6.3.5",
+    "axios": "^1.14.0",
+    "framer-motion": "^12.38.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.14.0",
+    "react-transition-group": "^4.4.5",
+    "sass": "^1.99.0",
+    "screenfull": "^6.0.2",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@swc/core": "^1.15.24",
+    "@types/node": "^25.5.2",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@types/react-transition-group": "^4.4.12",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitejs/plugin-react-swc": "^3.8.0",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^5.4.21"
+  }
+}
