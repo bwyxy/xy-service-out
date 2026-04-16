@@ -1,5 +1,6 @@
 package com.todo.admin;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -11,7 +12,7 @@ import javax.annotation.ManagedBean;
         "com.todo"
 })
 @EnableScheduling
-@ManagedBean("com.todo.admin.mapper")
+@MapperScan({"com.todo.system.mapper", "com.todo.*.mapper"})
 public class TodoAdminApplication {
 
     public static void main(String[] args) {

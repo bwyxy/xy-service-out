@@ -1,6 +1,6 @@
 package com.todo.framework.web.service;
 
-import com.todo.admin.service.SysUserService;
+import com.todo.system.service.SysUserService;
 import com.todo.framework.security.handle.LoginUser;
 import com.todo.pojo.entity.SysUser;
 import lombok.RequiredArgsConstructor;

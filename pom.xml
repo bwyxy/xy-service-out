@@ -23,6 +23,7 @@
         <module>todo-common</module>
         <module>todo-admin</module>
         <module>todo-app</module>
+        <module>todo-system</module>
     </modules>
 
     <properties>

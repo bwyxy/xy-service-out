@@ -19,6 +19,18 @@
         <dependency>
             <groupId>com.todo</groupId>
             <artifactId>todo-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.todo</groupId>
+            <artifactId>todo-pojo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.todo</groupId>
+            <artifactId>todo-system</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -35,18 +47,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.todo</groupId>
-            <artifactId>todo-pojo</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.todo</groupId>
-            <artifactId>todo-admin</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

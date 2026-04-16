@@ -17,20 +17,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager;
-
-    private final UserDetailsService userDetailsService;
-
-    private final JwtUtils jwtUtils;
+//    private final AuthenticationManager authenticationManager;
+//
+//    private final UserDetailsService userDetailsService;
+//
+//    private final JwtUtils jwtUtils;
 
 
     /**
      * 用户登录
      * */
-    private void login(String username, String password) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
-    }
+//    private void login(String username, String password) {
+//
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(username, password)
+//        );
+//    }
 }
