@@ -74,8 +74,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public R<Void> handleRuntimeException(RuntimeException e) {
-        log.error("运行时异常", e);
-        return R.error(ResultCode.INTERNAL_ERROR.getCode(), "系统繁忙，请稍后重试");
+        log.error("运行时异常: {}", e.getMessage());
+        return R.error(ResultCode.INTERNAL_ERROR.getCode(), e.getMessage());
     }
 
     /**
@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public R<Void> handleException(Exception e) {
-        log.error("未知异常", e);
-        return R.error(ResultCode.INTERNAL_ERROR.getCode(), "系统繁忙，请稍后重试");
+        log.error("未知异常: {}", e.getMessage());
+        return R.error(ResultCode.INTERNAL_ERROR.getCode(), e.getMessage());
     }
 }

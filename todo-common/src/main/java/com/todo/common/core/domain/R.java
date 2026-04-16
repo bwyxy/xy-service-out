@@ -16,7 +16,7 @@ public class R<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer code;
-    private String message;
+    private String msg;
     private T data;
     private Long timestamp;
 
@@ -26,7 +26,7 @@ public class R<T> implements Serializable {
 
     public R(Integer code, String message, T data) {
         this.code = code;
-        this.message = message;
+        this.msg = message;
         this.data = data;
         this.timestamp = System.currentTimeMillis();
     }

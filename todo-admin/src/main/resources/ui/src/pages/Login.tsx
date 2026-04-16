@@ -30,17 +30,17 @@ export default function Login() {
   const [captchaUuid, setCaptchaUuid] = useState('')
 
   const loadCaptcha = useCallback(async () => {
-    setCaptchaLoading(true)
-    try {
-      const { imgSrc, uuid } = await fetchCaptchaImage()
-      setCaptchaImg(imgSrc)
-      setCaptchaUuid(uuid)
-      form.setFieldValue('code', undefined)
-    } catch (e) {
-      message.error(e instanceof Error ? e.message : '获取验证码失败')
-    } finally {
-      setCaptchaLoading(false)
-    }
+    // setCaptchaLoading(true)
+    // try {
+    //   const { imgSrc, uuid } = await fetchCaptchaImage()
+    //   setCaptchaImg(imgSrc)
+    //   setCaptchaUuid(uuid)
+    //   form.setFieldValue('code', undefined)
+    // } catch (e) {
+    //   message.error(e instanceof Error ? e.message : '获取验证码失败')
+    // } finally {
+    //   setCaptchaLoading(false)
+    // }
   }, [form])
 
   useEffect(() => {
@@ -48,15 +48,15 @@ export default function Login() {
   }, [loadCaptcha])
 
   async function onFinish(values: { username: string; password: string; code: string }) {
-    if (!captchaUuid) {
-      message.warning('请先获取验证码')
-      await loadCaptcha()
-      return
-    }
+    // if (!captchaUuid) {
+    //   message.warning('请先获取验证码')
+    //   await loadCaptcha()
+    //   return
+    // }
     setSubmitting(true)
     try {
       const res = await request.post<RuoYiResponse<{ token?: string } | string>>(
-        '/login',
+        '/auth/login',
         {
           username: values.username,
           password: values.password,
@@ -157,7 +157,6 @@ export default function Login() {
                   <Form.Item
                     name="code"
                     noStyle
-                    rules={[{ required: true, message: '请输入验证码' }]}
                   >
                     <Input placeholder="图中字符" allowClear autoComplete="off" />
                   </Form.Item>

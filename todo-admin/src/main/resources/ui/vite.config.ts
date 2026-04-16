@@ -10,7 +10,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',  // 后端地址
+        changeOrigin: true,  // 改变请求源
+        rewrite: (path) => path.replace(/^\/api/, '/api')  // 保留路径
+        // 或者如果后端没有 /api 前缀，可以去掉
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   resolve: {
     alias: {

@@ -4,11 +4,13 @@ import com.todo.system.service.SysUserService;
 import com.todo.framework.security.handle.LoginUser;
 import com.todo.pojo.entity.SysUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -20,6 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         SysUser sysUser = sysUserService.getByUsername(username);
 
+        log.warn("用户信息: {}", sysUser);
         if (sysUser == null) {
             throw new UsernameNotFoundException(username + " 用户不存在");
         }

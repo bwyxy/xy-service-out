@@ -52,7 +52,7 @@ public class SysUser extends BaseEntity implements Serializable {
     /**
      * 状态
      * */
-    private Integer status;
+    private String status;
     /**
      * 微信 openID
      * */
