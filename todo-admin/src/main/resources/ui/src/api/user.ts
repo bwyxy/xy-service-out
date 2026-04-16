@@ -42,7 +42,7 @@ export interface Role {
 
 /** 获取用户信息 */
 export async function getUserInfo(): Promise<UserInfo> {
-  const res = await request.get<RuoYiResponse<UserInfo>>('/getInfo')
+  const res = await request.get<RuoYiResponse<UserInfo>>('/auth/getInfo')
   const body = res.data
   return body.data
 }

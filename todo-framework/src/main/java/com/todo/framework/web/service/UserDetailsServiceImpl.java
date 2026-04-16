@@ -22,7 +22,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         SysUser sysUser = sysUserService.getByUsername(username);
 
-        log.warn("用户信息: {}", sysUser);
         if (sysUser == null) {
             throw new UsernameNotFoundException(username + " 用户不存在");
         }

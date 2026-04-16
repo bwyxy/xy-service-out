@@ -47,4 +47,8 @@ public record LoginUser(SysUser sysUser) implements UserDetails {
     public Long getUserId() {
         return sysUser.getId();
     }
+
+    public  SysUser getSysUser() {
+        return sysUser;
+    }
 }
