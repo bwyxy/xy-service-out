@@ -1,12 +1,17 @@
 package com.todo.common.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.todo.common.core.domain.BaseEntity;
+import jakarta.persistence.OrderBy;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单表 sys_menu
@@ -22,6 +27,7 @@ public class SysMenu extends BaseEntity implements Serializable {
     /**
      * 菜单 Id
      * */
+    @TableId(value = "menu_id")
     private Long menuId;
 
     /**
@@ -32,11 +38,13 @@ public class SysMenu extends BaseEntity implements Serializable {
     /**
      * 父菜单 Id
      * */
+    @OrderBy(value = "DESC")
     private Long parentId;
 
     /**
      * 显示排序
      * */
+    @OrderBy(value = "DESC")
     private Integer orderNum;
 
     /**
@@ -63,13 +71,13 @@ public class SysMenu extends BaseEntity implements Serializable {
      * 是否为外链
      * 0-是 1-不是
      * */
-    private Integer isFrame;
+    private String isFrame;
 
     /**
      * 是否缓存
      * 0-缓存 1-不缓存
      * */
-    private Integer isCache;
+    private String isCache;
 
     /**
      * 菜单类型
@@ -98,4 +106,8 @@ public class SysMenu extends BaseEntity implements Serializable {
      * 菜单图标
      * */
     private String icon;
+
+    /** 子菜单 */
+    @TableField(exist = false)
+    private List<SysMenu> children = new ArrayList<SysMenu>();
 }

@@ -1,14 +1,22 @@
 package com.todo.admin.controller;
 
 import com.todo.common.core.domain.R;
+import com.todo.common.entity.SysMenu;
+import com.todo.common.utils.SecurityUtils;
 import com.todo.framework.web.service.AuthService;
 import com.todo.common.dto.AuthDTO;
 import com.todo.common.entity.SysUser;
 import com.todo.common.vo.AuthVO;
+import com.todo.system.service.ISysMenuService;
+import com.todo.system.service.ISysPermissionService;
+import com.todo.system.service.ISysRoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 认证控制器
@@ -20,6 +28,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
+    private final ISysPermissionService permissionService;
+
+    private final ISysMenuService menuService;
 
     /**
      * 用户登录
@@ -36,8 +48,22 @@ public class AuthController {
     public R<?> getInfo() {
         SysUser sysUser = authService.getUserInfo();
         sysUser.setPassword(null);
+        Set<String> roles = permissionService.getRolePermission(sysUser);
+        sysUser.setRoles(roles);
 
         return R.ok(sysUser);
+    }
+
+    /**
+     * 获取路由信息
+     * */
+    @GetMapping("/getRouters")
+    public R<?> getRouters() {
+        Long userId = SecurityUtils.getUserId();
+
+        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
+
+        return R.ok(menuService.buildMenus(menus));
     }
 
     @PostMapping("/test")

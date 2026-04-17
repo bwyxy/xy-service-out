@@ -64,6 +64,9 @@ create table sys_menu (
   primary key (menu_id)
 ) engine=innodb auto_increment=2000 comment = '菜单权限表';
 
+alter table sys_menu modify column is_frame tinyint default '1' comment '是否为外链（0是 1否）';
+alter table sys_menu modify column is_cache tinyint default '0' comment '是否缓存（0缓存 1不缓存）';
+
 -- 用户和角色关联表
 drop table if exists sys_user_role;
 create table sys_user_role (
@@ -82,8 +85,21 @@ create table sys_role_menu (
 
 insert into sys_user values
     (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
+insert into sys_user values
+    (10000001, 'xiaoyi', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '小忆', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
 
 insert into sys_role values
     (1, '超级管理员', 'admin', 1, '1', '1', sysdate(), sysdate(), '', '', 0, '');
+insert into sys_role values
+    (2, '普通用户', 'user', 2, '2', '1', sysdate(), sysdate(), '', '', 0, '');
+
 
 insert into sys_user_role values (10000000, 1);
+insert into sys_user_role values (10000001, 2);
+
+insert into sys_menu values(1, '系统管理', '0', 1, 'system',null, '', '', 1, 1, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, 0,'系统管理目录');
+insert into sys_menu values(2,  '用户管理', 1,   1, 'user','system/user/index', '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, 0,'用户管理菜单');
+insert into sys_menu values (3,'仪表盘', 0,1,'/', 'dashboard/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '仪表盘');
+# 2005,仪表盘,0,1,/,dashboard/index,,"",1,1,C,0,0,,dashboard,hzy,2025-12-24 13:16:11,"",,""
+
+select distinct m.menu_id, m.menu_name, m.parent_id, m.order_num, m.path, m.component, m.query, m.route_name, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_by, m.create_time, m.update_by, m.update_time, m.deleted, m.remark from sys_menu m;

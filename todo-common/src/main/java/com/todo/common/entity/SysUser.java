@@ -1,6 +1,8 @@
 package com.todo.common.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.todo.common.core.domain.BaseEntity;
 import com.todo.common.utils.SecurityUtils;
@@ -10,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户表 sys_user
@@ -22,6 +25,8 @@ public class SysUser extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 10000000L;
 
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
     /**
      * 用户名
      * */
@@ -63,6 +68,12 @@ public class SysUser extends BaseEntity implements Serializable {
      * */
     @TableField(exist = false)
     private List<Long> roleIds;
+
+    /**
+     * 角色列表
+     * */
+    @TableField(exist = false)
+    private Set<String> roles;
 
     public boolean isAdmin() {
         return SecurityUtils.isAdmin();
