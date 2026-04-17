@@ -2,9 +2,9 @@ package com.todo.admin.controller;
 
 import com.todo.common.core.domain.R;
 import com.todo.framework.web.service.AuthService;
-import com.todo.pojo.dto.AuthDTO;
-import com.todo.pojo.entity.SysUser;
-import com.todo.pojo.vo.AuthVO;
+import com.todo.common.dto.AuthDTO;
+import com.todo.common.entity.SysUser;
+import com.todo.common.vo.AuthVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

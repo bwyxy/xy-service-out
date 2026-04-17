@@ -64,8 +64,26 @@ create table sys_menu (
   primary key (menu_id)
 ) engine=innodb auto_increment=2000 comment = '菜单权限表';
 
+-- 用户和角色关联表
+drop table if exists sys_user_role;
+create table sys_user_role (
+   user_id   bigint(20) not null comment '用户ID',
+   role_id   bigint(20) not null comment '角色ID',
+   primary key(user_id, role_id)
+) engine=innodb comment = '用户和角色关联表';
+
+-- 角色和菜单关联表
+drop table if exists sys_role_menu;
+create table sys_role_menu (
+   role_id   bigint(20) not null comment '角色ID',
+   menu_id   bigint(20) not null comment '菜单ID',
+   primary key(role_id, menu_id)
+) engine=innodb comment = '角色和菜单关联表';
+
 insert into sys_user values
     (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
 
 insert into sys_role values
     (1, '超级管理员', 'admin', 1, '1', '1', sysdate(), sysdate(), '', '', 0, '');
+
+insert into sys_user_role values (10000000, 1);

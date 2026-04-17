@@ -1,9 +1,9 @@
 package com.todo.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.todo.pojo.entity.SysUser;
+import com.todo.common.entity.SysUser;
 
-public interface SysUserService extends IService<SysUser> {
+public interface ISysUserService extends IService<SysUser> {
 
     SysUser getByUsername(String username);
 

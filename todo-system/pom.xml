@@ -27,14 +27,13 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.todo</groupId>
-            <artifactId>todo-pojo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.todo</groupId>
+            <artifactId>todo-common</artifactId>
         </dependency>
     </dependencies>
 

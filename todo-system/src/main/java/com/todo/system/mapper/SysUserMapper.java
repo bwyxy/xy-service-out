@@ -1,7 +1,7 @@
 package com.todo.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.todo.pojo.entity.SysUser;
+import com.todo.common.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

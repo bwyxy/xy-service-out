@@ -1,8 +1,9 @@
-package com.todo.pojo.entity;
+package com.todo.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.todo.common.core.domain.BaseEntity;
+import com.todo.common.utils.SecurityUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class SysUser extends BaseEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 10000000L;
 
     /**
      * 用户名
@@ -62,4 +63,8 @@ public class SysUser extends BaseEntity implements Serializable {
      * */
     @TableField(exist = false)
     private List<Long> roleIds;
+
+    public boolean isAdmin() {
+        return SecurityUtils.isAdmin();
+    }
 }

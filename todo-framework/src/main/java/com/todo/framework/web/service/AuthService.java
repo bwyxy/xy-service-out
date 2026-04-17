@@ -2,10 +2,10 @@ package com.todo.framework.web.service;
 
 import com.todo.common.core.domain.R;
 import com.todo.framework.provider.JwtTokenProvider;
-import com.todo.framework.security.handle.LoginUser;
-import com.todo.pojo.dto.AuthDTO;
-import com.todo.pojo.entity.SysUser;
-import com.todo.pojo.vo.AuthVO;
+import com.todo.common.core.domain.model.LoginUser;
+import com.todo.common.dto.AuthDTO;
+import com.todo.common.entity.SysUser;
+import com.todo.common.vo.AuthVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,7 +52,7 @@ public class AuthService {
         String token = jwtTokenProvider.generateAccessToken(loginUser);
 
         AuthVO authVO = new AuthVO();
-        authVO.setId(loginUser.sysUser().getId());
+        authVO.setId(loginUser.getUserId());
         authVO.setUsername(loginUser.getUsername());
         authVO.setToken(token);
 

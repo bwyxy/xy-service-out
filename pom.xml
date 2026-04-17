@@ -18,7 +18,6 @@
     </parent>
 
     <modules>
-        <module>todo-pojo</module>
         <module>todo-framework</module>
         <module>todo-common</module>
         <module>todo-admin</module>

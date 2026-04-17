@@ -24,11 +24,6 @@
 
         <dependency>
             <groupId>com.todo</groupId>
-            <artifactId>todo-pojo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.todo</groupId>
             <artifactId>todo-system</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -1,8 +1,8 @@
 package com.todo.framework.web.service;
 
-import com.todo.system.service.SysUserService;
-import com.todo.framework.security.handle.LoginUser;
-import com.todo.pojo.entity.SysUser;
+import com.todo.system.service.ISysUserService;
+import com.todo.common.core.domain.model.LoginUser;
+import com.todo.common.entity.SysUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final SysUserService sysUserService;
+    private final ISysUserService sysUserService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
