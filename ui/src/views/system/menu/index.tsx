@@ -13,13 +13,11 @@ const Menu:React.FC = () => {
     }
 
     useEffect(() => {
-        if (!isInitialized.current) return;
-        isInitialized.current = true;
-        getMenuList()
-
-        return () => {
-
+        if (!isInitialized.current) {
+            isInitialized.current = true;
+            getMenuList()
         }
+
     }, []);
     return (
         <></>
