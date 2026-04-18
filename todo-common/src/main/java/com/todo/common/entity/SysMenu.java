@@ -3,6 +3,7 @@ package com.todo.common.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.todo.common.core.domain.BaseEntity;
 import jakarta.persistence.OrderBy;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 菜单表 sys_menu

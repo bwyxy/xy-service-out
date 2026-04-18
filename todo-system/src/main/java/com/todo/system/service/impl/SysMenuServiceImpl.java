@@ -30,6 +30,33 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Autowired
     private SysMenuMapper sysMenuMapper;
+
+    /**
+     * 查询系统菜单列表
+     *
+     * @param menu 菜单信息
+     * @return 菜单列表
+     */
+    @Override
+    public List<SysMenu> selectMenuList(SysMenu menu, Long userId) {
+        LambdaQueryWrapper<SysMenu> queryWrapper = new LambdaQueryWrapper<>();
+        List<SysMenu> menus = null;
+
+        if (SecurityUtils.isAdmin(userId)) {
+            if (menu.getMenuName() != null) {
+                queryWrapper.like(SysMenu::getMenuName, menu.getMenuName());
+            }
+            if (menu.getStatus() != null) {
+                queryWrapper.eq(SysMenu::getStatus, menu.getStatus());
+            }
+            menus= this.getBaseMapper().selectList(queryWrapper);
+        } else {
+            menu.getParams().put("userId", userId);
+            menus = sysMenuMapper.selectMenuListByUserId(menu);
+        }
+
+        return menus;
+    }
     /**
      * 根据用户 ID查询菜单树信息
      *
@@ -43,7 +70,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         if (SecurityUtils.isAdmin(userId)) {
             queryWrapper.in(SysMenu::getMenuType, 'M', 'C')
-                    .eq(SysMenu::getStatus, '0');
+                    .eq(SysMenu::getStatus, '0')
+                    .orderByAsc(SysMenu::getOrderNum);
             menus = this.getBaseMapper().selectList(queryWrapper);
         } else {
             menus = sysMenuMapper.selectMenuTreeByUserId(userId);

@@ -2,11 +2,13 @@ package com.todo.common.core.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 public abstract class BaseEntity implements Serializable {
@@ -33,4 +35,9 @@ public abstract class BaseEntity implements Serializable {
 
     @TableField(exist = false)
     private String remark;
+
+    /** 请求参数 */
+    @TableField(exist = false)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Map<String, Object> params;
 }

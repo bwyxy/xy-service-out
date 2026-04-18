@@ -99,6 +99,8 @@ insert into sys_user_role values (10000001, 2);
 
 insert into sys_menu values(1, '系统管理', '0', 1, 'system',null, '', '', 1, 1, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, 0,'系统管理目录');
 insert into sys_menu values(2,  '用户管理', 1,   1, 'user','system/user/index', '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, 0,'用户管理菜单');
+insert into sys_menu values(4,  '角色管理', 1,   2, 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, 0, '角色管理菜单');
+insert into sys_menu values(5,  '菜单管理', 1,   3, 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', sysdate(), '', null, 0,'菜单管理菜单');
 insert into sys_menu values (3,'仪表盘', 0,1,'/', 'dashboard/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '仪表盘');
 # 2005,仪表盘,0,1,/,dashboard/index,,"",1,1,C,0,0,,dashboard,hzy,2025-12-24 13:16:11,"",,""
 
