@@ -147,3 +147,55 @@ function buildFullPath(route: RouteItem, parentPath: string = ''): string {
 
     return `${parentPath}/${route.path}`;
 }
+
+/**
+ * 构造树型结构数据
+ * @param {*} data 数据源
+ * @param {*} id id字段 默认 'id'
+ * @param {*} parentId 父节点字段 默认 'parentId'
+ * @param {*} children 孩子节点字段 默认 'children'
+ */
+export function handleTree(data :any[], id :number | string, parentId? :number | string, children? :any[]) {
+    let config = {
+        id: id || 'id',
+        parentId: parentId || 'parentId',
+        childrenList: children || 'children'
+    }
+
+    const childrenListMap = {}
+    const tree = []
+    for (let d of data) {
+        let id = d[config.id]
+        // @ts-ignore
+        childrenListMap[id] = d
+        // @ts-ignore
+        if (!d[config.childrenList]) {
+            // @ts-ignore
+            d[config.childrenList] = []
+        }
+    }
+
+    for (let d of data) {
+        let parentId = d[config.parentId]
+        // @ts-ignore
+        let parentObj = childrenListMap[parentId]
+        if (!parentObj) {
+            tree.push(d)
+        } else {
+            parentObj[config.childrenList].push(d)
+        }
+    }
+    return tree
+}
+
+/** 递归记录原始排序 */
+const originalOrders = {}
+export function recordOriginalOrders(list :any[]) {
+    list.forEach(item => {
+        // @ts-ignore
+        originalOrders[item.menuId] = item.orderNum
+        if (item.children && item.children.length) {
+            recordOriginalOrders(item.children)
+        }
+    })
+}

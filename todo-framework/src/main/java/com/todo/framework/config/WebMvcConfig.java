@@ -1,5 +1,6 @@
-package com.todo.admin.config;
+package com.todo.framework.config;
 
+import com.todo.framework.interceptor.RateLimitInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

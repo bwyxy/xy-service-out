@@ -12,7 +12,7 @@ site-manager:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: ${SERVER_PORT:8080}
+  port: 9100
   servlet:
     # 应用的访问路径
     context-path: ${SERVER_CONTEXT_PATH:/}
@@ -58,7 +58,7 @@ spring:
   devtools:
     restart:
       # 热部署开关
-      enabled: true
+      enabled: false
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource

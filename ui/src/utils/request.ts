@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from 'axios'
+import axios from 'axios'
 import { apiBaseUrl } from '@/config'
 import { getToken, removeToken } from '@/utils/auth'
 
@@ -24,7 +24,7 @@ service.interceptors.request.use((config) => {
 })
 
 service.interceptors.response.use(
-  (res: AxiosResponse<RuoYiResponse>) => {
+  (res: any) => {
     const payload = res.data
     if (payload && typeof payload === 'object' && 'code' in payload) {
       if (payload.code === 401) {
@@ -39,7 +39,7 @@ service.interceptors.response.use(
         return Promise.reject(new Error(payload.msg || '请求失败'))
       }
     }
-    return res
+    return payload
   },
   (error) => {
     if (error.response?.status === 401) {
