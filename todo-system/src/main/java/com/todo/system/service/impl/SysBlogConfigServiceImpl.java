@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.common.entity.SysBlogConfig;
-import com.todo.common.entity.SysTag;
 import com.todo.common.utils.StringUtils;
 import com.todo.system.mapper.SysBlogConfigMapper;
 import com.todo.system.service.ISysBlogConfigService;
@@ -14,11 +13,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class SysBlogConfigImpl extends ServiceImpl<SysBlogConfigMapper, SysBlogConfig> implements ISysBlogConfigService {
+public class SysBlogConfigServiceImpl extends ServiceImpl<SysBlogConfigMapper, SysBlogConfig> implements ISysBlogConfigService {
 
     private final SysBlogConfigMapper sysBlogConfigMapper;
 
-    public SysBlogConfigImpl(SysBlogConfigMapper sysBlogConfigMapper) {
+    public SysBlogConfigServiceImpl(SysBlogConfigMapper sysBlogConfigMapper) {
         this.sysBlogConfigMapper = sysBlogConfigMapper;
     }
 

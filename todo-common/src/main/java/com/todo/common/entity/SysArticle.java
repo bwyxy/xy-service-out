@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.todo.common.core.domain.BaseEntity;
+import jakarta.persistence.Convert;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -52,7 +53,7 @@ public class SysArticle extends BaseEntity implements Serializable {
     /** 状态
      * 0-草稿 1-已发布 2-私密
      * */
-    private int status;
+    private String status;
 
     /**
      * 浏览次数
