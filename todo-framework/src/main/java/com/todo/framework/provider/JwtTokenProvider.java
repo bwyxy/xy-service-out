@@ -36,6 +36,10 @@ public class JwtTokenProvider {
         return createToken(new HashMap<>(), userDetails.getUsername(), jwtExpiration);
     }
 
+    public String createWeChatToken(String openId) {
+        return createToken(new HashMap<>(), openId, jwtExpiration);
+    }
+
     public String generateRefreshToken(UserDetails userDetails) {
         return createToken(new HashMap<>(), userDetails.getUsername(), refreshExpiration);
     }

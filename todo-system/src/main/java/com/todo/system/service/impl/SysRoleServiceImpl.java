@@ -48,7 +48,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         queryWrapper.orderByAsc(SysRole::getRoleSort);
 
         Page<SysRole> page = this.page(new Page<>(pageNum, pageSize), queryWrapper);
-        return PageResult.of(page.getRecords(), page.getTotal(), pageNum, pageSize);
+        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     /**

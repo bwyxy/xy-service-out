@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**", "/wechat/login").permitAll()
                         .requestMatchers("/auth/login", "/auth/register", "/auth/test").permitAll()
                         .anyRequest().authenticated()
                 );

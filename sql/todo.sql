@@ -102,6 +102,21 @@ insert into sys_menu values(2,  '用户管理', 1,   1, 'user','system/user/inde
 insert into sys_menu values(4,  '角色管理', 1,   2, 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, 0, '角色管理菜单');
 insert into sys_menu values(5,  '菜单管理', 1,   3, 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', sysdate(), '', null, 0,'菜单管理菜单');
 insert into sys_menu values (3,'仪表盘', 0,1,'/', 'dashboard/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '仪表盘');
+insert into sys_menu values
+    (6,'我的博客', 0,2,'/blog', 'blog/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '我的博客');
+
+insert into sys_menu values
+    (7,'文章管理', 0,3,'article', null, '','',1,1,'M','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '文章管理'),
+    (8,'文章中心', 0,1,'article', '/article/article/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '文章管理'),
+    (9,'标签管理', 0,2,'tag', '/article/tag/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '标签管理'),
+    (10,'分类管理', 0,3,'category', '/article/category/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '分类管理');
+
 # 2005,仪表盘,0,1,/,dashboard/index,,"",1,1,C,0,0,,dashboard,hzy,2025-12-24 13:16:11,"",,""
 
 select distinct m.menu_id, m.menu_name, m.parent_id, m.order_num, m.path, m.component, m.query, m.route_name, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_by, m.create_time, m.update_by, m.update_time, m.deleted, m.remark from sys_menu m;
+
+delete from sys_user where id = 2046084966175932418;
+
+delete from sys_user where id = 10000002;
+
+alter table sys_user auto_increment = 10000002;

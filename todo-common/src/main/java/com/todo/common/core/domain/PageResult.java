@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 分页响应数据
@@ -21,17 +22,17 @@ public class PageResult<T> implements Serializable {
     private Long total;
 
     /** 当前页码 */
-    private Integer pageNum;
+    private Long pageNum;
 
     /** 每页大小 */
-    private Integer pageSize;
+    private Long pageSize;
 
     /** 总页数 */
     private Integer pages;
 
     public PageResult() {}
 
-    public PageResult(List<T> list, Long total, Integer pageNum, Integer pageSize) {
+    public PageResult(List<T> list, Long total, Long pageNum, Long pageSize) {
         this.list = list;
         this.total = total;
         this.pageNum = pageNum;
@@ -42,7 +43,7 @@ public class PageResult<T> implements Serializable {
     /**
      * 创建分页响应
      */
-    public static <T> PageResult<T> of(List<T> list, Long total, Integer pageNum, Integer pageSize) {
+    public static <T> PageResult<T> of(List<T> list, Long total, Long pageNum, Long pageSize) {
         return new PageResult<>(list, total, pageNum, pageSize);
     }
 }

@@ -1,8 +1,6 @@
 package com.todo.common.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.todo.common.core.domain.BaseEntity;
 import jakarta.persistence.OrderBy;
@@ -29,7 +27,7 @@ public class SysMenu extends BaseEntity implements Serializable {
     /**
      * 菜单 Id
      * */
-    @TableId(value = "menu_id")
+    @TableId(value = "menu_id", type = IdType.AUTO)
     private Long menuId;
 
     /**
@@ -108,6 +106,12 @@ public class SysMenu extends BaseEntity implements Serializable {
      * 菜单图标
      * */
     private String icon;
+
+    @TableField(fill = FieldFill.INSERT)
+    private String createBy;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private String updateBy;
 
     /** 子菜单 */
     @TableField(exist = false)

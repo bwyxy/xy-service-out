@@ -28,6 +28,35 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
+     * 脱敏微信 openid
+     * @param openid 微信 openid
+     * @return 脱敏后的字符串，如：abcd****efgh
+     */
+    public static String maskOpenId(String openid) {
+        if (StringUtils.isBlank(openid)) {
+            return "";
+        }
+
+        int length = openid.length();
+
+        if (length <= 8) {
+            return "****";
+        }
+
+        // 如果长度在 9-12 之间，可以调整显示位数
+        if (length <= 12) {
+            String prefix = openid.substring(0, 3);
+            String suffix = openid.substring(length - 3);
+            return prefix + "****" + suffix;
+        }
+
+        // 标准处理：前4后4
+        String prefix = openid.substring(0, 4);
+        String suffix = openid.substring(length - 4);
+        return prefix + "****" + suffix;
+    }
+
+    /**
      * * 判断一个Collection是否为空， 包含List，Set，Queue
      *
      * @param coll 要判断的Collection

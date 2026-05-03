@@ -1,9 +1,6 @@
 package com.todo.common.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.todo.common.core.domain.BaseEntity;
 import com.todo.common.utils.SecurityUtils;
 import lombok.Data;
@@ -25,7 +22,7 @@ public class SysUser extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 10000000L;
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 用户名
@@ -63,6 +60,7 @@ public class SysUser extends BaseEntity implements Serializable {
      * 微信 openID
      * */
     private String wxOpenId;
+
     /**
      * 角色 ID
      * */
@@ -74,6 +72,12 @@ public class SysUser extends BaseEntity implements Serializable {
      * */
     @TableField(exist = false)
     private Set<String> roles;
+
+    @TableField(fill = FieldFill.INSERT)
+    private String createBy;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private String updateBy;
 
     public boolean isAdmin() {
         return SecurityUtils.isAdmin();

@@ -1,6 +1,6 @@
 package com.todo.common.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.todo.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +22,7 @@ public class SysRole extends BaseEntity implements Serializable {
     /**
      * 角色 Id
      * */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -49,4 +50,10 @@ public class SysRole extends BaseEntity implements Serializable {
      * 状态
      * */
     private String status;
+
+    @TableField(fill = FieldFill.INSERT)
+    private String createBy;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private String updateBy;
 }

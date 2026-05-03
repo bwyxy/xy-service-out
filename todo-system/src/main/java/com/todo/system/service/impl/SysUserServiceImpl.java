@@ -31,4 +31,44 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public String encodePassword(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
     }
+
+    /**
+     * 根据 openid 查询用户信息（返回完整用户对象）
+     * @param openId 微信小程序用户唯一标识
+     * @return 用户对象，不存在则返回 null
+     * */
+    @Override
+    public SysUser getUserByOpenId(String openId) {
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysUser::getWxOpenId, openId);
+
+        return this.getOne(queryWrapper);
+    }
+
+    /**
+     * 添加微信小程序用户
+     * */
+    @Override
+    public Long addUser(SysUser sysUser) {
+
+        boolean success = save(sysUser);
+
+        if (success) {
+            // 获取用户 Id
+            Long userId = sysUser.getId();
+            // 用用户 Id 作为用户名更新
+            String username = String.valueOf(userId);
+            sysUser.setUsername(username);
+            // 更新用户名字段
+            this.lambdaUpdate()
+                    .eq(SysUser::getId, userId)
+                    .set(SysUser::getUsername, username)
+                    .update();
+
+            return sysUser.getId();
+        }
+
+        throw new RuntimeException("添加用户失败");
+    }
 }
