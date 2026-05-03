@@ -10,6 +10,7 @@ import com.todo.system.mapper.SysBlogConfigMapper;
 import com.todo.system.service.ISysBlogConfigService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -73,11 +74,13 @@ public class SysBlogConfigImpl extends ServiceImpl<SysBlogConfigMapper, SysBlogC
      * */
     @Override
     public void updateBlogConfig(SysBlogConfig sysBlogConfig) {
-        LambdaUpdateWrapper<SysBlogConfig> updateWrapper = new LambdaUpdateWrapper<>();
 
         if (sysBlogConfig.getId() == null) {
             throw new SecurityException("配置 Id不能为空");
         }
+
+        LambdaUpdateWrapper<SysBlogConfig> updateWrapper = new LambdaUpdateWrapper<>();
+        LocalDateTime now = LocalDateTime.now();
 
         updateWrapper.eq(SysBlogConfig::getId, sysBlogConfig.getId());
 
@@ -93,7 +96,7 @@ public class SysBlogConfigImpl extends ServiceImpl<SysBlogConfigMapper, SysBlogC
             updateWrapper.set(SysBlogConfig::getDescription, sysBlogConfig.getDescription());
         }
 
-        updateWrapper.set(SysBlogConfig::getUpdateTime, sysBlogConfig.getUpdateTime());
+        updateWrapper.set(SysBlogConfig::getUpdateTime, now);
 
         sysBlogConfigMapper.update(updateWrapper);
     }

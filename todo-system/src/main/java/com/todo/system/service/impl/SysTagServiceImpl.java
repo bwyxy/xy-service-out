@@ -12,6 +12,8 @@ import com.todo.system.mapper.SysTagMapper;
 import com.todo.system.service.ISysTagService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> implements ISysTagService {
 
@@ -26,7 +28,6 @@ public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> impleme
      * */
     @Override
     public PageResult<SysTag> selectSysTagList(SysTag sysTag) {
-        LambdaQueryWrapper<SysTag> queryWrapper = new LambdaQueryWrapper<>();
 
         if (sysTag.getPageNum() == 0) {
             sysTag.setPageNum(1);
@@ -35,6 +36,8 @@ public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> impleme
         if (sysTag.getPageSize() == 0) {
             sysTag.setPageSize(10);
         }
+
+        LambdaQueryWrapper<SysTag> queryWrapper = new LambdaQueryWrapper<>();
 
         if (sysTag.getName() != null && !StringUtils.isEmpty(sysTag.getName())) {
             queryWrapper.like(SysTag::getName, sysTag.getName());
@@ -84,6 +87,7 @@ public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> impleme
         }
 
         LambdaUpdateWrapper<SysTag> updateWrapper = new LambdaUpdateWrapper<>();
+        LocalDateTime now = LocalDateTime.now();
 
         updateWrapper.eq(SysTag::getTagId, sysTag.getTagId());
 
@@ -103,7 +107,7 @@ public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> impleme
             updateWrapper.set(SysTag::getDescription, sysTag.getDescription());
         }
 
-        updateWrapper.set(SysTag::getUpdateTime, sysTag.getUpdateTime());
+        updateWrapper.set(SysTag::getUpdateTime, now);
 
         sysTagMapper.update(updateWrapper);
     }

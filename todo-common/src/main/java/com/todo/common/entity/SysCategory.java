@@ -36,10 +36,4 @@ public class SysCategory extends BaseEntity implements Serializable {
      * 描述
      * */
     private String description;
-
-    @TableField(fill = FieldFill.INSERT)
-    private String createBy;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;
 }
