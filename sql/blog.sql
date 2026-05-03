@@ -67,3 +67,17 @@ create table sys_blog_config (
     update_time datetime comment '更新时间',
     index idx_config_key(config_key)
 ) engine=innodb comment = '博客系统配置表';
+
+-- 系统资源表
+create table sys_resource (
+    id bigint primary key auto_increment comment '资源Id',
+    resource_name VARCHAR(255) not null comment '原始文件名',
+    resource_key VARCHAR(255) NOT NULL COMMENT '存储唯一标识（七牛云key或OSS对象Key）',
+    resource_url VARCHAR(500) NOT NULL COMMENT '访问URL（完整HTTP/HTTPS链接）',
+    file_size BIGINT NOT NULL DEFAULT 0 COMMENT '文件大小（字节）',
+    file_type VARCHAR(100) DEFAULT '' COMMENT 'MIME类型，如 image/jpeg',
+    suffix VARCHAR(20) DEFAULT '' COMMENT '文件后缀，如 .jpg',
+    duration INT DEFAULT 0 COMMENT '音视频时长（秒，非音视频为0）',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '更新时间'
+) engine=innodb comment = '系统资源表';

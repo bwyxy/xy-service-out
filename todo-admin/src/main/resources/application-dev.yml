@@ -191,3 +191,11 @@ swagger:
 losetoken:
   loseTime: 30
   loseType: hours
+
+# 七牛云
+qiniu:
+  accessKey: i_FSUaor6A6CHBK82ic-ZW_Xv8sDBvkeviIsnN8p
+  secretKey: dnQqz7O3TzLXis4JWReqP8QrenCJz1HBlw1Vpull
+  bucket: canyouispig
+  domain: https://bwyxy.cn
+  region: huanan
