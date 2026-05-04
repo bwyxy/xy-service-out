@@ -12,6 +12,8 @@
   "dependencies": {
     "@ant-design/icons": "^6.1.1",
     "@bwyxy/utils": "^1.0.0-alpha.0",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-react": "^1.0.6",
     "antd": "^6.3.5",
     "axios": "^1.14.0",
     "framer-motion": "^12.38.0",

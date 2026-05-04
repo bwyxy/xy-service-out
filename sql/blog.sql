@@ -44,7 +44,7 @@ create table sys_article(
     key idx_author(article_id),
     key idx_category(category_id),
     key idx_status_published(status, published_time),
-    constraint fk_article_author foreign key (article_id) references sys_user(id) on delete cascade,
+    constraint fk_article_author foreign key (author_id) references sys_user(id) on delete cascade,
     constraint fk_article_category foreign key (category_id) references sys_category(category_id) on delete restrict
 ) engine=innodb comment = '文章表';
 

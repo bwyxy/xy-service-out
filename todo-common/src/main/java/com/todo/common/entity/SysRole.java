@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class SysRole extends BaseEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 10000000L;
 
     /**
      * 角色 Id

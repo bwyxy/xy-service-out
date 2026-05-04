@@ -16,7 +16,7 @@ import java.util.Set;
 public class LoginUser implements UserDetails {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 10000000L;
 
     /**
      * 用户ID

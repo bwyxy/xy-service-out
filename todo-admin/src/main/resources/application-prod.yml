@@ -38,8 +38,9 @@ user:
 # Spring配置
 spring:
   #  全局配置去掉接口返回的null字段
-  #  jackson:
-  #    default-property-inclusion: non_null
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   # 资源信息
   messages:
     # 国际化资源文件路径
@@ -192,3 +193,11 @@ swagger:
 losetoken:
   loseTime: 30
   loseType: hours
+
+# 七牛云
+qiniu:
+  accessKey: i_FSUaor6A6CHBK82ic-ZW_Xv8sDBvkeviIsnN8p
+  secretKey: dnQqz7O3TzLXis4JWReqP8QrenCJz1HBlw1Vpull
+  bucket: canyouispig
+  domain: https://bwyxy.cn
+  region: huanan

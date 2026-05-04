@@ -22,7 +22,7 @@ import java.util.Map;
 public class SysMenu extends BaseEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 10000000L;
 
     /**
      * 菜单 Id

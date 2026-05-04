@@ -35,5 +35,6 @@ export default defineConfig({
         global: 'globalThis',
       },
     },
+    include: ['@wangeditor/editor', '@wangeditor/editor-for-react']
   },
 })

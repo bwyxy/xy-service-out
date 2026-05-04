@@ -6,10 +6,7 @@ import com.todo.common.entity.SysArticle;
 import com.todo.system.service.ISysArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -31,5 +28,24 @@ public class SysArticleController {
         PageResult<SysArticle> pageResult = sysArticleService.selectSysArticleList(sysArticle);
 
         return R.ok(pageResult);
+    }
+
+    /**
+     * 添加文章
+     * */
+    @PostMapping("/add")
+    public R<?> addSysArticle(@RequestBody SysArticle sysArticle) {
+        sysArticleService.addSysArticle(sysArticle);
+        return R.ok("新增成功");
+    }
+
+    /**
+     * 更新文章
+     * */
+    @PutMapping("/update")
+    public R<?> updateSysArticle(@RequestBody SysArticle sysArticle) {
+        sysArticleService.updateSysArticle(sysArticle);
+
+        return R.ok("更新成功");
     }
 }
