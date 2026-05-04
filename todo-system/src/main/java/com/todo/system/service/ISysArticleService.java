@@ -11,6 +11,11 @@ public interface ISysArticleService {
     public PageResult<SysArticle> selectSysArticleList(SysArticle sysArticle);
 
     /**
+     * 根据文章 Id获取文章信息
+     * */
+    public SysArticle selectSysArticleById(Long id);
+
+    /**
      * 新增文章
      * */
     public void addSysArticle(SysArticle sysArticle);

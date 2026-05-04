@@ -1,0 +1,14 @@
+2026-05-03 00:10:08.750 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-03 00:10:08.768 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 66891 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-03 00:10:08.768 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-03 00:10:08.768 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-03 00:10:09.325 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9020"]
+2026-05-03 00:10:09.326 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-03 00:10:09.326 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-03 00:10:09.347 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-03 00:10:09.376 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-03 00:10:10.198 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-03 00:10:10.363 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-03 00:10:10.772 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-03 00:10:10.785 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9020"]
+2026-05-03 00:10:10.795 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 2.22 seconds (process running for 2.501)

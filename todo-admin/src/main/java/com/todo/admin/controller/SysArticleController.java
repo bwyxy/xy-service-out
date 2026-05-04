@@ -31,6 +31,16 @@ public class SysArticleController {
     }
 
     /**
+     * 根据文章 Id 查询文章信息
+     * */
+    @GetMapping("/{id}")
+    public R<?> selectSysArticleById(@PathVariable Long id) {
+        SysArticle sysArticle = sysArticleService.selectSysArticleById(id);
+
+        return R.ok(sysArticle);
+    }
+
+    /**
      * 添加文章
      * */
     @PostMapping("/add")

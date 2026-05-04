@@ -48,6 +48,22 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
     }
 
     /**
+     * 根据文章 Id获取文章信息
+     * */
+    @Override
+    public SysArticle selectSysArticleById(Long id) {
+        if (id == null || StringUtils.isEmpty(id.toString())) {
+            throw new SecurityException("文章 Id不能为空");
+        }
+
+        LambdaQueryWrapper<SysArticle> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysArticle::getArticleId, id);
+
+        return this.getOne(queryWrapper);
+    }
+
+    /**
      * 新增文章
      * */
     @Override
@@ -84,6 +100,6 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
 
         updateWrapper.set(SysArticle::getUpdateTime, now);
 
-        update(updateWrapper);
+        update(sysArticle, updateWrapper);
     }
 }

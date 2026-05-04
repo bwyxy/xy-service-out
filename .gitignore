@@ -3,8 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-todo-admin/src/main/resources/ui/node_modules
-todo-admin/src/main/resources/ui/*.lock
 
 ### STS ###
 .apt_generated
