@@ -184,3 +184,30 @@
   background: #fff;
   margin-left: 8px;
 }
+
+.avatar-uploader {
+  width: 140px;
+  height: 160px;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background: #f0f0f0;
+  .ant-upload {
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+  }
+  &:hover {
+    border-color: #4096ff;
+  }
+}
+
+.update-content-box {
+  width: 100%;
+  height: 100%;
+  font-size: 32px;
+  color: #ccc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
