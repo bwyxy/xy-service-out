@@ -81,3 +81,24 @@ create table sys_resource (
     create_time datetime comment '创建时间',
     update_time datetime comment '更新时间'
 ) engine=innodb comment = '系统资源表';
+
+-- 评论表
+create table sys_comment (
+    id bigint primary key auto_increment comment '评论Id',
+    article_id bigint default null comment '文章Id',
+    user_id bigint default null comment '评论用户ID',
+    nickname varchar(50) default '' comment '匿名昵称',
+    email varchar(100) default '' comment '匿名邮箱',
+    comment_type varchar(50) default 'article' comment '评论类型: article-文章 message-留言',
+    content text not null comment '评论内容',
+    parent_id bigint default null comment '父评论ID',
+    root_id bigint default null comment '根评论ID',
+    level int default 0 comment  '层级',
+    like_count int default 0 comment '点赞数',
+    status tinyint default 1 comment '状态: 0-待审核 1显示 2删除',
+    create_time datetime default current_timestamp,
+    update_time datetime default current_timestamp on update current_timestamp,
+    key idx_article_root (article_id, root_id),
+    key idx_parent (parent_id),
+    key idx_create_time (create_time)
+) engine=innodb comment = '评论表';

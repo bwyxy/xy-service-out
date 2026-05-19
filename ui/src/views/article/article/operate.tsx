@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import {Button, DatePicker, Form, Image, Input, message, Radio, Space, Upload} from 'antd'
+import {Button, DatePicker, Form, Image, Input, message, Radio, Select, Space, Upload} from 'antd'
 import { UploadProps, RcFile } from 'antd/es/upload'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import type { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
@@ -254,9 +254,16 @@ export default function ArticleOperate() {
             {/*<Input placeholder="请输入发布时间（例如 2026-05-03 12:00:00）" />*/}
           </Form.Item>
 
-          <Form.Item name="categoryId" label={null}>
+          <Form.Item name="categoryId" label="分类">
             <Input placeholder="请输入分类 ID" />
           </Form.Item>
+
+          <div style={{display: 'flex', alignItems: 'flex-start'}}>
+            <Form.Item label="标签" style={{flex: 1}}>
+              <Select></Select>
+            </Form.Item>
+            <Button type="primary" style={{marginLeft: '13px'}}>添加标签</Button>
+          </div>
 
           <Form.Item name="summary" label={null}>
             <Input.TextArea rows={3} placeholder="请输入摘要" />
