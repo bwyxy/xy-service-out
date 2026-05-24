@@ -41,6 +41,7 @@ export interface ArticleCreate {
   coverImage?: string
   status?: number
   authorId?: number
+  tagIds?: number[]
   categoryId?: number
   publishedTime?: string
 }

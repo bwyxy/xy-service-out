@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Form, Input, message, Modal, Popconfirm, Space, Table, Typography, Tag as AntTag } from 'antd'
+import { Button, Form, Input, message, Modal, Popconfirm, Space, Table, Tag as AntTag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import {
   addTag,
@@ -17,6 +17,7 @@ import {
 interface TagEditFormValues {
   name: string
   color?: string
+  level?: number
   slug?: string
   description?: string
 }
@@ -70,6 +71,7 @@ export default function Tag() {
       editForm.setFieldsValue({
         name: item.name,
         color: item.color,
+        level: Number(item.level),
         slug: item.slug,
         description: item.description,
       })
@@ -92,6 +94,7 @@ export default function Tag() {
           tagId: Number(editingId),
           name: values.name,
           color: values.color,
+          level: Number(values.level),
           slug: values.slug,
           description: values.description,
         })
@@ -173,6 +176,12 @@ export default function Tag() {
       key: 'color',
       width: 120,
       render: (color: string) => color ? <AntTag color={color}>{color}</AntTag> : '-',
+    },
+    {
+      title: '水平',
+      dataIndex: 'level',
+      align: 'center',
+      width: 120
     },
     {
       title: 'URL 别名',
@@ -300,6 +309,9 @@ export default function Tag() {
           </Form.Item>
           <Form.Item name="color" label="颜色">
             <Input placeholder="请输入颜色值，如 #ff0000" />
+          </Form.Item>
+          <Form.Item name="level" label="水平">
+            <Input placeholder="请输入水平值" />
           </Form.Item>
           <Form.Item name="slug" label="URL 别名">
             <Input placeholder="请输入 URL 别名" />

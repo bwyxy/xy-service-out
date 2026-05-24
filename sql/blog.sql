@@ -102,3 +102,8 @@ create table sys_comment (
     key idx_parent (parent_id),
     key idx_create_time (create_time)
 ) engine=innodb comment = '评论表';
+
+select st.tag_id, st.name, st.slug, st.color, st.level, st.description, st.create_time, st.update_time, count(sat.article_id) as article_count from sys_tag st
+left join sys_article_tag sat on sat.tag_id = st.tag_id
+left join sys_article sa on sa.article_id = sat.article_id and sa.status = '1'
+group by st.tag_id, st.name

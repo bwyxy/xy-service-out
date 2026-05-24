@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 文章表 sys_article
@@ -88,4 +89,10 @@ public class SysArticle extends BaseEntity implements Serializable {
     @TableField("published_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime publishedTime;
+
+    /**
+     * 标签 Ids
+     * */
+    @TableField(exist = false)
+    private List<Long> tagIds;
 }

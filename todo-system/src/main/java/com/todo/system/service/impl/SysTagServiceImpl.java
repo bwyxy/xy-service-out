@@ -103,6 +103,10 @@ public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> impleme
             updateWrapper.set(SysTag::getSlug, sysTag.getSlug());
         }
 
+        if (sysTag.getLevel() != null && sysTag.getLevel() != 0) {
+            updateWrapper.set(SysTag::getLevel, sysTag.getLevel());
+        }
+
         if (sysTag.getDescription() != null && !StringUtils.isEmpty(sysTag.getDescription())) {
             updateWrapper.set(SysTag::getDescription, sysTag.getDescription());
         }

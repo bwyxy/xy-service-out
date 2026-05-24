@@ -1,6 +1,7 @@
 package com.todo.common.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.todo.common.core.domain.BaseEntity;
@@ -34,6 +35,11 @@ public class SysTag extends BaseEntity implements Serializable {
     private String color;
 
     /**
+     * 水平
+     * */
+    private Integer level;
+
+    /**
      * URL 别名
      * */
     private String slug;
@@ -42,4 +48,7 @@ public class SysTag extends BaseEntity implements Serializable {
      * 描述
      * */
     private String description;
+
+    @TableField(exist = false)
+    private Integer articleCount;
 }

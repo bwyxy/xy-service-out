@@ -1,10 +1,11 @@
-import type { RuoYiResponse } from '@/utils/request'
+// import type { RuoYiResponse } from '@/utils/request'
 import request from '@/utils/request'
 
 export interface TagItem {
   tagId: number
   name: string
   color?: string
+  level?: number
   slug?: string
   description?: string
   createTime?: string
@@ -28,6 +29,7 @@ export interface TagListResponse {
 export interface TagCreate {
   name: string
   color?: string
+  level?: number
   slug?: string
   description?: string
 }
@@ -36,6 +38,7 @@ export interface TagUpdate {
   tagId: number
   name: string
   color?: string
+  level?: number
   slug?: string
   description?: string
 }

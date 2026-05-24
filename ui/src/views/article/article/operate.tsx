@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import {Button, DatePicker, Form, Image, Input, message, Radio, Select, Space, Upload} from 'antd'
+import {Avatar, Button, DatePicker, Form, Image, Input, message, Radio, Select, Space, Spin, Upload} from 'antd'
+import type { SelectProps } from 'antd'
 import { UploadProps, RcFile } from 'antd/es/upload'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import type { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 import dayjs from 'dayjs'
-
+import { getTagList } from '@/api/tag.ts'
+import { getCategoryList } from '@/api/category.ts'
 import {
   addArticle,
   getArticleById,
@@ -14,6 +16,7 @@ import {
 } from '@/api/article'
 import {updateImage} from "@/api/upload.ts";
 import {PlusOutlined} from "@ant-design/icons";
+import {debounce} from "@bwyxy/utils";
 
 const statusOptions = [
   { value: 0, label: '草稿' },
@@ -93,10 +96,41 @@ const defaultToolbarConfig: Partial<IToolbarConfig> = {
 //   const trimmed = html.replace(/<(br|p)\s*\/?>(\s*)?/gi, '').replace(/<[^>]+>/g, '').trim()
 //   return trimmed === ''
 // }
+interface UserValue {
+  label: string;
+  value: string;
+  avatar?: string;
+}
+
+async function featchTagList(name: string) :Promise<any[]> {
+  console.log(name)
+
+  const res = await getTagList({ name: name, pageNum: 1, pageSize: 10 })
+
+  console.log(res)
+  res.list.map((item: any) => {
+    item.label = item.name
+    item.value = item.tagId
+  })
+
+  return res.list || []
+}
+
+async function featchCategoryList(name: string) :Promise<any[]> {
+  const res = await getCategoryList({ name: name, pageNum: 1, pageSize: 10 })
+
+  res.list.map((item: any) => {
+    item.label = item.name
+    item.value = item.categoryId
+  })
+
+  return res.list || []
+}
 
 export default function ArticleOperate() {
   const [form] = Form.useForm<ArticleFormValues>()
   const [coverImage, setCoverImage] = useState('')
+  const [value, setValue] = useState<UserValue[]>([])
 
   const navigate = useNavigate()
   const [searchParams] = useSearchParams();
@@ -165,8 +199,11 @@ export default function ArticleOperate() {
   }
 
   const handleSubmit = async () => {
+    const tagIds :number[] = value.map(item => Number(item.value))
+
     try {
       const values = await form.validateFields()
+
       setSaving(true)
       if (articleId) {
         await updateArticle({
@@ -179,6 +216,7 @@ export default function ArticleOperate() {
           status: values.status,
           authorId: values.authorId,
           categoryId: values.categoryId,
+          tagIds: tagIds,
           publishedTime: values.publishedTime,
         })
         message.success('文章更新成功')
@@ -186,6 +224,7 @@ export default function ArticleOperate() {
         await addArticle({
           ...values,
           content: content,
+          tagIds: tagIds,
         } as ArticleCreate)
         message.success('文章新增成功')
       }
@@ -255,12 +294,30 @@ export default function ArticleOperate() {
           </Form.Item>
 
           <Form.Item name="categoryId" label="分类">
-            <Input placeholder="请输入分类 ID" />
+            <DebounceSelect
+                placeholder="搜索分类"
+                fetchOptions={featchCategoryList}
+                onChange={(newValue) => {
+                  form.setFieldsValue({
+                    categoryId: newValue.value,
+                  })
+                }}
+            />
           </Form.Item>
 
           <div style={{display: 'flex', alignItems: 'flex-start'}}>
             <Form.Item label="标签" style={{flex: 1}}>
-              <Select></Select>
+              <DebounceSelect
+                  mode="multiple"
+                  value={value}
+                  placeholder="搜索标签"
+                  fetchOptions={featchTagList}
+                  onChange={(newValue) => {
+                    if (Array.isArray(newValue)) {
+                      setValue(newValue);
+                    }
+                  }}
+              />
             </Form.Item>
             <Button type="primary" style={{marginLeft: '13px'}}>添加标签</Button>
           </div>
@@ -305,4 +362,60 @@ export default function ArticleOperate() {
         </Form>
       </div>
   )
+}
+
+export interface DebounceSelectProps<ValueType = any>
+    extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
+  fetchOptions: (search: string) => Promise<ValueType[]>;
+  debounceTimeout?: number;
+}
+
+function DebounceSelect<
+  ValueType extends {
+    key?: string;
+    label: React.ReactNode;
+    value: string | number;
+    avatar?: string;
+  } = any,
+>({ fetchOptions, debounceTimeout = 300, ...props }: DebounceSelectProps<ValueType>) {
+  const [fetching, setFetching] = useState(false);
+  const [options, setOptions] = useState<ValueType[]>([]);
+  const fetchRef = useRef(0);
+
+  const debounceFetcher = useMemo(() => {
+    const loadOptions = (value: string) => {
+      fetchRef.current += 1;
+      const fetchId = fetchRef.current;
+      setOptions([]);
+      setFetching(true);
+
+      fetchOptions(value).then((newOptions) => {
+        if (fetchId !== fetchRef.current) {
+          // for fetch callback order
+          return;
+        }
+
+        setOptions(newOptions);
+        setFetching(false);
+      });
+    };
+
+    return debounce(loadOptions, debounceTimeout);
+  }, [fetchOptions, debounceTimeout]);
+
+  return (
+      <Select
+          labelInValue
+          showSearch={{ filterOption: false, onSearch: debounceFetcher }}
+          notFoundContent={fetching ? <Spin size="small" /> : 'No results found'}
+          {...props}
+          options={options}
+          optionRender={(option) => (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {option.data.avatar && <Avatar src={option.data.avatar} style={{ marginInlineEnd: 8 }} />}
+                {option.label}
+              </div>
+          )}
+      />
+  );
 }

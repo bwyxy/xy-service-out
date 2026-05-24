@@ -11,12 +11,17 @@ import com.todo.common.utils.SecurityUtils;
 import com.todo.common.utils.StringUtils;
 import com.todo.system.mapper.SysArticleMapper;
 import com.todo.system.service.ISysArticleService;
+import com.todo.system.service.ISysArticleTagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
 public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArticle> implements ISysArticleService {
+
+    @Autowired
+    private ISysArticleTagService sysArticleTagService;
 
     /**
      * 分页查询文章列表
@@ -77,7 +82,16 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
 
         sysArticle.setAuthorId(userId);
 
-        save(sysArticle);
+        boolean success = save(sysArticle);
+
+        if (success) {
+            // 获取文章 Id
+            Long ArticleId = sysArticle.getArticleId();
+            if (sysArticle.getTagIds() != null && !sysArticle.getTagIds().isEmpty()) {
+                // 添加文章和标签的关系
+                sysArticleTagService.addArticleTags(ArticleId, sysArticle.getTagIds());
+            }
+        }
     }
 
     /**
@@ -101,5 +115,10 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
         updateWrapper.set(SysArticle::getUpdateTime, now);
 
         update(sysArticle, updateWrapper);
+
+        // 更新文章和标签的关系
+        sysArticleTagService.updateArticleTags(sysArticle.getArticleId(), sysArticle.getTagIds());
     }
+
+    /** */
 }
