@@ -58,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             log.error("无法设置用户认证信息：{}", e.getMessage());
+            throw new SecurityException("获取登录失败");
         }
 
         filterChain.doFilter(request, response);

@@ -89,6 +89,30 @@ public class LoginUser implements UserDetails {
         return sysUser.getUsername();
     }
 
+    public String getToken()
+    {
+        return token;
+    }
+
+    public void setToken(String token)
+    {
+        this.token = token;
+    }
+
+    public Long getExpireTime() {
+        return expireTime;
+    }
+    public void setExpireTime(Long expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    public Long getLoginTime() {
+        return loginTime;
+    }
+    public void setLoginTime(Long loginTime) {
+        this.loginTime = loginTime;
+    }
+
     /**
      * 账户是否未过期,过期无法验证
      */

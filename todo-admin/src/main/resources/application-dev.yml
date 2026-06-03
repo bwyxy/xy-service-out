@@ -12,7 +12,7 @@ site-manager:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 9100
+  port: 9101
   servlet:
     # 应用的访问路径
     context-path: ${SERVER_CONTEXT_PATH:/}

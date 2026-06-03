@@ -48,6 +48,27 @@ create table sys_article(
     constraint fk_article_category foreign key (category_id) references sys_category(category_id) on delete restrict
 ) engine=innodb comment = '文章表';
 
+-- 系统内容项通用表
+create table sys_content_item (
+      content_id bigint primary key auto_increment comment '内容Id',
+      type varchar(32) not null comment '类型',
+      title varchar(255) not null comment '标题',
+      content longtext comment '内容',
+      description text comment '描述',
+      link_url varchar(255) comment '关联链接',
+      cover_image varchar(255) comment '封面图',
+      tech_stack varchar(500) comment '技术栈',
+      images text comment '图片集(多个图片使用;隔开)',
+      start_date datetime comment '开始时间',
+      end_date datetime comment '结束时间',
+      sort_order int not null default 0 comment '排序',
+      status tinyint not null default 1 comment '状态 1-显示 0-隐藏',
+      extra_data JSON comment '拓展字段',
+      create_time datetime comment '创建时间',
+      update_time datetime comment '更新时间',
+      key idx_type_status_sort (type, status, sort_order)
+) engine=InnoDB comment '系统内容项通用表';
+
 -- 文章标签关联表
 create table sys_article_tag(
     article_id bigint comment '文章Id',

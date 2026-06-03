@@ -43,7 +43,7 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
             queryWrapper.like(SysArticle::getTitle, sysArticle.getTitle());
         }
 
-        if (sysArticle.getStatus() != null) {
+        if (sysArticle.getStatus() != null && !StringUtils.isEmpty(sysArticle.getStatus())) {
             queryWrapper.eq(SysArticle::getStatus, sysArticle.getStatus());
         }
 

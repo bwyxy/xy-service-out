@@ -115,6 +115,9 @@ insert into sys_menu values
     (11,'添加文章', 7,4,'add', '/article/article/operate', '',1,1,0,'C','1','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '添加文章'),
     (12,'编辑文章', 7,4,'edit', '/article/article/operate', '',1,1,0,'C','1','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '编辑文章');
 
+insert into sys_menu values
+    (13,'内容配置', 0,4,'/contentItem/index', 'contentItem/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '通用内容配置');
+
 # 2005,仪表盘,0,1,/,dashboard/index,,"",1,1,C,0,0,,dashboard,hzy,2025-12-24 13:16:11,"",,""
 
 select distinct m.menu_id, m.menu_name, m.parent_id, m.order_num, m.path, m.component, m.query, m.route_name, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_by, m.create_time, m.update_by, m.update_time, m.deleted, m.remark from sys_menu m;

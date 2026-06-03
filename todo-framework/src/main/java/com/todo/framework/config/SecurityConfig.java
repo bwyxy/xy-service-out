@@ -1,6 +1,7 @@
 package com.todo.framework.config;
 
 import com.todo.framework.security.filter.JwtAuthenticationFilter;
+import com.todo.framework.security.handle.JsonAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +40,8 @@ public class SecurityConfig {
                             .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**", "/wechat/login").permitAll()
                             .requestMatchers("/auth/login", "/auth/register", "/auth/test", "/web/**").permitAll()
                             .anyRequest().authenticated();
-                });
+                })
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new JsonAuthenticationEntryPoint()));
         // 添加 JWT 认证过滤器到 Spring Security 过滤链（在用户名密码过滤器之前）
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
