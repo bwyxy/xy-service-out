@@ -1,0 +1,42 @@
+2026-05-18 07:57:08.807 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 9300 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 9300 or configure this application to listen on another port.
+
+2026-05-18 07:57:15.518 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 9020 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 9020 or configure this application to listen on another port.
+
+2026-05-18 15:59:44.959 [http-nio-9300-exec-2] ERROR c.t.f.w.e.GlobalExceptionHandler - 未知异常: Content-Type 'multipart/form-data;boundary=--------------------------407353914886804405123260;charset=UTF-8' is not supported
+2026-05-18 16:02:32.176 [http-nio-9300-exec-3] ERROR c.t.f.w.e.GlobalExceptionHandler - 未知异常: Content-Type 'multipart/form-data;boundary=--------------------------288374519211890308240995;charset=UTF-8' is not supported
+2026-05-18 16:02:57.544 [http-nio-9300-exec-6] ERROR c.t.f.w.e.GlobalExceptionHandler - 未知异常: Content-Type 'multipart/form-data;boundary=--------------------------055383484854252489355321;charset=UTF-8' is not supported
+2026-05-18 16:03:37.621 [http-nio-9300-exec-8] ERROR c.t.f.w.e.GlobalExceptionHandler - 未知异常: Content-Type 'application/x-www-form-urlencoded;charset=UTF-8' is not supported
+2026-05-18 16:05:22.881 [http-nio-9300-exec-9] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: class java.lang.String cannot be cast to class com.todo.common.core.domain.model.LoginUser (java.lang.String is in module java.base of loader 'bootstrap'; com.todo.common.core.domain.model.LoginUser is in unnamed module of loader org.springframework.boot.devtools.restart.classloader.RestartClassLoader @1ea072e4)
+2026-05-18 16:09:39.258 [http-nio-9300-exec-1] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: class org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper cannot be cast to class javax.servlet.http.HttpServletRequest (org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper and javax.servlet.http.HttpServletRequest are in unnamed module of loader 'app')
+2026-05-18 16:32:32.949 [http-nio-9300-exec-2] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: class org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper cannot be cast to class javax.servlet.http.HttpServletRequest (org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper and javax.servlet.http.HttpServletRequest are in unnamed module of loader 'app')
+2026-05-18 16:33:18.508 [http-nio-9300-exec-1] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: class org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper cannot be cast to class javax.servlet.http.HttpServletRequest (org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper and javax.servlet.http.HttpServletRequest are in unnamed module of loader 'app')
+2026-05-18 16:33:46.049 [http-nio-9300-exec-2] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: class org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper cannot be cast to class javax.servlet.http.HttpServletRequest (org.springframework.security.web.servletapi.HttpServlet3RequestFactory$Servlet3SecurityContextHolderAwareRequestWrapper and javax.servlet.http.HttpServletRequest are in unnamed module of loader 'app')
+2026-05-18 16:35:51.468 [http-nio-9300-exec-4] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: Cannot invoke "java.lang.Integer.intValue()" because the return value of "com.todo.common.entity.SysComment.getLevel()" is null
+2026-05-18 16:45:31.290 [http-nio-9300-exec-4] ERROR c.t.f.w.e.GlobalExceptionHandler - 未知异常: Request method 'GET' is not supported
+2026-05-18 16:51:44.409 [http-nio-9300-exec-12] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: 查询文章 Id不能为空
+2026-05-18 17:33:42.412 [http-nio-9300-exec-7] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: Cannot invoke "java.lang.Long.longValue()" because the return value of "com.todo.common.entity.SysComment.getParentId()" is null
+2026-05-18 18:28:34.989 [http-nio-9300-exec-9] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: Cannot invoke "java.lang.Long.longValue()" because the return value of "com.todo.common.entity.SysComment.getParentId()" is null

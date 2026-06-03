@@ -1,0 +1,102 @@
+2026-05-27 00:10:40.517 [http-nio-9300-exec-98] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 00:10:40.518 [http-nio-9300-exec-98] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 00:10:40.518 [http-nio-9300-exec-98] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 00:10:40.554 [http-nio-9300-exec-99] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 00:10:40.554 [http-nio-9300-exec-99] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 00:10:40.554 [http-nio-9300-exec-99] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 00:28:27.519 [Druid-ConnectionPool-Create-95964277] ERROR c.alibaba.druid.pool.DruidDataSource - create connection SQLException, url: jdbc:mysql://110.42.255.106:13306/todo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8, errorCode 0, state 08S01
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:175)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:825)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:446)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:239)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:188)
+	at com.alibaba.druid.filter.FilterChainImpl.connection_connect(FilterChainImpl.java:132)
+	at com.alibaba.druid.filter.stat.StatFilter.connection_connect(StatFilter.java:244)
+	at com.alibaba.druid.filter.FilterChainImpl.connection_connect(FilterChainImpl.java:126)
+	at com.alibaba.druid.pool.DruidAbstractDataSource.createPhysicalConnection(DruidAbstractDataSource.java:1695)
+	at com.alibaba.druid.pool.DruidAbstractDataSource.createPhysicalConnection(DruidAbstractDataSource.java:1811)
+	at com.alibaba.druid.pool.DruidDataSource$CreateConnectionThread.run(DruidDataSource.java:2793)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:166)
+	at com.mysql.cj.protocol.a.NativeProtocol.negotiateSSLConnection(NativeProtocol.java:379)
+	at com.mysql.cj.protocol.a.NativeAuthenticationProvider.connect(NativeAuthenticationProvider.java:206)
+	at com.mysql.cj.protocol.a.NativeProtocol.connect(NativeProtocol.java:1430)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:134)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:945)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	... 9 common frames omitted
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:328)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:355)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:808)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(SSLSocketInputRecord.java:484)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.readHeader(SSLSocketInputRecord.java:478)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.decode(SSLSocketInputRecord.java:160)
+	at java.base/sun.security.ssl.SSLTransport.decode(SSLTransport.java:111)
+	at java.base/sun.security.ssl.SSLSocketImpl.decode(SSLSocketImpl.java:1510)
+	at java.base/sun.security.ssl.SSLSocketImpl.readHandshakeRecord(SSLSocketImpl.java:1425)
+	at java.base/sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:455)
+	at java.base/sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:426)
+	at com.mysql.cj.protocol.ExportControlled.performTlsHandshake(ExportControlled.java:347)
+	at com.mysql.cj.protocol.StandardSocketFactory.performTlsHandshake(StandardSocketFactory.java:191)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.performTlsHandshake(NativeSocketConnection.java:101)
+	at com.mysql.cj.protocol.a.NativeProtocol.negotiateSSLConnection(NativeProtocol.java:370)
+	... 14 common frames omitted
+2026-05-27 07:20:47.541 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 07:20:47.550 [http-nio-9300-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 07:20:47.551 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 07:20:47.542 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 07:20:47.554 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 07:20:47.556 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 08:17:59.559 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 08:17:59.559 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 08:17:59.570 [http-nio-9300-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 08:17:59.570 [http-nio-9300-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 08:17:59.582 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 08:17:59.582 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 09:21:00.199 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 09:21:00.204 [http-nio-9300-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 09:21:00.204 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 09:21:00.253 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 09:21:00.254 [http-nio-9300-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 09:21:00.254 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 11:39:31.844 [http-nio-9300-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 11:39:31.844 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 11:39:31.870 [http-nio-9300-exec-15] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 11:39:31.871 [http-nio-9300-exec-14] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 11:39:31.877 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 11:39:31.877 [http-nio-9300-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 12:42:23.273 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 12:42:23.269 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 12:42:23.291 [http-nio-9300-exec-19] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 12:42:23.291 [http-nio-9300-exec-18] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 12:42:23.296 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 12:42:23.296 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 12:58:17.927 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 12:58:17.934 [http-nio-9300-exec-22] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 12:58:17.935 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 12:58:17.997 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 12:58:17.997 [http-nio-9300-exec-23] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 12:58:17.997 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 18:38:39.635 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-27 18:38:39.635 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/tag/level/list
+2026-05-27 18:38:39.805 [http-nio-9300-exec-27] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 18:38:39.806 [http-nio-9300-exec-26] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-27 18:38:39.817 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/tag/level/list
+2026-05-27 18:38:39.817 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-27 18:59:37.744 [RMI TCP Connection(62)-127.0.0.1] WARN  javax.management.remote.misc - The server has decided to close this client connection.

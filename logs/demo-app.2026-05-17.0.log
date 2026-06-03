@@ -1,0 +1,72 @@
+2026-05-18 00:04:35.252 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-18 00:04:35.254 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-18 00:04:43.055 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-18 00:04:43.077 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 50990 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-18 00:04:43.077 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-18 00:04:43.077 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-18 00:04:43.977 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-18 00:04:43.978 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-18 00:04:43.978 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-18 00:04:44.000 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-18 00:04:44.041 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-18 00:04:44.892 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-18 00:04:45.102 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-18 00:04:45.639 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1b5efaa7, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@14520fb2, org.springframework.security.web.context.SecurityContextHolderFilter@41a5a637, org.springframework.security.web.header.HeaderWriterFilter@399eaaa6, org.springframework.web.filter.CorsFilter@2b5cfc1c, org.springframework.security.web.authentication.logout.LogoutFilter@7d257fa9, com.todo.framework.security.filter.JwtAuthenticationFilter@7fe0fbdb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@730b1fc6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3b9cfe24, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@9d6826, org.springframework.security.web.session.SessionManagementFilter@32fa32bc, org.springframework.security.web.access.ExceptionTranslationFilter@57ad2b62, org.springframework.security.web.access.intercept.AuthorizationFilter@56eb2d0b]
+2026-05-18 00:04:45.904 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-18 00:04:45.928 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-18 00:04:45.951 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 3.302 seconds (process running for 3.746)
+2026-05-18 02:06:08.741 [http-nio-9300-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-18 02:06:08.741 [http-nio-9300-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-18 02:06:08.748 [http-nio-9300-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 7 ms
+2026-05-18 02:06:08.777 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-18 02:06:08.778 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-18 02:06:08.777 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-18 02:06:08.805 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-18 02:06:08.805 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-18 02:06:08.806 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 02:06:08.808 [http-nio-9300-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 02:06:08.808 [http-nio-9300-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 02:06:08.811 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-18 02:06:08.811 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-18 02:06:08.812 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-18 02:06:09.325 [http-nio-9300-exec-4] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-18 07:24:25.705 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-18 07:24:25.768 [http-nio-9300-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 07:24:25.781 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-18 07:24:26.961 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-18 07:24:26.961 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-18 07:24:26.962 [http-nio-9300-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 07:24:26.962 [http-nio-9300-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 07:24:26.962 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-18 07:24:26.962 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-18 07:24:27.038 [http-nio-9300-exec-10] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-18 07:31:29.805 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-18 07:31:29.941 [http-nio-9300-exec-15] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 07:31:29.968 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-18 07:31:31.947 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-18 07:31:31.950 [http-nio-9300-exec-16] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 07:31:31.950 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-18 07:44:45.327 [lettuce-eventExecutorLoop-1-1] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/127.0.0.1:6379
+2026-05-18 07:44:46.569 [lettuce-nioEventLoop-4-2] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:44:51.485 [lettuce-eventExecutorLoop-1-2] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:44:51.486 [lettuce-nioEventLoop-4-3] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:45:03.884 [lettuce-eventExecutorLoop-1-4] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:45:03.885 [lettuce-nioEventLoop-4-5] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:45:20.282 [lettuce-eventExecutorLoop-1-5] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:45:20.284 [lettuce-nioEventLoop-4-6] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:45:50.380 [lettuce-eventExecutorLoop-1-7] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:45:50.382 [lettuce-nioEventLoop-4-7] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:46:20.484 [lettuce-eventExecutorLoop-1-2] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:46:20.486 [lettuce-nioEventLoop-4-8] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:46:50.583 [lettuce-eventExecutorLoop-1-4] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:46:50.600 [lettuce-nioEventLoop-4-9] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 07:47:11.964 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-18 07:47:11.971 [http-nio-9300-exec-18] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-18 07:47:11.972 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-18 07:47:20.680 [lettuce-eventExecutorLoop-1-6] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 07:47:20.744 [lettuce-nioEventLoop-4-10] INFO  i.l.c.protocol.ReconnectionHandler - Reconnected to localhost/<unresolved>:6379
+2026-05-18 08:01:35.986 [lettuce-eventExecutorLoop-1-8] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/127.0.0.1:6379
+2026-05-18 08:01:35.990 [lettuce-nioEventLoop-4-1] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 08:01:46.805 [lettuce-eventExecutorLoop-1-9] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/<unresolved>:6379
+2026-05-18 08:01:46.806 [lettuce-nioEventLoop-4-2] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: localhost/127.0.0.1:6379
+2026-05-18 08:01:55.785 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...

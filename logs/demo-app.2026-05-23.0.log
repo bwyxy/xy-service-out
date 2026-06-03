@@ -1,0 +1,330 @@
+2026-05-23 15:04:01.481 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-23 15:04:01.497 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-23 21:28:32.950 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-23 21:28:32.984 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 3802 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-23 21:28:32.984 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-23 21:28:32.985 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-23 21:28:34.004 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-23 21:28:34.004 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-23 21:28:34.004 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-23 21:28:34.022 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-23 21:28:34.058 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-23 21:28:34.926 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-23 21:28:35.126 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-23 21:28:35.551 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@49a22dce, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3161b072, org.springframework.security.web.context.SecurityContextHolderFilter@391cebf1, org.springframework.security.web.header.HeaderWriterFilter@79d80ecd, org.springframework.web.filter.CorsFilter@6e72261a, org.springframework.security.web.authentication.logout.LogoutFilter@7a8e84ba, com.todo.framework.security.filter.JwtAuthenticationFilter@3a29ebda, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2a8b43d6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@713b3b99, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6611971a, org.springframework.security.web.session.SessionManagementFilter@61e99f5a, org.springframework.security.web.access.ExceptionTranslationFilter@23a64179, org.springframework.security.web.access.intercept.AuthorizationFilter@4c8687b7]
+2026-05-23 21:28:35.745 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-23 21:28:35.758 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 3.225 seconds (process running for 3.761)
+2026-05-23 21:28:50.652 [http-nio-9300-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-23 21:28:50.652 [http-nio-9300-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-23 21:28:50.653 [http-nio-9300-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-05-23 21:28:50.664 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 21:28:50.672 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:28:50.673 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 21:28:51.019 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 21:28:51.019 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 21:28:51.020 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 21:28:51.020 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 21:28:51.021 [http-nio-9300-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:28:51.021 [http-nio-9300-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:28:51.021 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 21:28:51.021 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 21:28:51.038 [http-nio-9300-exec-5] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 21:28:52.216 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 21:28:52.217 [http-nio-9300-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:28:52.218 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 21:28:52.304 [http-nio-9300-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 21:28:52.304 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 21:28:52.305 [http-nio-9300-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:28:52.305 [http-nio-9300-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:28:52.305 [http-nio-9300-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 21:28:52.305 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 21:28:52.306 [http-nio-9300-exec-9] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 21:29:08.278 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 21:29:08.279 [http-nio-9300-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:29:08.279 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 21:29:08.479 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 21:29:08.482 [http-nio-9300-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:29:08.482 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 21:29:08.543 [http-nio-9300-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 21:29:08.543 [http-nio-9300-exec-12] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:29:08.544 [http-nio-9300-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 21:29:08.570 [http-nio-9300-exec-13] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/comment/tree
+2026-05-23 21:29:08.571 [http-nio-9300-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 21:29:08.572 [http-nio-9300-exec-14] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:29:08.572 [http-nio-9300-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 21:29:58.867 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 21:29:58.867 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 21:29:58.867 [http-nio-9300-exec-17] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:29:58.867 [http-nio-9300-exec-16] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:29:58.867 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 21:29:58.867 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 21:29:58.868 [http-nio-9300-exec-17] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 21:30:09.852 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/comment/list
+2026-05-23 21:30:09.853 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/list
+2026-05-23 21:30:09.853 [http-nio-9300-exec-19] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:30:09.853 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/list
+2026-05-23 21:31:02.148 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/list
+2026-05-23 21:31:02.149 [http-nio-9300-exec-21] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:31:02.149 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/list
+2026-05-23 21:31:48.108 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 21:31:48.108 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 21:31:48.109 [http-nio-9300-exec-22] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:31:48.109 [http-nio-9300-exec-23] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:31:48.109 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 21:31:48.110 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 21:31:48.115 [http-nio-9300-exec-23] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 21:31:50.009 [http-nio-9300-exec-24] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/list
+2026-05-23 21:31:50.010 [http-nio-9300-exec-24] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:31:50.011 [http-nio-9300-exec-24] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/list
+2026-05-23 21:31:51.392 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 21:31:51.392 [http-nio-9300-exec-25] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 21:31:51.393 [http-nio-9300-exec-25] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:31:51.393 [http-nio-9300-exec-26] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 21:31:51.393 [http-nio-9300-exec-25] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 21:31:51.393 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 21:31:51.395 [http-nio-9300-exec-26] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 22:58:25.125 [http-nio-9300-exec-29] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:25.125 [http-nio-9300-exec-29] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:25.125 [http-nio-9300-exec-29] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:25.151 [http-nio-9300-exec-31] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 22:58:25.151 [http-nio-9300-exec-30] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 22:58:25.152 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 22:58:25.152 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 22:58:25.153 [http-nio-9300-exec-33] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:25.153 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 22:58:25.153 [http-nio-9300-exec-32] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:25.153 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 22:58:25.157 [http-nio-9300-exec-33] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 22:58:29.367 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:29.369 [http-nio-9300-exec-34] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.370 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:29.381 [http-nio-9300-exec-35] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 22:58:29.381 [http-nio-9300-exec-36] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 22:58:29.382 [http-nio-9300-exec-36] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.382 [http-nio-9300-exec-35] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.382 [http-nio-9300-exec-36] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 22:58:29.382 [http-nio-9300-exec-35] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 22:58:29.385 [http-nio-9300-exec-36] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 22:58:29.545 [http-nio-9300-exec-37] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:29.546 [http-nio-9300-exec-37] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.547 [http-nio-9300-exec-37] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:29.556 [http-nio-9300-exec-39] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 22:58:29.556 [http-nio-9300-exec-38] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 22:58:29.556 [http-nio-9300-exec-38] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.556 [http-nio-9300-exec-39] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.557 [http-nio-9300-exec-38] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 22:58:29.557 [http-nio-9300-exec-39] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 22:58:29.560 [http-nio-9300-exec-39] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 22:58:29.726 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:29.727 [http-nio-9300-exec-40] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.727 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:29.737 [http-nio-9300-exec-41] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 22:58:29.737 [http-nio-9300-exec-42] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 22:58:29.738 [http-nio-9300-exec-41] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.738 [http-nio-9300-exec-42] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:29.738 [http-nio-9300-exec-41] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 22:58:29.738 [http-nio-9300-exec-42] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 22:58:29.739 [http-nio-9300-exec-42] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 22:58:31.688 [http-nio-9300-exec-43] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:31.689 [http-nio-9300-exec-43] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:31.689 [http-nio-9300-exec-43] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:31.717 [http-nio-9300-exec-44] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/comment/tree
+2026-05-23 22:58:31.719 [http-nio-9300-exec-45] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:31.720 [http-nio-9300-exec-45] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:31.720 [http-nio-9300-exec-45] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:36.231 [http-nio-9300-exec-46] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:36.231 [http-nio-9300-exec-46] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:36.231 [http-nio-9300-exec-46] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:36.241 [http-nio-9300-exec-47] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:36.242 [http-nio-9300-exec-47] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:36.242 [http-nio-9300-exec-47] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:36.270 [http-nio-9300-exec-48] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:36.270 [http-nio-9300-exec-48] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:36.271 [http-nio-9300-exec-48] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:37.102 [http-nio-9300-exec-49] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:37.102 [http-nio-9300-exec-49] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:37.102 [http-nio-9300-exec-49] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:37.113 [http-nio-9300-exec-50] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:37.114 [http-nio-9300-exec-50] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:37.114 [http-nio-9300-exec-50] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:37.139 [http-nio-9300-exec-51] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:37.140 [http-nio-9300-exec-51] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:37.140 [http-nio-9300-exec-51] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:37.845 [http-nio-9300-exec-52] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:37.845 [http-nio-9300-exec-52] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:37.845 [http-nio-9300-exec-52] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:37.855 [http-nio-9300-exec-53] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:37.855 [http-nio-9300-exec-53] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:37.856 [http-nio-9300-exec-53] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:37.880 [http-nio-9300-exec-54] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:37.881 [http-nio-9300-exec-54] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:37.881 [http-nio-9300-exec-54] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:38.377 [http-nio-9300-exec-55] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:38.378 [http-nio-9300-exec-55] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.378 [http-nio-9300-exec-55] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:38.388 [http-nio-9300-exec-56] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:38.389 [http-nio-9300-exec-56] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.389 [http-nio-9300-exec-56] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:38.421 [http-nio-9300-exec-57] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:38.422 [http-nio-9300-exec-57] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.422 [http-nio-9300-exec-57] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:38.558 [http-nio-9300-exec-58] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:38.559 [http-nio-9300-exec-58] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.559 [http-nio-9300-exec-58] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:38.568 [http-nio-9300-exec-59] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:38.569 [http-nio-9300-exec-59] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.569 [http-nio-9300-exec-59] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:38.600 [http-nio-9300-exec-60] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:38.600 [http-nio-9300-exec-60] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.600 [http-nio-9300-exec-60] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:38.762 [http-nio-9300-exec-61] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 22:58:38.762 [http-nio-9300-exec-61] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.762 [http-nio-9300-exec-61] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 22:58:38.774 [http-nio-9300-exec-62] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 22:58:38.774 [http-nio-9300-exec-62] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.775 [http-nio-9300-exec-62] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 22:58:38.801 [http-nio-9300-exec-63] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 22:58:38.801 [http-nio-9300-exec-63] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:38.801 [http-nio-9300-exec-63] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 22:58:39.972 [http-nio-9300-exec-64] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 22:58:39.972 [http-nio-9300-exec-65] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 22:58:39.973 [http-nio-9300-exec-64] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:39.973 [http-nio-9300-exec-65] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 22:58:39.973 [http-nio-9300-exec-64] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 22:58:39.973 [http-nio-9300-exec-65] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 22:58:39.974 [http-nio-9300-exec-65] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:09:02.761 [http-nio-9300-exec-69] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/comment/list
+2026-05-23 23:09:02.762 [http-nio-9300-exec-70] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/list
+2026-05-23 23:09:02.762 [http-nio-9300-exec-70] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:09:02.763 [http-nio-9300-exec-70] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/list
+2026-05-23 23:09:05.585 [http-nio-9300-exec-72] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:09:05.585 [http-nio-9300-exec-71] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:09:05.585 [http-nio-9300-exec-71] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:09:05.585 [http-nio-9300-exec-72] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:09:05.585 [http-nio-9300-exec-72] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:09:05.585 [http-nio-9300-exec-71] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:09:05.587 [http-nio-9300-exec-72] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:11:03.597 [http-nio-9300-exec-75] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:11:03.598 [http-nio-9300-exec-75] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:11:03.599 [http-nio-9300-exec-75] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:11:03.615 [http-nio-9300-exec-76] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:11:03.615 [http-nio-9300-exec-77] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:11:03.615 [http-nio-9300-exec-77] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:11:03.615 [http-nio-9300-exec-76] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:11:03.616 [http-nio-9300-exec-77] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:11:03.616 [http-nio-9300-exec-76] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:11:03.618 [http-nio-9300-exec-77] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:11:24.787 [http-nio-9300-exec-78] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:11:24.787 [http-nio-9300-exec-78] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:11:24.787 [http-nio-9300-exec-78] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:11:24.837 [http-nio-9300-exec-80] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 23:11:24.838 [http-nio-9300-exec-79] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 23:11:24.842 [http-nio-9300-exec-81] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:11:24.843 [http-nio-9300-exec-82] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:11:24.843 [http-nio-9300-exec-81] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:11:24.843 [http-nio-9300-exec-81] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:11:24.843 [http-nio-9300-exec-82] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:11:24.843 [http-nio-9300-exec-82] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:11:24.846 [http-nio-9300-exec-81] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:12:00.004 [http-nio-9300-exec-83] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:12:00.005 [http-nio-9300-exec-83] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:00.005 [http-nio-9300-exec-83] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:12:00.051 [http-nio-9300-exec-85] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 23:12:00.051 [http-nio-9300-exec-84] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 23:12:00.053 [http-nio-9300-exec-87] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:12:00.053 [http-nio-9300-exec-86] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:12:00.054 [http-nio-9300-exec-87] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:00.054 [http-nio-9300-exec-86] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:00.054 [http-nio-9300-exec-87] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:12:00.054 [http-nio-9300-exec-86] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:12:00.056 [http-nio-9300-exec-86] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:12:08.863 [http-nio-9300-exec-89] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 23:12:08.864 [http-nio-9300-exec-89] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:08.864 [http-nio-9300-exec-89] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 23:12:08.891 [http-nio-9300-exec-90] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/comment/tree
+2026-05-23 23:12:08.892 [http-nio-9300-exec-91] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 23:12:08.892 [http-nio-9300-exec-91] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:08.892 [http-nio-9300-exec-91] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 23:12:34.621 [http-nio-9300-exec-92] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:12:34.621 [http-nio-9300-exec-92] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:34.621 [http-nio-9300-exec-92] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:12:34.669 [http-nio-9300-exec-93] DEBUG o.s.security.web.FilterChainProxy - Securing GET /web/article/info/sql
+2026-05-23 23:12:34.670 [http-nio-9300-exec-93] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:34.670 [http-nio-9300-exec-93] DEBUG o.s.security.web.FilterChainProxy - Secured GET /web/article/info/sql
+2026-05-23 23:12:34.696 [http-nio-9300-exec-94] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/comment/tree
+2026-05-23 23:12:34.698 [http-nio-9300-exec-95] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/comment/tree
+2026-05-23 23:12:34.698 [http-nio-9300-exec-95] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:12:34.698 [http-nio-9300-exec-95] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/comment/tree
+2026-05-23 23:19:33.817 [http-nio-9300-exec-99] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 23:19:33.817 [http-nio-9300-exec-98] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 23:19:33.819 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:19:33.819 [http-nio-9300-exec-100] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:19:33.819 [http-nio-9300-exec-100] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:19:33.819 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:19:33.820 [http-nio-9300-exec-100] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:19:33.820 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:19:33.822 [http-nio-9300-exec-1] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:40:42.694 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:40:42.695 [http-nio-9300-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:40:42.695 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:40:42.718 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:40:42.718 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:40:42.719 [http-nio-9300-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:40:42.719 [http-nio-9300-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:40:42.719 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:40:42.719 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:40:42.722 [http-nio-9300-exec-6] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:45:24.458 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:45:24.459 [http-nio-9300-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:45:24.459 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:45:24.527 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:45:24.527 [http-nio-9300-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:45:24.527 [http-nio-9300-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:45:24.527 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:45:24.527 [http-nio-9300-exec-12] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:45:24.528 [http-nio-9300-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:45:24.529 [http-nio-9300-exec-12] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:46:39.561 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:46:39.561 [http-nio-9300-exec-15] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:46:39.562 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:46:39.628 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:46:39.628 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:46:39.628 [http-nio-9300-exec-17] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:46:39.628 [http-nio-9300-exec-16] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:46:39.628 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:46:39.628 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:46:39.630 [http-nio-9300-exec-17] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:52:07.562 [http-nio-9300-exec-20] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:52:07.563 [http-nio-9300-exec-20] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:52:07.563 [http-nio-9300-exec-20] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:52:07.620 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 23:52:07.620 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 23:52:07.622 [http-nio-9300-exec-24] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:52:07.622 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:52:07.622 [http-nio-9300-exec-24] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:52:07.622 [http-nio-9300-exec-23] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:52:07.622 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:52:07.622 [http-nio-9300-exec-24] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:52:07.626 [http-nio-9300-exec-23] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:53:32.456 [http-nio-9300-exec-28] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:53:32.457 [http-nio-9300-exec-28] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:53:32.457 [http-nio-9300-exec-28] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:53:32.491 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:53:32.491 [http-nio-9300-exec-30] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:53:32.491 [http-nio-9300-exec-27] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:53:32.491 [http-nio-9300-exec-30] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:53:32.491 [http-nio-9300-exec-30] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:53:32.491 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:53:32.493 [http-nio-9300-exec-30] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0
+2026-05-23 23:57:38.884 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-23 23:57:38.884 [http-nio-9300-exec-32] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:57:38.885 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-23 23:57:38.944 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-23 23:57:38.944 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-23 23:57:38.945 [http-nio-9300-exec-36] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-23 23:57:38.945 [http-nio-9300-exec-35] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-23 23:57:38.945 [http-nio-9300-exec-36] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:57:38.945 [http-nio-9300-exec-36] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-23 23:57:38.945 [http-nio-9300-exec-35] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-23 23:57:38.945 [http-nio-9300-exec-35] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-23 23:57:38.949 [http-nio-9300-exec-36] DEBUG c.t.b.s.impl.ArticleServiceImpl - queryWrapper:0

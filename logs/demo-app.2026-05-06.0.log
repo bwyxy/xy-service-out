@@ -1,0 +1,336 @@
+2026-05-06 02:00:38.960 [http-nio-9300-exec-99] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 02:00:38.966 [http-nio-9300-exec-99] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 02:00:38.968 [http-nio-9300-exec-99] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 02:00:39.062 [http-nio-9300-exec-100] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 02:00:39.067 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 02:00:39.070 [http-nio-9300-exec-100] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 02:00:39.070 [http-nio-9300-exec-100] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 02:00:39.070 [http-nio-9300-exec-100] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 02:00:39.072 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 02:00:39.073 [http-nio-9300-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 02:00:39.073 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:41:46.919 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 07:41:47.071 [http-nio-9300-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:41:47.074 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:41:47.100 [http-nio-9300-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:41:47.100 [http-nio-9300-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:41:47.100 [http-nio-9300-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:41:47.132 [http-nio-9300-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:41:47.132 [http-nio-9300-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 07:41:47.132 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:42:18.181 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:42:18.181 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:42:18.184 [http-nio-9300-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:42:18.184 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:42:18.184 [http-nio-9300-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:42:18.184 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:42:46.940 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:42:46.942 [http-nio-9300-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:42:46.949 [http-nio-9300-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:42:46.949 [http-nio-9300-exec-12] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:42:46.950 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:42:46.951 [http-nio-9300-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:43:41.271 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:43:41.271 [http-nio-9300-exec-13] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:43:41.273 [http-nio-9300-exec-16] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:43:41.273 [http-nio-9300-exec-13] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:43:41.273 [http-nio-9300-exec-13] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:43:41.273 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:47:21.231 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 07:47:21.233 [http-nio-9300-exec-18] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:47:21.233 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 07:47:21.307 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 07:47:21.307 [http-nio-9300-exec-20] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 07:47:21.315 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:47:21.316 [http-nio-9300-exec-21] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:47:21.317 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:47:21.317 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:47:21.320 [http-nio-9300-exec-22] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:47:21.321 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:52:26.487 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 07:52:26.487 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 07:52:26.528 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:52:26.533 [http-nio-9300-exec-28] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:52:26.538 [http-nio-9300-exec-26] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:52:26.538 [http-nio-9300-exec-28] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:52:26.538 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:52:26.538 [http-nio-9300-exec-28] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:52:37.881 [http-nio-9300-exec-30] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 07:52:37.881 [http-nio-9300-exec-29] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 07:52:37.889 [http-nio-9300-exec-31] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:52:37.891 [http-nio-9300-exec-31] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:52:37.893 [http-nio-9300-exec-31] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:52:37.894 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:52:37.895 [http-nio-9300-exec-32] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:52:37.896 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:53:19.646 [http-nio-9300-exec-35] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 07:53:19.646 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 07:53:19.657 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:53:19.658 [http-nio-9300-exec-37] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:53:19.662 [http-nio-9300-exec-34] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:53:19.663 [http-nio-9300-exec-37] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:53:19.664 [http-nio-9300-exec-37] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:53:19.664 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 07:55:04.547 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 07:55:04.548 [http-nio-9300-exec-39] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 07:55:04.566 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 07:55:04.569 [http-nio-9300-exec-42] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 07:55:04.570 [http-nio-9300-exec-40] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:55:04.571 [http-nio-9300-exec-42] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 07:55:04.572 [http-nio-9300-exec-42] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 07:55:04.572 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 08:00:07.956 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-06 08:00:07.995 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-06 08:00:10.551 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-06 08:00:10.569 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 58596 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-06 08:00:10.569 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-06 08:00:10.570 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-06 08:00:11.207 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-06 08:00:11.207 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-06 08:00:11.208 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-06 08:00:11.223 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-06 08:00:11.255 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-06 08:00:12.132 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-06 08:00:12.389 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-06 08:00:12.877 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6d15df8f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@21262104, org.springframework.security.web.context.SecurityContextHolderFilter@3b06d3b1, org.springframework.security.web.header.HeaderWriterFilter@6504649f, org.springframework.web.filter.CorsFilter@1f3b2323, org.springframework.security.web.authentication.logout.LogoutFilter@5c117711, com.todo.framework.security.filter.JwtAuthenticationFilter@3c97796e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@161181e1, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4d5002ec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3d28c00e, org.springframework.security.web.session.SessionManagementFilter@2ed55020, org.springframework.security.web.access.ExceptionTranslationFilter@2bce1488, org.springframework.security.web.access.intercept.AuthorizationFilter@195aa4a5]
+2026-05-06 08:00:13.061 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-06 08:00:13.078 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-06 08:00:13.091 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 2.755 seconds (process running for 3.065)
+2026-05-06 08:00:16.565 [http-nio-9300-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-06 08:00:16.566 [http-nio-9300-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-06 08:00:16.568 [http-nio-9300-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-05-06 08:00:16.582 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 08:00:16.582 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 08:00:16.582 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 08:00:16.590 [http-nio-9300-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:00:16.590 [http-nio-9300-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:00:16.590 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:00:16.591 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 08:00:16.591 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 08:00:16.591 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 08:00:16.832 [http-nio-9300-exec-3] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'
+### The error may exist in com/todo/system/mapper/SysArticleMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT  article_id,title,slug,summary,content,cover_image,status,view_count,like_count,comment_count,author_id,category_id,publish_time AS publishedTime,create_time,update_time  FROM sys_article           ORDER BY publish_time ASC LIMIT ?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'
+; bad SQL grammar []
+2026-05-06 08:00:16.834 [http-nio-9300-exec-3] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.jdbc.BadSqlGrammarException: <EOL>### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'<EOL>### The error may exist in com/todo/system/mapper/SysArticleMapper.java (best guess)<EOL>### The error may involve defaultParameterMap<EOL>### The error occurred while setting parameters<EOL>### SQL: SELECT  article_id,title,slug,summary,content,cover_image,status,view_count,like_count,comment_count,author_id,category_id,publish_time AS publishedTime,create_time,update_time  FROM sys_article           ORDER BY publish_time ASC LIMIT ?<EOL>### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'<EOL>; bad SQL grammar []]
+2026-05-06 08:03:03.614 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-06 08:03:03.687 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-06 08:03:05.639 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-06 08:03:05.656 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 58620 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-06 08:03:05.657 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-06 08:03:05.657 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-06 08:03:06.263 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-06 08:03:06.264 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-06 08:03:06.264 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-06 08:03:06.280 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-06 08:03:06.313 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-06 08:03:07.173 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-06 08:03:07.367 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-06 08:03:07.827 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6afe1e8d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@14f8090b, org.springframework.security.web.context.SecurityContextHolderFilter@266a4f9a, org.springframework.security.web.header.HeaderWriterFilter@7981e072, org.springframework.web.filter.CorsFilter@10016616, org.springframework.security.web.authentication.logout.LogoutFilter@4c10fb3e, com.todo.framework.security.filter.JwtAuthenticationFilter@7b3a1e4d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@65325932, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@71b9e725, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4c5aa5f1, org.springframework.security.web.session.SessionManagementFilter@5febe2dc, org.springframework.security.web.access.ExceptionTranslationFilter@1b170ce8, org.springframework.security.web.access.intercept.AuthorizationFilter@172d2aab]
+2026-05-06 08:03:08.033 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-06 08:03:08.052 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-06 08:03:08.071 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 2.645 seconds (process running for 2.933)
+2026-05-06 08:03:15.401 [http-nio-9300-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-06 08:03:15.403 [http-nio-9300-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-06 08:03:15.404 [http-nio-9300-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-05-06 08:03:15.415 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 08:03:15.415 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 08:03:15.415 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 08:03:15.425 [http-nio-9300-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:03:15.425 [http-nio-9300-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:03:15.425 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:03:15.426 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 08:03:15.426 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 08:03:15.426 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 08:03:15.644 [http-nio-9300-exec-1] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'
+### The error may exist in com/todo/system/mapper/SysArticleMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT  article_id,title,slug,summary,content,cover_image,status,view_count,like_count,comment_count,author_id,category_id,publish_time AS publishedTime,create_time,update_time  FROM sys_article           ORDER BY publish_time DESC LIMIT ?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'
+; bad SQL grammar []
+2026-05-06 08:03:15.645 [http-nio-9300-exec-1] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.jdbc.BadSqlGrammarException: <EOL>### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'<EOL>### The error may exist in com/todo/system/mapper/SysArticleMapper.java (best guess)<EOL>### The error may involve defaultParameterMap<EOL>### The error occurred while setting parameters<EOL>### SQL: SELECT  article_id,title,slug,summary,content,cover_image,status,view_count,like_count,comment_count,author_id,category_id,publish_time AS publishedTime,create_time,update_time  FROM sys_article           ORDER BY publish_time DESC LIMIT ?<EOL>### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'publish_time' in 'field list'<EOL>; bad SQL grammar []]
+2026-05-06 08:04:08.928 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-06 08:04:08.997 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-06 08:04:10.639 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-06 08:04:10.651 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 58640 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-06 08:04:10.651 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-06 08:04:10.651 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-06 08:04:11.232 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-06 08:04:11.233 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-06 08:04:11.233 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-06 08:04:11.247 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-06 08:04:11.278 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-06 08:04:12.144 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-06 08:04:12.362 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-06 08:04:12.805 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2fb6c5ca, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5814a39a, org.springframework.security.web.context.SecurityContextHolderFilter@622d8d5a, org.springframework.security.web.header.HeaderWriterFilter@769b4282, org.springframework.web.filter.CorsFilter@51fd4a74, org.springframework.security.web.authentication.logout.LogoutFilter@d15a880, com.todo.framework.security.filter.JwtAuthenticationFilter@3c40eabc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@555ba99c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@49e32e69, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5fef05d6, org.springframework.security.web.session.SessionManagementFilter@15a400fc, org.springframework.security.web.access.ExceptionTranslationFilter@46035beb, org.springframework.security.web.access.intercept.AuthorizationFilter@7e612680]
+2026-05-06 08:04:12.988 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-06 08:04:13.004 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-06 08:04:13.018 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 2.556 seconds (process running for 2.825)
+2026-05-06 08:04:16.855 [http-nio-9300-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-06 08:04:16.855 [http-nio-9300-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-06 08:04:16.856 [http-nio-9300-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-05-06 08:04:16.867 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 08:04:16.867 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 08:04:16.867 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 08:04:16.874 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:04:16.874 [http-nio-9300-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:04:16.874 [http-nio-9300-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:04:16.875 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 08:04:16.875 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 08:04:16.875 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 08:06:27.193 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 08:06:27.192 [http-nio-9300-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 08:06:27.192 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 08:06:27.208 [http-nio-9300-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:06:27.208 [http-nio-9300-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:06:27.208 [http-nio-9300-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 08:06:27.218 [http-nio-9300-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 08:06:27.220 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 08:06:27.223 [http-nio-9300-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 09:12:19.306 [http-nio-9300-exec-13] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 09:12:19.307 [http-nio-9300-exec-13] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 09:12:19.314 [http-nio-9300-exec-13] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 09:12:19.396 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 09:12:19.399 [http-nio-9300-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 09:12:19.399 [http-nio-9300-exec-15] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 09:12:19.399 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 09:12:19.400 [http-nio-9300-exec-14] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 09:12:19.400 [http-nio-9300-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 09:14:14.370 [http-nio-9300-exec-20] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 09:14:14.370 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 09:14:14.364 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 09:14:14.377 [http-nio-9300-exec-19] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 09:14:14.377 [http-nio-9300-exec-21] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 09:14:14.377 [http-nio-9300-exec-20] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 09:14:14.378 [http-nio-9300-exec-20] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 09:14:14.378 [http-nio-9300-exec-21] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 09:14:14.378 [http-nio-9300-exec-19] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 12:30:50.498 [http-nio-9300-exec-25] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 12:30:50.605 [http-nio-9300-exec-25] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 12:30:50.609 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 12:30:50.609 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 12:30:50.612 [http-nio-9300-exec-25] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 12:30:50.634 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 12:30:50.634 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 12:30:50.640 [http-nio-9300-exec-26] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 12:30:50.640 [http-nio-9300-exec-27] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 12:30:50.642 [http-nio-9300-exec-27] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 12:30:50.642 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 18:35:22.655 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 18:35:22.655 [http-nio-9300-exec-31] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 18:35:22.655 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 18:35:22.804 [http-nio-9300-exec-31] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 18:35:22.827 [http-nio-9300-exec-31] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 18:35:22.859 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 18:35:22.859 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 18:35:22.874 [http-nio-9300-exec-32] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 18:35:22.874 [http-nio-9300-exec-33] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 18:35:22.874 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 18:35:22.875 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 19:47:39.124 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-06 19:47:39.154 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-06 19:47:40.471 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-06 19:47:40.484 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 79901 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-06 19:47:40.484 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-06 19:47:40.484 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-06 19:47:41.192 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-06 19:47:41.193 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-06 19:47:41.193 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-06 19:47:41.211 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-06 19:47:41.249 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-06 19:47:42.114 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-06 19:47:42.317 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-06 19:47:42.731 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2c87fc5e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@623d0d84, org.springframework.security.web.context.SecurityContextHolderFilter@79218642, org.springframework.security.web.header.HeaderWriterFilter@7616abc8, org.springframework.web.filter.CorsFilter@1c787484, org.springframework.security.web.authentication.logout.LogoutFilter@13c1b53e, com.todo.framework.security.filter.JwtAuthenticationFilter@505078d1, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@e7db4a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@75276af2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@175f7115, org.springframework.security.web.session.SessionManagementFilter@eb9db6c, org.springframework.security.web.access.ExceptionTranslationFilter@2bf44e52, org.springframework.security.web.access.intercept.AuthorizationFilter@78f6c05a]
+2026-05-06 19:47:42.915 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-06 19:47:42.930 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-06 19:47:42.944 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 2.723 seconds (process running for 3.008)
+2026-05-06 22:19:54.518 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-05-06 22:19:54.534 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-06 22:19:57.613 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-05-06 22:19:57.636 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Starting TodoBlogApplication using Java 17.0.18 with PID 81598 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-blog/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-05-06 22:19:57.637 [restartedMain] DEBUG com.todo.blog.TodoBlogApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-05-06 22:19:57.637 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-05-06 22:19:58.389 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9300"]
+2026-05-06 22:19:58.390 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-06 22:19:58.390 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-05-06 22:19:58.407 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-06 22:19:58.444 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-06 22:19:59.877 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-06 22:20:00.088 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-06 22:20:00.529 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@57b8209, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c7ff02a, org.springframework.security.web.context.SecurityContextHolderFilter@22dcc90a, org.springframework.security.web.header.HeaderWriterFilter@555520d5, org.springframework.web.filter.CorsFilter@1c1b6978, org.springframework.security.web.authentication.logout.LogoutFilter@14f64f93, com.todo.framework.security.filter.JwtAuthenticationFilter@6cb819b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3774c956, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@710207bc, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4775ea4f, org.springframework.security.web.session.SessionManagementFilter@74ee6e05, org.springframework.security.web.access.ExceptionTranslationFilter@2d7eb469, org.springframework.security.web.access.intercept.AuthorizationFilter@2aa66773]
+2026-05-06 22:20:00.713 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-05-06 22:20:00.729 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9300"]
+2026-05-06 22:20:00.745 [restartedMain] INFO  com.todo.blog.TodoBlogApplication - Started TodoBlogApplication in 3.368 seconds (process running for 3.799)
+2026-05-06 22:22:14.098 [http-nio-9300-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-06 22:22:14.099 [http-nio-9300-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-06 22:22:14.101 [http-nio-9300-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-05-06 22:22:14.112 [http-nio-9300-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 22:22:14.112 [http-nio-9300-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 22:22:14.112 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 22:22:14.121 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 22:22:14.121 [http-nio-9300-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:22:14.121 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 22:22:14.121 [http-nio-9300-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:22:14.122 [http-nio-9300-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:22:14.122 [http-nio-9300-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 22:22:14.122 [http-nio-9300-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 22:22:14.122 [http-nio-9300-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 22:25:46.829 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 22:25:46.833 [http-nio-9300-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:25:46.836 [http-nio-9300-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 22:25:46.855 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 22:25:46.855 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 22:25:46.855 [http-nio-9300-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:25:46.855 [http-nio-9300-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:25:46.856 [http-nio-9300-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 22:25:46.856 [http-nio-9300-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 22:27:51.589 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 22:27:51.591 [http-nio-9300-exec-15] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:27:51.591 [http-nio-9300-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 22:27:51.666 [http-nio-9300-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 22:27:51.666 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 22:27:51.670 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 22:27:51.670 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 22:27:51.671 [http-nio-9300-exec-17] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:27:51.671 [http-nio-9300-exec-18] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:27:51.671 [http-nio-9300-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 22:27:51.671 [http-nio-9300-exec-18] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 22:29:36.877 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 22:29:36.902 [http-nio-9300-exec-22] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:29:36.914 [http-nio-9300-exec-22] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 22:29:37.004 [http-nio-9300-exec-24] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 22:29:37.005 [http-nio-9300-exec-23] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 22:29:37.015 [http-nio-9300-exec-25] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 22:29:37.016 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 22:29:37.020 [http-nio-9300-exec-25] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:29:37.021 [http-nio-9300-exec-25] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 22:29:37.022 [http-nio-9300-exec-26] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:29:37.022 [http-nio-9300-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 22:30:40.651 [http-nio-9300-exec-30] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 22:30:40.657 [http-nio-9300-exec-30] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:30:40.658 [http-nio-9300-exec-30] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config
+2026-05-06 22:30:40.712 [http-nio-9300-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 22:30:40.712 [http-nio-9300-exec-31] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 22:30:40.716 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 22:30:40.717 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 22:30:40.718 [http-nio-9300-exec-33] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:30:40.718 [http-nio-9300-exec-34] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:30:40.718 [http-nio-9300-exec-33] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 22:30:40.719 [http-nio-9300-exec-34] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 22:31:17.344 [http-nio-9300-exec-35] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/category/list
+2026-05-06 22:31:17.344 [http-nio-9300-exec-36] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /web/article/list
+2026-05-06 22:31:17.349 [http-nio-9300-exec-37] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/category/list
+2026-05-06 22:31:17.349 [http-nio-9300-exec-38] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/article/list
+2026-05-06 22:31:17.354 [http-nio-9300-exec-38] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:31:17.354 [http-nio-9300-exec-37] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:31:17.357 [http-nio-9300-exec-37] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/category/list
+2026-05-06 22:31:17.358 [http-nio-9300-exec-38] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/article/list
+2026-05-06 22:31:58.191 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Securing POST /web/blog/config
+2026-05-06 22:31:58.200 [http-nio-9300-exec-40] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-05-06 22:31:58.201 [http-nio-9300-exec-40] DEBUG o.s.security.web.FilterChainProxy - Secured POST /web/blog/config

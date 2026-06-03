@@ -1,0 +1,2 @@
+2026-05-17 16:41:10.069 [http-nio-9300-exec-41] ERROR c.a.druid.filter.stat.StatFilter - slow sql 27847 millis. SELECT  category_id,name,slug,description,create_time,update_time  FROM sys_category []
+2026-05-17 16:41:10.275 [http-nio-9300-exec-42] ERROR c.t.f.w.e.GlobalExceptionHandler - 未知异常: ServletOutputStream failed to write: java.io.IOException: Broken pipe
