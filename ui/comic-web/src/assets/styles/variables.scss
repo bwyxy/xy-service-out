@@ -1,0 +1,29 @@
+
+$theme-color: #FF6B35;
+$theme-color-hover: #E55A2B;
+$theme-color-light: #FFF0EB;
+$theme-color-soft: #FF8A5C;
+
+$theme-container-light: #fff;
+$theme-container-dark: #000;
+
+$text-color: #222222;
+$theme-body-color: #3f3f3f;
+$muted-color: #6a6a6a;
+$muted-soft-color: #929292;
+$hairline-color: #dddddd;
+$hairline-soft-color: #ebebeb;
+$surface-soft-color: #f7f7f7;
+$surface-strong-color: #f2f2f2;
+
+$vw: calc(100vw / 1920);
+
+@mixin flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@function size($size) {
+  @return calc(#{$size} * $vw)
+}
