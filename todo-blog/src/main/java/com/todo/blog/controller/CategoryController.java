@@ -4,6 +4,7 @@ import com.todo.blog.pojo.dto.CategoryDTO;
 import com.todo.blog.service.ICategoryService;
 import com.todo.common.core.domain.R;
 import com.todo.common.entity.SysCategory;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

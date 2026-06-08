@@ -12,7 +12,7 @@ site-manager:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 9020
+  port: 9030
   servlet:
     # 应用的访问路径
     context-path: ${SERVER_CONTEXT_PATH:/}
@@ -163,6 +163,7 @@ logging:
   level:
     com.todo: debug
     org.springframework: warn
+    org.springframework.security: DEBUG
 
 
 # token配置
@@ -190,6 +191,14 @@ swagger:
 losetoken:
   loseTime: 30
   loseType: hours
+
+# 七牛云
+qiniu:
+  accessKey: i_FSUaor6A6CHBK82ic-ZW_Xv8sDBvkeviIsnN8p
+  secretKey: dnQqz7O3TzLXis4JWReqP8QrenCJz1HBlw1Vpull
+  bucket: canyouispig
+  domain: https://bwyxy.cn
+  region: huanan
 
 # 微信小程序配置
 wechat:

@@ -2,9 +2,11 @@ package com.todo.blog.controller;
 
 import com.todo.blog.pojo.dto.ArticleDTO;
 import com.todo.blog.service.IArticleService;
+import com.todo.common.annotation.Anonymous;
 import com.todo.common.core.domain.PageResult;
 import com.todo.common.core.domain.R;
 import com.todo.common.entity.SysArticle;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

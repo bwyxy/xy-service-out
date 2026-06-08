@@ -10,6 +10,7 @@ import com.todo.common.vo.AuthVO;
 import com.todo.system.service.ISysMenuService;
 import com.todo.system.service.ISysPermissionService;
 import com.todo.system.service.ISysRoleService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

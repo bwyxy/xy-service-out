@@ -67,6 +67,17 @@ public class JwtTokenProvider {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public long getRemainingExpiration(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .parseClaimsJws(token)
+                .getBody();
+
+        Date expiration = claims.getExpiration();
+        long remaining = expiration.getTime() - System.currentTimeMillis();
+        return remaining > 0 ? remaining : 0;
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);

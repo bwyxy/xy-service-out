@@ -3,6 +3,7 @@ package com.todo.blog.controller;
 import com.todo.blog.service.ITagService;
 import com.todo.common.core.domain.R;
 import com.todo.common.entity.SysTag;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

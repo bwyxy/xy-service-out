@@ -83,6 +83,25 @@ create table sys_role_menu (
    primary key(role_id, menu_id)
 ) engine=innodb comment = '角色和菜单关联表';
 
+-- 内容配置表
+create table sys_config (
+    config_id bigint primary key auto_increment comment '配置ID',
+    parent_id bigint default 0 comment '父配置ID',
+    config_name varchar(255) not null comment '配置名称',
+    config_value varchar(500) default '' comment '配置值',
+    config_link varchar(255) default '' comment '配置链接',
+    config_type varchar(100) default '' comment '配置类型',
+    status tinyint default 1 comment '0-隐藏 1-显示',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime comment '更新时间',
+    deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)'
+) engine=innodb comment = '内容配置表';
+
+create index idx_config_type on sys_config(config_type);
+create index idx_status on sys_config(status);
+
 insert into sys_user values
     (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
 insert into sys_user values
@@ -110,6 +129,16 @@ insert into sys_menu values
     (8,'文章中心', 0,1,'article', '/article/article/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '文章管理'),
     (9,'标签管理', 0,2,'tag', '/article/tag/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '标签管理'),
     (10,'分类管理', 0,3,'category', '/article/category/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '分类管理');
+
+insert into sys_menu values
+    (14,'内容配置', 0,2,'config', null, '','',1,1,'M','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '内容配置');
+
+insert into sys_menu values
+    (15,'菜单配置', 14,1,'menu', 'config/menu/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '菜单配置'),
+    (16,'工具配置', 14,2,'utils', 'config/utils/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '工具配置'),
+    (17,'底部栏', 14,3,'tabbar', 'config/tabbar/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '底部栏');
+insert into sys_menu values
+    (18,'轮播图', 14,4,'swiper', 'config/swiper/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '轮播图');
 
 insert into sys_menu values
     (11,'添加文章', 7,4,'add', '/article/article/operate', '',1,1,0,'C','1','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '添加文章'),
