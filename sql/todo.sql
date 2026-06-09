@@ -102,6 +102,49 @@ create table sys_config (
 create index idx_config_type on sys_config(config_type);
 create index idx_status on sys_config(status);
 
+-- 待办任务表
+create table todo_task (
+    task_id bigint primary key auto_increment comment '任务Id',
+    user_id bigint comment '用户Id',
+    task_title varchar(255) default '' comment '待办标题',
+    description text comment '描述',
+    completed tinyint default 0 comment '是否完成 0-未完成 1-已完成',
+    urgency_level int default 1 comment '紧急程度: 1-不重要不紧急 2-紧急不重要 3-重要不紧急 4-重要且紧急',
+    due_date datetime comment '截止时间',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime comment '更新时间',
+    deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)',
+    index idx_user_id (user_id),
+    index idx_completed (completed),
+    index idx_task_title (task_title),
+    index idx_urgency_level (urgency_level),
+    index idx_due_date (due_date),
+    constraint fk_sys_user foreign key (user_id) references sys_user(id) on delete cascade
+) engine=innodb comment = '待办任务表';
+
+-- 待办标签表
+create table todo_tag (
+    tag_id bigint primary key auto_increment comment '标签Id',
+    tag_name varchar(24) not null comment '标签名称',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime comment '更新时间'
+) engine=innodb comment = '待办标签表';
+
+-- 待办任务标签关联表
+create table todo_task_tag (
+    task_id bigint not null comment '任务Id',
+    tag_id bigint not null comment '标签Id',
+    primary key (task_id, tag_id),
+    index idx_task_id (task_id),
+    index idx_tag_id (tag_id),
+    constraint fk_task_id foreign key (task_id) references todo_task(task_id),
+    constraint fk_tag_id foreign key (tag_id) references todo_tag(tag_id) on delete cascade
+) engine=innodb comment = '待办任务标签关联表';
+
 insert into sys_user values
     (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
 insert into sys_user values
