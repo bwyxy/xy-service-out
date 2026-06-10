@@ -44,7 +44,7 @@ public class TodoTask extends BaseEntity implements Serializable {
      * 是否完成
      * 0-未完成 1-已完成
      * */
-    private int completed;
+    private Long completed;
 
     /**
      * 完成时间

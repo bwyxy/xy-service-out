@@ -39,21 +39,19 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         WechatSessionResponse session = getSessionByCode(code);
         String openid = session.getOpenid();
 
-        // 查询用户
-        Long userId;
         SysUser sysUser = sysUserService.getUserByOpenId(openid);
         if (sysUser == null) {
-            userId = addWeChatUser(openid);
-        } else {
-            userId = sysUser.getId();
+            sysUser = addWeChatUser(openid);
         }
-        // 生成 token
-        String token = jwtTokenProvider.createWeChatToken(openid);
-        WeChatLoginVo weChatLoginVo = new WeChatLoginVo();
 
+        String token = jwtTokenProvider.createWeChatToken(sysUser.getUsername());
+
+        WeChatLoginVo weChatLoginVo = new WeChatLoginVo();
+        weChatLoginVo.setUserId(sysUser.getId());
         weChatLoginVo.setOpenid(openid);
-        weChatLoginVo.setUserId(userId);
         weChatLoginVo.setToken(token);
+        weChatLoginVo.setNickname(sysUser.getNickname());
+        weChatLoginVo.setAvatar(sysUser.getAvatar());
 
         return weChatLoginVo;
     }
@@ -86,7 +84,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     /**
      * 添加微信小程序用户
      * */
-    public Long addWeChatUser(String openid) {
+    public SysUser addWeChatUser(String openid) {
         SysUser sysUser = new SysUser();
 
         sysUser.setUsername(openid);
@@ -94,6 +92,8 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         sysUser.setWxOpenId(openid);
         sysUser.setCreateBy("weChatRegister");
 
-        return sysUserService.addUser(sysUser);
+        sysUserService.addUser(sysUser);
+
+        return sysUser;
     }
 }

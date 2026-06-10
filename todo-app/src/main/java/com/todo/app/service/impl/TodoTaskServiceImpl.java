@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.app.mapper.TodoTaskMapper;
+import com.todo.app.service.ITodoTaskCollaboratorService;
 import com.todo.app.service.ITodoTaskService;
 import com.todo.common.core.domain.PageResult;
 import com.todo.common.dto.ToDoTaskDTO;
@@ -12,12 +13,16 @@ import com.todo.common.entity.TodoTask;
 import com.todo.common.utils.ContentCheckUtils;
 import com.todo.common.utils.SecurityUtils;
 import com.todo.common.utils.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
 public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> implements ITodoTaskService {
+
+    @Autowired
+    private ITodoTaskCollaboratorService todoTaskCollaboratorService;
 
     /**
      * 根据传入时间 查询当天任务
@@ -41,8 +46,14 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
         LambdaQueryWrapper<TodoTask> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.eq(TodoTask::getUserId, userId)
-                .between(TodoTask::getDueDate, todoTask.getStartTime(), todoTask.getDueDate())
-                .orderByDesc(TodoTask::getDueDate);
+                .between(TodoTask::getDueDate, todoTask.getStartTime(), todoTask.getDueDate());
+
+        if (todoTask.getCompleted() != null) {
+            queryWrapper.eq(TodoTask::getCompleted, todoTask.getCompleted())
+                    .orderByDesc(TodoTask::getCompleted);
+        } else {
+            queryWrapper.orderByDesc(TodoTask::getDueDate);
+        }
 
         Page<TodoTask> page = this.page(new Page<>(todoTask.getPageNum(), todoTask.getPageSize()), queryWrapper);
 
@@ -89,11 +100,16 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
         todoTask.setUserId(userId);
         todoTask.setTaskTitle(toDoTaskDTO.getTaskTitle());
         todoTask.setDescription(toDoTaskDTO.getDescription());
-        todoTask.setCompleted(0);
+        todoTask.setCompleted(0L);
         todoTask.setUrgencyLevel(toDoTaskDTO.getUrgencyLevel());
         todoTask.setDueDate(toDoTaskDTO.getDueDate());
 
-        save(todoTask);
+        boolean success = save(todoTask);
+
+        // 将创建人加入为任务管理员
+        if (success) {
+            todoTaskCollaboratorService.joinTaskCollaborator(userId, todoTask.getTaskId(), "1");
+        }
     }
 
     /**

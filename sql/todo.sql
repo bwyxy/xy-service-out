@@ -124,6 +124,21 @@ create table todo_task (
     constraint fk_sys_user foreign key (user_id) references sys_user(id) on delete cascade
 ) engine=innodb comment = '待办任务表';
 
+-- 任务协作成员表
+create table todo_task_collaborator (
+    task_id bigint not null comment '关联任务Id',
+    user_id bigint not null comment '用户Id',
+    is_admin varchar(1) default '0' comment '是否任务管理员',
+    joined_at datetime default current_timestamp comment '加入时间',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime comment '更新时间',
+    primary key (task_id, user_id),
+    foreign key (task_id) references todo_task(task_id) on delete cascade,
+    foreign key (user_id) references sys_user(id) on delete cascade
+) engine=innodb comment = '任务协作成员表';
+
 -- 待办标签表
 create table todo_tag (
     tag_id bigint primary key auto_increment comment '标签Id',

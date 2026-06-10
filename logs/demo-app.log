@@ -734,3 +734,185 @@ Caused by: org.springframework.security.access.AccessDeniedException: Access Den
 	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
 	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
 	... 67 common frames omitted
+2026-06-10 01:04:43.897 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-10 01:04:43.900 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-06-10 01:04:57.370 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-10 01:04:57.398 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 78785 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-06-10 01:04:57.398 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-06-10 01:04:57.399 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-06-10 01:04:58.126 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
+2026-06-10 01:04:58.127 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-10 01:04:58.127 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-06-10 01:04:58.143 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-10 01:04:58.183 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-06-10 01:04:59.114 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-06-10 01:04:59.542 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-06-10 01:04:59.850 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-06-10 01:05:00.129 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3f71529a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@546dbf94, org.springframework.security.web.context.SecurityContextHolderFilter@2a159447, org.springframework.security.web.header.HeaderWriterFilter@5c4572a9, org.springframework.web.filter.CorsFilter@57fd2d92, org.springframework.security.web.authentication.logout.LogoutFilter@5d4fd8c7, com.todo.framework.security.filter.JwtAuthenticationFilter@2b404718, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@139e1ab5, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2691e606, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@46e2e569, org.springframework.security.web.session.SessionManagementFilter@55a84955, org.springframework.security.web.access.ExceptionTranslationFilter@2f42c863, org.springframework.security.web.access.intercept.AuthorizationFilter@8dc757d]
+2026-06-10 01:05:00.334 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-06-10 01:05:00.362 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
+2026-06-10 01:05:00.377 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 3.261 seconds (process running for 3.558)
+2026-06-10 01:05:17.026 [http-nio-9030-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-10 01:05:17.026 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-10 01:05:17.032 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 6 ms
+2026-06-10 01:05:17.042 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 01:05:17.045 [http-nio-9030-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-10 01:05:17.045 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 01:05:21.641 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-10 01:05:21.642 [http-nio-9030-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-10 01:05:21.642 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-10 01:05:29.724 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /wechat/login?code=0d3hqe000oI5xW1ZnV200kUObp3hqe0F
+2026-06-10 01:05:29.725 [http-nio-9030-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-10 01:05:29.725 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /wechat/login?code=0d3hqe000oI5xW1ZnV200kUObp3hqe0F
+2026-06-10 01:05:30.086 [http-nio-9030-exec-3] DEBUG c.t.f.provider.JwtTokenProvider - 生成 JWT: subject=10000002, 过期时间=Thu Jun 11 01:05:30 CST 2026
+2026-06-10 01:05:30.109 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-10 01:05:30.160 [http-nio-9030-exec-4] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:05:30.160 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-10 01:06:10.710 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 01:06:10.751 [http-nio-9030-exec-5] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:06:10.752 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 01:06:15.586 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-10 01:06:15.613 [http-nio-9030-exec-6] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:06:15.614 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-10 01:07:03.959 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 01:07:04.016 [http-nio-9030-exec-9] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:07:04.017 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 01:07:09.722 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-10 01:07:09.751 [http-nio-9030-exec-7] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:07:09.751 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-10 01:07:52.345 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 01:07:52.397 [http-nio-9030-exec-8] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:07:52.397 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 01:07:56.037 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-10 01:07:56.089 [http-nio-9030-exec-10] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:07:56.090 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-10 01:08:12.772 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 01:08:12.819 [http-nio-9030-exec-11] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:08:12.820 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 01:08:16.854 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-10 01:08:16.877 [http-nio-9030-exec-12] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:08:16.877 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-10 01:08:48.721 [http-nio-9030-exec-13] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 01:08:48.830 [http-nio-9030-exec-13] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:08:48.831 [http-nio-9030-exec-13] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 01:08:53.168 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-10 01:08:53.226 [http-nio-9030-exec-14] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 01:08:53.226 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-10 07:00:22.846 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-10 07:00:22.849 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-06-10 07:00:25.563 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-10 07:00:25.586 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 85325 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-06-10 07:00:25.586 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-06-10 07:00:25.586 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-06-10 07:00:26.317 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
+2026-06-10 07:00:26.318 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-10 07:00:26.318 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-06-10 07:00:26.333 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-10 07:00:26.368 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-06-10 07:00:27.236 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-06-10 07:00:27.631 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-06-10 07:00:27.878 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-06-10 07:00:28.085 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7eef8f78, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@462667c3, org.springframework.security.web.context.SecurityContextHolderFilter@2a39a617, org.springframework.security.web.header.HeaderWriterFilter@245b0d33, org.springframework.web.filter.CorsFilter@96aec42, org.springframework.security.web.authentication.logout.LogoutFilter@34408edd, com.todo.framework.security.filter.JwtAuthenticationFilter@2bfc4032, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3a86f805, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@59877174, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@32b3d917, org.springframework.security.web.session.SessionManagementFilter@1c65966e, org.springframework.security.web.access.ExceptionTranslationFilter@44ba166c, org.springframework.security.web.access.intercept.AuthorizationFilter@28c20660]
+2026-06-10 07:00:28.254 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-06-10 07:00:28.280 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
+2026-06-10 07:00:28.290 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 2.944 seconds (process running for 3.316)
+2026-06-10 07:41:53.029 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-10 07:41:53.032 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-06-10 07:41:55.340 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-10 07:41:55.390 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 86675 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-06-10 07:41:55.390 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-06-10 07:41:55.391 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-06-10 07:41:56.063 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
+2026-06-10 07:41:56.064 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-10 07:41:56.064 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-06-10 07:41:56.079 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-10 07:41:56.116 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-06-10 07:41:57.080 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-06-10 07:41:57.450 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-06-10 07:41:57.685 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.TodoTaskCollaborator ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-06-10 07:41:57.709 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-06-10 07:41:57.925 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3e01dd4f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@72579e6e, org.springframework.security.web.context.SecurityContextHolderFilter@7620b403, org.springframework.security.web.header.HeaderWriterFilter@2db47e45, org.springframework.web.filter.CorsFilter@1cafdee9, org.springframework.security.web.authentication.logout.LogoutFilter@10a9ffd, com.todo.framework.security.filter.JwtAuthenticationFilter@20b507b4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2de956b8, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7b9113f4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@49f57642, org.springframework.security.web.session.SessionManagementFilter@50f57019, org.springframework.security.web.access.ExceptionTranslationFilter@2107cbfe, org.springframework.security.web.access.intercept.AuthorizationFilter@312fa6bf]
+2026-06-10 07:41:58.098 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
+2026-06-10 07:41:58.126 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
+2026-06-10 07:41:58.142 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 3.037 seconds (process running for 3.393)
+2026-06-10 07:43:45.912 [http-nio-9030-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-10 07:43:45.913 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-10 07:43:45.915 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-06-10 07:43:45.930 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:43:46.277 [http-nio-9030-exec-1] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:43:46.279 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:44:00.863 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:44:00.942 [http-nio-9030-exec-2] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:44:00.943 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:44:51.891 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:44:51.954 [http-nio-9030-exec-3] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:44:51.954 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:44:52.324 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:44:52.368 [http-nio-9030-exec-4] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:44:52.368 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:45:06.257 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:45:06.315 [http-nio-9030-exec-5] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:45:06.316 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:46:46.854 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:46:46.929 [http-nio-9030-exec-7] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:46:46.930 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:47:25.566 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:47:25.634 [http-nio-9030-exec-8] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:47:25.635 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:47:46.117 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:47:46.183 [http-nio-9030-exec-9] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:47:46.184 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:47:59.810 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:47:59.866 [http-nio-9030-exec-10] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:47:59.866 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:48:13.998 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:48:14.043 [http-nio-9030-exec-11] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:48:14.044 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:48:26.099 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:48:26.173 [http-nio-9030-exec-12] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:48:26.174 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:49:47.911 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:49:47.979 [http-nio-9030-exec-14] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:49:47.980 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:50:03.295 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:50:03.355 [http-nio-9030-exec-15] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:50:03.357 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 07:51:53.966 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-10 07:51:54.046 [http-nio-9030-exec-17] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
+2026-06-10 07:51:54.047 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-10 23:44:45.110 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-10 23:44:45.119 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-06-10 23:44:47.957 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-10 23:44:47.975 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 56519 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
+2026-06-10 23:44:47.975 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
+2026-06-10 23:44:47.975 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
+2026-06-10 23:44:48.653 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
+2026-06-10 23:44:48.653 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-10 23:44:48.653 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-06-10 23:44:48.673 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-10 23:44:48.712 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-06-10 23:44:49.608 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-06-10 23:44:49.986 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-06-10 23:44:50.019 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'aiAgentController' defined in file [/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes/com/todo/app/controller/AiAgentController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'aiAgentServiceImpl' defined in file [/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes/com/todo/app/service/impl/AiAgentServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'dashscopeChatModel' defined in class path resource [com/alibaba/cloud/ai/autoconfigure/dashscope/DashScopeChatAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dashscopeChatModel' parameter 2: Error creating bean with name 'spring.ai.dashscope.chat-com.alibaba.cloud.ai.autoconfigure.dashscope.DashScopeChatProperties': Could not bind properties to 'DashScopeChatProperties' : prefix=spring.ai.dashscope.chat, ignoreInvalidFields=false, ignoreUnknownFields=true
+2026-06-10 23:44:50.023 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-10 23:44:50.090 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-06-10 23:44:50.092 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2026-06-10 23:44:50.113 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'spring.ai.dashscope.chat.options' to com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions:
+
+    Property: spring.ai.dashscope.chat.options.max-tokens
+    Value: "2000"
+    Origin: class path resource [application-dev.yml] - 122:23
+    Reason: java.lang.IllegalStateException: No setter found for property: max-tokens
+
+Action:
+
+Update your application's configuration
+

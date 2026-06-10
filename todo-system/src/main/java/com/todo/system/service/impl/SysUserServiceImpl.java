@@ -3,6 +3,7 @@ package com.todo.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.common.entity.SysUser;
+import com.todo.common.utils.StringUtils;
 import com.todo.system.mapper.SysUserMapper;
 import com.todo.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
-     * 添加微信小程序用户
+     * 添加用户
      * */
     @Override
     public Long addUser(SysUser sysUser) {
@@ -55,16 +56,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         boolean success = save(sysUser);
 
         if (success) {
-            // 获取用户 Id
             Long userId = sysUser.getId();
-            // 用用户 Id 作为用户名更新
-            String username = String.valueOf(userId);
-            sysUser.setUsername(username);
-            // 更新用户名字段
-            this.lambdaUpdate()
-                    .eq(SysUser::getId, userId)
-                    .set(SysUser::getUsername, username)
-                    .update();
+
+            if (StringUtils.isEmpty(sysUser.getUsername())) {
+                String username = String.valueOf(userId);
+                sysUser.setUsername(username);
+                this.lambdaUpdate()
+                        .eq(SysUser::getId, userId)
+                        .set(SysUser::getUsername, username)
+                        .update();
+            }
 
             return sysUser.getId();
         }

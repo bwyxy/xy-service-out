@@ -13,4 +13,8 @@ public class WeChatLoginVo {
     private String token;
 
     private String openid;
+
+    private String nickname;
+
+    private String avatar;
 }

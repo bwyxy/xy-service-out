@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 待办任务 dto
@@ -63,4 +64,9 @@ public class ToDoTaskDTO {
     @NotNull(message = "结束时间不能为空")
     @JsonProperty("due_date")
     private LocalDateTime dueDate;
+
+    /**
+     * 标签 ID
+     * */
+    private List<Long> tagIds;
 }
