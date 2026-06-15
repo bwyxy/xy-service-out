@@ -1,918 +1,380 @@
-2026-06-10 00:02:34.840 [http-nio-9030-exec-6] ERROR c.t.f.s.f.JwtAuthenticationFilter - 无法设置用户认证信息：oKF7M5IL-O7ei3moZAfkkUG8ge3I 用户不存在
-2026-06-10 00:02:34.844 [http-nio-9030-exec-6] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-java.lang.SecurityException: 获取登录失败
-	at com.todo.framework.security.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:70)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:34:40.947 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-10 00:34:40.948 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-10 00:34:43.068 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-06-10 00:34:43.084 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 77505 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
-2026-06-10 00:34:43.084 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
-2026-06-10 00:34:43.084 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
-2026-06-10 00:34:43.697 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
-2026-06-10 00:34:43.698 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-06-10 00:34:43.698 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-06-10 00:34:43.713 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-06-10 00:34:43.751 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-06-10 00:34:44.642 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-06-10 00:34:45.006 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-06-10 00:34:45.241 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
-2026-06-10 00:34:45.451 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@320b6280, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@68c09862, org.springframework.security.web.context.SecurityContextHolderFilter@1178f802, org.springframework.security.web.header.HeaderWriterFilter@5b96ff53, org.springframework.web.filter.CorsFilter@4fe6fa45, org.springframework.security.web.authentication.logout.LogoutFilter@5019acba, com.todo.framework.security.filter.JwtAuthenticationFilter@7e786006, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2e427f2e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1e9fd352, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@28f76c98, org.springframework.security.web.session.SessionManagementFilter@20291bc3, org.springframework.security.web.access.ExceptionTranslationFilter@16d85593, org.springframework.security.web.access.intercept.AuthorizationFilter@27b0d5e]
-2026-06-10 00:34:45.625 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
-2026-06-10 00:34:45.652 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
-2026-06-10 00:34:45.664 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 2.779 seconds (process running for 3.072)
-2026-06-10 00:34:55.352 [http-nio-9030-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-10 00:34:55.352 [http-nio-9030-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-06-10 00:34:55.356 [http-nio-9030-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
-2026-06-10 00:34:55.365 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 00:34:55.391 [http-nio-9030-exec-2] ERROR c.t.f.provider.JwtTokenProvider - JWT 解析失败：The specified key byte array is 144 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
-2026-06-10 00:34:55.392 [http-nio-9030-exec-2] ERROR c.t.f.s.f.JwtAuthenticationFilter - 无法设置用户认证信息：JWT 解析失败：The specified key byte array is 144 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
-2026-06-10 00:34:55.393 [http-nio-9030-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 00:34:55.393 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 00:34:55.596 [http-nio-9030-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-java.lang.SecurityException: 获取登录失败
-	at com.todo.framework.security.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:70)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:34:55.600 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 00:34:55.600 [http-nio-9030-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 00:34:55.600 [http-nio-9030-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] threw exception
-org.springframework.security.access.AccessDeniedException: Access Denied
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:98)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:91)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:642)
-	at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:520)
-	at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:463)
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:343)
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:222)
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:308)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:34:55.601 [http-nio-9030-exec-2] ERROR o.a.c.c.C.[Tomcat].[localhost] - Exception Processing [ErrorPage[errorCode=0, location=/error]]
-jakarta.servlet.ServletException: Unable to handle the Spring Security Exception because the response is already committed.
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:144)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:91)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:642)
-	at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:520)
-	at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:463)
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:343)
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:222)
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:308)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-Caused by: org.springframework.security.access.AccessDeniedException: Access Denied
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:98)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-	... 67 common frames omitted
-2026-06-10 00:35:57.738 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/swiper
-2026-06-10 00:35:57.738 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/utils
-2026-06-10 00:35:57.746 [http-nio-9030-exec-3] ERROR c.t.f.provider.JwtTokenProvider - JWT 解析失败：The specified key byte array is 144 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
-2026-06-10 00:35:57.746 [http-nio-9030-exec-1] ERROR c.t.f.provider.JwtTokenProvider - JWT 解析失败：The specified key byte array is 144 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
-2026-06-10 00:35:57.746 [http-nio-9030-exec-3] ERROR c.t.f.s.f.JwtAuthenticationFilter - 无法设置用户认证信息：JWT 解析失败：The specified key byte array is 144 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
-2026-06-10 00:35:57.746 [http-nio-9030-exec-1] ERROR c.t.f.s.f.JwtAuthenticationFilter - 无法设置用户认证信息：JWT 解析失败：The specified key byte array is 144 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
-2026-06-10 00:35:57.747 [http-nio-9030-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 00:35:57.747 [http-nio-9030-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 00:35:57.747 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/swiper
-2026-06-10 00:35:57.747 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/utils
-2026-06-10 00:35:57.805 [http-nio-9030-exec-1] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-java.lang.SecurityException: 获取登录失败
-	at com.todo.framework.security.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:70)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:35:57.805 [http-nio-9030-exec-3] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-java.lang.SecurityException: 获取登录失败
-	at com.todo.framework.security.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:70)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:35:57.807 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/utils
-2026-06-10 00:35:57.807 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/swiper
-2026-06-10 00:35:57.807 [http-nio-9030-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 00:35:57.807 [http-nio-9030-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 00:35:57.808 [http-nio-9030-exec-3] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] threw exception
-org.springframework.security.access.AccessDeniedException: Access Denied
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:98)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:91)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:642)
-	at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:520)
-	at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:463)
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:343)
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:222)
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:308)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:35:57.808 [http-nio-9030-exec-1] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] threw exception
-org.springframework.security.access.AccessDeniedException: Access Denied
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:98)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:91)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:642)
-	at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:520)
-	at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:463)
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:343)
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:222)
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:308)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-2026-06-10 00:35:57.808 [http-nio-9030-exec-1] ERROR o.a.c.c.C.[Tomcat].[localhost] - Exception Processing [ErrorPage[errorCode=0, location=/error]]
-jakarta.servlet.ServletException: Unable to handle the Spring Security Exception because the response is already committed.
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:144)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:91)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:642)
-	at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:520)
-	at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:463)
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:343)
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:222)
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:308)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-Caused by: org.springframework.security.access.AccessDeniedException: Access Denied
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:98)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-	... 67 common frames omitted
-2026-06-10 00:35:57.808 [http-nio-9030-exec-3] ERROR o.a.c.c.C.[Tomcat].[localhost] - Exception Processing [ErrorPage[errorCode=0, location=/error]]
-jakarta.servlet.ServletException: Unable to handle the Spring Security Exception because the response is already committed.
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:144)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:91)
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:101)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:642)
-	at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:520)
-	at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:463)
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:343)
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:222)
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:308)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:149)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-Caused by: org.springframework.security.access.AccessDeniedException: Access Denied
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:98)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-	... 67 common frames omitted
-2026-06-10 01:04:43.897 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-10 01:04:43.900 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-10 01:04:57.370 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-06-10 01:04:57.398 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 78785 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
-2026-06-10 01:04:57.398 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
-2026-06-10 01:04:57.399 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
-2026-06-10 01:04:58.126 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
-2026-06-10 01:04:58.127 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-06-10 01:04:58.127 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-06-10 01:04:58.143 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-06-10 01:04:58.183 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-06-10 01:04:59.114 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-06-10 01:04:59.542 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-06-10 01:04:59.850 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
-2026-06-10 01:05:00.129 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3f71529a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@546dbf94, org.springframework.security.web.context.SecurityContextHolderFilter@2a159447, org.springframework.security.web.header.HeaderWriterFilter@5c4572a9, org.springframework.web.filter.CorsFilter@57fd2d92, org.springframework.security.web.authentication.logout.LogoutFilter@5d4fd8c7, com.todo.framework.security.filter.JwtAuthenticationFilter@2b404718, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@139e1ab5, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2691e606, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@46e2e569, org.springframework.security.web.session.SessionManagementFilter@55a84955, org.springframework.security.web.access.ExceptionTranslationFilter@2f42c863, org.springframework.security.web.access.intercept.AuthorizationFilter@8dc757d]
-2026-06-10 01:05:00.334 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
-2026-06-10 01:05:00.362 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
-2026-06-10 01:05:00.377 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 3.261 seconds (process running for 3.558)
-2026-06-10 01:05:17.026 [http-nio-9030-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-10 01:05:17.026 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-06-10 01:05:17.032 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 6 ms
-2026-06-10 01:05:17.042 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 01:05:17.045 [http-nio-9030-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 01:05:17.045 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 01:05:21.641 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 01:05:21.642 [http-nio-9030-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 01:05:21.642 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 01:05:29.724 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /wechat/login?code=0d3hqe000oI5xW1ZnV200kUObp3hqe0F
-2026-06-10 01:05:29.725 [http-nio-9030-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
-2026-06-10 01:05:29.725 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /wechat/login?code=0d3hqe000oI5xW1ZnV200kUObp3hqe0F
-2026-06-10 01:05:30.086 [http-nio-9030-exec-3] DEBUG c.t.f.provider.JwtTokenProvider - 生成 JWT: subject=10000002, 过期时间=Thu Jun 11 01:05:30 CST 2026
-2026-06-10 01:05:30.109 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
-2026-06-10 01:05:30.160 [http-nio-9030-exec-4] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:05:30.160 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
-2026-06-10 01:06:10.710 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 01:06:10.751 [http-nio-9030-exec-5] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:06:10.752 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 01:06:15.586 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 01:06:15.613 [http-nio-9030-exec-6] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:06:15.614 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 01:07:03.959 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 01:07:04.016 [http-nio-9030-exec-9] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:07:04.017 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 01:07:09.722 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 01:07:09.751 [http-nio-9030-exec-7] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:07:09.751 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 01:07:52.345 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 01:07:52.397 [http-nio-9030-exec-8] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:07:52.397 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 01:07:56.037 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 01:07:56.089 [http-nio-9030-exec-10] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:07:56.090 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 01:08:12.772 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 01:08:12.819 [http-nio-9030-exec-11] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:08:12.820 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 01:08:16.854 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 01:08:16.877 [http-nio-9030-exec-12] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:08:16.877 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 01:08:48.721 [http-nio-9030-exec-13] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 01:08:48.830 [http-nio-9030-exec-13] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:08:48.831 [http-nio-9030-exec-13] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 01:08:53.168 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
-2026-06-10 01:08:53.226 [http-nio-9030-exec-14] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 01:08:53.226 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
-2026-06-10 07:00:22.846 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-10 07:00:22.849 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-10 07:00:25.563 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-06-10 07:00:25.586 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 85325 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
-2026-06-10 07:00:25.586 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
-2026-06-10 07:00:25.586 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
-2026-06-10 07:00:26.317 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
-2026-06-10 07:00:26.318 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-06-10 07:00:26.318 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-06-10 07:00:26.333 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-06-10 07:00:26.368 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-06-10 07:00:27.236 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-06-10 07:00:27.631 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-06-10 07:00:27.878 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
-2026-06-10 07:00:28.085 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7eef8f78, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@462667c3, org.springframework.security.web.context.SecurityContextHolderFilter@2a39a617, org.springframework.security.web.header.HeaderWriterFilter@245b0d33, org.springframework.web.filter.CorsFilter@96aec42, org.springframework.security.web.authentication.logout.LogoutFilter@34408edd, com.todo.framework.security.filter.JwtAuthenticationFilter@2bfc4032, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3a86f805, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@59877174, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@32b3d917, org.springframework.security.web.session.SessionManagementFilter@1c65966e, org.springframework.security.web.access.ExceptionTranslationFilter@44ba166c, org.springframework.security.web.access.intercept.AuthorizationFilter@28c20660]
-2026-06-10 07:00:28.254 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
-2026-06-10 07:00:28.280 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
-2026-06-10 07:00:28.290 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 2.944 seconds (process running for 3.316)
-2026-06-10 07:41:53.029 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-10 07:41:53.032 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-10 07:41:55.340 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-06-10 07:41:55.390 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 86675 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
-2026-06-10 07:41:55.390 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
-2026-06-10 07:41:55.391 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
-2026-06-10 07:41:56.063 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
-2026-06-10 07:41:56.064 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-06-10 07:41:56.064 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-06-10 07:41:56.079 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-06-10 07:41:56.116 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-06-10 07:41:57.080 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-06-10 07:41:57.450 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-06-10 07:41:57.685 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.TodoTaskCollaborator ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
-2026-06-10 07:41:57.709 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
-2026-06-10 07:41:57.925 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3e01dd4f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@72579e6e, org.springframework.security.web.context.SecurityContextHolderFilter@7620b403, org.springframework.security.web.header.HeaderWriterFilter@2db47e45, org.springframework.web.filter.CorsFilter@1cafdee9, org.springframework.security.web.authentication.logout.LogoutFilter@10a9ffd, com.todo.framework.security.filter.JwtAuthenticationFilter@20b507b4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2de956b8, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7b9113f4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@49f57642, org.springframework.security.web.session.SessionManagementFilter@50f57019, org.springframework.security.web.access.ExceptionTranslationFilter@2107cbfe, org.springframework.security.web.access.intercept.AuthorizationFilter@312fa6bf]
-2026-06-10 07:41:58.098 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
-2026-06-10 07:41:58.126 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
-2026-06-10 07:41:58.142 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 3.037 seconds (process running for 3.393)
-2026-06-10 07:43:45.912 [http-nio-9030-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-10 07:43:45.913 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-06-10 07:43:45.915 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-2026-06-10 07:43:45.930 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:43:46.277 [http-nio-9030-exec-1] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:43:46.279 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:44:00.863 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:44:00.942 [http-nio-9030-exec-2] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:44:00.943 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:44:51.891 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:44:51.954 [http-nio-9030-exec-3] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:44:51.954 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:44:52.324 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:44:52.368 [http-nio-9030-exec-4] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:44:52.368 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:45:06.257 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:45:06.315 [http-nio-9030-exec-5] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:45:06.316 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:46:46.854 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:46:46.929 [http-nio-9030-exec-7] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:46:46.930 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:47:25.566 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:47:25.634 [http-nio-9030-exec-8] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:47:25.635 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:47:46.117 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:47:46.183 [http-nio-9030-exec-9] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:47:46.184 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:47:59.810 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:47:59.866 [http-nio-9030-exec-10] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:47:59.866 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:48:13.998 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:48:14.043 [http-nio-9030-exec-11] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:48:14.044 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:48:26.099 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:48:26.173 [http-nio-9030-exec-12] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:48:26.174 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:49:47.911 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:49:47.979 [http-nio-9030-exec-14] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:49:47.980 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:50:03.295 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:50:03.355 [http-nio-9030-exec-15] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:50:03.357 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 07:51:53.966 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
-2026-06-10 07:51:54.046 [http-nio-9030-exec-17] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：10000002
-2026-06-10 07:51:54.047 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
-2026-06-10 23:44:45.110 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-10 23:44:45.119 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-10 23:44:47.957 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-06-10 23:44:47.975 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 56519 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
-2026-06-10 23:44:47.975 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
-2026-06-10 23:44:47.975 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
-2026-06-10 23:44:48.653 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
-2026-06-10 23:44:48.653 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-06-10 23:44:48.653 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-06-10 23:44:48.673 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-06-10 23:44:48.712 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-06-10 23:44:49.608 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-06-10 23:44:49.986 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-06-10 23:44:50.019 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'aiAgentController' defined in file [/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes/com/todo/app/controller/AiAgentController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'aiAgentServiceImpl' defined in file [/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes/com/todo/app/service/impl/AiAgentServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'dashscopeChatModel' defined in class path resource [com/alibaba/cloud/ai/autoconfigure/dashscope/DashScopeChatAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dashscopeChatModel' parameter 2: Error creating bean with name 'spring.ai.dashscope.chat-com.alibaba.cloud.ai.autoconfigure.dashscope.DashScopeChatProperties': Could not bind properties to 'DashScopeChatProperties' : prefix=spring.ai.dashscope.chat, ignoreInvalidFields=false, ignoreUnknownFields=true
-2026-06-10 23:44:50.023 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-10 23:44:50.090 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-10 23:44:50.092 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2026-06-10 23:44:50.113 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Failed to bind properties under 'spring.ai.dashscope.chat.options' to com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions:
-
-    Property: spring.ai.dashscope.chat.options.max-tokens
-    Value: "2000"
-    Origin: class path resource [application-dev.yml] - 122:23
-    Reason: java.lang.IllegalStateException: No setter found for property: max-tokens
-
-Action:
-
-Update your application's configuration
-
+2026-06-15 07:38:34.425 [http-nio-9030-exec-46] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:38:34.525 [http-nio-9030-exec-47] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:38:34.572 [http-nio-9030-exec-48] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:38:34.623 [http-nio-9030-exec-46] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:38:34.623 [http-nio-9030-exec-46] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:38:34.640 [http-nio-9030-exec-47] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:38:34.640 [http-nio-9030-exec-47] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:38:34.658 [http-nio-9030-exec-48] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:38:34.661 [http-nio-9030-exec-48] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:38:48.249 [http-nio-9030-exec-49] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:38:48.269 [http-nio-9030-exec-49] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:38:48.269 [http-nio-9030-exec-49] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:38:48.349 [http-nio-9030-exec-50] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:38:48.378 [http-nio-9030-exec-50] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:38:48.378 [http-nio-9030-exec-50] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:38:48.422 [http-nio-9030-exec-51] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:38:48.443 [http-nio-9030-exec-51] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:38:48.443 [http-nio-9030-exec-51] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:39:20.283 [http-nio-9030-exec-52] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:39:20.305 [http-nio-9030-exec-52] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:39:20.305 [http-nio-9030-exec-52] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:39:20.392 [http-nio-9030-exec-53] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:39:20.411 [http-nio-9030-exec-53] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:39:20.411 [http-nio-9030-exec-53] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:39:20.476 [http-nio-9030-exec-54] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:39:20.495 [http-nio-9030-exec-54] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:39:20.496 [http-nio-9030-exec-54] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:39:22.605 [http-nio-9030-exec-55] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:39:22.628 [http-nio-9030-exec-55] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:39:22.628 [http-nio-9030-exec-55] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:40:13.926 [http-nio-9030-exec-59] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:40:13.945 [http-nio-9030-exec-59] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:40:13.946 [http-nio-9030-exec-59] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:40:14.041 [http-nio-9030-exec-58] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:40:14.060 [http-nio-9030-exec-58] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:40:14.060 [http-nio-9030-exec-58] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:40:14.088 [http-nio-9030-exec-60] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:40:14.107 [http-nio-9030-exec-60] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:40:14.107 [http-nio-9030-exec-60] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:47:52.179 [http-nio-9030-exec-62] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:47:52.223 [http-nio-9030-exec-62] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:47:52.223 [http-nio-9030-exec-62] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:47:52.281 [http-nio-9030-exec-63] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:47:52.298 [http-nio-9030-exec-63] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:47:52.298 [http-nio-9030-exec-63] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:47:52.327 [http-nio-9030-exec-64] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:47:52.349 [http-nio-9030-exec-64] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:47:52.349 [http-nio-9030-exec-64] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:48:01.671 [http-nio-9030-exec-65] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:48:01.692 [http-nio-9030-exec-65] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:48:01.692 [http-nio-9030-exec-65] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:49:58.315 [http-nio-9030-exec-68] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:49:58.354 [http-nio-9030-exec-68] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:49:58.354 [http-nio-9030-exec-68] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:49:58.424 [http-nio-9030-exec-69] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:49:58.446 [http-nio-9030-exec-69] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:49:58.447 [http-nio-9030-exec-69] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:49:58.506 [http-nio-9030-exec-70] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:49:58.544 [http-nio-9030-exec-70] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:49:58.544 [http-nio-9030-exec-70] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:50:01.910 [http-nio-9030-exec-71] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:50:01.935 [http-nio-9030-exec-71] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:50:01.935 [http-nio-9030-exec-71] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:53:26.281 [http-nio-9030-exec-74] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:53:26.328 [http-nio-9030-exec-74] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:26.329 [http-nio-9030-exec-74] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:53:26.386 [http-nio-9030-exec-75] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:53:26.405 [http-nio-9030-exec-75] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:26.405 [http-nio-9030-exec-75] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:53:26.436 [http-nio-9030-exec-76] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:53:26.456 [http-nio-9030-exec-76] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:26.456 [http-nio-9030-exec-76] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:53:30.282 [http-nio-9030-exec-77] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:53:30.303 [http-nio-9030-exec-77] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:30.303 [http-nio-9030-exec-77] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:53:51.392 [http-nio-9030-exec-78] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:53:51.410 [http-nio-9030-exec-78] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:51.410 [http-nio-9030-exec-78] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:53:51.487 [http-nio-9030-exec-79] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:53:51.525 [http-nio-9030-exec-79] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:51.525 [http-nio-9030-exec-79] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:53:51.539 [http-nio-9030-exec-80] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:53:51.576 [http-nio-9030-exec-80] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:51.576 [http-nio-9030-exec-80] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:53:54.024 [http-nio-9030-exec-81] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:53:54.044 [http-nio-9030-exec-81] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:53:54.045 [http-nio-9030-exec-81] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:55:23.766 [http-nio-9030-exec-84] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:55:23.799 [http-nio-9030-exec-84] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:23.799 [http-nio-9030-exec-84] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:55:23.857 [http-nio-9030-exec-85] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:55:23.876 [http-nio-9030-exec-85] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:23.876 [http-nio-9030-exec-85] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:55:23.916 [http-nio-9030-exec-86] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:55:23.935 [http-nio-9030-exec-86] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:23.936 [http-nio-9030-exec-86] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:55:34.248 [http-nio-9030-exec-88] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:55:34.269 [http-nio-9030-exec-88] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:34.270 [http-nio-9030-exec-88] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:55:34.353 [http-nio-9030-exec-87] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:55:34.371 [http-nio-9030-exec-87] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:34.371 [http-nio-9030-exec-87] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:55:34.424 [http-nio-9030-exec-89] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:55:34.445 [http-nio-9030-exec-89] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:34.445 [http-nio-9030-exec-89] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:55:37.381 [http-nio-9030-exec-90] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:55:37.402 [http-nio-9030-exec-90] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:55:37.402 [http-nio-9030-exec-90] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:57:19.805 [http-nio-9030-exec-92] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:57:19.837 [http-nio-9030-exec-92] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:19.837 [http-nio-9030-exec-92] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:57:19.892 [http-nio-9030-exec-93] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:57:19.909 [http-nio-9030-exec-93] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:19.910 [http-nio-9030-exec-93] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:57:19.948 [http-nio-9030-exec-94] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:57:19.967 [http-nio-9030-exec-94] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:19.968 [http-nio-9030-exec-94] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:57:22.529 [http-nio-9030-exec-96] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:57:22.550 [http-nio-9030-exec-96] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:22.551 [http-nio-9030-exec-96] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:57:41.543 [http-nio-9030-exec-95] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:57:41.567 [http-nio-9030-exec-95] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:41.567 [http-nio-9030-exec-95] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:57:41.631 [http-nio-9030-exec-97] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:57:41.649 [http-nio-9030-exec-97] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:41.650 [http-nio-9030-exec-97] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:57:41.688 [http-nio-9030-exec-98] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:57:41.707 [http-nio-9030-exec-98] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:41.707 [http-nio-9030-exec-98] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:57:44.758 [http-nio-9030-exec-99] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:57:44.781 [http-nio-9030-exec-99] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:57:44.782 [http-nio-9030-exec-99] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:58:09.096 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:58:09.116 [http-nio-9030-exec-3] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:09.116 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:58:09.191 [http-nio-9030-exec-100] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:58:09.208 [http-nio-9030-exec-100] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:09.208 [http-nio-9030-exec-100] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:58:09.236 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:58:09.255 [http-nio-9030-exec-5] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:09.255 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:58:11.458 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:58:11.480 [http-nio-9030-exec-1] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:11.480 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:58:55.283 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:58:55.304 [http-nio-9030-exec-2] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:55.304 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:58:55.387 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:58:55.405 [http-nio-9030-exec-4] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:55.405 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:58:55.445 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:58:55.464 [http-nio-9030-exec-7] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:55.464 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:58:57.208 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:58:57.229 [http-nio-9030-exec-6] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:58:57.229 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:59:53.356 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 07:59:53.376 [http-nio-9030-exec-8] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:59:53.376 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 07:59:53.445 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:59:53.471 [http-nio-9030-exec-9] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:59:53.471 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 07:59:53.501 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 07:59:53.519 [http-nio-9030-exec-10] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:59:53.519 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 07:59:55.425 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 07:59:55.450 [http-nio-9030-exec-11] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 07:59:55.451 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:01:10.274 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:01:10.308 [http-nio-9030-exec-14] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:10.308 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:01:10.392 [http-nio-9030-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:01:10.413 [http-nio-9030-exec-16] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:10.414 [http-nio-9030-exec-16] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:01:10.432 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:01:10.451 [http-nio-9030-exec-15] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:10.451 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:01:12.808 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:01:12.836 [http-nio-9030-exec-17] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:12.836 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:01:52.374 [http-nio-9030-exec-19] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:01:52.395 [http-nio-9030-exec-19] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:52.395 [http-nio-9030-exec-19] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:01:52.468 [http-nio-9030-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:01:52.487 [http-nio-9030-exec-18] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:52.487 [http-nio-9030-exec-18] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:01:52.524 [http-nio-9030-exec-21] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:01:52.544 [http-nio-9030-exec-21] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:52.544 [http-nio-9030-exec-21] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:01:54.923 [http-nio-9030-exec-20] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:01:54.947 [http-nio-9030-exec-20] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:01:54.948 [http-nio-9030-exec-20] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:02:22.603 [http-nio-9030-exec-23] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:02:22.622 [http-nio-9030-exec-23] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:02:22.622 [http-nio-9030-exec-23] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:02:22.688 [http-nio-9030-exec-24] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:02:22.706 [http-nio-9030-exec-24] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:02:22.707 [http-nio-9030-exec-24] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:02:22.733 [http-nio-9030-exec-25] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:02:22.752 [http-nio-9030-exec-25] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:02:22.752 [http-nio-9030-exec-25] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:02:25.096 [http-nio-9030-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:02:25.118 [http-nio-9030-exec-26] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:02:25.119 [http-nio-9030-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:03:26.058 [http-nio-9030-exec-28] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:03:26.093 [http-nio-9030-exec-28] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:03:26.094 [http-nio-9030-exec-28] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:03:26.147 [http-nio-9030-exec-29] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:03:26.165 [http-nio-9030-exec-29] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:03:26.165 [http-nio-9030-exec-29] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:03:26.199 [http-nio-9030-exec-30] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:03:26.219 [http-nio-9030-exec-30] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:03:26.219 [http-nio-9030-exec-30] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:03:29.294 [http-nio-9030-exec-31] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:03:29.313 [http-nio-9030-exec-31] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:03:29.314 [http-nio-9030-exec-31] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:04:05.553 [http-nio-9030-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:04:05.573 [http-nio-9030-exec-32] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:05.573 [http-nio-9030-exec-32] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:04:05.647 [http-nio-9030-exec-33] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:04:05.664 [http-nio-9030-exec-33] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:05.664 [http-nio-9030-exec-33] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:04:05.707 [http-nio-9030-exec-34] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:04:05.727 [http-nio-9030-exec-34] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:05.727 [http-nio-9030-exec-34] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:04:07.274 [http-nio-9030-exec-35] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:04:07.294 [http-nio-9030-exec-35] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:07.295 [http-nio-9030-exec-35] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:04:26.042 [http-nio-9030-exec-36] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:04:26.061 [http-nio-9030-exec-36] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:26.061 [http-nio-9030-exec-36] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:04:26.136 [http-nio-9030-exec-37] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:04:26.154 [http-nio-9030-exec-37] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:26.154 [http-nio-9030-exec-37] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:04:26.207 [http-nio-9030-exec-38] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:04:26.232 [http-nio-9030-exec-38] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:26.232 [http-nio-9030-exec-38] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:04:28.177 [http-nio-9030-exec-39] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:04:28.199 [http-nio-9030-exec-39] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:04:28.199 [http-nio-9030-exec-39] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:05:03.295 [http-nio-9030-exec-40] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:05:03.312 [http-nio-9030-exec-40] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:03.312 [http-nio-9030-exec-40] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:05:03.381 [http-nio-9030-exec-41] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:05:03.398 [http-nio-9030-exec-41] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:03.398 [http-nio-9030-exec-41] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:05:03.435 [http-nio-9030-exec-42] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:05:03.453 [http-nio-9030-exec-42] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:03.454 [http-nio-9030-exec-42] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:05:05.437 [http-nio-9030-exec-43] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:05:05.459 [http-nio-9030-exec-43] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:05.460 [http-nio-9030-exec-43] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:05:20.729 [http-nio-9030-exec-44] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:05:20.748 [http-nio-9030-exec-44] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:20.748 [http-nio-9030-exec-44] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:05:20.822 [http-nio-9030-exec-45] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:05:20.841 [http-nio-9030-exec-45] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:20.842 [http-nio-9030-exec-45] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:05:20.876 [http-nio-9030-exec-48] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:05:20.896 [http-nio-9030-exec-48] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:20.896 [http-nio-9030-exec-48] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:05:22.624 [http-nio-9030-exec-46] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:05:22.644 [http-nio-9030-exec-46] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:05:22.645 [http-nio-9030-exec-46] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:06:38.211 [http-nio-9030-exec-49] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:06:38.244 [http-nio-9030-exec-49] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:06:38.244 [http-nio-9030-exec-49] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:06:38.298 [http-nio-9030-exec-50] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:06:38.315 [http-nio-9030-exec-50] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:06:38.316 [http-nio-9030-exec-50] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:06:38.356 [http-nio-9030-exec-51] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:06:38.377 [http-nio-9030-exec-51] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:06:38.378 [http-nio-9030-exec-51] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:06:41.551 [http-nio-9030-exec-52] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:06:41.573 [http-nio-9030-exec-52] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:06:41.574 [http-nio-9030-exec-52] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:12:34.865 [http-nio-9030-exec-54] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:12:34.901 [http-nio-9030-exec-54] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:12:34.901 [http-nio-9030-exec-54] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:12:34.960 [http-nio-9030-exec-55] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:12:34.977 [http-nio-9030-exec-55] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:12:34.977 [http-nio-9030-exec-55] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:12:35.033 [http-nio-9030-exec-56] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:12:35.053 [http-nio-9030-exec-56] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:12:35.053 [http-nio-9030-exec-56] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:12:38.565 [http-nio-9030-exec-57] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:12:38.586 [http-nio-9030-exec-57] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:12:38.587 [http-nio-9030-exec-57] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:13:08.997 [http-nio-9030-exec-59] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:13:09.016 [http-nio-9030-exec-59] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:13:09.016 [http-nio-9030-exec-59] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:13:09.089 [http-nio-9030-exec-58] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:13:09.109 [http-nio-9030-exec-58] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:13:09.110 [http-nio-9030-exec-58] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:13:09.145 [http-nio-9030-exec-60] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:13:09.165 [http-nio-9030-exec-60] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:13:09.165 [http-nio-9030-exec-60] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:13:11.769 [http-nio-9030-exec-61] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:13:11.791 [http-nio-9030-exec-61] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:13:11.792 [http-nio-9030-exec-61] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:13:13.081 [http-nio-9030-exec-62] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:13:13.100 [http-nio-9030-exec-62] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:13:13.101 [http-nio-9030-exec-62] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:13:15.526 [http-nio-9030-exec-63] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:13:15.545 [http-nio-9030-exec-63] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:13:15.545 [http-nio-9030-exec-63] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:14:02.981 [http-nio-9030-exec-64] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:14:03.001 [http-nio-9030-exec-64] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:03.001 [http-nio-9030-exec-64] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:14:03.074 [http-nio-9030-exec-65] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:14:03.093 [http-nio-9030-exec-65] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:03.093 [http-nio-9030-exec-65] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:14:03.142 [http-nio-9030-exec-66] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:14:03.162 [http-nio-9030-exec-66] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:03.162 [http-nio-9030-exec-66] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:14:06.671 [http-nio-9030-exec-67] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:14:06.691 [http-nio-9030-exec-67] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:06.691 [http-nio-9030-exec-67] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:14:07.854 [http-nio-9030-exec-68] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/userMenu
+2026-06-15 08:14:07.874 [http-nio-9030-exec-68] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:07.874 [http-nio-9030-exec-68] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/userMenu
+2026-06-15 08:14:07.886 [http-nio-9030-exec-70] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:14:07.910 [http-nio-9030-exec-70] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:07.910 [http-nio-9030-exec-70] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:14:09.670 [http-nio-9030-exec-69] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:14:09.688 [http-nio-9030-exec-69] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:09.689 [http-nio-9030-exec-69] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:14:59.041 [http-nio-9030-exec-71] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:14:59.057 [http-nio-9030-exec-71] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:59.057 [http-nio-9030-exec-71] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:14:59.144 [http-nio-9030-exec-72] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:14:59.163 [http-nio-9030-exec-72] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:59.163 [http-nio-9030-exec-72] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:14:59.215 [http-nio-9030-exec-73] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:14:59.232 [http-nio-9030-exec-73] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:14:59.233 [http-nio-9030-exec-73] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:15:01.404 [http-nio-9030-exec-74] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:15:01.423 [http-nio-9030-exec-74] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:01.423 [http-nio-9030-exec-74] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:15:28.966 [http-nio-9030-exec-76] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:15:28.982 [http-nio-9030-exec-76] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:28.982 [http-nio-9030-exec-76] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:15:29.061 [http-nio-9030-exec-77] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:15:29.079 [http-nio-9030-exec-77] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:29.079 [http-nio-9030-exec-77] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:15:29.128 [http-nio-9030-exec-78] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:15:29.146 [http-nio-9030-exec-78] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:29.146 [http-nio-9030-exec-78] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:15:30.975 [http-nio-9030-exec-79] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:15:30.995 [http-nio-9030-exec-79] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:30.996 [http-nio-9030-exec-79] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:15:54.444 [http-nio-9030-exec-80] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:15:54.462 [http-nio-9030-exec-80] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:54.462 [http-nio-9030-exec-80] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:15:54.532 [http-nio-9030-exec-81] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:15:54.549 [http-nio-9030-exec-81] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:54.549 [http-nio-9030-exec-81] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:15:54.598 [http-nio-9030-exec-82] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:15:54.616 [http-nio-9030-exec-82] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:54.616 [http-nio-9030-exec-82] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:15:56.188 [http-nio-9030-exec-83] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:15:56.212 [http-nio-9030-exec-83] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:15:56.212 [http-nio-9030-exec-83] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:16:46.417 [http-nio-9030-exec-84] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-15 08:16:46.435 [http-nio-9030-exec-84] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:16:46.435 [http-nio-9030-exec-84] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-15 08:16:46.506 [http-nio-9030-exec-85] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:16:46.522 [http-nio-9030-exec-85] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:16:46.522 [http-nio-9030-exec-85] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 08:16:46.577 [http-nio-9030-exec-86] DEBUG o.s.security.web.FilterChainProxy - Securing GET /wechat/getInfo
+2026-06-15 08:16:46.596 [http-nio-9030-exec-86] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:16:46.597 [http-nio-9030-exec-86] DEBUG o.s.security.web.FilterChainProxy - Secured GET /wechat/getInfo
+2026-06-15 08:16:49.072 [http-nio-9030-exec-88] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 08:16:49.089 [http-nio-9030-exec-88] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 08:16:49.090 [http-nio-9030-exec-88] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 09:21:26.135 [http-nio-9030-exec-89] DEBUG o.s.security.web.FilterChainProxy - Securing POST /task/day
+2026-06-15 09:21:26.304 [http-nio-9030-exec-89] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-15 09:21:26.305 [http-nio-9030-exec-89] DEBUG o.s.security.web.FilterChainProxy - Secured POST /task/day
+2026-06-15 09:21:50.686 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-15 09:21:50.698 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed

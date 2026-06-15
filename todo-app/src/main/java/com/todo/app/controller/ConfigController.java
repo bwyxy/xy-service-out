@@ -4,9 +4,7 @@ import com.todo.app.service.IConfigService;
 import com.todo.common.annotation.Anonymous;
 import com.todo.common.core.domain.R;
 import com.todo.common.entity.SysConfig;
-import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +14,7 @@ import java.util.List;
 @Anonymous
 @RestController
 @RequestMapping("/config")
-public class configController {
+public class ConfigController {
 
     @Autowired
     private IConfigService configService;

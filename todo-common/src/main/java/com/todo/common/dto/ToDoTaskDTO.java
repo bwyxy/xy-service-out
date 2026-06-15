@@ -1,5 +1,6 @@
 package com.todo.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -55,6 +56,7 @@ public class ToDoTaskDTO {
      * */
     @Future(message = "开始时间必须是未来时间")
     @JsonProperty("startTime")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     /**
@@ -62,11 +64,13 @@ public class ToDoTaskDTO {
      * */
     @Future(message = "截止时间必须是未来时间")
     @NotNull(message = "结束时间不能为空")
-    @JsonProperty("due_date")
+    @JsonProperty("dueDate")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dueDate;
 
     /**
      * 标签 ID
      * */
+    @JsonProperty("tagIds")
     private List<Long> tagIds;
 }

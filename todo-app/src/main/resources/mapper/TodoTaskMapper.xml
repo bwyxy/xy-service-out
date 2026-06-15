@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todo.app.mapper.TodoTaskMapper">
+    
+    <resultMap id="TodoWithTagsMap" type="com.todo.common.entity.TodoTask">
+        <id column="task_id" property="taskId" />
+        <result column="user_id" property="userId" />
+        <result column="task_title" property="taskTitle" />
+        <result column="description" property="description" />
+        <result column="completed" property="completed" />
+        <result column="completion_time" property="completionTime" />
+        <result column="urgency_level" property="urgencyLevel" />
+        <result column="start_time" property="startTime" />
+        <result column="due_date" property="dueDate" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <collection property="tags" ofType="java.lang.String" javaType="java.util.ArrayList">
+            <result column="tag_name" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="TodoTagResult" type="com.todo.common.entity.TodoTag">
+        <id column="tag_id" property="tagId" />
+        <result column="tag_name" property="tagName" />
+    </resultMap>
+
+    <select id="selectTaskByDate" parameterType="TodoTask" resultMap="TodoWithTagsMap">
+        select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, t.tag_name from todo_task tt
+        left join todo_task_tag ttt on ttt.task_id = tt.task_id
+        left join todo_tag t on t.tag_id = ttt.tag_id
+        <where>
+            tt.user_id = #{userId}
+            and tt.due_date between #{startTime} and #{dueDate}
+            <if test="completed != null">
+                tt.completed = #{completed}
+            </if>
+        </where>
+        order by tt.due_date asc
+    </select>
+</mapper>

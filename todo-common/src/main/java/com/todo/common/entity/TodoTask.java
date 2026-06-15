@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.todo.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 待办任务表 todo_task
@@ -49,6 +51,7 @@ public class TodoTask extends BaseEntity implements Serializable {
     /**
      * 完成时间
      * */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime completionTime;
 
     /**
@@ -60,16 +63,35 @@ public class TodoTask extends BaseEntity implements Serializable {
     /**
      * 开始时间
      * */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     /**
      * 截止时间
      * */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dueDate;
+
+    private String createBy;
+
+    private String updateBy;
 
     /**
      * 用户信息
      * */
     @TableField(exist = false)
     private SysUser sysUser;
+
+    /**
+     * 标签
+     * */
+    @TableField(exist = false)
+    private List<String> tags;
+
+    public List<String> getTags() {
+        return tags;
+    }
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 }

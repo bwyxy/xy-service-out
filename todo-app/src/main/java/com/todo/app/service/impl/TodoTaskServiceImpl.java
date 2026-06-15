@@ -2,27 +2,39 @@ package com.todo.app.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.todo.app.mapper.TodoTaskMapper;
 import com.todo.app.service.ITodoTaskCollaboratorService;
 import com.todo.app.service.ITodoTaskService;
+import com.todo.app.service.ITodoTaskTagService;
 import com.todo.common.core.domain.PageResult;
 import com.todo.common.dto.ToDoTaskDTO;
 import com.todo.common.entity.TodoTask;
 import com.todo.common.utils.ContentCheckUtils;
 import com.todo.common.utils.SecurityUtils;
 import com.todo.common.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Slf4j
 @Service
 public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> implements ITodoTaskService {
 
     @Autowired
+    private TodoTaskMapper todoTaskMapper;
+
+    @Autowired
     private ITodoTaskCollaboratorService todoTaskCollaboratorService;
+
+    @Autowired
+    private ITodoTaskTagService todoTaskTagService;
 
     /**
      * 根据传入时间 查询当天任务
@@ -43,22 +55,23 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
 
         Long userId = SecurityUtils.getUserId();
 
-        LambdaQueryWrapper<TodoTask> queryWrapper = new LambdaQueryWrapper<>();
+        todoTask.setUserId(userId);
 
-        queryWrapper.eq(TodoTask::getUserId, userId)
-                .between(TodoTask::getDueDate, todoTask.getStartTime(), todoTask.getDueDate());
+        PageHelper.startPage(todoTask.getPageNum(), todoTask.getPageSize());
 
-        if (todoTask.getCompleted() != null) {
-            queryWrapper.eq(TodoTask::getCompleted, todoTask.getCompleted())
-                    .orderByDesc(TodoTask::getCompleted);
-        } else {
-            queryWrapper.orderByDesc(TodoTask::getDueDate);
-        }
+        List<TodoTask> todoTasks = todoTaskMapper.selectTaskByDate(todoTask);
 
-        Page<TodoTask> page = this.page(new Page<>(todoTask.getPageNum(), todoTask.getPageSize()), queryWrapper);
+        Page<TodoTask> page = (Page<TodoTask>) todoTasks;
 
-        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
-    }
+        PageResult<TodoTask> pageResult = new PageResult<>();
+
+        pageResult.setList(page.getResult());
+        pageResult.setTotal(page.getTotal());
+        pageResult.setPageNum((long) page.getPageNum());
+        pageResult.setPageSize((long) page.getPageSize());
+
+        return pageResult;
+    };
 
     /**
      * 根据任务 Id查询任务信息
@@ -108,7 +121,12 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
 
         // 将创建人加入为任务管理员
         if (success) {
-            todoTaskCollaboratorService.joinTaskCollaborator(userId, todoTask.getTaskId(), "1");
+            Long taskId = todoTask.getTaskId();
+            todoTaskCollaboratorService.joinTaskCollaborator(userId, taskId, "1");
+            // 添加标签关联
+            if (toDoTaskDTO.getTagIds() != null && !toDoTaskDTO.getTagIds().isEmpty()) {
+                todoTaskTagService.addTaskTags(taskId, toDoTaskDTO.getTagIds());
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import com.todo.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,11 +18,19 @@ import java.io.Serializable;
 @TableName("todo_tag")
 public class TodoTag extends BaseEntity implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 10000000L;
+
     /**
      * 标签 Id
      * */
     @TableId(value = "tag_id", type = IdType.AUTO)
     private Long tagId;
+
+    /**
+     * 关联用户 Id
+     * */
+    private Long userId;
 
     /**
      * 标签名称

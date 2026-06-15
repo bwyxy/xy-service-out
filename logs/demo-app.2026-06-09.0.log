@@ -1,85 +1,591 @@
-2026-06-09 23:20:01.922 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-06-09 23:20:01.933 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-06-09 23:20:04.040 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-06-09 23:20:04.056 [restartedMain] INFO  com.todo.app.CustomerApplication - Starting CustomerApplication using Java 17.0.18 with PID 74318 (/Users/xiaoyi/Desktop/my-project/todo-service/todo-app/target/classes started by xiaoyi in /Users/xiaoyi/Desktop/my-project/todo-service)
-2026-06-09 23:20:04.056 [restartedMain] DEBUG com.todo.app.CustomerApplication - Running with Spring Boot v3.2.4, Spring v6.1.5
-2026-06-09 23:20:04.056 [restartedMain] INFO  com.todo.app.CustomerApplication - The following 3 profiles are active: "dev", "base", "cp"
-2026-06-09 23:20:04.648 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9030"]
-2026-06-09 23:20:04.649 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-06-09 23:20:04.649 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
-2026-06-09 23:20:04.663 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-06-09 23:20:04.696 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-06-09 23:20:05.578 [restartedMain] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-06-09 23:20:05.963 [restartedMain] DEBUG c.t.f.s.f.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-06-09 23:20:06.214 [restartedMain] WARN  c.b.m.c.injector.DefaultSqlInjector - class com.todo.common.entity.SysArticleTag ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
-2026-06-09 23:20:06.420 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@43024471, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@33dd6b5c, org.springframework.security.web.context.SecurityContextHolderFilter@19a43f48, org.springframework.security.web.header.HeaderWriterFilter@4815fe24, org.springframework.web.filter.CorsFilter@5347e563, org.springframework.security.web.authentication.logout.LogoutFilter@50cf0dd4, com.todo.framework.security.filter.JwtAuthenticationFilter@7ce776c9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@75ceea24, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@69ff8fd8, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3aad6c30, org.springframework.security.web.session.SessionManagementFilter@29c470ed, org.springframework.security.web.access.ExceptionTranslationFilter@7b5d2ae7, org.springframework.security.web.access.intercept.AuthorizationFilter@392930d5]
-2026-06-09 23:20:06.590 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - Unable to start LiveReload server
-2026-06-09 23:20:06.616 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9030"]
-2026-06-09 23:20:06.629 [restartedMain] INFO  com.todo.app.CustomerApplication - Started CustomerApplication in 2.758 seconds (process running for 3.121)
-2026-06-09 23:59:44.370 [http-nio-9030-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-09 23:59:44.370 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-06-09 23:59:44.384 [http-nio-9030-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 14 ms
-2026-06-09 23:59:51.426 [http-nio-9030-exec-4] ERROR c.t.f.s.f.JwtAuthenticationFilter - 无法设置用户认证信息：oKF7M5IL-O7ei3moZAfkkUG8ge3I 用户不存在
-2026-06-09 23:59:51.485 [http-nio-9030-exec-4] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-java.lang.SecurityException: 获取登录失败
-	at com.todo.framework.security.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:70)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:840)
+2026-06-12 00:02:47.338 [http-nio-9030-exec-19] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:02:47.392 [http-nio-9030-exec-19] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:02:47.393 [http-nio-9030-exec-19] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:03:24.273 [http-nio-9030-exec-20] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:03:24.327 [http-nio-9030-exec-20] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:03:24.327 [http-nio-9030-exec-20] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:28:45.282 [http-nio-9030-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:28:45.506 [http-nio-9030-exec-22] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:28:45.509 [http-nio-9030-exec-22] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:29:38.104 [http-nio-9030-exec-23] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:29:38.160 [http-nio-9030-exec-23] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:29:38.160 [http-nio-9030-exec-23] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:32:13.974 [http-nio-9030-exec-25] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:32:14.046 [http-nio-9030-exec-25] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:32:14.047 [http-nio-9030-exec-25] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:32:22.446 [http-nio-9030-exec-26] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:32:22.525 [http-nio-9030-exec-26] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:32:22.525 [http-nio-9030-exec-26] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:33:10.376 [http-nio-9030-exec-27] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:33:10.445 [http-nio-9030-exec-27] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:33:10.446 [http-nio-9030-exec-27] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:33:29.448 [http-nio-9030-exec-28] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:33:29.513 [http-nio-9030-exec-28] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:33:29.514 [http-nio-9030-exec-28] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:33:45.406 [http-nio-9030-exec-29] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:33:45.461 [http-nio-9030-exec-29] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:33:45.461 [http-nio-9030-exec-29] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:34:05.985 [http-nio-9030-exec-30] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:34:06.051 [http-nio-9030-exec-30] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:34:06.053 [http-nio-9030-exec-30] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:34:25.025 [http-nio-9030-exec-31] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:34:25.056 [http-nio-9030-exec-31] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:34:25.056 [http-nio-9030-exec-31] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 00:34:49.447 [http-nio-9030-exec-32] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 00:34:49.474 [http-nio-9030-exec-32] DEBUG c.t.f.s.f.JwtAuthenticationFilter - 设置安全上下文成功，用户：oKF7M5IL-O7ei3moZAfkkUG8ge3I
+2026-06-12 00:34:49.474 [http-nio-9030-exec-32] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:33:08.591 [http-nio-9030-exec-34] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:33:08.774 [http-nio-9030-exec-34] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:33:08Z, a difference of 24479712 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:33:09.019 [http-nio-9030-exec-34] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:33:09Z, a difference of 24480019 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:33:09.020 [http-nio-9030-exec-34] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:33:09Z, a difference of 24480020 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:33:09.020 [http-nio-9030-exec-34] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:33:09.024 [http-nio-9030-exec-34] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:33:09.026 [http-nio-9030-exec-34] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:35:00.067 [http-nio-9030-exec-36] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:35:00.082 [http-nio-9030-exec-36] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:35:00Z, a difference of 24591081 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:35:00.133 [http-nio-9030-exec-36] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:35:00Z, a difference of 24591133 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:35:00.135 [http-nio-9030-exec-36] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:35:00Z, a difference of 24591135 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:35:00.136 [http-nio-9030-exec-36] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:35:00.136 [http-nio-9030-exec-36] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:35:00.136 [http-nio-9030-exec-36] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:35:42.130 [http-nio-9030-exec-37] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:35:42.149 [http-nio-9030-exec-37] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:35:42Z, a difference of 24633149 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:35:42.191 [http-nio-9030-exec-37] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:35:42Z, a difference of 24633191 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:35:42.193 [http-nio-9030-exec-37] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:35:42Z, a difference of 24633193 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:35:42.194 [http-nio-9030-exec-37] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:35:42.195 [http-nio-9030-exec-37] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:35:42.195 [http-nio-9030-exec-37] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:36:00.457 [http-nio-9030-exec-38] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:36:00.477 [http-nio-9030-exec-38] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:36:00Z, a difference of 24651476 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:36:00.511 [http-nio-9030-exec-38] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:36:00Z, a difference of 24651511 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:36:00.512 [http-nio-9030-exec-38] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:36:00Z, a difference of 24651512 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:36:00.512 [http-nio-9030-exec-38] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:36:00.513 [http-nio-9030-exec-38] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:36:00.513 [http-nio-9030-exec-38] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:37:09.717 [http-nio-9030-exec-40] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:37:09.732 [http-nio-9030-exec-40] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:09Z, a difference of 24720732 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:09.774 [http-nio-9030-exec-40] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:09Z, a difference of 24720774 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:09.777 [http-nio-9030-exec-40] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:09Z, a difference of 24720777 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:09.777 [http-nio-9030-exec-40] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:37:09.777 [http-nio-9030-exec-40] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:37:09.777 [http-nio-9030-exec-40] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:37:27.167 [http-nio-9030-exec-41] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:37:27.187 [http-nio-9030-exec-41] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:27Z, a difference of 24738184 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:27.228 [http-nio-9030-exec-41] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:27Z, a difference of 24738228 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:27.229 [http-nio-9030-exec-41] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:27Z, a difference of 24738229 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:27.229 [http-nio-9030-exec-41] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:37:27.230 [http-nio-9030-exec-41] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:37:27.230 [http-nio-9030-exec-41] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:37:38.445 [http-nio-9030-exec-42] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:37:38.447 [http-nio-9030-exec-42] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:38Z, a difference of 24749447 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:38.471 [http-nio-9030-exec-42] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:38Z, a difference of 24749470 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:38.473 [http-nio-9030-exec-42] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:37:38Z, a difference of 24749473 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:37:38.473 [http-nio-9030-exec-42] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:37:38.473 [http-nio-9030-exec-42] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:37:38.473 [http-nio-9030-exec-42] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:38:05.310 [http-nio-9030-exec-43] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:38:05.339 [http-nio-9030-exec-43] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:38:05Z, a difference of 24776338 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:38:05.385 [http-nio-9030-exec-43] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:38:05Z, a difference of 24776385 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:38:05.388 [http-nio-9030-exec-43] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:38:05Z, a difference of 24776387 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:38:05.388 [http-nio-9030-exec-43] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:38:05.388 [http-nio-9030-exec-43] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:38:05.388 [http-nio-9030-exec-43] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:38:17.180 [http-nio-9030-exec-44] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:38:17.186 [http-nio-9030-exec-44] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:38:17Z, a difference of 24788186 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:38:17.214 [http-nio-9030-exec-44] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:38:17Z, a difference of 24788214 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:38:17.218 [http-nio-9030-exec-44] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:38:17Z, a difference of 24788218 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:38:17.219 [http-nio-9030-exec-44] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:38:17.219 [http-nio-9030-exec-44] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:38:17.220 [http-nio-9030-exec-44] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:41:05.423 [http-nio-9030-exec-46] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:41:05.445 [http-nio-9030-exec-46] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:41:05Z, a difference of 24956444 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:41:05.509 [http-nio-9030-exec-46] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:41:05Z, a difference of 24956509 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:41:05.512 [http-nio-9030-exec-46] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:41:05Z, a difference of 24956512 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:41:05.512 [http-nio-9030-exec-46] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:41:05.512 [http-nio-9030-exec-46] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:41:05.513 [http-nio-9030-exec-46] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:42:09.842 [http-nio-9030-exec-48] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:42:09.865 [http-nio-9030-exec-48] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:42:09Z, a difference of 25020863 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:42:09.905 [http-nio-9030-exec-48] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:42:09Z, a difference of 25020905 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:42:09.907 [http-nio-9030-exec-48] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:42:09Z, a difference of 25020907 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:42:09.907 [http-nio-9030-exec-48] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:42:09.907 [http-nio-9030-exec-48] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:42:09.908 [http-nio-9030-exec-48] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:42:43.378 [http-nio-9030-exec-49] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:42:43.392 [http-nio-9030-exec-49] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:42:43Z, a difference of 25054392 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:42:43.421 [http-nio-9030-exec-49] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:42:43Z, a difference of 25054421 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:42:43.422 [http-nio-9030-exec-49] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:42:43Z, a difference of 25054422 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:42:43.423 [http-nio-9030-exec-49] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:42:43.423 [http-nio-9030-exec-49] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:42:43.424 [http-nio-9030-exec-49] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:43:03.330 [http-nio-9030-exec-50] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:43:03.342 [http-nio-9030-exec-50] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:03Z, a difference of 25074341 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:03.383 [http-nio-9030-exec-50] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:03Z, a difference of 25074383 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:03.385 [http-nio-9030-exec-50] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:03Z, a difference of 25074385 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:03.385 [http-nio-9030-exec-50] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:43:03.385 [http-nio-9030-exec-50] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:43:03.385 [http-nio-9030-exec-50] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:43:27.576 [http-nio-9030-exec-51] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:43:27.591 [http-nio-9030-exec-51] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:27Z, a difference of 25098590 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:27.624 [http-nio-9030-exec-51] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:27Z, a difference of 25098624 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:27.625 [http-nio-9030-exec-51] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:27Z, a difference of 25098625 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:27.625 [http-nio-9030-exec-51] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:43:27.625 [http-nio-9030-exec-51] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:43:27.626 [http-nio-9030-exec-51] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:43:54.139 [http-nio-9030-exec-52] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:43:54.160 [http-nio-9030-exec-52] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:54Z, a difference of 25125159 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:54.198 [http-nio-9030-exec-52] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:54Z, a difference of 25125198 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:54.201 [http-nio-9030-exec-52] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:43:54Z, a difference of 25125201 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:43:54.201 [http-nio-9030-exec-52] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:43:54.201 [http-nio-9030-exec-52] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:43:54.202 [http-nio-9030-exec-52] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:44:07.119 [http-nio-9030-exec-53] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:44:07.136 [http-nio-9030-exec-53] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:07Z, a difference of 25138135 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:07.172 [http-nio-9030-exec-53] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:07Z, a difference of 25138172 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:07.176 [http-nio-9030-exec-53] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:07Z, a difference of 25138176 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:07.178 [http-nio-9030-exec-53] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:44:07.178 [http-nio-9030-exec-53] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:44:07.179 [http-nio-9030-exec-53] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:44:20.420 [http-nio-9030-exec-54] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:44:20.435 [http-nio-9030-exec-54] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:20Z, a difference of 25151434 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:20.467 [http-nio-9030-exec-54] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:20Z, a difference of 25151467 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:20.468 [http-nio-9030-exec-54] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:20Z, a difference of 25151468 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:20.469 [http-nio-9030-exec-54] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:44:20.469 [http-nio-9030-exec-54] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:44:20.470 [http-nio-9030-exec-54] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:44:59.256 [http-nio-9030-exec-55] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:44:59.280 [http-nio-9030-exec-55] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:59Z, a difference of 25190279 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:59.320 [http-nio-9030-exec-55] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:59Z, a difference of 25190320 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:59.323 [http-nio-9030-exec-55] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:44:59Z, a difference of 25190323 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:44:59.324 [http-nio-9030-exec-55] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:44:59.324 [http-nio-9030-exec-55] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:44:59.324 [http-nio-9030-exec-55] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:46:06.910 [http-nio-9030-exec-57] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:46:06.938 [http-nio-9030-exec-57] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:46:06Z, a difference of 25257937 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:46:06.987 [http-nio-9030-exec-57] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:46:06Z, a difference of 25257987 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:46:06.989 [http-nio-9030-exec-57] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:46:06Z, a difference of 25257989 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:46:06.989 [http-nio-9030-exec-57] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:46:06.989 [http-nio-9030-exec-57] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:46:06.990 [http-nio-9030-exec-57] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:47:17.600 [http-nio-9030-exec-59] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:47:17.618 [http-nio-9030-exec-59] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:47:17Z, a difference of 25328617 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:47:17.658 [http-nio-9030-exec-59] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:47:17Z, a difference of 25328658 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:47:17.659 [http-nio-9030-exec-59] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:47:17Z, a difference of 25328659 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:47:17.659 [http-nio-9030-exec-59] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:47:17.659 [http-nio-9030-exec-59] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:47:17.660 [http-nio-9030-exec-59] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:47:39.515 [http-nio-9030-exec-60] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:47:39.532 [http-nio-9030-exec-60] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:47:39Z, a difference of 25350531 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:47:39.565 [http-nio-9030-exec-60] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:47:39Z, a difference of 25350565 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:47:39.567 [http-nio-9030-exec-60] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:47:39Z, a difference of 25350567 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:47:39.567 [http-nio-9030-exec-60] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:47:39.567 [http-nio-9030-exec-60] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:47:39.568 [http-nio-9030-exec-60] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:49:48.305 [http-nio-9030-exec-62] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:49:48.320 [http-nio-9030-exec-62] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:49:48Z, a difference of 25479320 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:49:48.377 [http-nio-9030-exec-62] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:49:48Z, a difference of 25479376 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:49:48.378 [http-nio-9030-exec-62] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:49:48Z, a difference of 25479378 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:49:48.378 [http-nio-9030-exec-62] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:49:48.378 [http-nio-9030-exec-62] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:49:48.379 [http-nio-9030-exec-62] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:50:00.949 [http-nio-9030-exec-63] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:50:00.965 [http-nio-9030-exec-63] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:00Z, a difference of 25491964 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:01.012 [http-nio-9030-exec-63] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:01Z, a difference of 25492012 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:01.018 [http-nio-9030-exec-63] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:01Z, a difference of 25492017 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:01.018 [http-nio-9030-exec-63] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:50:01.018 [http-nio-9030-exec-63] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:50:01.019 [http-nio-9030-exec-63] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:50:41.378 [http-nio-9030-exec-64] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:50:41.396 [http-nio-9030-exec-64] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:41Z, a difference of 25532395 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:41.434 [http-nio-9030-exec-64] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:41Z, a difference of 25532434 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:41.437 [http-nio-9030-exec-64] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:41Z, a difference of 25532436 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:41.437 [http-nio-9030-exec-64] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:50:41.437 [http-nio-9030-exec-64] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:50:41.437 [http-nio-9030-exec-64] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:50:47.599 [http-nio-9030-exec-65] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:50:47.602 [http-nio-9030-exec-65] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:47Z, a difference of 25538602 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:47.622 [http-nio-9030-exec-65] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:47Z, a difference of 25538622 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:47.625 [http-nio-9030-exec-65] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:47Z, a difference of 25538625 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:47.625 [http-nio-9030-exec-65] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:50:47.625 [http-nio-9030-exec-65] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:50:47.626 [http-nio-9030-exec-65] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:50:56.581 [http-nio-9030-exec-66] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:50:56.586 [http-nio-9030-exec-66] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:56Z, a difference of 25547586 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:56.607 [http-nio-9030-exec-66] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:56Z, a difference of 25547607 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:56.610 [http-nio-9030-exec-66] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:50:56Z, a difference of 25547610 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:50:56.610 [http-nio-9030-exec-66] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:50:56.610 [http-nio-9030-exec-66] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:50:56.610 [http-nio-9030-exec-66] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:51:06.630 [http-nio-9030-exec-67] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:51:06.634 [http-nio-9030-exec-67] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:06Z, a difference of 25557634 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:06.659 [http-nio-9030-exec-67] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:06Z, a difference of 25557659 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:06.665 [http-nio-9030-exec-67] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:06Z, a difference of 25557665 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:06.666 [http-nio-9030-exec-67] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:51:06.666 [http-nio-9030-exec-67] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:51:06.666 [http-nio-9030-exec-67] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:51:13.784 [http-nio-9030-exec-68] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:51:13.801 [http-nio-9030-exec-68] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:13Z, a difference of 25564799 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:13.827 [http-nio-9030-exec-68] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:13Z, a difference of 25564827 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:13.830 [http-nio-9030-exec-68] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:13Z, a difference of 25564830 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:13.830 [http-nio-9030-exec-68] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:51:13.830 [http-nio-9030-exec-68] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:51:13.830 [http-nio-9030-exec-68] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:51:36.364 [http-nio-9030-exec-69] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:51:36.370 [http-nio-9030-exec-69] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:36Z, a difference of 25587370 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:36.393 [http-nio-9030-exec-69] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:36Z, a difference of 25587392 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:36.395 [http-nio-9030-exec-69] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:36Z, a difference of 25587395 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:36.395 [http-nio-9030-exec-69] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:51:36.395 [http-nio-9030-exec-69] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:51:36.395 [http-nio-9030-exec-69] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:51:49.282 [http-nio-9030-exec-70] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:51:49.289 [http-nio-9030-exec-70] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:49Z, a difference of 25600289 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:49.320 [http-nio-9030-exec-70] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:49Z, a difference of 25600320 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:49.324 [http-nio-9030-exec-70] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:49Z, a difference of 25600323 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:49.324 [http-nio-9030-exec-70] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:51:49.324 [http-nio-9030-exec-70] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:51:49.324 [http-nio-9030-exec-70] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:51:59.324 [http-nio-9030-exec-71] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:51:59.329 [http-nio-9030-exec-71] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:59Z, a difference of 25610329 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:59.351 [http-nio-9030-exec-71] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:59Z, a difference of 25610351 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:59.352 [http-nio-9030-exec-71] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:51:59Z, a difference of 25610352 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:51:59.352 [http-nio-9030-exec-71] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:51:59.352 [http-nio-9030-exec-71] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:51:59.352 [http-nio-9030-exec-71] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:52:31.251 [http-nio-9030-exec-72] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:52:31.269 [http-nio-9030-exec-72] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:52:31Z, a difference of 25642268 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:52:31.304 [http-nio-9030-exec-72] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:52:31Z, a difference of 25642304 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:52:31.306 [http-nio-9030-exec-72] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:52:31Z, a difference of 25642306 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:52:31.306 [http-nio-9030-exec-72] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:52:31.306 [http-nio-9030-exec-72] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:52:31.307 [http-nio-9030-exec-72] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:53:07.043 [http-nio-9030-exec-73] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:53:07.066 [http-nio-9030-exec-73] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:07Z, a difference of 25678066 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:07.104 [http-nio-9030-exec-73] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:07Z, a difference of 25678104 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:07.106 [http-nio-9030-exec-73] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:07Z, a difference of 25678106 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:07.106 [http-nio-9030-exec-73] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:53:07.106 [http-nio-9030-exec-73] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:53:07.106 [http-nio-9030-exec-73] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:53:37.711 [http-nio-9030-exec-74] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:53:37.733 [http-nio-9030-exec-74] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:37Z, a difference of 25708732 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:37.774 [http-nio-9030-exec-74] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:37Z, a difference of 25708774 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:37.777 [http-nio-9030-exec-74] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:37Z, a difference of 25708777 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:37.778 [http-nio-9030-exec-74] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:53:37.778 [http-nio-9030-exec-74] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:53:37.778 [http-nio-9030-exec-74] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:53:48.012 [http-nio-9030-exec-75] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:53:48.016 [http-nio-9030-exec-75] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:48Z, a difference of 25719015 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:48.039 [http-nio-9030-exec-75] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:48Z, a difference of 25719039 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:48.041 [http-nio-9030-exec-75] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:48Z, a difference of 25719041 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:48.041 [http-nio-9030-exec-75] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:53:48.042 [http-nio-9030-exec-75] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:53:48.042 [http-nio-9030-exec-75] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:53:54.198 [http-nio-9030-exec-76] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:53:54.204 [http-nio-9030-exec-76] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:54Z, a difference of 25725204 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:54.227 [http-nio-9030-exec-76] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:54Z, a difference of 25725226 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:54.229 [http-nio-9030-exec-76] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:53:54Z, a difference of 25725229 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:53:54.229 [http-nio-9030-exec-76] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:53:54.229 [http-nio-9030-exec-76] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:53:54.229 [http-nio-9030-exec-76] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:54:09.380 [http-nio-9030-exec-77] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:54:09.390 [http-nio-9030-exec-77] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:09Z, a difference of 25740389 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:09.420 [http-nio-9030-exec-77] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:09Z, a difference of 25740420 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:09.421 [http-nio-9030-exec-77] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:09Z, a difference of 25740420 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:09.421 [http-nio-9030-exec-77] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:54:09.421 [http-nio-9030-exec-77] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:54:09.421 [http-nio-9030-exec-77] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:54:29.560 [http-nio-9030-exec-78] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:54:29.573 [http-nio-9030-exec-78] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:29Z, a difference of 25760573 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:29.607 [http-nio-9030-exec-78] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:29Z, a difference of 25760607 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:29.609 [http-nio-9030-exec-78] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:29Z, a difference of 25760609 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:29.609 [http-nio-9030-exec-78] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:54:29.610 [http-nio-9030-exec-78] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:54:29.610 [http-nio-9030-exec-78] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:54:58.834 [http-nio-9030-exec-79] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:54:58.844 [http-nio-9030-exec-79] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:58Z, a difference of 25789843 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:58.882 [http-nio-9030-exec-79] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:58Z, a difference of 25789882 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:58.883 [http-nio-9030-exec-79] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:54:58Z, a difference of 25789883 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:54:58.884 [http-nio-9030-exec-79] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:54:58.884 [http-nio-9030-exec-79] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:54:58.884 [http-nio-9030-exec-79] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:56:25.855 [http-nio-9030-exec-81] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:56:25.875 [http-nio-9030-exec-81] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:56:25Z, a difference of 25876874 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:56:25.918 [http-nio-9030-exec-81] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:56:25Z, a difference of 25876918 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:56:25.920 [http-nio-9030-exec-81] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:56:25Z, a difference of 25876920 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:56:25.920 [http-nio-9030-exec-81] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:56:25.920 [http-nio-9030-exec-81] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:56:25.921 [http-nio-9030-exec-81] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:56:41.151 [http-nio-9030-exec-82] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:56:41.154 [http-nio-9030-exec-82] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:56:41Z, a difference of 25892154 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:56:41.174 [http-nio-9030-exec-82] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:56:41Z, a difference of 25892174 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:56:41.178 [http-nio-9030-exec-82] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:56:41Z, a difference of 25892177 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:56:41.178 [http-nio-9030-exec-82] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:56:41.178 [http-nio-9030-exec-82] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:56:41.178 [http-nio-9030-exec-82] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:57:11.805 [http-nio-9030-exec-83] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:57:11.821 [http-nio-9030-exec-83] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:11Z, a difference of 25922819 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:11.869 [http-nio-9030-exec-83] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:11Z, a difference of 25922869 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:11.873 [http-nio-9030-exec-83] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:11Z, a difference of 25922873 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:11.874 [http-nio-9030-exec-83] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:57:11.874 [http-nio-9030-exec-83] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:57:11.875 [http-nio-9030-exec-83] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:57:26.995 [http-nio-9030-exec-84] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:57:27.003 [http-nio-9030-exec-84] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:27Z, a difference of 25938002 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:27.036 [http-nio-9030-exec-84] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:27Z, a difference of 25938036 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:27.040 [http-nio-9030-exec-84] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:27Z, a difference of 25938040 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:27.040 [http-nio-9030-exec-84] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:57:27.040 [http-nio-9030-exec-84] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:57:27.041 [http-nio-9030-exec-84] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:57:51.495 [http-nio-9030-exec-85] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:57:51.520 [http-nio-9030-exec-85] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:51Z, a difference of 25962520 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:51.553 [http-nio-9030-exec-85] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:51Z, a difference of 25962553 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:51.555 [http-nio-9030-exec-85] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:57:51Z, a difference of 25962555 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:57:51.555 [http-nio-9030-exec-85] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:57:51.555 [http-nio-9030-exec-85] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:57:51.556 [http-nio-9030-exec-85] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 07:58:02.616 [http-nio-9030-exec-86] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 07:58:02.629 [http-nio-9030-exec-86] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:58:02Z, a difference of 25973627 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:58:02.665 [http-nio-9030-exec-86] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:58:02Z, a difference of 25973665 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:58:02.669 [http-nio-9030-exec-86] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-11T23:58:02Z, a difference of 25973669 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 07:58:02.669 [http-nio-9030-exec-86] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 07:58:02.669 [http-nio-9030-exec-86] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 07:58:02.669 [http-nio-9030-exec-86] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:01:13.481 [http-nio-9030-exec-88] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:01:13.498 [http-nio-9030-exec-88] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:13Z, a difference of 26164497 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:13.548 [http-nio-9030-exec-88] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:13Z, a difference of 26164547 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:13.551 [http-nio-9030-exec-88] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:13Z, a difference of 26164551 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:13.552 [http-nio-9030-exec-88] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:01:13.552 [http-nio-9030-exec-88] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:01:13.552 [http-nio-9030-exec-88] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:01:39.030 [http-nio-9030-exec-89] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:01:39.039 [http-nio-9030-exec-89] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:39Z, a difference of 26190038 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:39.067 [http-nio-9030-exec-89] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:39Z, a difference of 26190067 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:39.073 [http-nio-9030-exec-89] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:39Z, a difference of 26190072 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:39.073 [http-nio-9030-exec-89] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:01:39.073 [http-nio-9030-exec-89] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:01:39.073 [http-nio-9030-exec-89] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:01:41.618 [http-nio-9030-exec-90] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:01:41.621 [http-nio-9030-exec-90] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:41Z, a difference of 26192621 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:41.639 [http-nio-9030-exec-90] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:41Z, a difference of 26192639 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:41.639 [http-nio-9030-exec-90] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:41Z, a difference of 26192639 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:41.639 [http-nio-9030-exec-90] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:01:41.640 [http-nio-9030-exec-90] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:01:41.640 [http-nio-9030-exec-90] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:01:59.149 [http-nio-9030-exec-91] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:01:59.169 [http-nio-9030-exec-91] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:59Z, a difference of 26210169 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:59.206 [http-nio-9030-exec-91] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:59Z, a difference of 26210205 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:59.208 [http-nio-9030-exec-91] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:01:59Z, a difference of 26210207 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:01:59.208 [http-nio-9030-exec-91] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:01:59.208 [http-nio-9030-exec-91] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:01:59.212 [http-nio-9030-exec-91] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:02:09.064 [http-nio-9030-exec-92] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:02:09.068 [http-nio-9030-exec-92] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:09Z, a difference of 26220067 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:09.091 [http-nio-9030-exec-92] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:09Z, a difference of 26220090 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:09.092 [http-nio-9030-exec-92] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:09Z, a difference of 26220092 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:09.092 [http-nio-9030-exec-92] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:02:09.093 [http-nio-9030-exec-92] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:02:09.093 [http-nio-9030-exec-92] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:02:17.174 [http-nio-9030-exec-93] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:02:17.181 [http-nio-9030-exec-93] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:17Z, a difference of 26228181 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:17.204 [http-nio-9030-exec-93] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:17Z, a difference of 26228204 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:17.205 [http-nio-9030-exec-93] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:17Z, a difference of 26228205 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:17.205 [http-nio-9030-exec-93] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:02:17.205 [http-nio-9030-exec-93] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:02:17.206 [http-nio-9030-exec-93] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:02:49.685 [http-nio-9030-exec-94] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:02:49.699 [http-nio-9030-exec-94] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:49Z, a difference of 26260697 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:49.725 [http-nio-9030-exec-94] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:49Z, a difference of 26260724 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:49.725 [http-nio-9030-exec-94] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:02:49Z, a difference of 26260725 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:02:49.725 [http-nio-9030-exec-94] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:02:49.725 [http-nio-9030-exec-94] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:02:49.726 [http-nio-9030-exec-94] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:03:13.864 [http-nio-9030-exec-95] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:03:13.884 [http-nio-9030-exec-95] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:13Z, a difference of 26284883 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:13.908 [http-nio-9030-exec-95] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:13Z, a difference of 26284908 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:13.909 [http-nio-9030-exec-95] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:13Z, a difference of 26284909 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:13.909 [http-nio-9030-exec-95] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:03:13.909 [http-nio-9030-exec-95] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:03:13.909 [http-nio-9030-exec-95] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:03:24.659 [http-nio-9030-exec-96] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:03:24.662 [http-nio-9030-exec-96] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:24Z, a difference of 26295662 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:24.688 [http-nio-9030-exec-96] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:24Z, a difference of 26295687 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:24.688 [http-nio-9030-exec-96] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:24Z, a difference of 26295688 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:24.689 [http-nio-9030-exec-96] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:03:24.689 [http-nio-9030-exec-96] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:03:24.689 [http-nio-9030-exec-96] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:03:32.784 [http-nio-9030-exec-97] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:03:32.793 [http-nio-9030-exec-97] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:32Z, a difference of 26303793 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:32.822 [http-nio-9030-exec-97] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:32Z, a difference of 26303822 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:32.823 [http-nio-9030-exec-97] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:03:32Z, a difference of 26303823 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:03:32.823 [http-nio-9030-exec-97] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:03:32.823 [http-nio-9030-exec-97] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:03:32.823 [http-nio-9030-exec-97] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:05:42.292 [http-nio-9030-exec-99] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:05:42.312 [http-nio-9030-exec-99] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:05:42Z, a difference of 26433311 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:05:42.355 [http-nio-9030-exec-99] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:05:42Z, a difference of 26433355 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:05:42.356 [http-nio-9030-exec-99] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:05:42Z, a difference of 26433356 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:05:42.356 [http-nio-9030-exec-99] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:05:42.356 [http-nio-9030-exec-99] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:05:42.356 [http-nio-9030-exec-99] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:06:26.071 [http-nio-9030-exec-100] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:06:26.089 [http-nio-9030-exec-100] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:06:26Z, a difference of 26477083 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:06:26.117 [http-nio-9030-exec-100] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:06:26Z, a difference of 26477117 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:06:26.119 [http-nio-9030-exec-100] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:06:26Z, a difference of 26477118 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:06:26.119 [http-nio-9030-exec-100] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:06:26.120 [http-nio-9030-exec-100] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:06:26.120 [http-nio-9030-exec-100] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:07:00.374 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:07:00.391 [http-nio-9030-exec-1] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:07:00Z, a difference of 26511391 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:07:00.424 [http-nio-9030-exec-1] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:07:00Z, a difference of 26511424 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:07:00.424 [http-nio-9030-exec-1] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:07:00Z, a difference of 26511424 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:07:00.424 [http-nio-9030-exec-1] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:07:00.425 [http-nio-9030-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:07:00.425 [http-nio-9030-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:07:42.967 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:07:42.986 [http-nio-9030-exec-2] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:07:42Z, a difference of 26553985 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:07:43.018 [http-nio-9030-exec-2] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:07:43Z, a difference of 26554018 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:07:43.019 [http-nio-9030-exec-2] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:07:43Z, a difference of 26554019 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:07:43.019 [http-nio-9030-exec-2] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:07:43.019 [http-nio-9030-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:07:43.020 [http-nio-9030-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:08:21.516 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:08:21.529 [http-nio-9030-exec-3] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:08:21Z, a difference of 26592529 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:08:21.565 [http-nio-9030-exec-3] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:08:21Z, a difference of 26592565 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:08:21.566 [http-nio-9030-exec-3] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:08:21Z, a difference of 26592566 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:08:21.566 [http-nio-9030-exec-3] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:08:21.566 [http-nio-9030-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:08:21.566 [http-nio-9030-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:08:36.882 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:08:36.885 [http-nio-9030-exec-4] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:08:36Z, a difference of 26607885 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:08:36.904 [http-nio-9030-exec-4] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:08:36Z, a difference of 26607903 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:08:36.905 [http-nio-9030-exec-4] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:08:36Z, a difference of 26607905 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:08:36.905 [http-nio-9030-exec-4] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:08:36.905 [http-nio-9030-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:08:36.905 [http-nio-9030-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:09:13.428 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:09:13.446 [http-nio-9030-exec-5] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:13Z, a difference of 26644445 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:13.477 [http-nio-9030-exec-5] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:13Z, a difference of 26644477 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:13.478 [http-nio-9030-exec-5] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:13Z, a difference of 26644478 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:13.478 [http-nio-9030-exec-5] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:09:13.478 [http-nio-9030-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:09:13.479 [http-nio-9030-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:09:30.040 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:09:30.054 [http-nio-9030-exec-6] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:30Z, a difference of 26661053 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:30.079 [http-nio-9030-exec-6] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:30Z, a difference of 26661079 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:30.080 [http-nio-9030-exec-6] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:30Z, a difference of 26661080 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:30.080 [http-nio-9030-exec-6] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:09:30.080 [http-nio-9030-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:09:30.080 [http-nio-9030-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:09:46.359 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:09:46.370 [http-nio-9030-exec-7] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:46Z, a difference of 26677370 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:46.409 [http-nio-9030-exec-7] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:46Z, a difference of 26677409 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:46.410 [http-nio-9030-exec-7] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:09:46Z, a difference of 26677410 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:09:46.410 [http-nio-9030-exec-7] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:09:46.410 [http-nio-9030-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:09:46.410 [http-nio-9030-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:10:11.950 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:10:11.964 [http-nio-9030-exec-8] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:11Z, a difference of 26702963 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:11.989 [http-nio-9030-exec-8] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:11Z, a difference of 26702989 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:11.992 [http-nio-9030-exec-8] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:11Z, a difference of 26702991 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:11.992 [http-nio-9030-exec-8] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:10:11.992 [http-nio-9030-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:10:11.992 [http-nio-9030-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:10:21.789 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:10:21.792 [http-nio-9030-exec-9] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:21Z, a difference of 26712792 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:21.810 [http-nio-9030-exec-9] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:21Z, a difference of 26712810 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:21.811 [http-nio-9030-exec-9] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:21Z, a difference of 26712811 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:21.811 [http-nio-9030-exec-9] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:10:21.811 [http-nio-9030-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:10:21.811 [http-nio-9030-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:10:29.694 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:10:29.712 [http-nio-9030-exec-10] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:29Z, a difference of 26720706 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:29.753 [http-nio-9030-exec-10] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:29Z, a difference of 26720753 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:29.754 [http-nio-9030-exec-10] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:29Z, a difference of 26720754 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:29.754 [http-nio-9030-exec-10] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:10:29.754 [http-nio-9030-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:10:29.755 [http-nio-9030-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:10:44.965 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:10:44.968 [http-nio-9030-exec-11] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:44Z, a difference of 26735967 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:44.985 [http-nio-9030-exec-11] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:44Z, a difference of 26735985 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:44.986 [http-nio-9030-exec-11] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:10:44Z, a difference of 26735985 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:10:44.986 [http-nio-9030-exec-11] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:10:44.986 [http-nio-9030-exec-11] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:10:44.986 [http-nio-9030-exec-11] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:11:10.738 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:11:10.753 [http-nio-9030-exec-12] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:10Z, a difference of 26761752 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:10.784 [http-nio-9030-exec-12] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:10Z, a difference of 26761784 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:10.785 [http-nio-9030-exec-12] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:10Z, a difference of 26761785 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:10.785 [http-nio-9030-exec-12] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:11:10.785 [http-nio-9030-exec-12] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:11:10.786 [http-nio-9030-exec-12] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:11:20.485 [http-nio-9030-exec-13] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:11:20.487 [http-nio-9030-exec-13] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:20Z, a difference of 26771487 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:20.508 [http-nio-9030-exec-13] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:20Z, a difference of 26771508 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:20.509 [http-nio-9030-exec-13] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:20Z, a difference of 26771509 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:20.509 [http-nio-9030-exec-13] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:11:20.509 [http-nio-9030-exec-13] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:11:20.509 [http-nio-9030-exec-13] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:11:28.760 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:11:28.764 [http-nio-9030-exec-14] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:28Z, a difference of 26779764 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:28.786 [http-nio-9030-exec-14] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:28Z, a difference of 26779785 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:28.789 [http-nio-9030-exec-14] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:28Z, a difference of 26779788 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:28.789 [http-nio-9030-exec-14] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:11:28.789 [http-nio-9030-exec-14] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:11:28.789 [http-nio-9030-exec-14] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:11:58.485 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:11:58.503 [http-nio-9030-exec-15] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:58Z, a difference of 26809501 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:58.530 [http-nio-9030-exec-15] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:58Z, a difference of 26809524 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:58.532 [http-nio-9030-exec-15] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:11:58Z, a difference of 26809532 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:11:58.532 [http-nio-9030-exec-15] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:11:58.532 [http-nio-9030-exec-15] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:11:58.533 [http-nio-9030-exec-15] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:12:07.839 [http-nio-9030-exec-16] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:12:07.842 [http-nio-9030-exec-16] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:07Z, a difference of 26818841 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:07.858 [http-nio-9030-exec-16] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:07Z, a difference of 26818858 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:07.859 [http-nio-9030-exec-16] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:07Z, a difference of 26818859 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:07.859 [http-nio-9030-exec-16] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:12:07.859 [http-nio-9030-exec-16] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:12:07.859 [http-nio-9030-exec-16] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:12:18.335 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:12:18.345 [http-nio-9030-exec-17] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:18Z, a difference of 26829345 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:18.373 [http-nio-9030-exec-17] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:18Z, a difference of 26829373 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:18.374 [http-nio-9030-exec-17] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:18Z, a difference of 26829374 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:18.374 [http-nio-9030-exec-17] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:12:18.374 [http-nio-9030-exec-17] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:12:18.374 [http-nio-9030-exec-17] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:12:54.787 [http-nio-9030-exec-18] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:12:54.796 [http-nio-9030-exec-18] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:54Z, a difference of 26865796 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:54.830 [http-nio-9030-exec-18] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:54Z, a difference of 26865830 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:54.831 [http-nio-9030-exec-18] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:12:54Z, a difference of 26865831 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:12:54.831 [http-nio-9030-exec-18] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:12:54.831 [http-nio-9030-exec-18] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:12:54.831 [http-nio-9030-exec-18] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:14:24.366 [http-nio-9030-exec-20] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:14:24.383 [http-nio-9030-exec-20] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:14:24Z, a difference of 26955382 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:14:24.422 [http-nio-9030-exec-20] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:14:24Z, a difference of 26955422 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:14:24.423 [http-nio-9030-exec-20] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:14:24Z, a difference of 26955423 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:14:24.424 [http-nio-9030-exec-20] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:14:24.424 [http-nio-9030-exec-20] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:14:24.428 [http-nio-9030-exec-20] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:15:06.248 [http-nio-9030-exec-21] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:15:06.259 [http-nio-9030-exec-21] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:15:06Z, a difference of 26997258 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:15:06.286 [http-nio-9030-exec-21] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:15:06Z, a difference of 26997286 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:15:06.287 [http-nio-9030-exec-21] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:15:06Z, a difference of 26997287 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:15:06.287 [http-nio-9030-exec-21] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:15:06.287 [http-nio-9030-exec-21] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:15:06.287 [http-nio-9030-exec-21] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 08:15:52.607 [http-nio-9030-exec-22] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 08:15:52.624 [http-nio-9030-exec-22] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:15:52Z, a difference of 27043623 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:15:52.684 [http-nio-9030-exec-22] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:15:52Z, a difference of 27043684 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:15:52.688 [http-nio-9030-exec-22] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T00:15:52Z, a difference of 27043688 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 08:15:52.688 [http-nio-9030-exec-22] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 08:15:52.688 [http-nio-9030-exec-22] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 08:15:52.689 [http-nio-9030-exec-22] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 09:24:45.522 [http-nio-9030-exec-24] DEBUG o.s.security.web.FilterChainProxy - Securing POST /config/tabbar
+2026-06-12 09:24:45.538 [http-nio-9030-exec-24] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T01:24:45Z, a difference of 31176538 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 09:24:45.750 [http-nio-9030-exec-24] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T01:24:45Z, a difference of 31176749 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 09:24:45.751 [http-nio-9030-exec-24] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期：JWT expired at 2026-06-11T16:45:09Z. Current time: 2026-06-12T01:24:45Z, a difference of 31176751 milliseconds.  Allowed clock skew: 0 milliseconds.
+2026-06-12 09:24:45.751 [http-nio-9030-exec-24] WARN  c.t.f.provider.JwtTokenProvider - JWT 已过期
+2026-06-12 09:24:45.751 [http-nio-9030-exec-24] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-06-12 09:24:45.752 [http-nio-9030-exec-24] DEBUG o.s.security.web.FilterChainProxy - Secured POST /config/tabbar
+2026-06-12 20:41:44.876 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2026-06-12 20:41:44.883 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed

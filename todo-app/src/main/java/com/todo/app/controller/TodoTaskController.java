@@ -1,5 +1,6 @@
 package com.todo.app.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.todo.app.service.ITodoTaskService;
 import com.todo.common.core.domain.PageResult;
 import com.todo.common.core.domain.R;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/task")
-public class todoTaskController {
+public class TodoTaskController {
 
     @Autowired
     private ITodoTaskService todoTaskService;

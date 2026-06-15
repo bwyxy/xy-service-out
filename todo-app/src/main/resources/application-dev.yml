@@ -38,8 +38,11 @@ user:
 # Spring配置
 spring:
   #  全局配置去掉接口返回的null字段
-  #  jackson:
-  #    default-property-inclusion: non_null
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
   # 资源信息
   messages:
     # 国际化资源文件路径
@@ -115,11 +118,11 @@ spring:
       chat:
         options:
           # 模型选择
-          model: ${AI_DASHSCOPE_MODEL:qwen-plus}
+          model: qwen-plus
           # 温度 (0-2, 越高越随机)
           temperature: 0.7
           # 最大 token
-          max-tokens: 2000
+          maxTokens: 2000
   # Redis 配置
   data:
     redis:
@@ -143,6 +146,8 @@ mybatis:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # Mybatis-plus配置
 mybatis-plus:
@@ -164,6 +169,7 @@ logging:
     com.todo: debug
     org.springframework: warn
     org.springframework.security: DEBUG
+    org.mybatis: DEBUG
 
 
 # token配置

@@ -31,6 +31,7 @@ public class SysUser extends BaseEntity implements Serializable {
     /**
      * 密码
      * */
+    @TableField("password")
     private String password;
     /**
      * 昵称

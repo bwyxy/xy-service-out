@@ -38,11 +38,13 @@ public class AuthService {
 
         // 用户验证
         Authentication authentication = null;
+        log.warn("登录DTO: {}", authDTO);
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getPassword())
             );
         } catch (Exception e) {
+            log.warn("登录认证失败: {}", e.getMessage());
             throw new UsernameNotFoundException(e.getMessage());
         }
 
