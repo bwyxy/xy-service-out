@@ -1,1 +1,0 @@
-2026-06-21 23:08:12.988 [http-nio-9030-exec-10] ERROR c.t.f.w.e.GlobalExceptionHandler - 运行时异常: can not find lambda cache for this property [deleted] of entity [com.todo.common.entity.TodoTask]

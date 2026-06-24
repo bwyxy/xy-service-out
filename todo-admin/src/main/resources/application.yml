@@ -1,7 +1,0 @@
-server:
-  port: 9100
-spring:
-  profiles:
-    group:
-      prod: base,prod,cp
-      dev: base,dev,cp
