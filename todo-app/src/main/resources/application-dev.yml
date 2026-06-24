@@ -175,16 +175,18 @@ logging:
 # token配置
 token:
   # 令牌自定义标识
-  header: Authorization
+  header: Token
   # 令牌密钥
-  secret: ${TOKEN_SECRET:siteManager}
+  secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟 - 改为1天）
-  expireTime: ${TOKEN_EXPIRE_TIME:1440}
+  expireTime: 21600
 
 jwt:
-  secret: your-secret-key-at-least-32-characters-long
-  expiration: 86400000
-  refresh-expiration: 604800000
+  header: Token
+  prefix: todo
+  secret: recall-todo-app-abcdefjhijklmnopqrstuvwsyj
+  expiration: 1296000000
+  refresh-expiration: 1296000000
 
 # Swagger配置
 swagger:

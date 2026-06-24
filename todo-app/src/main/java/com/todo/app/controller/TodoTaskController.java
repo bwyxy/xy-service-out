@@ -1,5 +1,6 @@
 package com.todo.app.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.todo.app.service.ITodoTaskService;
 import com.todo.common.core.domain.PageResult;
@@ -23,6 +24,17 @@ public class TodoTaskController {
     public R<?> getCurrentDayTasks(@RequestBody TodoTask todoTask) {
 
         PageResult<TodoTask> pageResult = todoTaskService.selectTaskByDate(todoTask);
+
+        return R.ok(pageResult);
+    }
+
+    /**
+     * 查询任务列表
+     * */
+    @PostMapping("/list")
+    public R<?> selectTaskList(@RequestBody TodoTask todoTask) {
+
+        PageResult<TodoTask> pageResult = todoTaskService.selectTaskList(todoTask);
 
         return R.ok(pageResult);
     }

@@ -151,6 +151,27 @@ create table todo_tag (
     foreign key (user_id) references sys_user(id) on delete cascade
 ) engine=innodb comment = '待办标签表';
 
+-- 系统英汉词典数据
+create table sys_dictionary (
+    id bigint primary key auto_increment comment '词典Id',
+    word varchar(100) not null comment '单词',
+    phonetic varchar(100) default null comment '音标',
+    definition text comment '英文释义',
+    translation text comment '中文释义',
+    pos varchar(20) default null comment '词性',
+    collins tinyint default null comment '柯林斯星级 1-5',
+    oxford tinyint default 0 comment '牛津核心词标记',
+    tag varchar(50) default null comment '标签 (cet4,cet6,ielts)',
+    bnc int default null comment 'BNC词频排名',
+    frq int default null comment '当代语料库词频排名',
+    exchange varchar(255) default null comment '词形变化',
+    detail JSON default null comment '额外信息(例句等)',
+    create_time datetime default current_timestamp comment '创建时间',
+    update_time datetime default current_timestamp on update current_timestamp comment '更新时间',
+    index idx_tag (tag),
+    index idx_collins (collins)
+) engine=innodb comment '系统英汉词典数据';
+
 insert into todo_tag values
     (1, 10000000,'工作', 'admin', now(), 'admin', now()),
     (2, 10000000,'学习', 'admin', now(), 'admin', now()),
@@ -233,4 +254,4 @@ select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.comple
 left join todo_task_tag ttt on ttt.task_id = tt.task_id
 left join todo_tag t on t.tag_id = ttt.tag_id
 where tt.user_id and due_date between '2026-06-01 00:00:00' and '2026-06-30 23:59:59'
-order by tt.due_date asc;
+order by tt.due_date desc

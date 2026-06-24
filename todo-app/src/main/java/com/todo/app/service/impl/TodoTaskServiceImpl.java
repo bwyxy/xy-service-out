@@ -16,6 +16,7 @@ import com.todo.common.entity.TodoTask;
 import com.todo.common.utils.ContentCheckUtils;
 import com.todo.common.utils.SecurityUtils;
 import com.todo.common.utils.StringUtils;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,32 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
 
         List<TodoTask> todoTasks = todoTaskMapper.selectTaskByDate(todoTask);
 
-        Page<TodoTask> page = (Page<TodoTask>) todoTasks;
+        return getTodoTaskPageResult((Page<TodoTask>) todoTasks);
+    };
+
+    /**
+     * 查询任务列表
+     * */
+    @Override
+    public PageResult<TodoTask> selectTaskList(TodoTask todoTask) {
+        if (todoTask.getPageNum() == 0) todoTask.setPageNum(1);
+
+        if (todoTask.getPageSize() == 0) todoTask.setPageSize(10);
+
+        Long userId = SecurityUtils.getUserId();
+
+        todoTask.setUserId(userId);
+
+        PageHelper.startPage(todoTask.getPageNum(), todoTask.getPageSize());
+
+        List<TodoTask> todoTasks = todoTaskMapper.selectTaskList(todoTask);
+
+        return getTodoTaskPageResult((Page<TodoTask>) todoTasks);
+    }
+
+    @NotNull
+    private PageResult<TodoTask> getTodoTaskPageResult(Page<TodoTask> todoTasks) {
+        Page<TodoTask> page = todoTasks;
 
         PageResult<TodoTask> pageResult = new PageResult<>();
 
@@ -71,7 +97,9 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
         pageResult.setPageSize((long) page.getPageSize());
 
         return pageResult;
-    };
+    }
+
+    ;
 
     /**
      * 根据任务 Id查询任务信息
@@ -82,11 +110,7 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
             throw new SecurityException("任务 Id不能为空");
         }
 
-        LambdaQueryWrapper<TodoTask> queryWrapper = new LambdaQueryWrapper<>();
-
-        queryWrapper.eq(TodoTask::getTaskId, id);
-
-        return this.getOne(queryWrapper);
+        return todoTaskMapper.selectTaskById(id);
     }
 
     /**
@@ -108,6 +132,10 @@ public class TodoTaskServiceImpl extends ServiceImpl<TodoTaskMapper, TodoTask> i
             todoTask.setStartTime(toDoTaskDTO.getStartTime());
         } else {
             todoTask.setStartTime(now);
+        }
+
+        if (toDoTaskDTO.getParentId() != null) {
+            todoTask.setParentId(toDoTaskDTO.getParentId());
         }
 
         todoTask.setUserId(userId);

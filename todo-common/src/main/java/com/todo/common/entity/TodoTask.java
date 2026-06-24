@@ -33,6 +33,11 @@ public class TodoTask extends BaseEntity implements Serializable {
     private Long userId;
 
     /**
+     * 父任务 Id
+     * */
+    private Long parentId;
+
+    /**
      * 任务标题
      * */
     private String taskTitle;
@@ -75,6 +80,14 @@ public class TodoTask extends BaseEntity implements Serializable {
     private String createBy;
 
     private String updateBy;
+
+    private Integer deleted;
+
+    /**
+     * 子任务数量
+     * */
+    @TableField(exist = false)
+    private Integer subTaskCount;
 
     /**
      * 用户信息

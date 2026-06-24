@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +28,22 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-expiration}")
     private Long refreshExpiration;
 
+    @Value("${jwt.header}")
+    private String jwtHeader;
+
+    @Value("${jwt.prefix}")
+    private String jwtPrefix;
+
     private SecretKey getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String getJwtHeader() {
+        return jwtHeader;
+    }
+    public String getJwtPrefix() {
+        return jwtPrefix;
     }
 
     public String generateAccessToken(UserDetails userDetails) {

@@ -13,6 +13,11 @@ public interface ITodoTaskService {
     public PageResult<TodoTask> selectTaskByDate(TodoTask todoTask);
 
     /**
+     * 查询任务列表
+     * */
+    public PageResult<TodoTask> selectTaskList(TodoTask todoTask);
+
+    /**
      * 根据任务 Id查询任务信息
      * */
     public TodoTask selectTaskById(Long id);

@@ -5,3 +5,4 @@ spring:
     group:
       prod: base,prod,cp
       dev: base,dev,cp
+    default: prod

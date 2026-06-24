@@ -54,6 +54,10 @@ public class SysUser extends BaseEntity implements Serializable {
      * */
     private String avatar;
     /**
+     * 个人简介
+     * */
+    private String introduction;
+    /**
      * 状态
      * */
     private String status;

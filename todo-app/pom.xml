@@ -145,8 +145,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.todo.app.TodoAppApplication</mainClass>
-                    <skip>true</skip>
+                    <mainClass>com.todo.app.CustomerApplication</mainClass>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>

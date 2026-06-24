@@ -44,6 +44,12 @@ public class ToDoTaskDTO {
     private String description;
 
     /**
+     * 父任务 Id
+     * */
+    @JsonProperty("parentId")
+    private Long parentId;
+
+    /**
      * 紧急程度
      * */
     @NotNull(message = "紧急程度不能为空")
