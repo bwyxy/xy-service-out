@@ -1,0 +1,11 @@
+server:
+  port: 7070
+
+spring:
+  ai:
+    openai:
+      api-key: sk-280a17cf85014fcab4eb454ea832f7ec
+      base-url: https://ws-cn7y90ayoe81zjvl.cn-beijing.maas.aliyuncs.com/compatible-mode
+      chat:
+        options:
+          model: deepseek-v4-flash

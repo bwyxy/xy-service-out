@@ -24,6 +24,7 @@
         <module>todo-app</module>
         <module>todo-blog</module>
         <module>todo-system</module>
+        <module>chat-api</module>
     </modules>
 
     <properties>
