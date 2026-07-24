@@ -1,0 +1,15 @@
+{
+  "name": "y-micro-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm run --parallel --filter './apps/*' dev",
+    "build:apps": "pnpm run --parallel --filter './apps/*' build",
+    "build:packages": "pnpm run --parallel --filter './packages/*' build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.2"
+}

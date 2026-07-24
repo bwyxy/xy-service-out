@@ -103,7 +103,7 @@ create index idx_config_type on sys_config(config_type);
 create index idx_status on sys_config(status);
 
 -- 待办任务表
-create table todo_task (
+create table xy_task (
     task_id bigint primary key auto_increment comment '任务Id',
     user_id bigint comment '用户Id',
     task_title varchar(255) default '' comment '待办标题',
@@ -125,7 +125,7 @@ create table todo_task (
 ) engine=innodb comment = '待办任务表';
 
 -- 任务协作成员表
-create table todo_task_collaborator (
+create table xy_task_collaborator (
     task_id bigint not null comment '关联任务Id',
     user_id bigint not null comment '用户Id',
     is_admin varchar(1) default '0' comment '是否任务管理员',
@@ -135,12 +135,12 @@ create table todo_task_collaborator (
     update_by varchar(64) default '' comment '更新者',
     update_time datetime comment '更新时间',
     primary key (task_id, user_id),
-    foreign key (task_id) references todo_task(task_id) on delete cascade,
+    foreign key (task_id) references xy_task(task_id) on delete cascade,
     foreign key (user_id) references sys_user(id) on delete cascade
 ) engine=innodb comment = '任务协作成员表';
 
 -- 待办标签表
-create table todo_tag (
+create table xy_tag (
     tag_id bigint primary key auto_increment comment '标签Id',
     user_id bigint comment '用户Id',
     tag_name varchar(24) not null comment '标签名称',
@@ -172,7 +172,7 @@ create table sys_dictionary (
     index idx_collins (collins)
 ) engine=innodb comment '系统英汉词典数据';
 
-insert into todo_tag values
+insert into xy_tag values
     (1, 10000000,'工作', 'admin', now(), 'admin', now()),
     (2, 10000000,'学习', 'admin', now(), 'admin', now()),
     (3, 10000000,'生活', 'admin', now(), 'admin', now()),
@@ -181,23 +181,23 @@ insert into todo_tag values
     (6, 10000000,'购物', 'admin', now(), 'admin', now());
 
 -- 待办任务标签关联表
-create table todo_task_tag (
+create table xy_task_tag (
     task_id bigint not null comment '任务Id',
     tag_id bigint not null comment '标签Id',
     primary key (task_id, tag_id),
     index idx_task_id (task_id),
     index idx_tag_id (tag_id),
-    constraint fk_task_id foreign key (task_id) references todo_task(task_id),
-    constraint fk_tag_id foreign key (tag_id) references todo_tag(tag_id) on delete cascade
+    constraint fk_task_id foreign key (task_id) references xy_task(task_id),
+    constraint fk_tag_id foreign key (tag_id) references xy_tag(tag_id) on delete cascade
 ) engine=innodb comment = '待办任务标签关联表';
 
 insert into sys_user values
-    (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
+    (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'xy@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
 insert into sys_user values
-    (10000001, 'xiaoyi', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '小忆', 'todo@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
+    (10000001, 'xiaoyi', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '小忆', 'xy@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
 
-update sys_user set password = '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', nickname = '超级管理员', email = 'todo@qq.com', phone = '13888888888', sex = '1', avatar = '', status = '0', wx_open_id = '', create_time = sysdate(), update_time = sysdate(), create_by = '', update_by = '', deleted = 0, remark = '' where id = 10000000;
-update sys_user set password = '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', nickname = '小忆', email = 'todo@qq.com', phone = '13888888888', sex = '1', avatar = '', status = '0', wx_open_id = '', create_time = sysdate(), update_time = sysdate(), create_by = '', update_by = '', deleted = 0, remark = '' where id = 10000001;
+update sys_user set password = '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', nickname = '超级管理员', email = 'xy@qq.com', phone = '13888888888', sex = '1', avatar = '', status = '0', wx_open_id = '', create_time = sysdate(), update_time = sysdate(), create_by = '', update_by = '', deleted = 0, remark = '' where id = 10000000;
+update sys_user set password = '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', nickname = '小忆', email = 'xy@qq.com', phone = '13888888888', sex = '1', avatar = '', status = '0', wx_open_id = '', create_time = sysdate(), update_time = sysdate(), create_by = '', update_by = '', deleted = 0, remark = '' where id = 10000001;
 
 
 insert into sys_role values
@@ -250,8 +250,8 @@ delete from sys_user where id = 10000002;
 
 alter table sys_user auto_increment = 10000002;
 
-select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, t.tag_id, t.user_id, t.tag_name from todo_task tt
-left join todo_task_tag ttt on ttt.task_id = tt.task_id
-left join todo_tag t on t.tag_id = ttt.tag_id
+select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, t.tag_id, t.user_id, t.tag_name from xy_task tt
+left join xy_task_tag ttt on ttt.task_id = tt.task_id
+left join xy_tag t on t.tag_id = ttt.tag_id
 where tt.user_id and due_date between '2026-06-01 00:00:00' and '2026-06-30 23:59:59'
 order by tt.due_date desc

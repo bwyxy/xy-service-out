@@ -26,7 +26,7 @@ const defaultToolbarConfig = reactive({
     'insertTable',
     'bulletedList',
     'numberedList',
-    'todo',         // 如果报错，删除
+    'xy',         // 如果报错，删除
     'indent',
     'undo',
     'redo',

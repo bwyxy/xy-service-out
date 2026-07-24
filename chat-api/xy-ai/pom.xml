@@ -4,14 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.todo</groupId>
-        <artifactId>todo-service</artifactId>
+        <groupId>com.chat</groupId>
+        <artifactId>chat-api</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <artifactId>xy-ai</artifactId>
     <name>xy-ai</name>
     <description>xy-ai</description>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -60,7 +61,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.todo.admin.TodoAdminApplication</mainClass>
+                    <mainClass>com.xy.admin.xyAdminApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

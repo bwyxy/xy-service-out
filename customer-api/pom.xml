@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>customer-api</artifactId>
+    <packaging>pom</packaging>
+
+    <groupId>com.customer</groupId>
+    <name>customer-api</name>
+    <description>应用模块</description>
+
+    <parent>
+        <groupId>com.xy</groupId>
+        <artifactId>xy-service</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modules>
+        <module>xy-app</module>
+        <module>xy-blog</module>
+    </modules>
+
+</project>

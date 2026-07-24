@@ -5,17 +5,19 @@
     <artifactId>chat-api</artifactId>
     <packaging>pom</packaging>
 
+    <groupId>com.chat</groupId>
     <name>chat-api</name>
     <description>聊天模块</description>
 
     <parent>
-        <groupId>com.todo</groupId>
-        <artifactId>todo-service</artifactId>
+        <groupId>com.xy</groupId>
+        <artifactId>xy-service</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modules>
         <module>xy-ai</module>
+        <module>fg-chat</module>
     </modules>
 
 </project>

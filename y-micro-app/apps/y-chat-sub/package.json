@@ -1,0 +1,32 @@
+{
+  "name": "y-chat-sub",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "catalog:",
+    "@types/node": "catalog:",
+    "@vueuse/core": "catalog:",
+    "@xy/qiankun-communication": "workspace:*",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "sass": "catalog:",
+    "vite-plugin-qiankun": "catalog:",
+    "vue": "catalog:vue3",
+    "vue-router": "catalog:vue-router5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-auto-import": "catalog:",
+    "unplugin-vue-components": "catalog:",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

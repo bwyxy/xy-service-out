@@ -1,0 +1,11 @@
+@use "variables" as *;
+@use "element-plus" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: $body-bg-color;
+}

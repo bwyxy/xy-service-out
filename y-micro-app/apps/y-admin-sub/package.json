@@ -1,0 +1,26 @@
+{
+  "name": "y-admin-sub",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/node": "catalog:",
+    "@xy/qiankun-communication": "workspace:*",
+    "vite-plugin-qiankun": "catalog:",
+    "vue-router": "catalog:vue-router5",
+    "pinia": "catalog:",
+    "vue": "catalog:vue3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

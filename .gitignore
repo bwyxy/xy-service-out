@@ -35,5 +35,5 @@ build/
 .vscode/
 
 */src/main/resources/*.yml
-ui/todo-admin-web
+ui/xy-admin-web
 logs

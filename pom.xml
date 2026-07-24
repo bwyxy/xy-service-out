@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.todo</groupId>
-    <artifactId>todo-service</artifactId>
+    <groupId>com.xy</groupId>
+    <artifactId>xy-service</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>todo-service</name>
-    <description>忆待办</description>
+    <name>xy-service</name>
+    <description>忆</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -18,13 +18,12 @@
     </parent>
 
     <modules>
-        <module>todo-framework</module>
-        <module>todo-common</module>
-        <module>todo-admin</module>
-        <module>todo-app</module>
-        <module>todo-blog</module>
-        <module>todo-system</module>
+        <module>xy-framework</module>
+        <module>xy-admin</module>
+        <module>xy-system</module>
+        <module>xy-common</module>
         <module>chat-api</module>
+        <module>customer-api</module>
     </modules>
 
     <properties>
@@ -71,8 +70,8 @@
             </dependency>
 
             <dependency>
-                <groupId>com.todo</groupId>
-                <artifactId>todo-common</artifactId>
+                <groupId>com.xy</groupId>
+                <artifactId>xy-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -266,7 +265,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.todo.service.TodoServiceApplication</mainClass>
+                    <mainClass>com.xy.service.xyServiceApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>
