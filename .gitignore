@@ -18,7 +18,6 @@ target/
 *.iws
 *.iml
 *.ipr
-.env
 *.lock
 
 ### NetBeans ###
@@ -34,6 +33,6 @@ build/
 ### VS Code ###
 .vscode/
 
-*/src/main/resources/*.yml
-ui/xy-admin-web
+#*/src/main/resources/*.yml
+ui/*
 logs

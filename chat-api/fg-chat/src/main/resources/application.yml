@@ -1,2 +1,7 @@
 server:
   port: 9050
+
+spring:
+  profiles:
+    group:
+      prod: prod

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xy.app.mapper.xyTaskMapper">
     
-    <resultMap id="xyWithTagsMap" type="com.xy.common.entity.xyTask">
+    <resultMap id="TodoWithTagsMap" type="com.xy.common.entity.TodoTask">
         <id column="task_id" property="taskId" />
         <result column="user_id" property="userId" />
         <result column="task_title" property="taskTitle" />
@@ -24,7 +24,7 @@
         </collection>
     </resultMap>
 
-    <resultMap id="xyTaskMap" type="com.xy.common.entity.xyTask">
+    <resultMap id="TodoTaskMap" type="com.xy.common.entity.TodoTask">
         <id column="task_id" property="taskId" />
         <result column="user_id" property="userId" />
         <result column="task_title" property="taskTitle" />
@@ -41,12 +41,12 @@
         <result column="deleted" property="deleted" />
     </resultMap>
 
-    <resultMap id="xyTagResult" type="com.xy.common.entity.xyTag">
+    <resultMap id="TodoTagResult" type="com.xy.common.entity.TodoTag">
         <id column="tag_id" property="tagId" />
         <result column="tag_name" property="tagName" />
     </resultMap>
 
-    <select id="selectTaskByDate" parameterType="xyTask" resultMap="xyWithTagsMap">
+    <select id="selectTaskByDate" parameterType="com.xy.common.entity.TodoTask" resultMap="TodoWithTagsMap">
         select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, tt.deleted, t.tag_name from xy_task tt
         left join xy_task_tag ttt on ttt.task_id = tt.task_id
         left join xy_tag t on t.tag_id = ttt.tag_id
@@ -63,14 +63,14 @@
         order by tt.due_date asc
     </select>
 
-    <select id="selectTaskById" parameterType="xyTask" resultMap="xyWithTagsMap">
+    <select id="selectTaskById" parameterType="com.xy.common.entity.TodoTask" resultMap="TodoWithTagsMap">
         select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, tt.deleted, t.tag_name from xy_task tt
        left join xy_task_tag ttt on ttt.task_id = tt.task_id
        left join xy_tag t on t.tag_id = ttt.tag_id
         where tt.task_id = #{id}
     </select>
 
-    <select id="selectTaskList" parameterType="xyTask" resultMap="xyTaskMap">
+    <select id="selectTaskList" parameterType="com.xy.common.entity.TodoTask" resultMap="TodoTaskMap">
         select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, tt.deleted from xy_task tt
         <where>
             tt.user_id = #{userId} and tt.deleted = 0

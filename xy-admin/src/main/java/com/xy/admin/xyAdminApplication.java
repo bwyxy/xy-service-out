@@ -18,9 +18,6 @@ public class xyAdminApplication {
 
         SpringApplication.run(xyAdminApplication.class, args);
         System.out.println("项目启动成功");
-        ConfigurableApplicationContext ctx = SpringApplication.run(xyAdminApplication.class, args);
-        Environment env = ctx.getEnvironment();
-        System.out.println("jwt.secret = " + env.getProperty("jwt.secret"));
     }
 
 }

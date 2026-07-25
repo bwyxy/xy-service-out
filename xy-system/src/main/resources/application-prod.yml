@@ -1,0 +1,43 @@
+# ===========================================
+# 生产环境配置
+# ===========================================
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: ${SERVER_CONTEXT_PATH:/}
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 1000
+    threads:
+      max: 800
+      min-spare: 100
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+
+# 日志配置 (生产环境只输出 warn)
+logging:
+  level:
+    com.todo: warn
+    org.springframework: warn
+
+# Token 配置
+token:
+  header: Authorization
+  secret: ${TOKEN_SECRET}
+  expireTime: ${TOKEN_EXPIRE_TIME:1440}
+
+# 七牛云
+qiniu:
+  accessKey: ${QINIU_ACCESS_KEY}
+  secretKey: ${QINIU_SECRET_KEY}
+  bucket: ${QINIU_BUCKET}
+  domain: ${QINIU_DOMAIN}
+  region: ${QINIU_REGION:huanan}
+
+# 微信小程序配置
+wechat:
+  appid: ${WECHAT_APPID}
+  secret: ${WECHAT_SECRET}
