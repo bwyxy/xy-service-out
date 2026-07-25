@@ -22,7 +22,7 @@ mybatis-plus:
 
 # Token 配置
 token:
-  header: Authorization
+  header: authorization
   secret: ${TOKEN_SECRET:siteManager}
   expireTime: ${TOKEN_EXPIRE_TIME:1440}
 

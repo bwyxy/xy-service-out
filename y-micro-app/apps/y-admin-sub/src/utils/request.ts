@@ -3,12 +3,14 @@ import { getToken } from '@/utils/auth.ts'
 
 const request = createAxios({
     config: {
-        baseUrl: import.meta.env.VITE_BASE_API_URL,
+        baseURL: import.meta.env.VITE_BASE_API_URL,
         timeout: 10000
     },
     interceptors: {
         request: (config :any) => {
-            config.headers['Authorization'] = 'Bearer ' + getToken()
+            if (getToken()) {
+                config.headers['Authorization'] = 'Bearer ' + getToken()
+            }
 
             return config
         },

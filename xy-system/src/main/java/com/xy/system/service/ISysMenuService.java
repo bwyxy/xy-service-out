@@ -30,4 +30,29 @@ public interface ISysMenuService {
      * @return 路由列表
      */
     public List<RouterVo> buildMenus(List<SysMenu> menus);
+
+    /**
+     * 根据菜单ID查询菜单
+     */
+    public SysMenu selectMenuById(Long menuId);
+
+    /**
+     * 新增菜单
+     */
+    public int insertMenu(SysMenu menu);
+
+    /**
+     * 修改菜单
+     */
+    public int updateMenu(SysMenu menu);
+
+    /**
+     * 删除菜单
+     */
+    public int deleteMenuById(Long menuId);
+
+    /**
+     * 校验菜单名称是否唯一
+     */
+    public boolean checkMenuNameUnique(SysMenu menu);
 }

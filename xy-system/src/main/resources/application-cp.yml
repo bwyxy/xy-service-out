@@ -60,8 +60,8 @@ mybatis:
 
 # JWT 配置
 jwt:
-  header: token
-  secret: ${TOKEN_SECRET:siteManager}
+  header: authorization
+  secret: ${TOKEN_SECRET:xy-jwt-secret-key-at-least-32-bytes}
   expiration: 86400000
   refresh-expiration: 604800000
   prefix: Bearer

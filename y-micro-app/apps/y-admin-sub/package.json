@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "catalog:",
     "@types/node": "catalog:",
     "@xy/qiankun-communication": "workspace:*",
     "@xy/utils": "workspace:*",
@@ -23,6 +24,8 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "catalog:",
     "@vue/tsconfig": "catalog:",
+    "unplugin-auto-import": "catalog:",
+    "unplugin-vue-components": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vue-tsc": "catalog:"

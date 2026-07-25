@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,11 @@ public class JwtTokenProvider {
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+        // HS256 要求密钥至少 256 bits (32 bytes)
+        if (keyBytes.length < 32) {
+            log.warn("JWT 密钥长度不足 ({} bytes)，自动补齐至 32 bytes", keyBytes.length);
+            keyBytes = Arrays.copyOf(keyBytes, 32);
+        }
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

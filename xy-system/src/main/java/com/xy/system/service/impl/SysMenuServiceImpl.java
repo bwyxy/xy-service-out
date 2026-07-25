@@ -332,4 +332,34 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return StringUtils.replaceEach(path, new String[] { Constants.HTTP, Constants.HTTPS, Constants.WWW, ".", ":" },
                 new String[] { "", "", "", "/", "/" });
     }
+
+    @Override
+    public SysMenu selectMenuById(Long menuId) {
+        return this.getById(menuId);
+    }
+
+    @Override
+    public int insertMenu(SysMenu menu) {
+        return this.getBaseMapper().insert(menu);
+    }
+
+    @Override
+    public int updateMenu(SysMenu menu) {
+        return this.getBaseMapper().updateById(menu);
+    }
+
+    @Override
+    public int deleteMenuById(Long menuId) {
+        return this.getBaseMapper().deleteById(menuId);
+    }
+
+    @Override
+    public boolean checkMenuNameUnique(SysMenu menu) {
+        Long menuId = menu.getMenuId() == null ? -1L : menu.getMenuId();
+        SysMenu info = this.lambdaQuery()
+                .eq(SysMenu::getMenuName, menu.getMenuName())
+                .eq(SysMenu::getParentId, menu.getParentId())
+                .one();
+        return info == null || info.getMenuId().equals(menuId);
+    }
 }

@@ -1,7 +1,7 @@
 import { createApp, type App } from 'vue'
-import './style.css'
 import AppDom from './App.vue'
 import router from './router'
+import '@/assets/styles/index.scss'
 /** qiankun */
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 import { registerGlobalListeners, microComm } from '@/qiankun/index.ts'

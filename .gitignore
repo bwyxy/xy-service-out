@@ -35,5 +35,7 @@ build/
 
 .env
 #*/src/main/resources/*.yml
+utils/components.d.ts
+utils/auto-imports.d.ts
 ui
 logs
