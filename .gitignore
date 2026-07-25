@@ -33,6 +33,7 @@ build/
 ### VS Code ###
 .vscode/
 
+.env
 #*/src/main/resources/*.yml
-ui/*
+ui
 logs
