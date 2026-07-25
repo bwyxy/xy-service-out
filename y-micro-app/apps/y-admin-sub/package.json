@@ -11,10 +11,14 @@
   "dependencies": {
     "@types/node": "catalog:",
     "@xy/qiankun-communication": "workspace:*",
-    "vite-plugin-qiankun": "catalog:",
-    "vue-router": "catalog:vue-router5",
+    "@xy/utils": "workspace:*",
+    "element-plus": "catalog:",
+    "js-cookie": "catalog:",
     "pinia": "catalog:",
-    "vue": "catalog:vue3"
+    "sass": "catalog:",
+    "vite-plugin-qiankun": "catalog:",
+    "vue": "catalog:vue3",
+    "vue-router": "catalog:vue-router5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "catalog:",

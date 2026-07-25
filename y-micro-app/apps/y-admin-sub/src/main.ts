@@ -5,6 +5,7 @@ import router from './router'
 /** qiankun */
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 import { registerGlobalListeners, microComm } from '@/qiankun/index.ts'
+import { setupStore } from '@/store/index.ts'
 
 let app :App | null = null
 
@@ -15,6 +16,8 @@ const render = (props: any) => {
 
     const mountRoot = container ? container.querySelector('#app') : document.getElementById('app');
     app = createApp(AppDom);
+
+    setupStore(app)
 
     app.use(router)
 

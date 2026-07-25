@@ -12,6 +12,9 @@ catalog:
   vite-plugin-qiankun: ^1.0.15
   unplugin-auto-import: ^21.0.0
   unplugin-vue-components: ^32.1.0
+  axios: ^1.15.2
+  path: ^0.12.7
+  js-cookie: ^3.0.8
   sass: ^1.101.6
   element-plus: ^2.14.3
   pinia: ^4.0.2
