@@ -1,5 +1,5 @@
-// const BASE_URL = import.meta.env.VITE_BASE_API_URL || 'http://localhost:9050'
-const BASE_URL = '/api'
+const BASE_URL = import.meta.env.VITE_BASE_API_URL || 'http://localhost:9050'
+// const BASE_URL = '/api'
 
 async function request(url: string, options: RequestInit = {}) {
   const res = await fetch(`${BASE_URL}${url}`, {
@@ -11,9 +11,14 @@ async function request(url: string, options: RequestInit = {}) {
 
 // 聊天登录（获取悟空IM连接凭据）
 export function chatLogin(uid: string, name: string) {
-  return request('/api/chat/login', {
+  return request('/api/chat/update/token', {
     method: 'POST',
-    body: JSON.stringify({ uid, name }),
+    body: JSON.stringify({
+      uid: uid,
+      token: name,
+      deviceFlag: 1,
+      deviceLevel: 1
+    }),
   })
 }
 

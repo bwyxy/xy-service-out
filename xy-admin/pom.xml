@@ -98,24 +98,6 @@
             <artifactId>jjwt-jackson</artifactId>
         </dependency>
 
-        <!-- Bucket4j for rate limiting -->
-        <dependency>
-            <groupId>com.github.vladimir-bukhtoyarov</groupId>
-            <artifactId>bucket4j-core</artifactId>
-            <version>8.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.vladimir-bukhtoyarov</groupId>
-            <artifactId>bucket4j-redis</artifactId>
-            <version>8.0.1</version>
-        </dependency>
-
-        <!-- Redis for distributed storage -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

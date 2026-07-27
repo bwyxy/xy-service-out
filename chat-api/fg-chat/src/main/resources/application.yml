@@ -1,7 +1,27 @@
 server:
-  port: 9050
+  port: 9080
+  servlet:
+    context-path: ${SERVER_CONTEXT_PATH:/}
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 1000
+    threads:
+      max: 800
+      min-spare: 100
 
 spring:
   profiles:
-    group:
-      prod: prod
+    default: base,cp
+
+logging:
+  level:
+    com.chat: warn
+    org.springframework: warn
+
+# JWT 配置
+jwt:
+  header: token
+  secret: ${TOKEN_SECRET:xy-jwt-secret-key-at-least-32-bytes}
+  expiration: 86400000
+  refresh-expiration: 604800000
+  prefix:

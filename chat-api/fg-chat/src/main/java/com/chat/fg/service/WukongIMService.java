@@ -4,9 +4,13 @@ import com.chat.fg.config.WukongIMConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.xy.common.client.WuKongClient;
+import com.xy.common.client.dto.request.WKUserTokenRequest;
+import com.xy.common.client.dto.response.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,7 +26,20 @@ public class WukongIMService {
     private final WukongIMConfig.WukongIMProperties props;
     private final OkHttpClient httpClient;
     private final ObjectMapper objectMapper;
+
+    @Autowired
+    private WuKongClient wkKongClient;
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+    /** 更新 token */
+    public boolean updateToken(WKUserTokenRequest wkUserTokenRequest) {
+        ApiResult result = wkKongClient.resetUserToken(wkUserTokenRequest);
+
+        if (result.getStatus() != 200) {
+            throw new SecurityException(result.getMsg());
+        }
+        return true;
+    }
 
     /** 创建/注册用户，返回 { uid, token, wsUrl } */
     public JsonNode createUser(String uid, String name) throws IOException {

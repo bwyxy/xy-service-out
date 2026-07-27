@@ -21,13 +21,13 @@ public class TokenService {
 
     private static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
-    @Value("${token.header}")
+    @Value("${jwt.header}")
     private String header;
 
-    @Value("${token.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${token.expireTime}")
+    @Value("${jwt.expiration}")
     private Long expireTime;
 
     protected static final long MILLIS_SECOND = 1000;

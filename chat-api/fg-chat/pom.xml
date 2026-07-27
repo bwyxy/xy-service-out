@@ -27,6 +27,19 @@
         <dependency>
             <groupId>com.xy</groupId>
             <artifactId>xy-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xy</groupId>
+            <artifactId>xy-framework</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xy</groupId>
+            <artifactId>xy-system</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- OkHttp for WukongIM API calls -->

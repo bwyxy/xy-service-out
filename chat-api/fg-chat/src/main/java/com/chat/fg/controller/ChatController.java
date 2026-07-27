@@ -2,12 +2,12 @@ package com.chat.fg.controller;
 
 import com.chat.fg.service.WukongIMService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xy.common.annotation.Anonymous;
+import com.xy.common.client.dto.request.WKUserTokenRequest;
+import com.xy.common.core.domain.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -22,6 +22,19 @@ public class ChatController {
 
     private final WukongIMService wkService;
     private final ObjectMapper objectMapper;
+
+    /** 更新悟空 token */
+    @PostMapping("/update/token")
+    public R<?> updateToken(@RequestBody WKUserTokenRequest wkUserTokenRequest) {
+
+        boolean isSuccess = wkService.updateToken(wkUserTokenRequest);
+
+        if (isSuccess) {
+            return R.ok("更新token成功");
+        } else {
+            return R.error(404,"error");
+        }
+    }
 
     /** 用户登录/注册：获取悟空IM连接凭据 */
     @PostMapping("/login")

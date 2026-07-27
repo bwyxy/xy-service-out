@@ -1,6 +1,8 @@
 # ===========================================
 # 平台公共配置 (cp = common platform)
 # ===========================================
+xy:
+  wk-api-url: ${WK_API_URL}
 
 spring:
   datasource:
@@ -65,3 +67,15 @@ jwt:
   expiration: 86400000
   refresh-expiration: 604800000
   prefix: Bearer
+
+# 验证码配置
+captcha:
+  email:
+    expire-time: 300 # 验证码有效期 5分钟
+
+# 邮箱配置
+email:
+  username: ${EMAIL_USERNAME}
+  password: ${EMAIL_PASSWORD}
+  host: smtp.qq.com
+  port: 465

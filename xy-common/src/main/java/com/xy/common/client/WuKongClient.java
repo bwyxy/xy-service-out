@@ -5,7 +5,7 @@ import com.xy.common.client.dto.response.ApiResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(url = "https://www.bwyxy.cn/wk-api")
+@FeignClient(name = "wukongClient", url = "${xy.wk-api-url}")
 public interface WuKongClient {
 
     /**
