@@ -45,7 +45,14 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       port: 9001,
       host: '0.0.0.0',
       cors: true,
-      origin: '//localhost:9001'
+      origin: '//localhost:9001',
+      proxy: {
+        '/api': {
+          target: 'http://localhost:9050',
+          changeOrigin: true,
+          rewrite: (path :any) => path.replace(/^\/api/, '')
+        }
+      }
     },
     resolve: {
       alias: {

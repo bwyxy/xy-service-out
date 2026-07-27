@@ -13,6 +13,7 @@
     "@types/node": "catalog:",
     "@vueuse/core": "catalog:",
     "@xy/qiankun-communication": "workspace:*",
+    "easyjssdk": "^2.0.1",
     "element-plus": "catalog:",
     "pinia": "catalog:",
     "sass": "catalog:",

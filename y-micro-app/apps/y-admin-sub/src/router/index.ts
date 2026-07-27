@@ -57,7 +57,7 @@ router.beforeEach(async (to, _from, next) => {
           })
           next({ ...to, replace: true })
         } catch (error) {
-          userStore.logout()
+          await userStore.logout()
           next(`/login?redirect=${to.fullPath}`)
         }
       } else {

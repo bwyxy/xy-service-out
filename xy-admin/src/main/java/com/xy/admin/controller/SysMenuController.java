@@ -21,7 +21,7 @@ public class SysMenuController {
     /** 查询菜单列表
      * */
     @PostMapping("/list")
-    public R<?> list(@RequestBody SysMenu sysMenu) {
+    public R<?> list(SysMenu sysMenu) {
 
         List<SysMenu> menus = sysMenuService.selectMenuList(sysMenu, SecurityUtils.getUserId());
 

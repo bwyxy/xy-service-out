@@ -5,6 +5,7 @@ import '@/assets/styles/index.scss'
 /** qiankun */
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 import { registerGlobalListeners, microComm } from '@/qiankun/index.ts'
+import { setupStore } from '@/store/index.ts'
 
 let app :App | null = null
 
@@ -17,6 +18,8 @@ const render = (props: any) => {
     app = createApp(AppDom);
 
     app.use(router)
+
+    setupStore(app)
 
     app.mount(mountRoot);
 }
