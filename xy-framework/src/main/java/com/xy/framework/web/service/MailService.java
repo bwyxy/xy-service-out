@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+
 @Service
 public class MailService {
 
@@ -23,16 +25,18 @@ public class MailService {
      * @param toEmail 收件人邮箱
      * @param code 验证码
      * */
-    public void sendSimpleMail(String toEmail, String code) throws MessagingException {
+    public void sendSimpleMail(String toEmail, String code) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage mimeMessage = mailConfig.javaMailSender().createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        helper.setFrom(emailProperties.getUsername());
+        String fromDisplayName = "飞鸽即时通讯";
+        helper.setFrom(emailProperties.getUsername(), fromDisplayName);
         helper.setTo(toEmail);
 
-        helper.setSubject("【飞鸽验证码】");
+        String subCodeTitle = "验证码【 " + code + " 】";
+        helper.setSubject(subCodeTitle);
 
         String htmlContent = "<html><body>" +
                 "<h2 style='text-align: center;font-size: 24px;letter-spacing: 2px;color: #1f1f1f'>飞鸽即时通讯-验证码</h2>" +

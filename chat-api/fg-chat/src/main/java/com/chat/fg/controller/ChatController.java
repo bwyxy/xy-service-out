@@ -24,6 +24,7 @@ public class ChatController {
     private final ObjectMapper objectMapper;
 
     /** 更新悟空 token */
+    @Anonymous
     @PostMapping("/update/token")
     public R<?> updateToken(@RequestBody WKUserTokenRequest wkUserTokenRequest) {
 
