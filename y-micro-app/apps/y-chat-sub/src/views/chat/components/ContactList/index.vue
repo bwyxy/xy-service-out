@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import useChatStore from '@/store/chat'
 import { Search, Plus } from '@element-plus/icons-vue'
 
@@ -7,15 +7,6 @@ const chatStore = useChatStore()
 const showAddDialog = ref(false)
 const addUid = ref('')
 const addName = ref('')
-
-onMounted(() => {
-  // 尝试自动登录
-  const savedUid = localStorage.getItem('chat_uid')
-  const savedName = localStorage.getItem('chat_name')
-  if (savedUid && savedName) {
-    chatStore.login(savedUid, savedName)
-  }
-})
 
 const handleAddContact = () => {
   if (addUid.value.trim()) {

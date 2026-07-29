@@ -1,36 +1,66 @@
 const BASE_URL = import.meta.env.VITE_BASE_API_URL || 'http://localhost:9050'
-// const BASE_URL = '/api'
 
 async function request(url: string, options: RequestInit = {}) {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
+  // 携带 JWT token
+  const token = localStorage.getItem('chat_token')
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+
   const res = await fetch(`${BASE_URL}${url}`, {
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     ...options,
   })
   return res.json()
 }
 
-// 聊天登录（获取悟空IM连接凭据）
-export function chatLogin(uid: string, name: string) {
+/** 登录（手机号/邮箱 + 密码） */
+export function login(account: string, password: string) {
+  return request('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ account, password }),
+  })
+}
+
+/** 获取当前用户信息 */
+export function getUserInfo() {
+  return request('/user/info')
+}
+
+/** 注册 */
+export function register(data: {
+  nickname?: string
+  phone: string
+  email: string
+  password: string
+  confirmPassword: string
+  emailCode: string
+  sex?: string
+}) {
+  return request('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+/** 发送验证码 */
+export function sendCode(email: string) {
+  return request(`/send/code?email=${encodeURIComponent(email)}`, {
+    method: 'POST',
+  })
+}
+
+/** 更新悟空IM Token */
+export function updateToken(uid: string, token: string, deviceFlag = 1, deviceLevel = 1) {
   return request('/api/chat/update/token', {
     method: 'POST',
-    body: JSON.stringify({
-      uid: uid,
-      token: name,
-      deviceFlag: 1,
-      deviceLevel: 1
-    }),
+    body: JSON.stringify({ uid, token, deviceFlag, deviceLevel }),
   })
 }
 
-// 获取 Token
-export function getToken(uid: string) {
-  return request('/api/chat/token', {
-    method: 'POST',
-    body: JSON.stringify({ uid }),
-  })
-}
-
-// 创建群聊
+/** 创建群聊 */
 export function createGroup(groupId: string, groupName: string) {
   return request('/api/chat/group/create', {
     method: 'POST',
@@ -38,7 +68,7 @@ export function createGroup(groupId: string, groupName: string) {
   })
 }
 
-// 加入群聊
+/** 加入群聊 */
 export function joinGroup(groupId: string, uid: string) {
   return request('/api/chat/group/join', {
     method: 'POST',
@@ -46,7 +76,7 @@ export function joinGroup(groupId: string, uid: string) {
   })
 }
 
-// 同步消息
+/** 同步消息 */
 export function syncMessages(params: {
   uid: string
   channelId: string

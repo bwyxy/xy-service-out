@@ -17,6 +17,7 @@ logging:
   level:
     com.chat: warn
     org.springframework: warn
+    com.xy.common.client.WuKongClient: DEBUG
 
 # JWT 配置
 jwt:

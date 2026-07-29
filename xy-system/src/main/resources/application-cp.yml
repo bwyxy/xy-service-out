@@ -60,14 +60,6 @@ mybatis:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   configLocation: classpath:mybatis/mybatis-config.xml
 
-# JWT 配置
-jwt:
-  header: authorization
-  secret: ${TOKEN_SECRET:xy-jwt-secret-key-at-least-32-bytes}
-  expiration: 86400000
-  refresh-expiration: 604800000
-  prefix: Bearer
-
 # 验证码配置
 captcha:
   email:

@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import com.xy.common.utils.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -74,9 +74,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
+        log.info("请求头: {}", jwtTokenProvider.getJwtHeader());
         String bearerToken = request.getHeader(jwtTokenProvider.getJwtHeader());
         String prefix = jwtTokenProvider.getJwtPrefix() + " ";
 
+        if (StringUtils.isEmpty(prefix) && StringUtils.hasText(bearerToken)) {
+            return bearerToken;
+        }
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(prefix)) {
             return bearerToken.substring(prefix.length());
         }

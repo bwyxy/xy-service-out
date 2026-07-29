@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { initWK, disconnect, getIM, sendPersonalMessage, sendGroupMessage } from '@/utils/wk'
-import { chatLogin } from '@/api/chat'
+import { login as apiLogin, getUserInfo as apiGetUserInfo } from '@/api/chat'
 
 export interface Contact {
   uid: string
@@ -30,41 +30,69 @@ const useChatStore = defineStore('chat', () => {
   const activeContact = ref<Contact | null>(null)
   const messages = ref<Message[]>([])
   const conversations = ref<any[]>([])
+  const userInfo = ref<any>(null)
 
-  /** 登录聊天 */
-  async function login(userId: string, userName: string) {
-    const res = await chatLogin(userId, userName)
+  /** 登录 */
+  async function login(account: string, password: string) {
+    const res = await apiLogin(account, password)
     const data = res.data
     uid.value = data.uid
-    name.value = userName
-    token.value = data.token
+    name.value = data.nickname || '用户'
     wsUrl.value = data.wsUrl
 
+    // 保存登录信息
+    localStorage.setItem('chat_uid', data.uid)
+    localStorage.setItem('chat_name', data.nickname || '用户')
+    if (data.token) {
+      localStorage.setItem('chat_token', data.token)
+      token.value = data.token
+    }
+
     // 连接悟空IM
-    const im = initWK({ uid: data.uid, token: data.token, wsUrl: data.wsUrl })
-    connected.value = true
-
-    // 监听消息
-    im.onMessage((msg: any) => {
-      const msgData = typeof msg.content === 'string' ? JSON.parse(msg.content) : msg.content
-      messages.value.push({
-        id: `${msg.messageSeq}_${Date.now()}`,
-        fromUid: msg.fromUid,
-        channelId: msg.channelId,
-        channelType: msg.channelType,
-        content: msgData.content || '',
-        timestamp: msg.timestamp || Date.now(),
-        isSelf: msg.fromUid === uid.value,
+    if (data.wsUrl) {
+      const im = initWK({
+        uid: data.uid,
+        token: data.token || '',
+        wsUrl: data.wsUrl,
       })
-    })
+      connected.value = true
 
-    // 监听会话更新
-    im.onConversationUpdate((list: any[]) => {
-      conversations.value = list
-      updateContactsFromConversations(list)
-    })
+      // 监听消息
+      im.onMessage((msg: any) => {
+        const msgData = typeof msg.content === 'string' ? JSON.parse(msg.content) : msg.content
+        messages.value.push({
+          id: `${msg.messageSeq}_${Date.now()}`,
+          fromUid: msg.fromUid,
+          channelId: msg.channelId,
+          channelType: msg.channelType,
+          content: msgData.content || '',
+          timestamp: msg.timestamp || Date.now(),
+          isSelf: msg.fromUid === uid.value,
+        })
+      })
+
+      // 监听会话更新
+      im.onConversationUpdate((list: any[]) => {
+        conversations.value = list
+        updateContactsFromConversations(list)
+      })
+    }
 
     return data
+  }
+
+  /** 获取用户信息 */
+  async function fetchUserInfo() {
+    try {
+      const res = await apiGetUserInfo()
+      if (res.code === 200) {
+        userInfo.value = res.data
+        uid.value = res.data.uid
+        name.value = res.data.nickname || '用户'
+      }
+    } catch (e) {
+      console.error('获取用户信息失败', e)
+    }
   }
 
   /** 从会话列表更新联系人 */
@@ -75,7 +103,6 @@ const useChatStore = defineStore('chat', () => {
       type: c.channelType === 2 ? 'group' : 'person',
       channelType: c.channelType as 1 | 2,
     }))
-    // 合并去重
     const existingIds = new Set(contacts.value.map(c => c.uid + c.channelType))
     for (const c of cs) {
       if (!existingIds.has(c.uid + c.channelType)) {
@@ -94,7 +121,6 @@ const useChatStore = defineStore('chat', () => {
   /** 选择联系人 */
   function selectContact(contact: Contact) {
     activeContact.value = contact
-    // 加载该联系人的消息
     const im = getIM()
     if (im) {
       im.syncMessage(contact.uid, contact.channelType, 0, 50)
@@ -125,12 +151,16 @@ const useChatStore = defineStore('chat', () => {
     activeContact.value = null
     messages.value = []
     conversations.value = []
+    userInfo.value = null
+    localStorage.removeItem('chat_uid')
+    localStorage.removeItem('chat_name')
+    localStorage.removeItem('chat_token')
   }
 
   return {
     uid, name, token, wsUrl, connected,
-    contacts, activeContact, messages, conversations,
-    login, addContact, selectContact, sendMessage, logout,
+    contacts, activeContact, messages, conversations, userInfo,
+    login, fetchUserInfo, addContact, selectContact, sendMessage, logout,
   }
 })
 

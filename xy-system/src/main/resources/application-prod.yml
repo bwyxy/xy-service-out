@@ -23,6 +23,14 @@ logging:
     com.todo: warn
     org.springframework: warn
 
+# JWT 配置
+jwt:
+  header: authorization
+  secret: ${TOKEN_SECRET:xy-jwt-secret-key-at-least-32-bytes}
+  expiration: 86400000
+  refresh-expiration: 604800000
+  prefix: Bearer
+
 # Token 配置
 token:
   header: Authorization

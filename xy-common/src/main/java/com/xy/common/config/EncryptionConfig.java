@@ -9,6 +9,6 @@ public class EncryptionConfig {
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(31);
+        return new BCryptPasswordEncoder(11);
     }
 }
