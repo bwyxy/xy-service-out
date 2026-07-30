@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.WKUserTokenRequest;
-import com.xy.common.client.dto.response.ApiResult;
+import com.xy.common.client.vo.ResultVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -33,7 +33,7 @@ public class WukongIMService {
 
     /** 更新 token */
     public boolean updateToken(WKUserTokenRequest wkUserTokenRequest) {
-        ApiResult result = wkKongClient.resetUserToken(wkUserTokenRequest);
+        ResultVO result = wkKongClient.resetUserToken(wkUserTokenRequest);
 
         if (result.getStatus() != 200) {
             throw new SecurityException(result.getMsg());

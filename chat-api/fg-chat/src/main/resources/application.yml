@@ -18,6 +18,17 @@ logging:
     com.chat: warn
     org.springframework: warn
     com.xy.common.client.WuKongClient: DEBUG
+    com.xy.common.client: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation: DEBUG
+
+feign:
+  client:
+    config:
+      wukongClient:
+        loggerLevel: full
+      default:
+        loggerLevel: full
 
 # JWT 配置
 jwt:

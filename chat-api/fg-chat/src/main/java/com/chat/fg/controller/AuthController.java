@@ -5,6 +5,7 @@ import com.chat.fg.pojo.dto.RegisterDTO;
 import com.chat.fg.security.ChatUserDetails;
 import com.chat.fg.service.IAuthService;
 import com.chat.fg.service.IUserService;
+import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.User;
@@ -61,11 +62,9 @@ public class AuthController {
      */
     @PostMapping("/auth/userinfo")
     public R<?> getUserInfo() {
-        // 聊天用户使用 ChatUserDetails，直接取 principal
-        ChatUserDetails principal = (ChatUserDetails) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        Long uId = SecurityUtils.getUId();
 
-        User user = userService.getUserInfo(principal.getUId());
+        User user = userService.getUserInfo(uId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("uid", String.valueOf(user.getUId()));

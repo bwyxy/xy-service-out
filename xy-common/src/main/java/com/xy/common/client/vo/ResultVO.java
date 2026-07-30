@@ -1,11 +1,11 @@
-package com.xy.common.client.dto.response;
+package com.xy.common.client.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiResult<T> {
+public class ResultVO<T> {
 
     /**
      * 请求状态

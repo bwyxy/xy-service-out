@@ -6,7 +6,7 @@ import com.chat.fg.security.ChatUserDetails;
 import com.chat.fg.service.IAuthService;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.WKUserTokenRequest;
-import com.xy.common.client.dto.response.ApiResult;
+import com.xy.common.client.vo.ResultVO;
 import com.xy.common.client.dto.response.IMAddrResponse;
 import com.xy.common.entity.User;
 import com.xy.common.exception.BusinessException;
@@ -16,7 +16,6 @@ import com.xy.framework.provider.JwtTokenProvider;
 import com.xy.framework.web.service.VerifyService;
 import com.xy.system.service.wk.WKClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -127,7 +126,7 @@ public class AuthServiceImpl implements IAuthService {
         tokenRequest.setDeviceFlag(1);
         tokenRequest.setDeviceLevel(0);
 
-        ApiResult tokenResult = wuKongClient.resetUserToken(tokenRequest);
+        ResultVO tokenResult = wuKongClient.resetUserToken(tokenRequest);
         if (tokenResult.getStatus() != 200) {
             throw new BusinessException("获取IM连接失败: " + tokenResult.getMsg());
         }
