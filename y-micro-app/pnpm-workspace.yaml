@@ -9,6 +9,7 @@ catalog:
   "@vitejs/plugin-vue": ^5.2.4
   "@vue/tsconfig": ^0.7.0
   "@vueuse/core": ^14.3.0
+  animate.css: ^4.1.1
   vite-plugin-qiankun: ^1.0.15
   unplugin-auto-import: ^21.0.0
   unplugin-vue-components: ^32.1.0

@@ -65,7 +65,7 @@ public class AuthServiceImpl implements IAuthService {
         User user = new User();
 
         if (registerDTO.getNickname() == null || StringUtils.isEmpty(registerDTO.getNickname())) {
-            user.setNickname("飞鸽用户");
+            user.setNickname("用户" + registerDTO.getPhone());
         } else {
             user.setNickname(registerDTO.getNickname());
         }

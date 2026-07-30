@@ -1,0 +1,5 @@
+@use "variables" as *;
+
+@function size($size) {
+  @return calc(#{$size} * $vw);
+}

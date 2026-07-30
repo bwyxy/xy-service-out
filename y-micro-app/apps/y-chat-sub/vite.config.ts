@@ -62,7 +62,10 @@ export default ({ mode } :{mode :any}) :UserConfig => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "@/assets/styles/variables.scss" as *;`
+          additionalData: `
+            @use "@/assets/styles/variables.scss" as *;
+            @use "@/assets/styles/mixins.scss" as *;
+           `
         }
       }
     }

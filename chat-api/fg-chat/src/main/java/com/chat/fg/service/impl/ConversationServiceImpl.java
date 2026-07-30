@@ -81,6 +81,13 @@ public class ConversationServiceImpl implements IConversationService {
             vo.setChannelId(conv.getChannelId());
             vo.setChannelType(conv.getChannelType());
             vo.setUnread(conv.getUnread());
+            vo.setTimestamp(conv.getTimestamp());
+            vo.setLastClientMsgNo(conv.getLastClientMsgNo());
+            vo.setLastMsgSeq(conv.getLastMsgSeq());
+            vo.setOffsetMsgSeq(conv.getOffsetMsgSeq());
+            vo.setReadedToMsgSeq(conv.getReadedToMsgSeq());
+            vo.setVersion(conv.getVersion());
+            vo.setRecents(conv.getRecents());
 
             if (conv.getChannelType() == 1) {
                 String channelId = conv.getChannelId();
@@ -174,6 +181,8 @@ public class ConversationServiceImpl implements IConversationService {
     private Map<Long, User> queryUsers(List<String> uIds) {
         List<Long> userIds = parseLongUids(uIds);
 
+        if (userIds.isEmpty()) return new HashMap<>();
+
         List<User> users = userMapper.selectBatchIds(userIds);
 
         return users.stream().collect(Collectors.toMap(User::getUId, Function.identity()));
@@ -184,6 +193,8 @@ public class ConversationServiceImpl implements IConversationService {
      * */
     private Map<Long, Group> queryGroups(List<String> gIds) {
         List<Long> groupIds = parseLongUids(gIds);
+
+        if (groupIds.isEmpty()) return new HashMap<>();
 
         List<Group> groups = groupMapper.selectBatchIds(groupIds);
 

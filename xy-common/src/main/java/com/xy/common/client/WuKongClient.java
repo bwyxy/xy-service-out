@@ -62,8 +62,8 @@ public interface WuKongClient {
     /**
      * 频道历史消息
      * */
-    @PostMapping(path = "/channel/messagesync", consumes = "application/json")
-    MessageVO messageSync(@RequestBody MsgRequest msgRequest);
+    @PostMapping(path = "/channel/messagesync")
+    MessageVO messageSync(MsgRequest msgRequest);
 
     /**
      * 获取系统用户
