@@ -2,18 +2,42 @@ import { defineStore } from 'pinia'
 import { getRouters } from '@/api/login'
 import type { RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
+import ParentView from '@/layout/ParentView.vue'
 
-// 后端组件路径 -> 前端组件映射
+// 后端组件路径 -> 前端组件映射（显式覆盖）
 const componentMap: Record<string, any> = {
-  'Layout': () => import('@/layout/index.vue'),
-  'ParentView': () => import('@/layout/index.vue'),
   'system/menu/index': () => import('@/views/system/menu/index.vue'),
 }
 
-// 将后端 RouterVo 转为 Vue Router 路由
-function filterAsyncRouter(routers: any[]): RouteRecordRaw[] {
+// 使用 Vite 的 import.meta.glob 预构建所有视图模块，避免运行时动态 import 失败
+const modules = import.meta.glob('@/views/**/*.vue')
+
+/**
+ * 加载组件（仿若依 loadView）
+ * @param componentPath 后端返回的组件路径，如 "system/menu/index"
+ */
+const loadView = (componentPath: string) => {
+  // 1. 先查显式映射
+  if (componentMap[componentPath]) {
+    return componentMap[componentPath]
+  }
+  // 2. 通过 import.meta.glob 查找（key 格式：/src/views/system/menu/index.vue）
+  const targetPath = componentPath + '.vue'
+  for (const [key, module] of Object.entries(modules)) {
+    if (key.endsWith(`/${targetPath}`) || key.endsWith(targetPath)) {
+      return module
+    }
+  }
+  return undefined
+}
+
+/**
+ * 将后端 RouterVo 转为 Vue Router 路由（仿若依 filterAsyncRouter）
+ */
+function filterAsyncRouter(routerList: any[]): RouteRecordRaw[] {
   const res: RouteRecordRaw[] = []
-  routers.forEach((router) => {
+
+  routerList.forEach((router) => {
     const route: any = {
       path: router.path,
       name: router.name,
@@ -23,31 +47,41 @@ function filterAsyncRouter(routers: any[]): RouteRecordRaw[] {
         icon: router.meta?.icon || '',
         noCache: router.meta?.noCache || false,
         link: router.meta?.link || null,
+        hidden: router.hidden,
       },
     }
 
+    // 处理 redirect：noRedirect 表示不跳转，设置为 undefined
+    if (router.redirect && router.redirect !== 'noRedirect') {
+      route.redirect = router.redirect
+    }
+
+    // 处理组件
     if (router.component) {
-      const componentKey = router.component
-      if (componentKey === 'Layout') {
+      if (router.component === 'Layout') {
         route.component = Layout
-      } else if (componentMap[componentKey]) {
-        route.component = componentMap[componentKey]
+      } else if (router.component === 'ParentView') {
+        route.component = ParentView
+      } else if (router.component === 'InnerLink') {
+        route.component = () => import('@/layout/InnerLink.vue')
+      } else {
+        route.component = loadView(router.component)
       }
     }
 
-    if (router.redirect) {
-      route.redirect = router.redirect
-    }
-    if (router.alwaysShow) {
-      route.meta.alwaysShow = true
-    }
-
+    // 递归处理子路由
     if (router.children && router.children.length > 0) {
       route.children = filterAsyncRouter(router.children)
     }
 
+    // alwaysShow
+    if (router.alwaysShow) {
+      route.meta.alwaysShow = true
+    }
+
     res.push(route as RouteRecordRaw)
   })
+
   return res
 }
 
@@ -64,9 +98,7 @@ const usePermissionStore = defineStore('permission', {
       const routers = res.data || []
       const accessedRoutes = filterAsyncRouter(routers)
       this.addRoutes = accessedRoutes
-      this.routes = [
-        ...accessedRoutes,
-      ]
+      this.routes = [...accessedRoutes]
       return accessedRoutes
     },
   },

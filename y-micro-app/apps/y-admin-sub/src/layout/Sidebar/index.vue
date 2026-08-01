@@ -8,48 +8,90 @@ const route = useRoute()
 const router = useRouter()
 const permissionStore = usePermissionStore()
 
-const menuList = computed(() => {
+/**
+ * 获取显示的路由（仿若依常规模板）
+ * 过滤掉 hidden 的路由
+ */
+const routes = computed(() => {
   return permissionStore.routes.filter(
-    (r: RouteRecordRaw) => r.meta?.title && !r.meta?.hidden
+    (r: RouteRecordRaw) => !r.meta?.hidden
   )
 })
 
+/**
+ * 解析路径（仿若依 resolvePath）
+ * 处理父路径 + 子路径拼接
+ */
+const resolvePath = (parentPath: string, childPath: string): string => {
+  if (childPath.startsWith('/')) {
+    return childPath
+  }
+  return `${parentPath}/${childPath}`.replace(/\/+/g, '/')
+}
+
+/**
+ * 获取菜单项（仿若依 getMenuItem）
+ * 判断是否只有一个子菜单：如果只有一个可见子菜单且 alwaysShow 不为 true，直接显示子菜单
+ */
+const hasOneShowingChild = (children: RouteRecordRaw[]): boolean => {
+  const showingChildren = children.filter(
+    (c: RouteRecordRaw) => !c.meta?.hidden
+  )
+  return showingChildren.length === 1
+}
+
+/** 当前激活菜单 */
 const activeMenu = computed(() => route.path)
 
+/** 点击菜单项 */
 const handleSelect = (path: string) => {
+  if (path === route.path) return
   router.push(path)
 }
 </script>
 
 <template>
   <div class="sidebar-container">
-    <div class="logo">忆  ·  后台管理</div>
     <el-menu
       :default-active="activeMenu"
       :collapse="false"
-      background-color="#001529"
-      text-color="#ffffffa6"
-      active-text-color="#fff"
+      mode="vertical"
       @select="handleSelect"
     >
-      <template v-for="menu in menuList" :key="menu.path">
-        <!-- 有子菜单 -->
+      <template v-for="menu in routes" :key="menu.path">
+        <!-- 有子菜单且 alwaysShow=true 或子菜单 > 1 -->
         <el-sub-menu
-          v-if="menu.children && menu.children.length > 0"
-          :index="menu.path"
+          v-if="
+            menu.children &&
+            menu.children.filter((c: any) => !c.meta?.hidden).length >= 1 &&
+            (menu.meta?.alwaysShow || !hasOneShowingChild(menu.children))
+          "
+          :index="resolvePath(menu.path, menu.children[0]?.path || '')"
         >
           <template #title>
             <span>{{ menu.meta?.title }}</span>
           </template>
           <el-menu-item
-            v-for="child in menu.children.filter((c: any) => !c.hidden)"
+            v-for="child in menu.children.filter((c: any) => !c.meta?.hidden)"
             :key="child.path"
-            :index="(menu.path + '/' + child.path).replace('//', '/')"
+            :index="resolvePath(menu.path, child.path)"
           >
             {{ child.meta?.title }}
           </el-menu-item>
         </el-sub-menu>
-        <!-- 无子菜单 -->
+
+        <!-- 只有一个子菜单且 alwaysShow 不为 true：直接显示子菜单 -->
+        <el-menu-item
+          v-else-if="
+            menu.children &&
+            menu.children.filter((c: any) => !c.meta?.hidden).length === 1
+          "
+          :index="resolvePath(menu.path, menu.children.filter((c: any) => !c.meta?.hidden)[0].path)"
+        >
+          {{ menu.children.filter((c: any) => !c.meta?.hidden)[0].meta?.title }}
+        </el-menu-item>
+
+        <!-- 无子菜单：直接显示 -->
         <el-menu-item v-else :index="menu.path">
           {{ menu.meta?.title }}
         </el-menu-item>
@@ -60,23 +102,19 @@ const handleSelect = (path: string) => {
 
 <style scoped lang="scss">
 .sidebar-container {
-  width: 220px;
-  height: 100vh;
-  background: #001529;
+  width: size(240);
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: rgba(0, 0, 0, 0.04) 4px 2px 6px 0, rgba(0, 0, 0, 0.04) -4px -2px 6px 0px;
+  border-radius: size(14);
+  box-sizing: border-box;
+  margin-right: size(24);
+  padding: size(14);
   overflow-y: auto;
-
-  .logo {
-    height: 56px;
-    line-height: 56px;
-    text-align: center;
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
 
   :deep(.el-menu) {
     border-right: none;
+    background: transparent;
   }
 }
 </style>
