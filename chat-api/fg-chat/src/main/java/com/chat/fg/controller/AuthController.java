@@ -10,6 +10,7 @@ import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.User;
 import com.xy.framework.web.service.VerifyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +43,7 @@ public class AuthController {
      */
     @Anonymous
     @PostMapping("/auth/register")
-    public R<?> register(RegisterDTO registerDTO) {
+    public R<?> register(@Valid @RequestBody RegisterDTO registerDTO) {
         Long uId = authService.registerUser(registerDTO);
         return R.ok(uId);
     }
@@ -52,7 +53,7 @@ public class AuthController {
      */
     @Anonymous
     @PostMapping("/chat/login")
-    public R<?> login(LoginDTO loginDTO) {
+    public R<?> login(@RequestBody LoginDTO loginDTO) {
         Map<String, Object> result = authService.login(loginDTO);
         return R.ok(result);
     }

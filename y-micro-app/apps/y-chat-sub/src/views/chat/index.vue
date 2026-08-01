@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import ContactList from './components/ContactList/index.vue'
-import ChatWindow from './components/ChatWindow/index.vue'
+
+
 </script>
 
 <template>
-  <div class="chat">
-    <ContactList />
-    <ChatWindow />
+  <div class="chat-container">
+    <div class="chat-list">
+      <!-- 消息列表 -->
+      <contact-list />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.chat {
-  flex: 1;
-  display: flex;
+.chat-container {
+  width: 100%;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  .chat-list {
+    width: size(240);
+  }
 }
 </style>

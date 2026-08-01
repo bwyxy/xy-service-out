@@ -32,6 +32,20 @@ export function disconnect() {
   }
 }
 
+/**
+ * 解码悟空IM消息的 payload（base64 → JSON）
+ * 后端使用 Base64.getEncoder().encodeToString() 编码
+ */
+export function decodePayload(payload: string): { type: number; content: string } {
+  try {
+    const jsonStr = atob(payload)
+    return JSON.parse(jsonStr)
+  } catch (e) {
+    console.error(e)
+    return { type: 1, content: payload }
+  }
+}
+
 /** 发送消息到个人频道 */
 export function sendPersonalMessage(imInstance: any, toUid: string, content: string) {
   return imInstance.send(toUid, 1, {

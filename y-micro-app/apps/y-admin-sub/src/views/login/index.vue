@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { User, Lock } from '@element-plus/icons-vue'
 import {reactive, ref} from "vue";
+import { useRouter } from "vue-router";
 import type { FormInstance, FormRules } from 'element-plus'
+import useUserStore from "@/store/modules/user.ts";
 
 interface RuleFormType {
   username: string
   password: string
 }
 
+const router = useRouter()
+const userStore = useUserStore()
 const ruleFormRefs = ref<FormInstance>()
 
 const isLoading = ref<boolean>(false)
@@ -31,14 +35,15 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
   isLoading.value = true
   await formEl.validate((valid) => {
     if (valid) {
-
+      userStore.login(ruleForm).then(() => {
+        isLoading.value = false
+        router.push('/')
+      })
     } else {
       isLoading.value = false
     }
   })
 }
-
-console.log(import.meta.env.VITE_BASE_API_URL)
 </script>
 
 <template>
@@ -49,34 +54,35 @@ console.log(import.meta.env.VITE_BASE_API_URL)
           <span>您好, 欢迎登录!</span>
         </div>
       </el-form-item>
+      <el-form-item prop="username">
+        <el-input
             v-model="ruleForm.username"
             style="height: 42px"
-            :prefix-icon="User"
             placeholder="用户名"
-          :prefix-icon="User"
-          placeholder="用户名"
+            :prefix-icon="User"
         />
       </el-form-item>
+      <el-form-item prop="password">
+        <el-input
             v-model="ruleForm.password"
             style="height: 42px"
             :prefix-icon="Lock"
             type="password"
             show-password
             placeholder="密码"
-          placeholder="密码"
+        />
       </el-form-item>
       <el-form-item>
         <el-checkbox>记住密码</el-checkbox>
-          @keyup.enter="handleSubmit(ruleFormRefs)"
-        />
       </el-form-item>
+      <el-form-item>
+        <el-button
             v-loading="isLoading"
             @click="handleSubmit(ruleFormRefs)"
             class="login-btn"
             type="primary"
-          class="login-btn"
-          type="primary"
-        >登录</el-button>
+        >
+        登录</el-button>
       </el-form-item>
     </el-form>
   </div>

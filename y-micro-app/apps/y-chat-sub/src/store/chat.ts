@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { initWK, disconnect, getIM, sendPersonalMessage, sendGroupMessage } from '@/utils/wk'
+import { initWK, disconnect, getIM, sendPersonalMessage, sendGroupMessage, decodePayload } from '@/utils/wk'
 import { login as apiLogin, getUserInfo as apiGetUserInfo } from '@/api/chat'
 
 export interface Contact {
@@ -59,7 +59,8 @@ const useChatStore = defineStore('chat', () => {
 
       // 监听消息
       im.onMessage((msg: any) => {
-        const msgData = typeof msg.content === 'string' ? JSON.parse(msg.content) : msg.content
+        // 解码 base64 payload → { type, content }
+        const msgData = decodePayload(msg.payload || '')
         messages.value.push({
           id: `${msg.messageSeq}_${Date.now()}`,
           fromUid: msg.fromUid,

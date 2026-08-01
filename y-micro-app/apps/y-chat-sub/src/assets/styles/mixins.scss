@@ -1,5 +1,32 @@
 @use "variables" as *;
 
+/**
+ * 尺寸计算
+ */
 @function size($size) {
-  @return calc(#{$size} * $vw);
+  @return calc(#{$size} * var(--vw));
+}
+
+@mixin flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/**
+ * 盒子 按钮白色
+ */
+@mixin boxBtn($w, $h, $r) {
+  min-width: size($w);
+  height: size($h);
+  background: #fff;
+  border-radius: size($r);
+  padding: 0 size(12);
+  color: #1f1f1f;
+  box-shadow: rgba(0, 0, 0, 0.18) 0 2px 4px;
+  cursor: pointer;
+  @include flexCenter;
+  &:hover {
+    background: #fafafa;
+  }
 }

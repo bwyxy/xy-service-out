@@ -52,6 +52,16 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            @use "@/assets/styles/variables.scss" as *;
+            @use "@/assets/styles/mixins.scss" as *;
+           `
+        }
+      }
     }
   }
 

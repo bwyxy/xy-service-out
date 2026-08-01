@@ -6,11 +6,13 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 
 /**
  * 注册用户
  * */
+@Slf4j
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,9 +44,10 @@ public class RegisterDTO {
      * 自定义校验逻辑: 密码与重复密码不一致
      * */
     public boolean isPasswordConfirmPassword() {
-        if (password == null || confirmPassword == null) {
+        log.error("校验密码-{}-{}", this.password, this.confirmPassword);
+        if (this.password == null || this.confirmPassword == null) {
             return false;
         }
-        return password.equals(confirmPassword);
+        return this.password.equals(this.confirmPassword);
     }
 }

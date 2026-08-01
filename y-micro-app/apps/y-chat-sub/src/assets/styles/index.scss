@@ -2,6 +2,22 @@
 @use "mixins" as *;
 @use "element-plus" as *;
 
+:root {
+  --vw: calc(100vw / 1920);
+}
+
+@media all and (max-width: 1320px) {
+  :root {
+    --vw: calc(100vw / 1320);
+  }
+}
+
+@media all and (max-width: 768px) {
+  :root {
+    --vw: calc(100vw / 768);
+  }
+}
+
 * {
   margin: 0;
   padding: 0;

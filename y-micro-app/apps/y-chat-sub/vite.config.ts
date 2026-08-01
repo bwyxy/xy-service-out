@@ -48,7 +48,7 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       origin: '//localhost:9001',
       proxy: {
         '/api': {
-          target: 'http://localhost:9050',
+          target: 'http://localhost:9080',
           changeOrigin: true,
           rewrite: (path :any) => path.replace(/^\/api/, '')
         }

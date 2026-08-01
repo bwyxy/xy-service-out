@@ -3,6 +3,7 @@ import AppDom from './App.vue'
 import router from './router'
 import '@/assets/styles/index.scss'
 import 'animate.css';
+import 'element-plus/dist/index.css'
 /** qiankun */
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 import { registerGlobalListeners, microComm } from '@/qiankun/index.ts'
