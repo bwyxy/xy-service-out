@@ -58,11 +58,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .contact-list {
-  width: size(320);
-  height: 100%;
+  width: 100%;
   flex: 1;
-  background-color: #fafafa;
-  border-right: 1px solid rgba(0, 0, 0, .06);
   box-sizing: border-box;
   padding: size(24);
   overflow: hidden;

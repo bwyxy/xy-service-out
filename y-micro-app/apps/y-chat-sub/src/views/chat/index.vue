@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ContactList from './components/ContactList/index.vue'
+import SearchFun from './components/SearchFun/SearchFun.vue'
 
 
 </script>
@@ -7,6 +8,8 @@ import ContactList from './components/ContactList/index.vue'
 <template>
   <div class="chat-container">
     <div class="chat-list">
+      <!-- 搜索功能区 -->
+      <search-fun />
       <!-- 消息列表 -->
       <contact-list />
     </div>
@@ -19,7 +22,12 @@ import ContactList from './components/ContactList/index.vue'
   height: 100%;
   display: flex;
   .chat-list {
-    width: size(240);
+    width: size(320);
+    height: 100%;
+    background-color: #fafafa;
+    border-right: 1px solid rgba(0, 0, 0, .06);
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

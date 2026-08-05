@@ -3,6 +3,7 @@ import {onMounted, toRefs} from 'vue'
 import useUserStore from "@/store/user.ts";
 import LayoutHeader from './Header/index.vue'
 import AppMain from "./AppMain.vue";
+import LayoutNav from './nav/index.vue'
 
 const userStore = useUserStore();
 const { wkIM } = toRefs(useUserStore())
@@ -20,6 +21,8 @@ onMounted(() => {
     <layout-header />
 
     <div class="main-container">
+      <layout-nav />
+
       <app-main />
     </div>
   </div>
@@ -37,6 +40,7 @@ onMounted(() => {
 
 .main-container {
   flex: 1;
+  display: flex;
   background: rgba(255, 255, 255, .4);
   border-top: 1px solid rgba(0, 0, 0, .06);
   //box-shadow: #d9f7be 6px 2px 16px 0, #d9f7be -6px -2px 16px 0px;

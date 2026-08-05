@@ -1,136 +1,102 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import useChatStore from '@/store/chat'
-import { ChatDotRound, User, SwitchButton } from '@element-plus/icons-vue'
 
-const chatStore = useChatStore()
-const showLoginDialog = ref(false)
-const loginAccount = ref('')
-const loginPassword = ref('')
-const logging = ref(false)
-const loginError = ref('')
+import {Menu, ChatDotRound, UserFilled, Orange} from "@element-plus/icons-vue";
+import {reactive, computed} from "vue";
+import { useRoute } from 'vue-router'
 
-const handleLogin = async () => {
-  if (!loginAccount.value.trim() || !loginPassword.value.trim()) {
-    loginError.value = '请输入账号和密码'
-    return
+const route = useRoute()
+const navs = reactive([
+  {
+    path: '/chat',
+    icon: ChatDotRound,
+    name: '消息'
+  },
+  {
+    path: '',
+    icon: UserFilled,
+    name: '好友'
+  },
+  {
+    path: '',
+    icon: Orange,
+    name: '友圈'
   }
-  loginError.value = ''
-  logging.value = true
-  try {
-    await chatStore.login(loginAccount.value.trim(), loginPassword.value.trim())
-    showLoginDialog.value = false
-    loginAccount.value = ''
-    loginPassword.value = ''
-  } catch (e: any) {
-    loginError.value = e?.message || '登录失败，请检查账号密码'
-  } finally {
-    logging.value = false
-  }
-}
+])
 
-const handleLogout = () => {
-  chatStore.logout()
-}
+const routePath = computed(() => {
+  return route.path
+})
 </script>
 
 <template>
   <div class="layout-nav">
-    <!-- 用户头像区域 -->
-    <div class="nav-avatar" @click="chatStore.connected ? handleLogout() : (showLoginDialog = true)">
-      <el-icon :size="22">
-        <ChatDotRound v-if="chatStore.connected" color="#52c41a" />
-        <User v-else />
-      </el-icon>
-      <span class="avatar-text">{{ chatStore.connected ? chatStore.name : '登录' }}</span>
+    <div class="layout-nav-content">
+      <div
+          v-for="(item, index) in navs"
+          :key="index"
+          :class="[
+              'nav-item',
+              {'nav-item__active': item.path === routePath}
+          ]"
+      >
+        <el-icon>
+          <component :is="item.icon" />
+        </el-icon>
+        <span class="nav-item-name">{{ item.name }}</span>
+      </div>
     </div>
 
-    <!-- 退出按钮 -->
-    <div v-if="chatStore.connected" class="nav-item" @click="handleLogout">
-      <el-icon :size="20"><SwitchButton /></el-icon>
-      <span class="item-text">退出</span>
+    <div class="layout-nav-btm">
+      <div class="nav-item">
+        <el-icon><Menu /></el-icon>
+      </div>
     </div>
   </div>
-
-  <!-- 登录弹窗 -->
-  <el-dialog v-model="showLoginDialog" title="登录飞鸽" width="360px" :close-on-click-modal="false">
-    <el-input
-      v-model="loginAccount"
-      placeholder="手机号 / 邮箱"
-      style="margin-bottom: 12px"
-      clearable
-    />
-    <el-input
-      v-model="loginPassword"
-      type="password"
-      placeholder="密码"
-      show-password
-      @keyup.enter="handleLogin"
-    />
-    <p v-if="loginError" class="error-msg">{{ loginError }}</p>
-    <template #footer>
-      <el-button @click="showLoginDialog = false">取消</el-button>
-      <el-button type="primary" :loading="logging" @click="handleLogin">登录</el-button>
-    </template>
-  </el-dialog>
 </template>
 
 <style lang="scss" scoped>
 .layout-nav {
-  width: 84px;
+  width: size(84);
   height: 100%;
-  background: $nav-bg-color;
-  border-radius: $border-radius 0 0 $border-radius;
+  background: $theme-color;
+  box-sizing: border-box;
+  padding: size(24) 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
-  gap: 10px;
-}
 
-.nav-avatar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background 0.2s;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
+  &-content {
+    flex: 1;
+    .nav-item {
+      flex-direction: column;
+      margin-bottom: size(24);
+    }
+    .nav-item-name {
+      font-size: size(13) !important;
+    }
   }
 
-  .avatar-text {
-    font-size: 11px;
-    color: #666;
-  }
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background 0.2s;
-  color: #999;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
+  .nav-item {
+    width: size(54);
+    height: size(54);
+    color: #fff;
+    font-size: size(28);
+    border-radius: size(6);
+    cursor: pointer;
+    @include flexCenter;
+    &__active {
+      background: #fff !important;
+      color: $theme-color;
+      box-shadow: rgba(50, 50, 93, 0.15) 0 2px 5px -1px,
+      rgba(0, 0, 0, 0.2) 0 1px 3px -1px;
+    }
+    &:hover {
+      background: rgba(0, 0, 0, .1);
+    }
   }
 
-  .item-text {
-    font-size: 11px;
-  }
-}
+  &-btm {
 
-.error-msg {
-  color: #f56c6c;
-  font-size: 12px;
-  margin-top: 8px;
+  }
 }
 </style>
