@@ -54,6 +54,8 @@ router.beforeEach(async (to, _from, next) => {
           router.addRoute(route)
         })
 
+        console.log(accessRoutes)
+
         // 4. 重新导航到目标路径（replace: true 避免产生历史记录）
         next({ ...to, replace: true })
       } catch (error) {

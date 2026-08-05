@@ -51,3 +51,7 @@ swagger:
 losetoken:
   loseTime: 30
   loseType: hours
+
+# 加密密钥
+encrypt:
+  key: ${AES_KEY}

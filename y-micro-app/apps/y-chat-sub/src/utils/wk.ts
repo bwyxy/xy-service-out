@@ -46,6 +46,18 @@ export function decodePayload(payload: string): { type: number; content: string 
   }
 }
 
+export function decodeBase64FromJava(base64Str :string) {
+  console.log('base64Str:', base64Str)
+  const binaryString = atob(base64Str);
+
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
 /** 发送消息到个人频道 */
 export function sendPersonalMessage(imInstance: any, toUid: string, content: string) {
   return imInstance.send(toUid, 1, {

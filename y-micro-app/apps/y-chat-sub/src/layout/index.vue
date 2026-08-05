@@ -38,7 +38,7 @@ onMounted(() => {
 .main-container {
   flex: 1;
   background: rgba(255, 255, 255, .4);
-  border-radius: size(24) size(24) 0 0;
-  box-shadow: #d9f7be 6px 2px 16px 0, #d9f7be -6px -2px 16px 0px;
+  border-top: 1px solid rgba(0, 0, 0, .06);
+  //box-shadow: #d9f7be 6px 2px 16px 0, #d9f7be -6px -2px 16px 0px;
 }
 </style>

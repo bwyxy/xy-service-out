@@ -1,7 +1,7 @@
 package com.xy.common.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
@@ -9,9 +9,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.Base64;
 
 /**
@@ -22,20 +20,20 @@ import java.util.Base64;
 public class EncryptionUtils {
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     /**
      * 对明文进行 BCrypt哈希
      * */
     public String encode(CharSequence rawPassword) {
-        return bCryptPasswordEncoder.encode(rawPassword);
+        return passwordEncoder.encode(rawPassword);
     }
 
     /**
      * 校验明文与哈希是否匹配
      * */
     public boolean matches(CharSequence raw, String encoded) {
-        return bCryptPasswordEncoder.matches(raw, encoded);
+        return passwordEncoder.matches(raw, encoded);
     }
 
     private static final String AES_ALGORITHM = "AES";

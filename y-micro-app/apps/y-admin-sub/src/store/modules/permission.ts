@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { getRouters } from '@/api/login'
 import type { RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
+// @ts-ignore
 import ParentView from '@/layout/ParentView.vue'
 
 // 后端组件路径 -> 前端组件映射（显式覆盖）
@@ -10,7 +11,8 @@ const componentMap: Record<string, any> = {
 }
 
 // 使用 Vite 的 import.meta.glob 预构建所有视图模块，避免运行时动态 import 失败
-const modules = import.meta.glob('@/views/**/*.vue')
+// 注意：key 是相对于当前文件的路径，如 ../../views/dashboard/index.vue
+const modules = import.meta.glob('./../../views/**/*.vue')
 
 /**
  * 加载组件（仿若依 loadView）
@@ -21,11 +23,11 @@ const loadView = (componentPath: string) => {
   if (componentMap[componentPath]) {
     return componentMap[componentPath]
   }
-  // 2. 通过 import.meta.glob 查找（key 格式：/src/views/system/menu/index.vue）
-  const targetPath = componentPath + '.vue'
-  for (const [key, module] of Object.entries(modules)) {
-    if (key.endsWith(`/${targetPath}`) || key.endsWith(targetPath)) {
-      return module
+  // 2. 通过 import.meta.glob 查找：按 views/ 截取路径匹配
+  for (const path in modules) {
+    const dir = path.split('views/')[1]?.split('.vue')[0]
+    if (dir === componentPath) {
+      return modules[path]
     }
   }
   return undefined
@@ -63,6 +65,7 @@ function filterAsyncRouter(routerList: any[]): RouteRecordRaw[] {
       } else if (router.component === 'ParentView') {
         route.component = ParentView
       } else if (router.component === 'InnerLink') {
+        // @ts-ignore
         route.component = () => import('@/layout/InnerLink.vue')
       } else {
         route.component = loadView(router.component)

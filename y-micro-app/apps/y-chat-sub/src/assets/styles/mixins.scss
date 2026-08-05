@@ -30,3 +30,13 @@
     background: #fafafa;
   }
 }
+
+@mixin textEllipsis($num) {
+  word-break: break-all;
+  word-wrap:break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $num;
+  -webkit-box-orient: vertical;
+}
