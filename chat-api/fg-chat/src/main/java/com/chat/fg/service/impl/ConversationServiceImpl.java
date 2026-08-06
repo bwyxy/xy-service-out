@@ -1,6 +1,6 @@
 package com.chat.fg.service.impl;
 
-import com.chat.fg.mapper.UserMapper;
+import com.xy.system.mapper.UserMapper;
 import com.chat.fg.pojo.dto.ConversationDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
 import com.chat.fg.service.IConversationService;
@@ -12,7 +12,6 @@ import com.xy.common.entity.Group;
 import com.xy.common.entity.User;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;
-import com.xy.system.service.impl.GroupServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

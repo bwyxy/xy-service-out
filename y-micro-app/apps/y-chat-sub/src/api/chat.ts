@@ -10,3 +10,14 @@ export const getConversation = (data :any) => {
     data
   })
 }
+
+/**
+ * 获取历史消息
+ * */
+export const getMessageList = (data :any) => {
+  return request({
+    url: '/message/list',
+    method: 'post',
+    data
+  })
+}

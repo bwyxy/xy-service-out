@@ -2,8 +2,10 @@
 import { getConversation } from '@/api/chat.ts'
 import { onMounted, reactive, ref} from "vue";
 import { ElMessage } from 'element-plus'
+import useUserStore from "@/store/user.ts";
 import { decodeBase64FromJava } from '@/utils/wk.ts'
 
+const userStore = useUserStore()
 const params = reactive({
   msgCount: 1
 })
@@ -30,6 +32,14 @@ const getMessage = (recents :any) => {
 
   return msg.content
 }
+/** 选择频道 */
+const selectedChannel = (row :any) => {
+  console.log(row)
+  userStore.currentChannel = {
+    channelId: row.channel_id,
+    type: row.channel_type,
+  }
+}
 
 
 onMounted(() => {
@@ -43,6 +53,7 @@ onMounted(() => {
         v-for="(item, index) in conversations"
         :key="index"
         class="msg-item"
+        @click="selectedChannel(item)"
     >
       <img v-if="item.avatar" class="avatar-box" :src="item.avatar || ''" alt="avatar" />
       <img v-else class="avatar-box" src="@/assets/images/logo.jpg" alt="avatar" />

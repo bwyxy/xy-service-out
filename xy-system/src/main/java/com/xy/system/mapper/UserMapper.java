@@ -1,4 +1,4 @@
-package com.chat.fg.mapper;
+package com.xy.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xy.common.entity.User;

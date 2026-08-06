@@ -9,6 +9,8 @@ const useUserStore = defineStore('user', {
         return {
             userInfo: {} as any,
             wkIM: null as any,
+            /** 当前正在聊天的频道信息 */
+            currentChannel: null as any
         }
     },
     actions: {
