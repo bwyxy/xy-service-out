@@ -31,7 +31,7 @@ public class WukongIMConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
+    public ObjectMapper wukongObjectMapper() {
         return new ObjectMapper();
     }
 

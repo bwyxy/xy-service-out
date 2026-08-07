@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xy.common.annotation.Anonymous;
 import com.xy.common.client.dto.request.WKUserTokenRequest;
 import com.xy.common.core.domain.R;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -17,11 +17,16 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/chat")
-@RequiredArgsConstructor
 public class ChatController {
 
     private final WukongIMService wkService;
     private final ObjectMapper objectMapper;
+
+    public ChatController(WukongIMService wkService,
+                          @Qualifier("wukongObjectMapper") ObjectMapper objectMapper) {
+        this.wkService = wkService;
+        this.objectMapper = objectMapper;
+    }
 
     /** 更新悟空 token */
     @Anonymous

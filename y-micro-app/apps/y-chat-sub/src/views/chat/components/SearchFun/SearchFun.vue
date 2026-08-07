@@ -1,8 +1,20 @@
 <script setup lang="ts">
-import {Plus, Search} from '@element-plus/icons-vue'
+import {Plus, Search, UserFilled} from '@element-plus/icons-vue'
 import {ref} from "vue";
+import SearchUserDialog from './SearchUserDialog.vue'
+import FriendRequestDialog from './FriendRequestDialog.vue'
 
 const searchVal = ref<string>('')
+const searchDialogVisible = ref(false)
+const requestDialogVisible = ref(false)
+
+const openSearchDialog = () => {
+  searchDialogVisible.value = true
+}
+
+const openRequestDialog = () => {
+  requestDialogVisible.value = true
+}
 </script>
 
 <template>
@@ -14,9 +26,17 @@ const searchVal = ref<string>('')
         class="search-box"
     />
 
-    <div class="add-icon">
-      <el-icon><Plus /></el-icon>
+    <div class="action-icons">
+      <div class="icon-btn" title="好友请求" @click="openRequestDialog">
+        <el-icon><UserFilled /></el-icon>
+      </div>
+      <div class="icon-btn" title="添加好友" @click="openSearchDialog">
+        <el-icon><Plus /></el-icon>
+      </div>
     </div>
+
+    <search-user-dialog v-model:visible="searchDialogVisible" />
+    <friend-request-dialog v-model:visible="requestDialogVisible" />
   </div>
 </template>
 
@@ -35,14 +55,22 @@ const searchVal = ref<string>('')
       background: #f0f0f0;
     }
   }
-  .add-icon {
+  .action-icons {
+    display: flex;
+    align-items: center;
+    margin-left: size(14);
+    gap: size(12);
+  }
+  .icon-btn {
     width: size(48);
     height: size(48);
     background: #f0f0f0;
     border-radius: size(6);
-    margin-left: size(14);
     cursor: pointer;
     @include flexCenter;
+    &:hover {
+      background: #e6e6e6;
+    }
   }
 }
 </style>

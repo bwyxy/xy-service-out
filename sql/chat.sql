@@ -45,12 +45,43 @@ create table t_group_member (
 -- 好友表
 create table t_friend (
     id bigint primary key auto_increment comment 'id',
-    u_id bigint comment '用户Id',
-    friend_id bigint comment '好友用户ID',
+    u_id bigint not null comment '用户Id',
+    friend_id bigint not null comment '好友用户ID',
     status char(1) default '0' comment '状态 0-正常 1-拉黑',
     create_time datetime comment '创建时间',
-    update_time datetime comment '更新时间'
+    update_time datetime comment '更新时间',
+    unique index uk_user_friend (u_id, friend_id)
 ) engine = InnoDB default CHARSET=utf8mb4  comment '好友表';
+
+-- 好友请求表
+create table t_friend_request (
+    id bigint primary key auto_increment comment 'id',
+    from_uid bigint not null comment '请求发送者用户ID',
+    to_uid bigint not null comment '请求接收者用户ID',
+    status tinyint default 0 comment '状态 0-待处理 1-已同意 2-已拒绝 3-已取消 4-已过期',
+    apply_msg varchar(255) default '' comment '申请备注消息',
+    reply_msg varchar(255) default '' comment '处理回复消息',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '更新时间',
+    unique index uk_from_to (from_uid, to_uid),
+    index idx_to_uid_status (to_uid, status)
+) engine = InnoDB default CHARSET=utf8mb4  comment '好友请求表';
+
+-- 通知表
+create table t_notification (
+    id bigint primary key auto_increment comment 'id',
+    u_id bigint not null comment '接收通知的用户ID',
+    type tinyint not null comment '通知类型 1-好友请求 2-好友同意 3-系统通知',
+    title varchar(100) default '' comment '通知标题',
+    content varchar(500) default '' comment '通知内容',
+    related_id bigint comment '关联业务记录ID（如好友请求ID）',
+    is_read tinyint default 0 comment '是否已读 0-未读 1-已读',
+    extra json comment '扩展信息',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '更新时间',
+    index idx_user_read (u_id, is_read),
+    index idx_user_type (u_id, type)
+) engine = InnoDB default CHARSET=utf8mb4  comment '通知表';
 
 insert into t_user (u_id, password, nickname, avatar, phone, email, status, sex, wx_open_id, is_bind_chat, create_time, update_time) values
     (10000000, '$2a$10$Bqq1b4dioOjYqdaFuZH3Au/zxA8UheNcQaSnUWy0UuUX7haYobVK2', '管理员', '', '18637649731', 'bwyxy@qq.com', '0', '1', '', '0', now(), now());

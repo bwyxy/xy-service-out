@@ -1,0 +1,30 @@
+server:
+  port: 0
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  sql:
+    init:
+      schema-locations: classpath:schema-test.sql
+      mode: always
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 1
+
+jwt:
+  header: token
+  secret: test-secret-key-at-least-32-bytes-for-jwt-signing
+  expiration: 86400000
+
+xy:
+  wk-api-url: http://localhost:9999
+
+logging:
+  level:
+    root: warn

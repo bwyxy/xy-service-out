@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,7 +26,10 @@ public class WukongIMService {
 
     private final WukongIMConfig.WukongIMProperties props;
     private final OkHttpClient httpClient;
-    private final ObjectMapper objectMapper;
+
+    @Autowired
+    @Qualifier("wukongObjectMapper")
+    private ObjectMapper objectMapper;
 
     @Autowired
     private WuKongClient wkKongClient;
