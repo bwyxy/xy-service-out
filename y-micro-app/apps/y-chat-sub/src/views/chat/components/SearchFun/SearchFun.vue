@@ -5,7 +5,7 @@ import SearchUserDialog from './SearchUserDialog.vue'
 import FriendRequestDialog from './FriendRequestDialog.vue'
 
 const searchVal = ref<string>('')
-const searchDialogVisible = ref(true)
+const searchDialogVisible = ref(false)
 const requestDialogVisible = ref(false)
 
 const openSearchDialog = () => {

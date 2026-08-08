@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { login, register, getUserInfo } from '@/api/auth.ts'
 import { ElMessage } from 'element-plus'
-import { setToken, setCookies, removeToken, getCookies, getToken } from '@/utils/auth.ts'
-import { wukongIMService } from '@/services/im'
+import { setToken, setCookies, removeToken } from '@/utils/auth.ts'
+import useChatStore from "@/store/chat.ts";
 
 /** 登录用户信息 */
 export interface UserInfo {
@@ -75,31 +75,6 @@ const useUserStore = defineStore('user', {
     },
 
     /**
-     * 初始化悟空 IM 连接
-     * @remarks 从 cookie 读取 wss 地址，结合 userInfo 建立连接
-     */
-    initWKIM(): void {
-      const wssKey = import.meta.env.VITE_WSS_KEY
-      const serverUrl = getCookies(wssKey)
-      const { uid } = this.userInfo
-
-      console.log('[UserStore] 初始化 IM 连接', { wssKey, serverUrl, uid })
-
-      if (!serverUrl || !uid) {
-        console.warn('[UserStore] 缺少 IM 连接参数，跳过连接')
-        return
-      }
-
-      wukongIMService.connect({
-        serverUrl,
-        userInfo: {
-          uid: String(uid),
-          token: getToken() || '',
-        },
-      })
-    },
-
-    /**
      * 用户注册
      * @param params 注册参数
      */
@@ -116,7 +91,9 @@ const useUserStore = defineStore('user', {
      * 退出登录
      */
     outLogin(): void {
-      wukongIMService.disconnect()
+      const chatStore = useChatStore()
+
+      chatStore.resetChatData()
       removeToken()
       this.userInfo = {} as UserInfo
       this.currentChannel = null

@@ -1,36 +1,39 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
+import useUserStore from '@/store/user.ts'
+import useNotificationStore from '@/store/notification.ts'
 import UserInfo from './UserInfo/UserInfo.vue'
 import NotificationCenter from './NotificationCenter.vue'
-import { Bell, Setting, SwitchButton } from "@element-plus/icons-vue";
-import { getUnreadCount } from '@/api/notification.ts'
+
+const userStore = useUserStore()
+const notificationStore = useNotificationStore()
+const { unreadCount } = storeToRefs(notificationStore)
 
 const notificationVisible = ref(false)
-const unreadCount = ref(0)
-let timer: any = null
 
-const fetchUnreadCount = async () => {
-  try {
-    const res = await getUnreadCount()
-    if (res.code === 200) {
-      unreadCount.value = Number(res.data || 0)
-    }
-  } catch {
-    // ignore
-  }
-}
+let timer: ReturnType<typeof setInterval> | null = null
 
 const openNotification = () => {
   notificationVisible.value = true
 }
 
 const onNotificationRefresh = () => {
-  fetchUnreadCount()
+  notificationStore.fetchUnreadCount()
+}
+
+const handleLogout = () => {
+  userStore.outLogin()
+  notificationStore.reset()
 }
 
 onMounted(() => {
-  fetchUnreadCount()
-  timer = setInterval(fetchUnreadCount, 30000)
+  notificationStore.fetchUnreadCount()
+  // 每 60 秒同步一次后端未读数
+  timer = setInterval(() => {
+    notificationStore.fetchUnreadCount()
+  }, 60000)
 })
 
 onUnmounted(() => {
@@ -42,7 +45,6 @@ onUnmounted(() => {
 
 <template>
   <div class="chat-header">
-
     <user-info />
 
     <div class="chat-header-rt">
@@ -52,10 +54,12 @@ onUnmounted(() => {
         </el-badge>
         <span>消息通知</span>
       </div>
+
       <div class="setting-btn">
         <el-icon><Setting /></el-icon>
       </div>
-      <div class="msg-btn">
+
+      <div class="msg-btn" @click="handleLogout">
         <el-icon><SwitchButton /></el-icon>
         <span>退出登录</span>
       </div>
@@ -72,6 +76,7 @@ onUnmounted(() => {
   padding: 0 size(24);
   display: flex;
   align-items: center;
+
   &-rt {
     flex: 1;
     display: flex;

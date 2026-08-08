@@ -26,6 +26,18 @@ export interface WukongIMMessagePayload {
   content: string
 }
 
+/** 系统通知消息负载 */
+export interface WukongIMSystemPayload extends WukongIMMessagePayload {
+  /** 通知标题 */
+  title?: string
+  /** 通知业务类型（与后端 NotificationType 对应） */
+  notificationType?: number
+  /** 关联业务 ID，如好友请求 ID */
+  relatedId?: string | number
+  /** 扩展字段 */
+  extra?: Record<string, unknown>
+}
+
 /** 接收到的消息结构 */
 export interface WukongIMMessage {
   /** 消息序列号 */

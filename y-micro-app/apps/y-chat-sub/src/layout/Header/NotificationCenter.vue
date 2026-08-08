@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { getNotificationList, markNotificationRead, markAllNotificationsRead } from '@/api/notification.ts'
+import { watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
+import useNotificationStore from '@/store/notification.ts'
 
 const props = defineProps<{
   visible: boolean
@@ -12,52 +13,32 @@ const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
 
-const notifications = ref<any[]>([])
-const loading = ref(false)
+const notificationStore = useNotificationStore()
+const { notifications, loading } = storeToRefs(notificationStore)
 
-watch(() => props.visible, (val) => {
-  if (val) {
-    loadNotifications()
-  }
-})
-
-const loadNotifications = async () => {
-  loading.value = true
-  try {
-    const res = await getNotificationList({ pageSize: 50 })
-    if (res.code === 200) {
-      notifications.value = res.data || []
+watch(
+  () => props.visible,
+  (val) => {
+    if (val) {
+      notificationStore.fetchNotifications()
     }
-  } catch {
-    notifications.value = []
-  } finally {
-    loading.value = false
-  }
-}
+  },
+)
 
 const handleMarkRead = async (item: any) => {
   if (item.isRead === 1) return
-  try {
-    const res = await markNotificationRead(item.id)
-    if (res.code === 200) {
-      item.isRead = 1
-      emit('refresh')
-    }
-  } catch {
-    ElMessage.error('操作失败')
+
+  const success = await notificationStore.markRead(item.id)
+  if (success) {
+    emit('refresh')
   }
 }
 
 const handleMarkAllRead = async () => {
-  try {
-    const res = await markAllNotificationsRead()
-    if (res.code === 200) {
-      notifications.value.forEach(n => n.isRead = 1)
-      emit('refresh')
-      ElMessage.success('已全部标记为已读')
-    }
-  } catch {
-    ElMessage.error('操作失败')
+  const success = await notificationStore.markAllRead()
+  if (success) {
+    emit('refresh')
+    ElMessage.success('已全部标记为已读')
   }
 }
 
@@ -116,20 +97,24 @@ const formatTime = (time: string) => {
   font-size: size(14);
   color: #666;
 }
+
 .notification-list {
   max-height: size(500);
   overflow-y: auto;
 }
+
 .empty-text {
   text-align: center;
   color: #999;
   padding: size(24) 0;
 }
+
 .notification-item {
   display: flex;
   padding: size(12);
   border-bottom: 1px solid rgba(0, 0, 0, .06);
   cursor: pointer;
+
   .dot {
     width: size(8);
     height: size(8);
@@ -138,8 +123,10 @@ const formatTime = (time: string) => {
     margin-right: size(10);
     margin-top: size(6);
   }
+
   .notification-info {
     flex: 1;
+
     .title {
       display: flex;
       align-items: center;
@@ -147,20 +134,24 @@ const formatTime = (time: string) => {
       font-size: size(15);
       font-weight: bold;
     }
+
     .content {
       font-size: size(13);
       color: #666;
       margin-top: size(6);
     }
+
     .time {
       font-size: size(12);
       color: #999;
       margin-top: size(6);
     }
   }
+
   &.unread .dot {
     background: #f56c6c;
   }
+
   &:hover {
     background: rgba(0, 0, 0, .02);
   }

@@ -1,44 +1,37 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/user.ts'
+import useChatStore from '@/store/chat.ts'
 import { getConversation } from '@/api/chat.ts'
 import { decodeBase64FromJava } from '@/utils/wk.ts'
-
-interface ConversationParams {
-  msgCount: number
-}
-
-interface RecentMessage {
-  payload?: string
-}
-
-interface ConversationItem {
-  avatar?: string
-  name: string
-  recents?: RecentMessage[]
-  channel_id: string
-  channel_type: number
-}
+import type { Contact } from '@/store/chat.ts'
 
 const userStore = useUserStore()
+const chatStore = useChatStore()
+const { contacts } = storeToRefs(chatStore)
 
-const params = reactive<ConversationParams>({
-  msgCount: 1,
-})
-
-const conversations = ref<ConversationItem[]>([])
 const loading = ref(false)
 
+interface ApiConversationItem {
+  avatar?: string
+  name: string
+  recents?: { payload?: string }[]
+  channel_id: string
+  channel_type: number
+  unread_count?: number
+}
+
 /**
- * 获取会话列表
+ * 从后端获取会话列表并同步到 chat store
  */
 const fetchConversations = async () => {
   loading.value = true
   try {
-    const response = await getConversation(params)
+    const response = await getConversation({ msgCount: 1 })
     if (response.code === 200) {
-      conversations.value = response.data || []
+      syncToChatStore(response.data || [])
     }
   } catch {
     ElMessage.error('获取会话列表失败')
@@ -48,9 +41,42 @@ const fetchConversations = async () => {
 }
 
 /**
+ * 将后端会话列表数据合并到 chat store
+ */
+const syncToChatStore = (list: ApiConversationItem[]) => {
+  for (const item of list) {
+    const exists = contacts.value.find(
+      (c) => c.uid === item.channel_id && c.channelType === item.channel_type,
+    )
+
+    const lastMessage = resolveLatestMessageContent(item.recents)
+
+    if (exists) {
+      exists.name = item.name || exists.name
+      exists.avatar = item.avatar || exists.avatar
+      exists.lastMessage = lastMessage || exists.lastMessage
+    } else {
+      chatStore.contacts.push({
+        uid: item.channel_id,
+        name: item.name,
+        type: item.channel_type === 2 ? 'group' : 'person',
+        channelType: item.channel_type as 1 | 2,
+        unreadCount: item.unread_count || 0,
+        lastMessage,
+        lastMessageTime: Date.now(),
+        avatar: item.avatar,
+      })
+    }
+  }
+
+  chatStore.contacts.sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0))
+}
+
+/**
  * 解析最新消息内容
  */
-const getLatestMessageContent = (recents?: RecentMessage[]): string => {
+const resolveLatestMessageContent = (recents?: { payload?: string }[]): string => {
+  console.log(recents)
   if (!recents || recents.length === 0) {
     return ''
   }
@@ -58,6 +84,7 @@ const getLatestMessageContent = (recents?: RecentMessage[]): string => {
   try {
     const payload = decodeBase64FromJava(recents[0].payload || '')
     const msg = JSON.parse(payload)
+    console.log('payload', msg)
     return msg.content || ''
   } catch {
     return ''
@@ -67,12 +94,13 @@ const getLatestMessageContent = (recents?: RecentMessage[]): string => {
 /**
  * 选择频道
  */
-const handleSelectChannel = (row: ConversationItem) => {
+const handleSelectChannel = (row: Contact) => {
   console.log('selected channel', row)
   userStore.currentChannel = {
-    channelId: row.channel_id,
-    type: row.channel_type,
+    channelId: row.uid,
+    type: row.channelType,
   }
+  chatStore.selectContact(row)
 }
 
 onMounted(() => {
@@ -83,28 +111,35 @@ onMounted(() => {
 <template>
   <div v-loading="loading" class="contact-list">
     <div
-      v-for="(item, index) in conversations"
+      v-for="(item, index) in contacts"
       :key="index"
       class="msg-item"
+      :class="{ active: userStore.currentChannel?.channelId === item.uid }"
       @click="handleSelectChannel(item)"
     >
-      <img
-        v-if="item.avatar"
-        class="avatar-box"
-        :src="item.avatar"
-        alt="avatar"
-      />
-      <img
-        v-else
-        class="avatar-box"
-        src="@/assets/images/logo.jpg"
-        alt="avatar"
-      />
+      <div class="avatar-wrap">
+        <img
+          v-if="item.avatar"
+          class="avatar-box"
+          :src="item.avatar"
+          alt="avatar"
+        />
+        <img
+          v-else
+          class="avatar-box"
+          src="@/assets/images/logo.jpg"
+          alt="avatar"
+        />
+        <span v-if="item.unreadCount > 0" class="unread-badge">{{ item.unreadCount }}</span>
+      </div>
       <div class="msg-content">
         <div class="msg-title">
           <span>{{ item.name }}</span>
+          <span v-if="item.lastMessageTime" class="msg-time">{{
+            new Date(item.lastMessageTime).toLocaleTimeString()
+          }}</span>
         </div>
-        <span class="msg-text">{{ getLatestMessageContent(item.recents) }}</span>
+        <span class="msg-text">{{ item.lastMessage }}</span>
       </div>
     </div>
   </div>
@@ -132,14 +167,34 @@ onMounted(() => {
     cursor: pointer;
     padding: size(18);
 
-    &:hover {
-      background: rgba(0, 0, 0, .01);
+    &:hover,
+    &.active {
+      background: rgba(0, 0, 0, .04);
     }
+  }
+
+  .avatar-wrap {
+    position: relative;
   }
 
   .avatar-box {
     width: size(64);
     height: size(64);
+  }
+
+  .unread-badge {
+    position: absolute;
+    top: size(-6);
+    right: size(-6);
+    min-width: size(24);
+    height: size(24);
+    line-height: size(24);
+    padding: 0 size(6);
+    background: #f56c6c;
+    color: #fff;
+    border-radius: size(12);
+    font-size: size(12);
+    text-align: center;
   }
 
   .msg-content {
@@ -151,12 +206,21 @@ onMounted(() => {
 
     .msg-title {
       flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
       span {
         font-size: size(20);
         font-weight: bold;
         letter-spacing: 1px;
         @include textEllipsis(1);
+      }
+
+      .msg-time {
+        font-size: size(12);
+        color: #999;
+        font-weight: normal;
       }
     }
 
