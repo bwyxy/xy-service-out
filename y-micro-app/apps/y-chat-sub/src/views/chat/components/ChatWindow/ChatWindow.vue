@@ -17,6 +17,10 @@ watch(() => currentChannel.value, () => {
 
 /** 获取频道信息 */
 const getChannelInfo = async () => {
+  if (!currentChannel.value) {
+    return
+  }
+
   const { channelId, type } = currentChannel.value
   if (type === 1) {
     const response = await getUserInfo(channelId)

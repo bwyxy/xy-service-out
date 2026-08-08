@@ -2,101 +2,126 @@ import { defineStore } from 'pinia'
 import { login, register, getUserInfo } from '@/api/auth.ts'
 import { ElMessage } from 'element-plus'
 import { setToken, setCookies, removeToken, getCookies, getToken } from '@/utils/auth.ts'
-import { WKIM, WKIMEvent } from 'easyjssdk'
+import { wukongIMService } from '@/services/im'
+
+/** 登录用户信息 */
+export interface UserInfo {
+  uid: string
+  nickname: string
+  avatar?: string
+  [key: string]: unknown
+}
+
+/** 当前聊天频道 */
+export interface CurrentChannel {
+  channelId: string
+  type: number
+}
+
+/** 用户 Store 状态 */
+interface UserState {
+  userInfo: UserInfo
+  /** 当前正在聊天的频道信息 */
+  currentChannel: CurrentChannel | null
+}
 
 const useUserStore = defineStore('user', {
-    state() {
-        return {
-            userInfo: {} as any,
-            wkIM: null as any,
-            /** 当前正在聊天的频道信息 */
-            currentChannel: null as any
-        }
-    },
-    actions: {
-        /** 用户登录 */
-        async userLogin(params :any) :Promise<boolean> {
-
-            const wssKey = import.meta.env.VITE_WSS_KEY
-
-            try {
-                const result = await login(params)
-
-                if (result.code === 200) {
-                    const { token, imAddr } = result.data
-
-                    setToken(token)
-                    setCookies(wssKey, imAddr.wss_addr)
-                    return true
-                }
-                return false
-            } catch {
-                ElMessage.error("登录失败")
-                return false
-            }
-        },
-        /** 初始化webSocket 链接  */
-        initWKIM() {
-            const wssKey = import.meta.env.VITE_WSS_KEY
-            const info = this.userInfo
-
-            console.log('initWKIM', wssKey, info)
-            this.wkIM = WKIM.init(getCookies(wssKey), {
-                uid: String(info.uId),
-                token: getToken()
-            })
-            this.wkIM.on(WKIMEvent.Connect, (connectResult :any) => {
-                console.log('连接成功', connectResult)
-            })
-            this.wkIM.on(WKIMEvent.Disconnect, (disconnectInfo :any) => {
-                console.log('连接断开', disconnectInfo)
-            })
-            this.wkIM.on(WKIMEvent.Message, (message :any) => {
-                console.log('收到消息', message)
-            })
-            this.wkIM.on(WKIMEvent.Error, (error :any) => {
-                console.log('连接发送错误', error)
-            })
-
-            this.wkIM.connect().then(() => {
-                console.log("连接过程已启动，等待 Connect 事件...");
-            }).then((sendAck :any) => {
-                console.log("消息发送成功, Ack:", sendAck);
-                // sendAck 包含 { messageId, messageSeq }
-            })
-            .catch((err :any) => {
-                console.error("连接或初始发送失败:", err);
-            });
-        },
-        async userRegister(params :any) :Promise<boolean> {
-            try {
-                const result = await register(params)
-
-                return result.code === 200;
-
-            } catch {
-                return false
-            }
-        },
-
-        async setUserInfo() :Promise<boolean> {
-            const result = await getUserInfo()
-
-            console.log(result)
-            if (result.code === 200) {
-
-                this.userInfo = result.data
-
-                return true
-            }
-            throw Error("获取登录失败")
-        },
-
-        outLogin() {
-            removeToken()
-            this.userInfo = {} as any
-        }
+  state(): UserState {
+    return {
+      userInfo: {} as UserInfo,
+      currentChannel: null,
     }
+  },
+
+  actions: {
+    /**
+     * 用户登录
+     * @param params 登录参数
+     */
+    async userLogin(params: Record<string, unknown>): Promise<boolean> {
+      const wssKey = import.meta.env.VITE_WSS_KEY
+
+      try {
+        const result = await login(params)
+
+        if (result.code === 200) {
+          const { token, imAddr } = result.data
+
+          setToken(token)
+          setCookies(wssKey, imAddr.wss_addr)
+          return true
+        }
+
+        return false
+      } catch {
+        ElMessage.error('登录失败')
+        return false
+      }
+    },
+
+    /**
+     * 获取并设置当前用户信息
+     */
+    async setUserInfo(): Promise<boolean> {
+      const result = await getUserInfo()
+
+      console.log(result)
+      if (result.code === 200) {
+        this.userInfo = result.data
+        return true
+      }
+
+      throw new Error('获取登录信息失败')
+    },
+
+    /**
+     * 初始化悟空 IM 连接
+     * @remarks 从 cookie 读取 wss 地址，结合 userInfo 建立连接
+     */
+    initWKIM(): void {
+      const wssKey = import.meta.env.VITE_WSS_KEY
+      const serverUrl = getCookies(wssKey)
+      const { uid } = this.userInfo
+
+      console.log('[UserStore] 初始化 IM 连接', { wssKey, serverUrl, uid })
+
+      if (!serverUrl || !uid) {
+        console.warn('[UserStore] 缺少 IM 连接参数，跳过连接')
+        return
+      }
+
+      wukongIMService.connect({
+        serverUrl,
+        userInfo: {
+          uid: String(uid),
+          token: getToken() || '',
+        },
+      })
+    },
+
+    /**
+     * 用户注册
+     * @param params 注册参数
+     */
+    async userRegister(params: Record<string, unknown>): Promise<boolean> {
+      try {
+        const result = await register(params)
+        return result.code === 200
+      } catch {
+        return false
+      }
+    },
+
+    /**
+     * 退出登录
+     */
+    outLogin(): void {
+      wukongIMService.disconnect()
+      removeToken()
+      this.userInfo = {} as UserInfo
+      this.currentChannel = null
+    },
+  },
 })
 
-export default useUserStore;
+export default useUserStore

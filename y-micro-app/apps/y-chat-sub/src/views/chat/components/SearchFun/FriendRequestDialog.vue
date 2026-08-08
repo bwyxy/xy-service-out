@@ -12,7 +12,6 @@ const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
 
-const activeTab = ref('received')
 const requests = ref<any[]>([])
 const loading = ref(false)
 const processingMap = ref<Record<string, boolean>>({})

@@ -43,7 +43,7 @@ class FriendServiceImplTest {
     private UserServiceImpl userService;
 
     @Mock
-    private INotificationService notificationService;
+    private com.xy.system.service.INotificationService notificationService;
 
     @Mock
     private DistributedLockHelper lockHelper;

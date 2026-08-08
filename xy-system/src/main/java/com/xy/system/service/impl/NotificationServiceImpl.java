@@ -1,9 +1,9 @@
-package com.chat.fg.service.impl;
+package com.xy.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chat.fg.mapper.NotificationMapper;
-import com.chat.fg.service.INotificationService;
+import com.xy.system.mapper.NotificationMapper;
+import com.xy.system.service.INotificationService;
 import com.xy.common.entity.Notification;
 import com.xy.common.enums.NotificationType;
 import com.xy.system.service.wk.WKClientService;
@@ -46,7 +46,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
         // 通过悟空 IM 发送系统消息，实现实时推送
         try {
-            wkClientService.sendSystemMessage(uId, content);
+            wkClientService.sendSystemNotice(uId, content);
         } catch (Exception e) {
             LOGGER.error("发送IM通知失败, uId={}, type={}", uId, type, e);
         }

@@ -73,7 +73,7 @@ const handleClose = () => {
 <template>
   <el-dialog
     v-model="props.visible"
-    title="添加好友"
+    title="添加朋友"
     width="520px"
     :close-on-click-modal="false"
     @close="handleClose"
@@ -83,13 +83,6 @@ const handleClose = () => {
       placeholder="搜索昵称、手机号或邮箱"
       clearable
       :prefix-icon="Search"
-    />
-    <el-input
-      v-model="applyMsg"
-      class="apply-msg"
-      placeholder="附加消息（可选）"
-      maxlength="255"
-      show-word-limit
     />
     <div v-loading="loading" class="user-list">
       <div v-if="users.length === 0 && keyword.trim()" class="empty-text">未找到相关用户</div>

@@ -9,7 +9,7 @@ import com.chat.fg.pojo.dto.HandleFriendRequestDTO;
 import com.chat.fg.pojo.vo.FriendRequestVO;
 import com.chat.fg.pojo.vo.FriendVO;
 import com.chat.fg.service.IFriendService;
-import com.chat.fg.service.INotificationService;
+import com.xy.system.service.INotificationService;
 import com.chat.fg.utils.DistributedLockHelper;
 import com.xy.common.entity.Friend;
 import com.xy.common.entity.FriendRequest;

@@ -1,7 +1,7 @@
 package com.chat.fg.controller;
 
 import com.chat.fg.pojo.vo.NotificationVO;
-import com.chat.fg.service.INotificationService;
+import com.xy.system.service.INotificationService;
 import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.Notification;

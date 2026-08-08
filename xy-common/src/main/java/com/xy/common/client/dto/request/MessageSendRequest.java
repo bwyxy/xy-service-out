@@ -1,6 +1,7 @@
 package com.xy.common.client.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xy.common.enums.ChannelType;
 import lombok.Data;
 
 import java.util.List;

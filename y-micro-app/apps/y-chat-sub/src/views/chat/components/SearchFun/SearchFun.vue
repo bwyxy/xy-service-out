@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import {Plus, Search, UserFilled} from '@element-plus/icons-vue'
+import {Plus, Search} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import SearchUserDialog from './SearchUserDialog.vue'
 import FriendRequestDialog from './FriendRequestDialog.vue'
 
 const searchVal = ref<string>('')
-const searchDialogVisible = ref(false)
+const searchDialogVisible = ref(true)
 const requestDialogVisible = ref(false)
 
 const openSearchDialog = () => {
   searchDialogVisible.value = true
-}
-
-const openRequestDialog = () => {
-  requestDialogVisible.value = true
 }
 </script>
 
@@ -27,9 +23,9 @@ const openRequestDialog = () => {
     />
 
     <div class="action-icons">
-      <div class="icon-btn" title="好友请求" @click="openRequestDialog">
-        <el-icon><UserFilled /></el-icon>
-      </div>
+<!--      <div class="icon-btn" title="好友请求" @click="openRequestDialog">-->
+<!--        <el-icon><UserFilled /></el-icon>-->
+<!--      </div>-->
       <div class="icon-btn" title="添加好友" @click="openSearchDialog">
         <el-icon><Plus /></el-icon>
       </div>

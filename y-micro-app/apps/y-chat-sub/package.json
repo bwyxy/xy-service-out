@@ -22,7 +22,8 @@
     "sass": "catalog:",
     "vite-plugin-qiankun": "catalog:",
     "vue": "catalog:vue3",
-    "vue-router": "catalog:vue-router5"
+    "vue-router": "catalog:vue-router5",
+    "wukongimjssdk": "^1.3.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "catalog:",

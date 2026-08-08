@@ -1,5 +1,6 @@
 package com.chat.fg.service.impl;
 
+import com.xy.common.enums.OfficialAccount;
 import com.xy.system.mapper.UserMapper;
 import com.chat.fg.pojo.dto.ConversationDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
@@ -44,7 +45,7 @@ public class ConversationServiceImpl implements IConversationService {
         // 获取系统用户
         List<String> systemUids = wuKongClient.getSystemUids();
         // 获取会话列表
-        List<ConversationVO> conversations = wuKongClient.syncConversation(conversationRequest);
+        List<ConversationVO> conversations = getWKConversations(conversationRequest);
 
         if (!StringUtils.isNotEmpty(conversations)) {
             return new ArrayList<>();
@@ -131,6 +132,17 @@ public class ConversationServiceImpl implements IConversationService {
         }
 
         return result;
+    }
+
+    /** 获取悟空 IM会话列表 */
+    private List<ConversationVO> getWKConversations(ConversationRequest request) {
+        // 获取会话列表
+        List<ConversationVO> conversations = wuKongClient.syncConversation(request);
+        String systemNotice = OfficialAccount.systemNotice.getCode();
+
+        return conversations.stream()
+                .filter(conv -> !systemNotice.equals(conv.getChannelId()))
+                .collect(Collectors.toList());
     }
 
     /** 解析获取会话列表的参数 */

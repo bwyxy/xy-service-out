@@ -1,67 +1,110 @@
 <script setup lang="ts">
-import { getConversation } from '@/api/chat.ts'
-import { onMounted, reactive, ref} from "vue";
+import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import useUserStore from "@/store/user.ts";
+import useUserStore from '@/store/user.ts'
+import { getConversation } from '@/api/chat.ts'
 import { decodeBase64FromJava } from '@/utils/wk.ts'
 
+interface ConversationParams {
+  msgCount: number
+}
+
+interface RecentMessage {
+  payload?: string
+}
+
+interface ConversationItem {
+  avatar?: string
+  name: string
+  recents?: RecentMessage[]
+  channel_id: string
+  channel_type: number
+}
+
 const userStore = useUserStore()
-const params = reactive({
-  msgCount: 1
+
+const params = reactive<ConversationParams>({
+  msgCount: 1,
 })
-const conversations = ref<any[]>([])
-const initConversation = async () => {
+
+const conversations = ref<ConversationItem[]>([])
+const loading = ref(false)
+
+/**
+ * 获取会话列表
+ */
+const fetchConversations = async () => {
+  loading.value = true
   try {
     const response = await getConversation(params)
-
     if (response.code === 200) {
-      conversations.value = response.data
+      conversations.value = response.data || []
     }
   } catch {
     ElMessage.error('获取会话列表失败')
+  } finally {
+    loading.value = false
   }
 }
-/** 获取消息 */
-const getMessage = (recents :any) => {
+
+/**
+ * 解析最新消息内容
+ */
+const getLatestMessageContent = (recents?: RecentMessage[]): string => {
   if (!recents || recents.length === 0) {
     return ''
   }
-  const payload = decodeBase64FromJava(recents[0].payload || '')
-  const msg = JSON.parse(payload)
 
-
-  return msg.content
+  try {
+    const payload = decodeBase64FromJava(recents[0].payload || '')
+    const msg = JSON.parse(payload)
+    return msg.content || ''
+  } catch {
+    return ''
+  }
 }
-/** 选择频道 */
-const selectedChannel = (row :any) => {
-  console.log(row)
+
+/**
+ * 选择频道
+ */
+const handleSelectChannel = (row: ConversationItem) => {
+  console.log('selected channel', row)
   userStore.currentChannel = {
     channelId: row.channel_id,
     type: row.channel_type,
   }
 }
 
-
 onMounted(() => {
-  initConversation()
+  fetchConversations()
 })
 </script>
 
 <template>
-  <div class="contact-list">
+  <div v-loading="loading" class="contact-list">
     <div
-        v-for="(item, index) in conversations"
-        :key="index"
-        class="msg-item"
-        @click="selectedChannel(item)"
+      v-for="(item, index) in conversations"
+      :key="index"
+      class="msg-item"
+      @click="handleSelectChannel(item)"
     >
-      <img v-if="item.avatar" class="avatar-box" :src="item.avatar || ''" alt="avatar" />
-      <img v-else class="avatar-box" src="@/assets/images/logo.jpg" alt="avatar" />
+      <img
+        v-if="item.avatar"
+        class="avatar-box"
+        :src="item.avatar"
+        alt="avatar"
+      />
+      <img
+        v-else
+        class="avatar-box"
+        src="@/assets/images/logo.jpg"
+        alt="avatar"
+      />
       <div class="msg-content">
         <div class="msg-title">
           <span>{{ item.name }}</span>
         </div>
-        <span class="msg-text">{{ getMessage(item.recents) }}</span>
+        <span class="msg-text">{{ getLatestMessageContent(item.recents) }}</span>
       </div>
     </div>
   </div>
@@ -75,6 +118,7 @@ onMounted(() => {
   padding: size(24);
   overflow: hidden;
   overflow-y: scroll;
+
   .msg-item {
     height: size(100);
     background: #fff;
@@ -87,37 +131,43 @@ onMounted(() => {
     box-sizing: border-box;
     cursor: pointer;
     padding: size(18);
-    .msg-content {
-      flex: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      margin-left: size(12);
-      .msg-title {
-        flex: 1;
-        span {
-          font-size: size(20);
-          font-weight: bold;
-          letter-spacing: 1px;
-          @include textEllipsis(1);
-        }
-      }
-      .msg-text {
-        font-size: size(16);
-        color: #bfbfbf;
-        letter-spacing: 1px;
-        @include textEllipsis(1);
-      }
-    }
 
     &:hover {
       background: rgba(0, 0, 0, .01);
     }
   }
+
   .avatar-box {
     width: size(64);
     height: size(64);
   }
+
+  .msg-content {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: size(12);
+
+    .msg-title {
+      flex: 1;
+
+      span {
+        font-size: size(20);
+        font-weight: bold;
+        letter-spacing: 1px;
+        @include textEllipsis(1);
+      }
+    }
+
+    .msg-text {
+      font-size: size(16);
+      color: #bfbfbf;
+      letter-spacing: 1px;
+      @include textEllipsis(1);
+    }
+  }
+
   &::-webkit-scrollbar {
     appearance: none;
     width: 0;
