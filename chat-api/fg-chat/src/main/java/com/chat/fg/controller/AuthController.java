@@ -1,8 +1,8 @@
 package com.chat.fg.controller;
 
+import com.chat.fg.pojo.dto.EditPasswordDTO;
 import com.chat.fg.pojo.dto.LoginDTO;
 import com.chat.fg.pojo.dto.RegisterDTO;
-import com.chat.fg.security.ChatUserDetails;
 import com.chat.fg.service.IAuthService;
 import com.chat.fg.service.IUserService;
 import com.chat.fg.utils.SecurityUtils;
@@ -13,11 +13,7 @@ import com.xy.framework.web.service.VerifyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +71,26 @@ public class AuthController {
         result.put("email", user.getEmail());
         result.put("sex", user.getSex());
         return R.ok(result);
+    }
+
+    /**
+     * 更新用户信息
+     * */
+    @PutMapping("/update/info")
+    public R<?> updateInfo(User user) {
+        userService.updateUserInfo(user);
+
+        return R.ok("更新成功");
+    }
+
+    /**
+     * 修改密码
+     * */
+    @PostMapping("/edit/password")
+    public R<?> editPassword(@RequestBody EditPasswordDTO editPasswordDTO) {
+        userService.editPassword(editPasswordDTO);
+
+        return R.ok("修改成功");
     }
 
     /**
