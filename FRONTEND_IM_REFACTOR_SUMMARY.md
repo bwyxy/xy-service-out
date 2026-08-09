@@ -97,6 +97,20 @@
 - `services/im/message-handler.ts`：系统通知弹窗内容使用 `extractMessageContent`。
 - `views/chat/components/ContactList/index.vue`：解析后端会话列表最新消息使用 `extractMessageContent`。
 
+### 3.8 富文本输入框（文本 / 表情 / 图片）
+
+新增/改造文件：
+
+- `views/chat/components/ChatWindow/RichInput.vue`：可编辑 `div` 实现的富文本输入框，支持：
+  - 文本输入、Emoji 表情选择插入。
+  - 点击/拖拽/粘贴图片，图片先压缩（默认最大宽度 1280，质量 0.8，目标不超过 2MB）。
+  - 超过 2MB 或压缩后仍超限则提示用户。
+  - 提交时把文本内容与图片 URL 组合为统一 payload 发送。
+- `store/chat.ts`：`sendMessage` 支持 `MessageType.IMAGE`，图片内容作为 URL 发送；文本/图片统一走后端 `/message/send`。
+- `services/im/constants.ts`：新增 `MessageType.IMAGE = 2`。
+- `api/chat.ts`：新增/确认七牛云图片上传接口调用。
+- `views/chat/components/ChatWindow/ChatWindow.vue`：引入 `RichInput`，调整消息列表对图片消息的渲染。
+
 ## 4. 测试验证
 
 ### 4.1 类型检查与构建

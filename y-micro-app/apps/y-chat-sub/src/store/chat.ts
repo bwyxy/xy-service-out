@@ -352,15 +352,16 @@ const useChatStore = defineStore('chat', () => {
    * 采用乐观更新策略：先写入本地消息列表并置顶会话，再调用后端 HTTP 接口转发至悟空 IM。
    * 统一走服务端便于后续做内容安全校验、敏感词过滤、图片鉴黄等业务扩展。
    */
-  async function sendMessage(content: string): Promise<void> {
-    if (!activeContact.value || !content.trim()) {
+  async function sendMessage(message: { type: number; content: string }): Promise<void> {
+    if (!activeContact.value || !message.content) {
       return
     }
 
-    const trimmedContent = content.trim()
+    const { type, content } = message
     const contact = activeContact.value
     const now = Date.now()
     const clientMsgNo = `self_${now}_${Math.random().toString(36).slice(2)}`
+    const isImage = type === MessageType.IMAGE
 
     // 1. 先追加到本地消息列表（乐观更新）
     messages.value.push({
@@ -369,14 +370,15 @@ const useChatStore = defineStore('chat', () => {
       nickname: name.value,
       channelId: contact.uid,
       channelType: contact.channelType,
-      type: MessageType.TEXT,
-      content: trimmedContent,
+      type,
+      content,
       timestamp: now,
       isSelf: true,
+      clientMsgNo,
     })
 
     // 2. 更新当前会话最后一条消息并置顶
-    contact.lastMessage = trimmedContent
+    contact.lastMessage = isImage ? '[图片]' : content
     contact.lastMessageTime = now
     sortContactsByLastMessage()
 
@@ -385,8 +387,8 @@ const useChatStore = defineStore('chat', () => {
       const response = await apiSendMessage({
         channelId: contact.uid,
         channelType: contact.channelType,
-        type: MessageType.TEXT,
-        content: trimmedContent,
+        type,
+        content,
         clientMsgNo,
       })
 

@@ -3,17 +3,19 @@ import { onMounted, ref, watch, nextTick, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import useUserStore from '@/store/user.ts'
 import useChatStore from '@/store/chat.ts'
+import { MessageType } from '@/services/im/constants'
 import { getUserInfo } from '@/api/user.ts'
-import {Warning} from "@element-plus/icons-vue";
+import { Warning } from '@element-plus/icons-vue'
+import RichInput from './RichInput.vue'
 
 const chatStore = useChatStore()
 const { activeContact, messages } = storeToRefs(chatStore)
 const { userInfo } = storeToRefs(useUserStore())
 
-const inputContent = ref('')
 const sending = ref(false)
 const messageListRef = ref<HTMLDivElement | null>(null)
 const channelInfo = ref<{ nickname?: string; avatar?: string }>({})
+const richInputRef = ref<InstanceType<typeof RichInput> | null>(null)
 
 /** 当前会话的消息列表 */
 const currentMessages = computed(() => {
@@ -46,31 +48,35 @@ const loadChannelInfo = async () => {
   }
 }
 
-// /** 获取 */
-
-/** 发送消息 */
-const handleSend = async () => {
-  const content = inputContent.value.trim()
-  if (!content || sending.value || !activeContact.value) return
+/** 发送文本消息 */
+const handleSendText = async (text: string) => {
+  if (sending.value || !activeContact.value) return
 
   sending.value = true
   try {
-    await chatStore.sendMessage(content)
-    inputContent.value = ''
+    await chatStore.sendMessage({ type: MessageType.TEXT, content: text })
     scrollToBottom()
-  } catch {
-    // 错误已在 store 中打印，可在此处追加轻提示
   } finally {
     sending.value = false
   }
 }
 
-/** 回车发送，Shift+Enter 换行 */
-const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault()
-    handleSend()
+/** 发送图片消息 */
+const handleSendImage = async (url: string) => {
+  if (sending.value || !activeContact.value) return
+
+  sending.value = true
+  try {
+    await chatStore.sendMessage({ type: MessageType.IMAGE, content: url })
+    scrollToBottom()
+  } finally {
+    sending.value = false
   }
+}
+
+/** 图片预览 */
+const openImagePreview = (url: string) => {
+  window.open(url, '_blank')
 }
 
 /** 滚动到底部 */
@@ -129,8 +135,18 @@ onMounted(() => {
           <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
           <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
         </div>
-        <div class="message-bubble">
-          <div class="message-content">{{ msg.content }}</div>
+        <div>
+          <div  v-if="msg.type === MessageType.IMAGE" class="msg-image-box">
+            <el-image
+                class="message-image"
+                :src="msg.content"
+                :show-progress="true"
+                :preview-src-list="[msg.content]"
+            />
+          </div>
+          <div v-else class="message-bubble">
+            <div class="message-content">{{ msg.content }}</div>
+          </div>
         </div>
         <!-- 发送失败 -->
         <div v-if="msg.isError" class="error-msg">
@@ -144,23 +160,12 @@ onMounted(() => {
     </div>
 
     <div class="chat-window-footer">
-      <div class="input-area">
-        <textarea
-          v-model="inputContent"
-          class="message-input"
-          placeholder="请输入消息，回车发送，Shift+Enter 换行"
-          :disabled="!activeContact"
-          @keydown="handleKeydown"
-        />
-        <el-button
-          type="primary"
-          :disabled="!inputContent.trim() || !activeContact"
-          :loading="sending"
-          @click="handleSend"
-        >
-          发送
-        </el-button>
-      </div>
+      <RichInput
+        ref="richInputRef"
+        :disabled="!activeContact"
+        @send-text="handleSendText"
+        @send-image="handleSendImage"
+      />
     </div>
   </div>
 </template>
@@ -212,8 +217,18 @@ onMounted(() => {
       display: flex;
       margin-bottom: size(16);
 
+      .msg-image-box {
+        .message-image {
+          max-width: size(240);
+          max-height: size(240);
+          border-radius: size(8);
+          cursor: pointer;
+          object-fit: cover;
+        }
+      }
+
       .message-bubble {
-        max-width: 60%;
+        max-width: size(480);
         padding: size(12) size(16);
         background: #fff;
         border-radius: size(8);
@@ -290,28 +305,6 @@ onMounted(() => {
     padding: size(24);
     background: #fff;
     border-top: 1px solid rgba(0, 0, 0, .06);
-
-    .input-area {
-      display: flex;
-      gap: size(16);
-      align-items: flex-end;
-
-      .message-input {
-        flex: 1;
-        height: size(120);
-        padding: size(12);
-        border: 1px solid rgba(0, 0, 0, .08);
-        border-radius: size(8);
-        resize: none;
-        outline: none;
-        font-size: size(15);
-        line-height: 1.5;
-
-        &:focus {
-          border-color: #409eff;
-        }
-      }
-    }
   }
 }
 

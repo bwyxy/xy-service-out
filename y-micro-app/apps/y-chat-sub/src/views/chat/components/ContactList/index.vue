@@ -7,6 +7,7 @@ import useChatStore from '@/store/chat.ts'
 import { getConversation } from '@/api/chat.ts'
 import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk.ts'
 import type { Contact } from '@/store/chat.ts'
+import {isImageUrl} from "@/utils/utils.ts";
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
@@ -101,6 +102,17 @@ const handleSelectChannel = (row: Contact) => {
   chatStore.selectContact(row)
 }
 
+/**
+ * 显示消息信息
+ * */
+const showMessage = (message: string) => {
+  if (isImageUrl(message)) {
+    return '[图片消息]'
+  } else {
+    return message
+  }
+}
+
 onMounted(() => {
   fetchConversations()
 })
@@ -128,16 +140,12 @@ onMounted(() => {
           src="@/assets/images/logo.jpg"
           alt="avatar"
         />
-        <span v-if="item.unreadCount > 0" class="unread-badge">{{ item.unreadCount }}</span>
       </div>
       <div class="msg-content">
         <div class="msg-title">
           <span>{{ item.name }}</span>
-          <span v-if="item.lastMessageTime" class="msg-time">{{
-            new Date(item.lastMessageTime).toLocaleTimeString()
-          }}</span>
         </div>
-        <span class="msg-text">{{ item.lastMessage }}</span>
+        <span class="msg-text">{{ showMessage(item.lastMessage || '') }}</span>
       </div>
     </div>
   </div>
@@ -167,17 +175,29 @@ onMounted(() => {
 
     &:hover,
     &.active {
-      background: rgba(0, 0, 0, .04);
+      background: $theme-color;
+      .msg-title {
+        color: #fff !important;
+      }
+      .msg-time {
+        color: #fff !important;
+      }
+      .msg-text {
+        color: #fff !important;
+      }
     }
   }
 
   .avatar-wrap {
+    width: size(64);
+    height: size(64);
     position: relative;
   }
 
   .avatar-box {
-    width: size(64);
-    height: size(64);
+    width: 100%;
+    height: 100%;
+    border-radius: size(13);
   }
 
   .unread-badge {

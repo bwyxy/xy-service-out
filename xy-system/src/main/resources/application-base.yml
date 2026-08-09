@@ -55,3 +55,11 @@ losetoken:
 # 加密密钥
 encrypt:
   key: ${AES_KEY}
+
+# 七牛云
+qiniu:
+  accessKey: ${QINIU_ACCESS_KEY}
+  secretKey: ${QINIU_SECRET_KEY}
+  bucket: ${QINIU_BUCKET}
+  domain: ${QINIU_DOMAIN}
+  region: ${QINIU_REGION:huanan}

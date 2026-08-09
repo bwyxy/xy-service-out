@@ -46,6 +46,7 @@ public class MessageServiceImpl implements IMessageService {
         msgRequest.setStartMessageSeq(msgDTO.getStartMessageSeq());
         msgRequest.setEndMessageSeq(msgDTO.getEndMessageSeq());
 
+        log.warn("校验参数-{}", msgRequest);
         try {
             return wuKongClient.messageSync(msgRequest);
         } catch (Exception e) {

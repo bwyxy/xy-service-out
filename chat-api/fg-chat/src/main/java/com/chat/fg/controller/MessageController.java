@@ -28,7 +28,7 @@ public class MessageController {
      * 获取历史消息
      * */
     @PostMapping("/list")
-    public R<?> getMessages(@Valid MsgDTO msgDTO) {
+    public R<?> getMessages(@Valid @RequestBody MsgDTO msgDTO) {
         return R.ok(messageService.getMessageSync(msgDTO));
     }
 

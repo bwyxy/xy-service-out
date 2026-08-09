@@ -37,14 +37,6 @@ token:
   secret: ${TOKEN_SECRET}
   expireTime: ${TOKEN_EXPIRE_TIME:1440}
 
-# 七牛云
-qiniu:
-  accessKey: ${QINIU_ACCESS_KEY}
-  secretKey: ${QINIU_SECRET_KEY}
-  bucket: ${QINIU_BUCKET}
-  domain: ${QINIU_DOMAIN}
-  region: ${QINIU_REGION:huanan}
-
 # 微信小程序配置
 wechat:
   appid: ${WECHAT_APPID}
