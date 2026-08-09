@@ -13,6 +13,12 @@ const routes = [
                 name: 'ChatPage',
                 component: () => import('@/views/chat/index.vue'),
                 meta: { title: 'chatPage' }
+            },
+            {
+                path: '/friend',
+                name: 'FriendPage',
+                component: () => import('@/views/friend/index.vue'),
+                meta: { title: '好友' }
             }
         ]
     },

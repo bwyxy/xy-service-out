@@ -2,9 +2,10 @@
 
 import {Menu, ChatDotRound, UserFilled, Orange} from "@element-plus/icons-vue";
 import {reactive, computed} from "vue";
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const navs = reactive([
   {
     path: '/chat',
@@ -12,7 +13,7 @@ const navs = reactive([
     name: '消息'
   },
   {
-    path: '',
+    path: '/friend',
     icon: UserFilled,
     name: '好友'
   },
@@ -26,6 +27,12 @@ const navs = reactive([
 const routePath = computed(() => {
   return route.path
 })
+
+const toPage = (url: string) => {
+  if (!url) return
+
+  router.push(url)
+}
 </script>
 
 <template>
@@ -38,6 +45,7 @@ const routePath = computed(() => {
               'nav-item',
               {'nav-item__active': item.path === routePath}
           ]"
+          @click="toPage(item.path)"
       >
         <el-icon>
           <component :is="item.icon" />
