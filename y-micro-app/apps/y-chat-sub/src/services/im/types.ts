@@ -22,8 +22,10 @@ export interface WukongIMConfig {
 export interface WukongIMMessagePayload {
   /** 消息类型 */
   type: number
-  /** 消息内容 */
-  content: string
+  /** 消息内容（部分旧数据或第三方客户端可能使用 message 字段） */
+  content?: string
+  /** 兼容字段：某些场景下 payload 使用 message 表示内容 */
+  message?: string
 }
 
 /** 系统通知消息负载 */
@@ -42,13 +44,17 @@ export interface WukongIMSystemPayload extends WukongIMMessagePayload {
 export interface WukongIMMessage {
   /** 消息序列号 */
   messageSeq: number
+  /** 消息唯一 ID */
+  messageId?: string | number
+  /** 客户端消息编号，用于去重 */
+  clientMsgNo?: string
   /** 发送者 ID */
   fromUid: string
   /** 频道 ID */
   channelId: string
   /** 频道类型 */
   channelType: number
-  /** Base64 编码的消息负载 */
+  /** Base64 编码的消息负载，或直接是 JSON 字符串 */
   payload: string
   /** 消息时间戳 */
   timestamp: number

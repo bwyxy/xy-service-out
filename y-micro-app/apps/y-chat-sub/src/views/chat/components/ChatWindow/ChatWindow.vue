@@ -1,51 +1,166 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from 'vue'
+import { onMounted, ref, watch, nextTick, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import useUserStore from "@/store/user.ts";
+import useUserStore from '@/store/user.ts'
+import useChatStore from '@/store/chat.ts'
 import { getUserInfo } from '@/api/user.ts'
+import {Warning} from "@element-plus/icons-vue";
 
-const { currentChannel } = storeToRefs(useUserStore())
-const channelInfo = ref<any>({})
+const chatStore = useChatStore()
+const { activeContact, messages } = storeToRefs(chatStore)
+const { userInfo } = storeToRefs(useUserStore())
 
-watch(() => currentChannel.value, () => {
-  if (currentChannel.value !== null) {
-    getChannelInfo()
-  }
-}, {
-  deep: true
+const inputContent = ref('')
+const sending = ref(false)
+const messageListRef = ref<HTMLDivElement | null>(null)
+const channelInfo = ref<{ nickname?: string; avatar?: string }>({})
+
+/** 当前会话的消息列表 */
+const currentMessages = computed(() => {
+  if (!activeContact.value) return []
+
+  return messages.value.filter(
+    (m) =>
+      m.channelId === activeContact.value!.uid &&
+      m.channelType === activeContact.value!.channelType,
+  )
 })
 
 /** 获取频道信息 */
-const getChannelInfo = async () => {
-  if (!currentChannel.value) {
+const loadChannelInfo = async () => {
+  if (!activeContact.value) {
+    channelInfo.value = {}
     return
   }
 
-  const { channelId, type } = currentChannel.value
-  if (type === 1) {
-    const response = await getUserInfo(channelId)
-
+  if (activeContact.value.channelType === 1) {
+    const response = await getUserInfo(activeContact.value.uid)
     if (response.code === 200) {
-      channelInfo.value = response.data
+      channelInfo.value = response.data || {}
+      // 同步昵称/头像到联系人
+      activeContact.value.name = response.data?.nickname || activeContact.value.name
+      activeContact.value.avatar = response.data?.avatar || activeContact.value.avatar
     }
+  } else {
+    channelInfo.value = { nickname: activeContact.value.name }
   }
 }
 
-onMounted(() => {
-  if (currentChannel.value !== null) {
-    getChannelInfo()
+// /** 获取 */
+
+/** 发送消息 */
+const handleSend = async () => {
+  const content = inputContent.value.trim()
+  if (!content || sending.value || !activeContact.value) return
+
+  sending.value = true
+  try {
+    await chatStore.sendMessage(content)
+    inputContent.value = ''
+    scrollToBottom()
+  } catch {
+    // 错误已在 store 中打印，可在此处追加轻提示
+  } finally {
+    sending.value = false
   }
+}
+
+/** 回车发送，Shift+Enter 换行 */
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault()
+    handleSend()
+  }
+}
+
+/** 滚动到底部 */
+const scrollToBottom = () => {
+  nextTick(() => {
+    const el = messageListRef.value
+    if (el) {
+      el.scrollTop = el.scrollHeight
+    }
+  })
+}
+
+watch(
+  () => activeContact.value?.uid,
+  () => {
+    loadChannelInfo()
+    scrollToBottom()
+  },
+  { immediate: true },
+)
+
+watch(
+  () => currentMessages.value.length,
+  () => {
+    scrollToBottom()
+  },
+)
+
+onMounted(() => {
+  loadChannelInfo()
+  scrollToBottom()
 })
 </script>
 
 <template>
   <div class="chat-window">
     <div class="chat-window-header">
-      <span class="channel-name">{{ channelInfo.nickname || '未知' }}</span>
+      <img
+        v-if="activeContact?.avatar"
+        class="header-avatar"
+        :src="activeContact.avatar"
+        alt="avatar"
+      />
+      <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
     </div>
-    <div class="chat-window-main"></div>
+
+    <div ref="messageListRef" class="chat-window-main">
+      <div
+        v-for="msg in currentMessages"
+        :key="msg.id"
+        class="message-item"
+        :class="{ self: msg.isSelf }"
+      >
+        <!-- 自己 -->
+        <div class="me-user">
+          <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
+          <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
+        </div>
+        <div class="message-bubble">
+          <div class="message-content">{{ msg.content }}</div>
+        </div>
+        <!-- 发送失败 -->
+        <div v-if="msg.isError" class="error-msg">
+          <el-icon><Warning /></el-icon>
+        </div>
+      </div>
+
+      <div v-if="currentMessages.length === 0" class="empty-hint">
+        暂无消息，发送一条消息开始聊天吧
+      </div>
+    </div>
+
     <div class="chat-window-footer">
-      <y-editor />
+      <div class="input-area">
+        <textarea
+          v-model="inputContent"
+          class="message-input"
+          placeholder="请输入消息，回车发送，Shift+Enter 换行"
+          :disabled="!activeContact"
+          @keydown="handleKeydown"
+        />
+        <el-button
+          type="primary"
+          :disabled="!inputContent.trim() || !activeContact"
+          :loading="sending"
+          @click="handleSend"
+        >
+          发送
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +172,8 @@ onMounted(() => {
   background: #fafafa;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+
   &-header {
     height: size(100);
     background: #fff;
@@ -65,23 +182,151 @@ onMounted(() => {
     padding: 0 size(32);
     display: flex;
     align-items: center;
+
+    .header-avatar {
+      width: size(48);
+      height: size(48);
+      border-radius: 50%;
+      margin-right: size(16);
+    }
+
     .channel-name {
       font-size: size(24);
       letter-spacing: 1px;
       color: #1f1f1f;
     }
   }
+
   &-main {
     flex: 1;
     overflow-y: auto;
+    padding: size(24);
+    box-sizing: border-box;
+
     &::-webkit-scrollbar {
       appearance: none;
       width: 0;
     }
+
+    .message-item {
+      display: flex;
+      margin-bottom: size(16);
+
+      .message-bubble {
+        max-width: 60%;
+        padding: size(12) size(16);
+        background: #fff;
+        border-radius: size(8);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
+
+        .message-meta {
+          display: flex;
+          align-items: center;
+          gap: size(12);
+          margin-bottom: size(6);
+
+          .sender-name {
+            font-size: size(14);
+            color: #409eff;
+            font-weight: bold;
+          }
+
+          .message-time {
+            font-size: size(12);
+            color: #999;
+          }
+        }
+
+        .message-content {
+          font-size: size(15);
+          color: #333;
+          line-height: 1.5;
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+      }
+
+      &.self {
+        flex-direction: row-reverse;
+        //justify-content: flex-;
+
+        .user-head {
+          margin-left: size(13);
+          margin-right: 0 !important;
+        }
+
+        .error-msg {
+          margin-left: 0 !important;
+          margin-right: size(12);
+        }
+
+        .message-bubble {
+          background: $theme-color;
+
+          .message-content {
+            color: #fff;
+          }
+
+          .message-meta {
+            justify-content: flex-end;
+
+            .sender-name {
+              color: #67c23a;
+            }
+          }
+        }
+      }
+    }
+
+    .empty-hint {
+      text-align: center;
+      color: #999;
+      padding-top: size(120);
+    }
   }
+
   &-footer {
     box-sizing: border-box;
     padding: size(24);
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, .06);
+
+    .input-area {
+      display: flex;
+      gap: size(16);
+      align-items: flex-end;
+
+      .message-input {
+        flex: 1;
+        height: size(120);
+        padding: size(12);
+        border: 1px solid rgba(0, 0, 0, .08);
+        border-radius: size(8);
+        resize: none;
+        outline: none;
+        font-size: size(15);
+        line-height: 1.5;
+
+        &:focus {
+          border-color: #409eff;
+        }
+      }
+    }
   }
+}
+
+.user-head {
+  width: size(40);
+  height: size(40);
+  border-radius: 50px;
+  margin-right: size(13);
+  margin-top: size(4);
+}
+
+.error-msg {
+  font-size: size(24);
+  color: #f5222d;
+  margin-top: size(12);
+  margin-left: size(8);
 }
 </style>

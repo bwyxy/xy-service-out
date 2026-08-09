@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/user.ts'
 import useChatStore from '@/store/chat.ts'
 import { getConversation } from '@/api/chat.ts'
-import { decodeBase64FromJava } from '@/utils/wk.ts'
+import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk.ts'
 import type { Contact } from '@/store/chat.ts'
 
 const userStore = useUserStore()
@@ -76,16 +76,14 @@ const syncToChatStore = (list: ApiConversationItem[]) => {
  * 解析最新消息内容
  */
 const resolveLatestMessageContent = (recents?: { payload?: string }[]): string => {
-  console.log(recents)
   if (!recents || recents.length === 0) {
     return ''
   }
 
   try {
-    const payload = decodeBase64FromJava(recents[0].payload || '')
-    const msg = JSON.parse(payload)
-    console.log('payload', msg)
-    return msg.content || ''
+    const decoded = decodeBase64FromJava(recents[0].payload || '')
+    const payload = JSON.parse(decoded)
+    return extractMessageContent(payload)
   } catch {
     return ''
   }

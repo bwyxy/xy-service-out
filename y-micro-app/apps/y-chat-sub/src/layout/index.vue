@@ -44,5 +44,6 @@ onMounted(() => {
   display: flex;
   background: rgba(255, 255, 255, .4);
   border-top: 1px solid rgba(0, 0, 0, .06);
+  overflow: hidden;
 }
 </style>

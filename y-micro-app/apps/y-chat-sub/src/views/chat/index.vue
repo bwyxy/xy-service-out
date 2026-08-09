@@ -10,11 +10,7 @@ import ChatWindow from "./components/ChatWindow/ChatWindow.vue"
 const { currentChannel } = storeToRefs(useUserStore())
 
 const mainContainer = computed(() => {
-  if (currentChannel.value !== null) {
-    return ChannelNull
-  } else {
-    return ChatWindow
-  }
+  return currentChannel.value !== null ? ChatWindow : ChannelNull
 })
 </script>
 

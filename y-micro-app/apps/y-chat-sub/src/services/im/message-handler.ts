@@ -1,6 +1,6 @@
 import { ElNotification } from 'element-plus'
 import { wukongIMService } from './wukong-im'
-import { decodePayload } from '@/utils/wk'
+import { decodePayload, extractMessageContent } from '@/utils/wk'
 import { isSystemMessageType, MessageType } from './constants'
 import type { WukongIMMessage, WukongIMMessagePayload, WukongIMSystemPayload } from './types'
 
@@ -90,7 +90,8 @@ export class MessageHandlerService {
   private handleIncomingMessage = (message: WukongIMMessage): void => {
     const payload = decodePayload(message.payload || '') as WukongIMSystemPayload
 
-    console.log('[MessageHandler] 收到消息, type=', payload.type, 'content=', payload.content)
+    const content = extractMessageContent(payload)
+    console.log('[MessageHandler] 收到消息, type=', payload.type, 'content=', content)
 
     if (isSystemMessageType(payload.type)) {
       this.handleSystemMessage(message, payload)
@@ -108,7 +109,7 @@ export class MessageHandlerService {
     const title = this.resolveSystemTitle(payload)
     ElNotification({
       title,
-      message: payload.content || '',
+      message: extractMessageContent(payload),
       type: this.resolveNotifyType(payload.type),
       duration: 4500,
     })

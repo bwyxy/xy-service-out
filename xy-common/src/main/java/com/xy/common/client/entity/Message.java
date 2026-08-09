@@ -1,5 +1,6 @@
 package com.xy.common.client.entity;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -18,37 +19,37 @@ public class Message {
     /**
      * 消息 ID
      * */
-    @JsonProperty("message_id")
+    @JsonAlias("message_id")
     private Long messageId;
 
-    @JsonProperty("message_idstr")
+    @JsonAlias("message_idstr")
     private String messageIdStr;
 
     /**
      * 消息序列号
      * */
-    @JsonProperty("message_seq")
+    @JsonAlias("message_seq")
     private Long messageSeq;
 
     /**
      * 客户端消息编号
      * */
-    @JsonProperty("client_msg_no")
+    @JsonAlias("client_msg_no")
     private String clientMsgNo;
 
-    @JsonProperty("stream_idstr")
+    @JsonAlias("stream_idstr")
     private String streamIdStr;
 
     /**
      * 发送者用户 ID
      * */
-    @JsonProperty("from_uid")
+    @JsonAlias("from_uid")
     private String fromUid;
 
-    @JsonProperty("channel_id")
+    @JsonAlias("channel_id")
     private String channelId;
 
-    @JsonProperty("channel_type")
+    @JsonAlias("channel_type")
     private Integer channelType;
 
     private Integer expire;
@@ -74,19 +75,19 @@ public class Message {
         /**
          * 是否不持久化消息 (0=持久化, 1=不持久化)
          * */
-        @JsonProperty("no_persist")
+        @JsonAlias("no_persist")
         private Integer noPersist;
 
         /**
          * 是否显示红点通知 (0=不显示, 1=显示)
          * */
-        @JsonProperty("red_dot")
+        @JsonAlias("red_dot")
         private Integer redDot;
 
         /**
          * 是否是写扩散，这里一般是0，只有cmd消息才是1
          * */
-        @JsonProperty("sync_once")
+        @JsonAlias("sync_once")
         private Integer syncOnce;
     }
 }

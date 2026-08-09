@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import useUserStore from '@/store/user.ts'
 import { getUserInfo } from '@/api/user.ts'
 import { wukongIMService, messageHandlerService, MessageType } from '@/services/im'
+import { sendMessage as apiSendMessage, getMessageList } from '@/api/chat.ts'
+import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk'
 import { getToken, getCookies } from '@/utils/auth.ts'
 import useNotificationStore from './notification'
 import type { WukongIMMessage, WukongIMMessagePayload } from '@/services/im'
@@ -31,11 +33,10 @@ export interface Message {
   content: string
   timestamp: number
   isSelf: boolean
-}
-
-/** 默认文本消息负载 */
-function buildTextPayload(content: string): WukongIMMessagePayload {
-  return { type: MessageType.TEXT, content }
+  messageId?: number | string
+  isError?: boolean
+  /** 客户端消息编号，用于与 IM 回执去重 */
+  clientMsgNo?: string
 }
 
 /** 生成联系人唯一标识 */
@@ -44,6 +45,7 @@ function getContactKey(channelId: string, channelType: number): string {
 }
 
 const useChatStore = defineStore('chat', () => {
+  const uid = ref('')
   const name = ref('')
   const connected = ref(false)
   const contacts = ref<Contact[]>([])
@@ -61,13 +63,15 @@ const useChatStore = defineStore('chat', () => {
 
     const { userInfo } = storeToRefs(useUserStore())
 
-    const { uid } = userInfo.value
+    const userUid = userInfo.value?.uid as string | undefined
     const wssKey = import.meta.env.VITE_WSS_KEY
     const serverUrl = getCookies(wssKey)
 
-    console.log('[UserStore] 初始化 IM 连接', { wssKey, serverUrl, uid })
+    uid.value = userUid || ''
 
-    if (!serverUrl || !uid) {
+    console.log('[UserStore] 初始化 IM 连接', { wssKey, serverUrl, uid: userUid })
+
+    if (!serverUrl || !uid.value) {
       console.warn('[UserStore] 缺少 IM 连接参数，跳过连接')
       return
     }
@@ -77,7 +81,7 @@ const useChatStore = defineStore('chat', () => {
       wukongIMService.connect({
         serverUrl: serverUrl,
         userInfo: {
-          uid: String(uid),
+          uid: uid.value,
           token: getToken(),
         },
       })
@@ -106,39 +110,40 @@ const useChatStore = defineStore('chat', () => {
   async function handleIncomingChatMessage(message: WukongIMMessage, payload: WukongIMMessagePayload): Promise<void> {
 
     console.log('聊天消息', message, payload)
-    let name = ''
-    let head = ''
+    let senderName = ''
     if (message.channelType === 1) {
-      const { nickname, avatar } = await fetchUserInfo(message.fromUid)
-      name = nickname
-      head = avatar || ''
+      const { nickname } = await fetchUserInfo(message.fromUid)
+      senderName = nickname
     }
-    const { userInfo } = storeToRefs(useUserStore())
-
-    const { uid } = userInfo.value
-
-    const isSelf = message.fromUid === String(uid)
+    const isSelf = message.fromUid === uid.value
     const isCurrentChannel =
       activeContact.value &&
       activeContact.value.uid === message.channelId &&
       activeContact.value.channelType === message.channelType
 
     // 追加到消息列表
-    messages.value.push({
-      id: `${message.messageSeq}_${Date.now()}`,
-      fromUid: message.fromUid,
-      nickname: name,
-      avatar: head,
-      channelId: message.channelId,
-      channelType: message.channelType,
-      type: payload.type,
-      content: payload.content || '',
-      timestamp: message.timestamp || Date.now(),
-      isSelf,
-    })
+    // const content = extractMessageContent(payload)
+    // const incomingClientMsgNo = message.clientMsgNo
+    const incomingMessageId = `${message.messageSeq}_${message.messageId || ''}`
+
+    const msg :any = payload.content
+
+    if (!messages.value.find(m => String(m.id) === String(message.clientMsgNo))) {
+      messages.value.push({
+        id: incomingMessageId,
+        fromUid: String(message.fromUid),
+        nickname: isSelf ? name.value : senderName || message.fromUid,
+        channelId: message.channelId,
+        channelType: message.channelType,
+        type: payload.type,
+        content: msg.content || '',
+        timestamp: message.timestamp || Date.now(),
+        isSelf,
+      })
+    }
 
     // 同步会话列表：更新/新增联系人、未读数、排序
-    syncConversationFromMessage(message, payload, isSelf, !!isCurrentChannel)
+    await syncConversationFromMessage(message, msg, isSelf, !isCurrentChannel)
   }
 
   /**
@@ -177,6 +182,9 @@ const useChatStore = defineStore('chat', () => {
       (c) => c.uid === channelId && c.channelType === channelType,
     )
 
+    const content = extractMessageContent(payload)
+
+    console.log(content)
     if (!contact) {
       contact = {
         uid: channelId,
@@ -184,7 +192,7 @@ const useChatStore = defineStore('chat', () => {
         type: channelType === 2 ? 'group' : 'person',
         channelType: channelType as 1 | 2,
         unreadCount: 0,
-        lastMessage: payload.content || '',
+        lastMessage: content,
         lastMessageTime: now,
       }
 
@@ -201,7 +209,7 @@ const useChatStore = defineStore('chat', () => {
 
       contacts.value.push(contact)
     } else {
-      contact.lastMessage = payload.content || ''
+      contact.lastMessage = content
       contact.lastMessageTime = now
     }
 
@@ -273,26 +281,133 @@ const useChatStore = defineStore('chat', () => {
   /**
    * 选择联系人
    */
-  function selectContact(contact: Contact) {
+  async function selectContact(contact: Contact) {
     activeContact.value = contact
     contact.unreadCount = 0
-    wukongIMService.syncMessage(contact.uid, contact.channelType, 0, 50)
+    await loadHistoryMessages(contact, 0, 50)
+  }
+
+  /**
+   * 加载历史消息
+   *
+   * @param contact 联系人
+   * @param startSeq 起始消息序号（0 表示从最新开始）
+   * @param limit 拉取条数
+   */
+  async function loadHistoryMessages(
+    contact: Contact,
+    startSeq = 0,
+    limit = 50,
+  ): Promise<void> {
+    try {
+      const res = await getMessageList({
+        channelId: contact.uid,
+        channelType: contact.channelType,
+        startMessageSeq: startSeq,
+        endMessageSeq: 0,
+        limit,
+        pullMode: 0,
+      })
+
+      if (res.code !== 200 || !res.data) {
+        return
+      }
+
+      const list = Array.isArray(res.data) ? res.data : res.data.messages || []
+      const historyMessages: Message[] = list.map((item: any) => {
+        const msg = decodeBase64FromJava(item.payload || '')
+        const payload = JSON.parse(msg)
+        const isSelf = String(item.fromUid) === uid.value
+        const content = extractMessageContent(payload)
+
+        return {
+          id: `${item.messageSeq}_${item.messageId || Date.now()}`,
+          fromUid: String(item.fromUid || contact.uid),
+          nickname: isSelf ? name.value : item.fromUid,
+          channelId: contact.uid,
+          channelType: contact.channelType,
+          type: payload.type,
+          content,
+          timestamp: item.timestamp || Date.now(),
+          isSelf,
+        }
+      })
+
+      // 去重：相同 messageSeq 只保留一条
+      const existingIds = new Set(messages.value.map((m) => m.id))
+      const newMessages = historyMessages.filter((m) => !existingIds.has(m.id))
+
+      messages.value.push(...newMessages)
+
+      // 按时间正序排列，便于展示
+      messages.value.sort((a, b) => a.timestamp - b.timestamp)
+    } catch (error) {
+      console.error('[ChatStore] 加载历史消息失败:', error)
+    }
   }
 
   /**
    * 发送消息
+   *
+   * 采用乐观更新策略：先写入本地消息列表并置顶会话，再调用后端 HTTP 接口转发至悟空 IM。
+   * 统一走服务端便于后续做内容安全校验、敏感词过滤、图片鉴黄等业务扩展。
    */
-  async function sendMessage(content: string) {
+  async function sendMessage(content: string): Promise<void> {
     if (!activeContact.value || !content.trim()) {
       return
     }
 
-    const payload = buildTextPayload(content.trim())
+    const trimmedContent = content.trim()
+    const contact = activeContact.value
+    const now = Date.now()
+    const clientMsgNo = `self_${now}_${Math.random().toString(36).slice(2)}`
 
-    if (activeContact.value.channelType === 2) {
-      await wukongIMService.sendGroupMessage(activeContact.value.uid, payload)
-    } else {
-      await wukongIMService.sendPersonalMessage(activeContact.value.uid, payload)
+    // 1. 先追加到本地消息列表（乐观更新）
+    messages.value.push({
+      id: clientMsgNo,
+      fromUid: uid.value,
+      nickname: name.value,
+      channelId: contact.uid,
+      channelType: contact.channelType,
+      type: MessageType.TEXT,
+      content: trimmedContent,
+      timestamp: now,
+      isSelf: true,
+    })
+
+    // 2. 更新当前会话最后一条消息并置顶
+    contact.lastMessage = trimmedContent
+    contact.lastMessageTime = now
+    sortContactsByLastMessage()
+
+    // 3. 调用后端 HTTP 接口发送
+    try {
+      const response = await apiSendMessage({
+        channelId: contact.uid,
+        channelType: contact.channelType,
+        type: MessageType.TEXT,
+        content: trimmedContent,
+        clientMsgNo,
+      })
+
+      if (response.code === 200) {
+        const msg = response.data.data
+
+        const index = messages.value.findIndex((m) => m.id === msg.client_msg_no)
+
+        if (index !== -1) {
+          messages.value[index].messageId = msg.message_id
+        }
+      } else {
+        const index = messages.value.findIndex((m) => m.id === clientMsgNo)
+
+        if (index !== -1) {
+          messages.value[index].isError = true
+        }
+      }
+    } catch (error) {
+      console.error('[ChatStore] 发送消息失败:', error)
+      throw error
     }
   }
 

@@ -72,6 +72,31 @@
 - `views/chat/components/ChatWindow/ChatWindow.vue`：增加 `currentChannel` 空值保护，消除 TypeScript 报错。
 - `views/chat/components/SearchFun/FriendRequestDialog.vue`：移除未使用的 `activeTab`。
 
+### 3.7 消息 payload 兼容处理（Bug 修复）
+
+运行时反馈：
+
+1. 收到消息后会话列表与聊天窗口显示为原始 JSON 字符串，如 `{type: 1, content: '222'}`，而不是纯文本 `222`。
+2. 发送消息后聊天界面会渲染两条消息。
+
+根因：
+
+- 悟空 IM SDK 回传的消息 payload 有时已经是明文 JSON 字符串（不是 Base64）。原 `decodePayload` 直接用 `atob` 解码，导致解析失败并回退为 `{type: 1, content: rawJsonString}`，最终把 JSON 字符串显示在界面上。
+- 发送消息时前端先乐观更新一条本地消息，悟空 IM 随后又把服务端转发成功的消息回执推回来，原代码没有去重，导致界面出现两条。
+
+修复：
+
+- `services/im/types.ts`：`WukongIMMessagePayload` 同时声明 `content?: string` 与 `message?: string`；`WukongIMMessage` 增加 `messageId` / `clientMsgNo` 用于去重。
+- `utils/wk.ts`：
+  - `decodePayload` 改为优先尝试直接 `JSON.parse`；失败后再尝试 Base64 解码，兼容明文 JSON 与 Base64 两种格式。
+  - 保留 `extractMessageContent(payload)`，统一提取文本，优先取 `content`，否则取 `message`。
+- `store/chat.ts`：
+  - 收到 IM 消息时按 `clientMsgNo` / `messageId+messageSeq` 去重；若匹配到乐观更新的本地消息，仅把临时 id 替换为服务端 id，不重复渲染。
+  - 收到消息、加载历史消息、同步会话 `lastMessage` 均使用 `extractMessageContent`。
+  - 顺手修复 `handleIncomingChatMessage` 局部变量 `name` 遮蔽 store 级 `name` ref 导致的类型错误。
+- `services/im/message-handler.ts`：系统通知弹窗内容使用 `extractMessageContent`。
+- `views/chat/components/ContactList/index.vue`：解析后端会话列表最新消息使用 `extractMessageContent`。
+
 ## 4. 测试验证
 
 ### 4.1 类型检查与构建
@@ -102,13 +127,19 @@ pnpm run build
    - `initWKIM()` 调用 `wukongIMService.connect()` 建立连接，并初始化 `MessageHandlerService`。
    - 聊天消息经 `MessageHandlerService` 分发到 `chat store`。
    - `chat store` 的 `syncConversationFromMessage` 会自动更新/新增联系人、刷新最后一条消息、增加未读数，并按最后消息时间倒序排序，实现最新消息置顶。
+   - `chat store` 的 `sendMessage` 采用乐观更新：先写入本地消息列表并置顶会话，再调用后端 `/message/send` HTTP 接口转发至悟空 IM。
+   - 统一走服务端发送，便于后续做内容安全校验、敏感词过滤、图片鉴黄等业务扩展。
+   - 选择联系人时通过 `/message/list` 拉取历史消息并渲染到聊天窗口。
    - 系统/业务通知经 `MessageHandlerService` 触发 `ElNotification` 弹窗，并同步到 `notification store` 增加未读数。
    - `Header` 与 `NotificationCenter` 通过 `notification store` 共享未读数与通知列表。
    - `ContactList` 组件以 `chat store.contacts` 为会话列表数据源，支持未读角标、激活态、最后消息时间展示。
+   - `ChatWindow` 组件展示当前会话消息列表，提供多行输入框与发送按钮，支持回车发送、Shift+Enter 换行、发送后自动滚动到底部。
 
 建议在完整后端环境就绪后，进行以下运行时验证：
 
 - 登录后浏览器控制台输出 `[WukongIM] 连接成功`。
+- 点击左侧联系人后，右侧 ChatWindow 通过 `/message/list` 加载并显示历史消息，顶部显示对方昵称/头像。
+- 在输入框中输入内容，点击发送或按 Enter，消息先出现在右侧消息列表（乐观更新），随后调用后端 `/message/send` 经服务端转发到悟空 IM；左侧会话列表对应联系人置顶并显示最后一条消息。
 - 向好友发送文本消息后，对端能实时收到消息；左侧会话列表对应联系人置顶，并显示未读角标与最后一条消息。
 - 收到好友请求/同意等系统通知时，右上角弹出 `ElNotification` 提示，Header 消息通知 badge 数字增加。
 - 切换不同联系人时，未读角标清零，消息列表切换。
@@ -125,15 +156,20 @@ pnpm run build
 | `y-micro-app/apps/y-chat-sub/src/services/im/message-handler.ts` | 新增消息分类处理服务 |
 | `y-micro-app/apps/y-chat-sub/src/utils/wk.ts` | 重构 payload 解码工具 |
 | `y-micro-app/apps/y-chat-sub/src/store/user.ts` | 解耦 IM 逻辑，增加类型 |
-| `y-micro-app/apps/y-chat-sub/src/store/chat.ts` | 使用新 IM 服务，处理聊天消息与未读 |
+| `y-micro-app/apps/y-chat-sub/src/store/chat.ts` | 使用新 IM 服务，处理聊天消息、未读、历史消息加载、HTTP 发送 |
 | `y-micro-app/apps/y-chat-sub/src/store/notification.ts` | 新增通知状态管理 |
+| `y-micro-app/apps/y-chat-sub/src/api/chat.ts` | 新增发送消息 HTTP API |
 | `y-micro-app/apps/y-chat-sub/src/layout/index.vue` | 更新 IM 初始化判断 |
 | `y-micro-app/apps/y-chat-sub/src/layout/Header/index.vue` | 使用 notification store，每 60 秒同步未读数 |
 | `y-micro-app/apps/y-chat-sub/src/layout/Header/NotificationCenter.vue` | 使用 notification store 加载/标记通知 |
 | `y-micro-app/apps/y-chat-sub/src/views/chat/components/ContactList/index.vue` | 增加类型、优化样式 |
-| `y-micro-app/apps/y-chat-sub/src/views/chat/components/ChatWindow/ChatWindow.vue` | 增加空值保护 |
+| `y-micro-app/apps/y-chat-sub/src/views/chat/components/ChatWindow/ChatWindow.vue` | 消息列表展示、发送输入框 |
 | `y-micro-app/apps/y-chat-sub/src/views/chat/components/SearchFun/FriendRequestDialog.vue` | 移除未使用变量 |
 | `y-micro-app/apps/y-chat-sub/src/utils/wkContent.ts` | 删除空文件 |
+| `chat-api/fg-chat/src/main/java/com/chat/fg/controller/MessageController.java` | 新增 `/message/send` 服务端转发接口 |
+| `chat-api/fg-chat/src/main/java/com/chat/fg/service/IMessageService.java` | 新增发送消息接口方法 |
+| `chat-api/fg-chat/src/main/java/com/chat/fg/service/impl/MessageServiceImpl.java` | 实现服务端转发悟空 IM 发送消息 |
+| `chat-api/fg-chat/src/main/java/com/chat/fg/pojo/dto/SendMsgDTO.java` | 发送消息请求 DTO |
 
 ## 6. 后续建议
 
