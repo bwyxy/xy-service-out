@@ -27,6 +27,11 @@ body {
   background: linear-gradient(160deg, #d9f7be,#f6ffed, #fafafa , #fff);
 }
 
+.user-popover {
+  width: size(340) !important;
+  padding: size(16) !important;
+}
+
 .login-panel {
   width: size(600);
   min-height: size(700);

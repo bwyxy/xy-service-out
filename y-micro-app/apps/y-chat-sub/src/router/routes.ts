@@ -19,6 +19,12 @@ const routes = [
                 name: 'FriendPage',
                 component: () => import('@/views/friend/index.vue'),
                 meta: { title: '好友' }
+            },
+            {
+                path: '/user',
+                name: 'UserPage',
+                component: () => import('@/views/user/index.vue'),
+                meta: { title: '用户' }
             }
         ]
     },
