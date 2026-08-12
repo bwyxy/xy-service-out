@@ -74,11 +74,6 @@ const handleSendImage = async (url: string) => {
   }
 }
 
-/** 图片预览 */
-const openImagePreview = (url: string) => {
-  window.open(url, '_blank')
-}
-
 /** 滚动到底部 */
 const scrollToBottom = () => {
   nextTick(() => {
@@ -131,8 +126,13 @@ onMounted(() => {
         :class="{ self: msg.isSelf }"
       >
         <!-- 自己 -->
-        <div class="me-user">
+        <div v-if="msg.isSelf" class="me-user">
           <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
+          <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
+        </div>
+        <!-- 对方 -->
+        <div v-if="!msg.isSelf" class="me-user">
+          <img v-if="activeContact" class="user-head" :src="activeContact.avatar" alt="avatar" />
           <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
         </div>
         <div>

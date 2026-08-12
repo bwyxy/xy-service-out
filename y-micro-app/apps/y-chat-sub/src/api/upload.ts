@@ -19,3 +19,14 @@ export function uploadImage(file: File) {
     },
   }) as Promise<{ code: number; data: string; msg: string }>
 }
+
+export const uploadAvatar = (formData: FormData) => {
+  return request({
+    url: '/upload/avatar',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  })
+}

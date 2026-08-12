@@ -77,7 +77,7 @@ public class AuthController {
      * 更新用户信息
      * */
     @PutMapping("/update/info")
-    public R<?> updateInfo(User user) {
+    public R<?> updateInfo(@RequestBody User user) {
         userService.updateUserInfo(user);
 
         return R.ok("更新成功");

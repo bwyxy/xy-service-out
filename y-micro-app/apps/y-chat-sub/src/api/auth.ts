@@ -35,3 +35,25 @@ export const sendEmailCode = (email :string)=> {
 export const getUserInfo = () => {
     return request.post('/auth/userinfo')
 }
+
+/**
+ * 更新用户信息
+ * */
+export const updateUserInfo = (data:any):any => {
+    return request({
+        url: '/update/info',
+        method: 'PUT',
+        data
+    })
+}
+
+/**
+ * 修改密码
+ * */
+export const editPassword = (data:any):any => {
+    return request({
+        url: '/edit/password',
+        method: 'POST',
+        data
+    })
+}
