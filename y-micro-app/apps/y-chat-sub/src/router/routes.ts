@@ -25,6 +25,12 @@ const routes = [
                 name: 'UserPage',
                 component: () => import('@/views/user/index.vue'),
                 meta: { title: '用户' }
+            },
+            {
+                path: '/notice',
+                name: 'NoticePage',
+                component: () => import('@/views/notice/index.vue'),
+                meta: { title: '消息通知' }
             }
         ]
     },
