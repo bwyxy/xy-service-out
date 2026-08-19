@@ -3,12 +3,20 @@ package com.xy.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xy.common.constant.Constants;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.SysRole;
-import com.xy.system.mapper.SysRoleMapper;
-import com.xy.system.service.ISysRoleService;
-import org.springframework.stereotype.Service;
+import com.xy.common.enums.ResultCode;
+import com.xy.common.exception.BusinessException;
+import com.xy.common.constant.UserConstants;
 import com.xy.common.utils.StringUtils;
+import com.xy.system.mapper.SysRoleMapper;
+import com.xy.system.service.ISysRoleMenuService;
+import com.xy.system.service.ISysRoleService;
+import com.xy.system.service.ISysUserRoleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,7 +24,11 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {
+
+    private final ISysRoleMenuService roleMenuService;
+    private final ISysUserRoleService userRoleService;
 
     /**
      * 根据条件分页查询角色数据
@@ -76,5 +88,131 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
 
         return permsSet;
+    }
+
+    @Override
+    public SysRole selectRoleById(Long roleId) {
+        SysRole role = getById(roleId);
+        if (role == null) {
+            return null;
+        }
+        List<Long> menuIds = roleMenuService.selectMenuIdsByRoleId(roleId);
+        role.setMenuIds(menuIds);
+        return role;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long insertRole(SysRole role) {
+        validateRole(role);
+        if (!checkRoleNameUnique(role)) {
+            throw new BusinessException(ResultCode.DATA_ALREADY_EXISTS, "角色名称已存在");
+        }
+        if (!checkRoleKeyUnique(role)) {
+            throw new BusinessException(ResultCode.DATA_ALREADY_EXISTS, "角色权限字符串已存在");
+        }
+        if (StringUtils.isEmpty(role.getStatus())) {
+            role.setStatus(UserConstants.ROLE_NORMAL);
+        }
+        boolean success = save(role);
+        if (!success) {
+            throw new BusinessException(ResultCode.OPERATION_FAILED, "新增角色失败");
+        }
+        if (role.getMenuIds() != null && !role.getMenuIds().isEmpty()) {
+            roleMenuService.saveRoleMenu(role.getId(), role.getMenuIds());
+        }
+        return role.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateRole(SysRole role) {
+        SysRole existing = getById(role.getId());
+        if (existing == null) {
+            throw new BusinessException(ResultCode.DATA_NOT_FOUND, "角色不存在");
+        }
+        validateRole(role);
+        if (StringUtils.hasText(role.getRoleName()) && !role.getRoleName().equals(existing.getRoleName())) {
+            if (!checkRoleNameUnique(role)) {
+                throw new BusinessException(ResultCode.DATA_ALREADY_EXISTS, "角色名称已存在");
+            }
+        }
+        if (StringUtils.hasText(role.getRoleKey()) && !role.getRoleKey().equals(existing.getRoleKey())) {
+            if (!checkRoleKeyUnique(role)) {
+                throw new BusinessException(ResultCode.DATA_ALREADY_EXISTS, "角色权限字符串已存在");
+            }
+        }
+        if (isSuperAdminRole(role.getId()) && UserConstants.ROLE_DISABLE.equals(role.getStatus())) {
+            throw new BusinessException(ResultCode.FORBIDDEN, "禁止停用超级管理员角色");
+        }
+
+        boolean success = updateById(role);
+        if (!success) {
+            throw new BusinessException(ResultCode.OPERATION_FAILED, "修改角色失败");
+        }
+        if (role.getMenuIds() != null) {
+            roleMenuService.saveRoleMenu(role.getId(), role.getMenuIds());
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteRole(Long roleId) {
+        SysRole existing = getById(roleId);
+        if (existing == null) {
+            throw new BusinessException(ResultCode.DATA_NOT_FOUND, "角色不存在");
+        }
+        if (isSuperAdminRole(roleId)) {
+            throw new BusinessException(ResultCode.FORBIDDEN, "禁止删除超级管理员角色");
+        }
+        long userCount = userRoleService.countUserByRoleId(roleId);
+        if (userCount > 0) {
+            throw new BusinessException(ResultCode.BUSINESS_ERROR, "该角色已分配用户，无法删除");
+        }
+        boolean success = getBaseMapper().deleteById(roleId) > 0;
+        if (!success) {
+            throw new BusinessException(ResultCode.OPERATION_FAILED, "删除角色失败");
+        }
+        roleMenuService.deleteRoleMenuByRoleId(roleId);
+        return true;
+    }
+
+    @Override
+    public boolean checkRoleNameUnique(SysRole role) {
+        Long roleId = role.getId() == null ? -1L : role.getId();
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRole::getRoleName, role.getRoleName());
+        SysRole existing = getOne(queryWrapper);
+        return existing == null || existing.getId().equals(roleId);
+    }
+
+    @Override
+    public boolean checkRoleKeyUnique(SysRole role) {
+        Long roleId = role.getId() == null ? -1L : role.getId();
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRole::getRoleKey, role.getRoleKey());
+        SysRole existing = getOne(queryWrapper);
+        return existing == null || existing.getId().equals(roleId);
+    }
+
+    @Override
+    public boolean isSuperAdminRole(SysRole role) {
+        return role != null && Constants.SUPER_ADMIN.equals(role.getRoleKey());
+    }
+
+    @Override
+    public boolean isSuperAdminRole(Long roleId) {
+        SysRole role = getById(roleId);
+        return isSuperAdminRole(role);
+    }
+
+    private void validateRole(SysRole role) {
+        if (StringUtils.isEmpty(role.getRoleName())) {
+            throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "角色名称不能为空");
+        }
+        if (StringUtils.isEmpty(role.getRoleKey())) {
+            throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "角色权限字符串不能为空");
+        }
     }
 }

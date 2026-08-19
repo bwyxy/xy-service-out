@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.system.mapper.SysRoleMenuMapper">
+
+    <select id="selectMenuIdsByRoleId" resultType="java.lang.Long">
+        select menu_id from sys_role_menu where role_id = #{roleId}
+    </select>
+
+    <insert id="batchInsert">
+        insert into sys_role_menu (role_id, menu_id) values
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (#{roleId}, #{menuId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRoleId">
+        delete from sys_role_menu where role_id = #{roleId}
+    </delete>
+
+    <select id="countByMenuId" resultType="java.lang.Long">
+        select count(*) from sys_role_menu where menu_id = #{menuId}
+    </select>
+
+    <select id="selectMenuPermsByUserId" resultType="java.lang.String">
+        select distinct m.perms
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+                 left join sys_user_role ur on rm.role_id = ur.role_id
+                 left join sys_role r on r.id = ur.role_id
+        where ur.user_id = #{userId}
+          and m.status = '0'
+          and m.deleted = '0'
+          and r.status = '1'
+          and m.perms is not null
+          and m.perms != ''
+    </select>
+
+</mapper>

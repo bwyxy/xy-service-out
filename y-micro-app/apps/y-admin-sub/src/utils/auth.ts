@@ -1,3 +1,4 @@
+// @ts-ignore
 import Cookies from 'js-cookie'
 
 const TokenKey = 'xy_admin_token'

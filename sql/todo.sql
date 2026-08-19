@@ -213,6 +213,50 @@ insert into sys_menu values(1, '系统管理', '0', 1, 'system',null, '', '', 1,
 insert into sys_menu values(2,  '用户管理', 1,   1, 'user','system/user/index', '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, 0,'用户管理菜单');
 insert into sys_menu values(4,  '角色管理', 1,   2, 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, 0, '角色管理菜单');
 insert into sys_menu values(5,  '菜单管理', 1,   3, 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', sysdate(), '', null, 0,'菜单管理菜单');
+insert into sys_menu values(19, '操作日志', 1,   4, 'operlog',    'system/operlog/index',     '', '', 1, 0, 'C', '0', '0', 'system:operlog:list',   'log',           'admin', sysdate(), '', null, 0, '操作日志菜单');
+
+-- 用户管理按钮权限
+insert into sys_menu values(20, '用户新增', 2, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:user:add', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(21, '用户编辑', 2, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:user:edit', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(22, '用户删除', 2, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:user:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(23, '用户查询', 2, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:user:query', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 角色管理按钮权限
+insert into sys_menu values(24, '角色新增', 4, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:role:add', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(25, '角色编辑', 4, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:role:edit', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(26, '角色删除', 4, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:role:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(27, '角色查询', 4, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:role:query', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 操作日志按钮权限
+insert into sys_menu values(28, '日志删除', 19, 1, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(29, '日志清空', 19, 2, 'clean', '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:clean', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 操作日志表
+ create table if not exists sys_oper_log (
+    id bigint auto_increment not null comment '日志主键',
+    title varchar(50) default '' comment '模块标题',
+    business_type int(2) default 0 comment '业务类型（0其它 1新增 2修改 3删除）',
+    method varchar(200) default '' comment '方法名称',
+    request_method varchar(10) default '' comment '请求方式',
+    operator_type int(1) default 0 comment '操作类别（0其它 1后台用户 2手机端用户）',
+    oper_name varchar(50) default '' comment '操作人员',
+    dept_name varchar(50) default '' comment '部门名称',
+    oper_url varchar(255) default '' comment '请求URL',
+    oper_ip varchar(128) default '' comment '主机地址',
+    oper_location varchar(255) default '' comment '操作地点',
+    oper_param text comment '请求参数',
+    json_result text comment '返回参数',
+    status int(1) default 0 comment '操作状态（0正常 1异常）',
+    error_msg varchar(2000) default '' comment '错误消息',
+    oper_time datetime comment '操作时间',
+    cost_time bigint default 0 comment '消耗时间',
+    primary key (id),
+    index idx_title (title),
+    index idx_business_type (business_type),
+    index idx_oper_name (oper_name),
+    index idx_status (status),
+    index idx_oper_time (oper_time)
+) engine=InnoDB default charset=utf8mb4 comment='操作日志记录表';
 insert into sys_menu values (3,'仪表盘', 0,1,'/', 'dashboard/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '仪表盘');
 insert into sys_menu values
     (6,'我的博客', 0,2,'/blog', 'blog/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '我的博客');

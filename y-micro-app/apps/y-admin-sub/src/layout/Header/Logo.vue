@@ -10,6 +10,7 @@
 
 <style scoped lang="scss">
 .logo {
+  width: size(240);
   font-size: size(20);
   font-weight: 700;
   letter-spacing: 2px;
@@ -17,5 +18,7 @@
   --webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: flex;
+  justify-content: center;
 }
 </style>

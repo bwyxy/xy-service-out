@@ -23,4 +23,53 @@ public interface ISysUserService extends IService<SysUser> {
      * */
     Long addUser(SysUser sysUser);
 
+    /**
+     * 新增管理用户
+     * @param sysUser 用户信息
+     * @return 用户ID
+     * */
+    Long insertUser(SysUser sysUser);
+
+    /**
+     * 修改管理用户
+     * @param sysUser 用户信息
+     * @return 是否成功
+     * */
+    boolean updateUser(SysUser sysUser);
+
+    /**
+     * 删除管理用户
+     * @param userId 用户ID
+     * @return 是否成功
+     * */
+    boolean deleteUser(Long userId);
+
+    /**
+     * 根据用户ID查询用户信息
+     * @param userId 用户ID
+     * @return 用户信息
+     * */
+    SysUser selectUserById(Long userId);
+
+    /**
+     * 校验用户名是否唯一
+     * @param sysUser 用户信息
+     * @return true 唯一 / false 不唯一
+     * */
+    boolean checkUsernameUnique(SysUser sysUser);
+
+    /**
+     * 分页查询管理用户列表
+     * @param user 查询条件
+     * @return 分页结果
+     * */
+    com.xy.common.core.domain.PageResult<SysUser> selectUserList(SysUser user);
+
+    /**
+     * 校验用户是否拥有超级管理员角色
+     * @param userId 用户ID
+     * @return true 是超级管理员
+     * */
+    boolean isSuperAdmin(Long userId);
+
 }

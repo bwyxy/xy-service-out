@@ -7,7 +7,8 @@ const useUserStore = defineStore('user', {
     return {
       token: getToken() || '',
       userInfo: {} as any,
-      roles: [] as string[]
+      roles: [] as string[],
+      permissions: [] as any
     }
   },
   actions: {

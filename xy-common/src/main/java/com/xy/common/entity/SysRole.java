@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 角色表 sys_role
@@ -50,6 +51,12 @@ public class SysRole extends BaseEntity implements Serializable {
      * 状态
      * */
     private String status;
+
+    /**
+     * 菜单权限ID列表
+     * */
+    @TableField(exist = false)
+    private List<Long> menuIds;
 
     @TableField(fill = FieldFill.INSERT)
     private String createBy;

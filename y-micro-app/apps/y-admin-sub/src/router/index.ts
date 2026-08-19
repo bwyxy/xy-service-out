@@ -2,22 +2,29 @@ import { createWebHashHistory, createRouter, type RouteRecordRaw } from 'vue-rou
 import { getToken } from '@/utils/auth'
 import useUserStore from '@/store/modules/user'
 import usePermissionStore from '@/store/modules/permission'
+import { isHttp } from '@/utils/validate.ts'
 
-// 静态路由（仿若依：只包含登录和 404，根路径 / 由后端动态路由生成）
+// 静态路由（只包含登录，根路径 / 与 404 由后端动态路由生成后追加）
 export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login/index.vue'),
-    meta: { title: '登录' },
-    hidden: true,
-  } as RouteRecordRaw,
-  {
-    path: '/:pathMatch(.*)*',
-    component: () => import('@/views/error/404.vue'),
+    meta: { title: '登录', hidden: true },
     hidden: true,
   } as RouteRecordRaw,
 ]
+
+// 动态路由，基于用户权限动态去加载
+export const dynamicRoutes = []
+
+// 404 兜底路由，必须在动态路由添加后再注册
+const notFoundRoute: RouteRecordRaw = {
+  path: '/:pathMatch(.*)*',
+  name: 'NotFound',
+  component: () => import('@/views/error/404.vue'),
+  hidden: true,
+} as RouteRecordRaw
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -50,13 +57,19 @@ router.beforeEach(async (to, _from, next) => {
         const accessRoutes = await permissionStore.generateRoutes()
 
         // 3. 动态添加路由（仿若依：直接 addRoute 到根级别）
+        // @ts-ignore
         accessRoutes.forEach((route) => {
-          router.addRoute(route)
+          if (!isHttp(route.path)) {
+            router.addRoute(route)
+          }
         })
+
+        // 4. 注册 404 兜底路由，必须放在动态路由之后
+        router.addRoute(notFoundRoute)
 
         console.log(accessRoutes)
 
-        // 4. 重新导航到目标路径（replace: true 避免产生历史记录）
+        // 5. 重新导航到目标路径（replace: true 避免产生历史记录）
         next({ ...to, replace: true })
       } catch (error) {
         // 获取用户信息失败，清除 token 并跳转登录页

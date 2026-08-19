@@ -1,3 +1,4 @@
+// @ts-ignore
 import { createAxios } from '@xy/utils'
 import { getToken } from '@/utils/auth.ts'
 

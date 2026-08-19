@@ -170,7 +170,7 @@ onMounted(() => {
         <el-table-column prop="perms" label="权限标识" min-width="140" />
         <el-table-column label="类型" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.menuType === 'M' ? '' : row.menuType === 'C' ? 'success' : 'info'" size="small">
+            <el-tag :type="row.menuType === 'M' ? undefined : row.menuType === 'C' ? 'success' : 'info'" size="small">
               {{ menuTypeMap[row.menuType] || row.menuType }}
             </el-tag>
           </template>
@@ -204,7 +204,8 @@ onMounted(() => {
           <el-tree-select
             v-model="form.parentId"
             :data="[{ menuId: 0, menuName: '根目录', children: menuList }]"
-            :props="{ label: 'menuName', value: 'menuId', children: 'children' }"
+            node-key="menuId"
+            :props="{ label: 'menuName', children: 'children' }"
             placeholder="选择上级菜单"
             check-strictly
             clearable

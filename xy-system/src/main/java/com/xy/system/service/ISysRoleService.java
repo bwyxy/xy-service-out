@@ -30,5 +30,61 @@ public interface ISysRoleService extends IService<SysRole> {
     /**
      * 根据用户 ID查询权限
      */
-    public Set<String> selectRolePermissionByUserId(Long userId);
+    Set<String> selectRolePermissionByUserId(Long userId);
+
+    /**
+     * 根据角色ID查询角色信息（含菜单ID）
+     * @param roleId 角色ID
+     * @return 角色信息
+     * */
+    SysRole selectRoleById(Long roleId);
+
+    /**
+     * 新增角色
+     * @param role 角色信息
+     * @return 角色ID
+     * */
+    Long insertRole(SysRole role);
+
+    /**
+     * 修改角色
+     * @param role 角色信息
+     * @return 是否成功
+     * */
+    boolean updateRole(SysRole role);
+
+    /**
+     * 删除角色
+     * @param roleId 角色ID
+     * @return 是否成功
+     * */
+    boolean deleteRole(Long roleId);
+
+    /**
+     * 校验角色名称是否唯一
+     * @param role 角色信息
+     * @return true 唯一
+     * */
+    boolean checkRoleNameUnique(SysRole role);
+
+    /**
+     * 校验角色权限字符串是否唯一
+     * @param role 角色信息
+     * @return true 唯一
+     * */
+    boolean checkRoleKeyUnique(SysRole role);
+
+    /**
+     * 判断是否为超级管理员角色
+     * @param role 角色信息
+     * @return true 是
+     * */
+    boolean isSuperAdminRole(SysRole role);
+
+    /**
+     * 判断是否为超级管理员角色
+     * @param roleId 角色ID
+     * @return true 是
+     * */
+    boolean isSuperAdminRole(Long roleId);
 }

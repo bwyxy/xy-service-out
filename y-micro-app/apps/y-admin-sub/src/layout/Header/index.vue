@@ -41,11 +41,11 @@ const handleLogout = async () => {
 
 <style scoped lang="scss">
 .header-bar {
-  height: size(48);
+  height: size(54);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 size(24);
+  padding: 0 size(32);
 
   .header-left {
     font-size: 14px;
