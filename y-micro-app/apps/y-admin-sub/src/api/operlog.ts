@@ -24,3 +24,13 @@ export function cleanOperLog() {
     method: 'delete'
   })
 }
+
+// 导出操作日志
+export function exportOperLog(query?: any) {
+  return request({
+    url: '/system/operlog/export',
+    method: 'post',
+    data: query,
+    responseType: 'blob'
+  })
+}

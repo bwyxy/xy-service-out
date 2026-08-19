@@ -6,7 +6,7 @@ import com.chat.fg.pojo.dto.HandleFriendRequestDTO;
 import com.chat.fg.security.ChatUserDetails;
 import com.chat.fg.utils.DistributedLockHelper;
 import com.xy.common.entity.User;
-import com.xy.framework.provider.JwtTokenProvider;
+import com.xy.common.provider.JwtTokenProvider;
 import com.xy.system.service.wk.WKClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

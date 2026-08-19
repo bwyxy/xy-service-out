@@ -64,8 +64,8 @@ const columns = reactive<ColumnType[]>([
     render: {
       el: 'select',
       list: [
-        { label: '正常', value: '0', elTagType: "success" },
-        { label: '停用', value: '1', elTagType: "danger" }
+        { label: '正常', value: '1', elTagType: "success" },
+        { label: '停用', value: '0', elTagType: "danger" }
       ]
     }
   },
@@ -203,8 +203,8 @@ const submitForm = async () => {
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.status">
-          <el-radio label="0">正常</el-radio>
-          <el-radio label="1">停用</el-radio>
+          <el-radio label="1">正常</el-radio>
+          <el-radio label="0">停用</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="菜单权限">
@@ -218,7 +218,7 @@ const submitForm = async () => {
         />
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" rows="2" placeholder="请输入备注" />
+        <el-input v-model="form.remark" type="textarea" :rows="2" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
     <template #footer>

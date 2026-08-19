@@ -250,6 +250,8 @@ insert into sys_menu values(29, '日志清空', 19, 2, 'clean', '', '', '', 1, 0
     error_msg varchar(2000) default '' comment '错误消息',
     oper_time datetime comment '操作时间',
     cost_time bigint default 0 comment '消耗时间',
+    create_time datetime default now() comment '创建时间',
+    update_time datetime default now() on update now() comment '更新时间',
     primary key (id),
     index idx_title (title),
     index idx_business_type (business_type),
@@ -294,8 +296,108 @@ delete from sys_user where id = 10000002;
 
 alter table sys_user auto_increment = 10000002;
 
-select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time, tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by, tt.update_time, t.tag_id, t.user_id, t.tag_name from xy_task tt
-left join xy_task_tag ttt on ttt.task_id = tt.task_id
-left join xy_tag t on t.tag_id = ttt.tag_id
-where tt.user_id and due_date between '2026-06-01 00:00:00' and '2026-06-30 23:59:59'
-order by tt.due_date desc
+-- 字典类型表
+ create table if not exists sys_dict_type (
+    dict_id bigint auto_increment not null comment '字典主键',
+    dict_name varchar(100) default '' comment '字典名称',
+    dict_type varchar(100) default '' comment '字典类型',
+    status char(1) default '0' comment '状态（0正常 1停用）',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime default null comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime default null comment '更新时间',
+    remark varchar(500) default null comment '备注',
+    primary key (dict_id),
+    unique key uk_dict_type (dict_type)
+) engine=InnoDB default charset=utf8mb4 comment='字典类型表';
+
+-- 字典数据表
+ create table if not exists sys_dict_data (
+    dict_code bigint auto_increment not null comment '字典编码',
+    dict_sort int(4) default 0 comment '字典排序',
+    dict_label varchar(100) default '' comment '字典标签',
+    dict_value varchar(100) default '' comment '字典键值',
+    dict_type varchar(100) default '' comment '字典类型',
+    css_class varchar(100) default null comment '样式属性（其他样式扩展）',
+    list_class varchar(100) default null comment '表格回显样式',
+    is_default char(1) default 'N' comment '是否默认（Y是 N否）',
+    status char(1) default '0' comment '状态（0正常 1停用）',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime default null comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime default null comment '更新时间',
+    remark varchar(500) default null comment '备注',
+    primary key (dict_code),
+    index idx_dict_type (dict_type)
+) engine=InnoDB default charset=utf8mb4 comment='字典数据表';
+
+-- 登录日志表
+ create table if not exists sys_logininfor (
+    info_id bigint(20) not null auto_increment comment '访问ID',
+    user_name varchar(50) default '' comment '用户账号',
+    ipaddr varchar(128) default '' comment '登录IP地址',
+    login_location varchar(255) default '' comment '登录地点',
+    browser varchar(50) default '' comment '浏览器类型',
+    os varchar(50) default '' comment '操作系统',
+    status char(1) default '0' comment '登录状态（0成功 1失败）',
+    msg varchar(255) default '' comment '提示消息',
+    login_time datetime comment '访问时间',
+    create_time datetime default now() comment '创建时间',
+    update_time datetime default now() comment '更新时间',
+    primary key (info_id),
+    index idx_user_name (user_name),
+    index idx_ipaddr (ipaddr),
+    index idx_status (status),
+    index idx_login_time (login_time)
+) engine=InnoDB default charset=utf8mb4 comment='系统访问记录';
+
+-- 新增系统管理子菜单
+insert into sys_menu values(30, '字典管理', 1, 5, 'dict', 'system/dict/index', '', '', 1, 0, 'C', '0', '0', 'system:dict:list', 'dict', 'admin', sysdate(), '', null, 0, '字典管理菜单');
+insert into sys_menu values(31, '登录日志', 1, 6, 'logininfor', 'system/logininfor/index', '', '', 1, 0, 'C', '0', '0', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', null, 0, '登录日志菜单');
+insert into sys_menu values(32, '在线用户', 1, 7, 'online', 'system/online/index', '', '', 1, 0, 'C', '0', '0', 'system:online:list', 'online', 'admin', sysdate(), '', null, 0, '在线用户菜单');
+
+-- 字典管理按钮权限
+insert into sys_menu values(33, '字典类型新增', 30, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:add', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(34, '字典类型编辑', 30, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:edit', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(35, '字典类型删除', 30, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(36, '字典类型查询', 30, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:query', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(37, '字典数据新增', 30, 5, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:add', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(38, '字典数据编辑', 30, 6, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:edit', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(39, '字典数据删除', 30, 7, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(40, '字典数据查询', 30, 8, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:query', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(41, '字典数据导出', 30, 9, 'export', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:export', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(42, '字典数据导入', 30, 10, 'import', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:import', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 登录日志按钮权限
+insert into sys_menu values(43, '登录日志删除', 31, 1, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:logininfor:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(44, '登录日志清空', 31, 2, 'clean', '', '', '', 1, 0, 'F', '0', '0', 'system:logininfor:clean', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(45, '登录日志导出', 31, 3, 'export', '', '', '', 1, 0, 'F', '0', '0', 'system:logininfor:export', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 在线用户按钮权限
+insert into sys_menu values(46, '在线用户查询', 32, 1, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:online:query', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(47, '在线用户强退', 32, 2, 'force', '', '', '', 1, 0, 'F', '0', '0', 'system:online:force', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 操作日志导出按钮
+insert into sys_menu values(48, '操作日志导出', 19, 3, 'export', '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:export', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 默认字典数据
+insert into sys_dict_type values(1, '用户性别', 'sys_user_sex', '0', 'admin', sysdate(), '', null, '用户性别列表');
+insert into sys_dict_type values(2, '菜单状态', 'sys_show_hide', '0', 'admin', sysdate(), '', null, '菜单状态列表');
+insert into sys_dict_type values(3, '系统状态', 'sys_normal_disable', '0', 'admin', sysdate(), '', null, '系统状态列表');
+
+insert into sys_dict_data values(1, 1, '男', '1', 'sys_user_sex', '', '', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(2, 2, '女', '2', 'sys_user_sex', '', '', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(3, 3, '未知', '0', 'sys_user_sex', '', '', 'Y', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(4, 1, '显示', '0', 'sys_show_hide', '', 'primary', 'Y', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(5, 2, '隐藏', '1', 'sys_show_hide', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(6, 1, '正常', '0', 'sys_normal_disable', '', 'success', 'Y', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(7, 2, '停用', '1', 'sys_normal_disable', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
+
+select distinct m.menu_id, m.menu_name, m.parent_id, m.order_num, m.path, m.component, m.query, m.route_name, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_by, m.create_time, m.update_by, m.update_time, m.deleted, m.remark
+from sys_menu m
+         left join sys_role_menu rm on m.menu_id = rm.menu_id
+         left join sys_user_role ur on rm.role_id = ur.role_id
+         left join sys_role ro on ur.role_id = ro.id
+         left join sys_user u on ur.user_id = u.id
+where u.id = 10000001 and m.menu_type in ('M', 'C') and m.status = '0'  AND ro.status = 1
+order by m.parent_id, m.order_num

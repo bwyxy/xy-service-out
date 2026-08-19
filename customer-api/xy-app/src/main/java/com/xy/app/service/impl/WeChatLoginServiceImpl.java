@@ -6,7 +6,7 @@ import com.xy.app.response.WechatSessionResponse;
 import com.xy.app.service.IWeChatLoginService;
 import com.xy.common.entity.SysUser;
 import com.xy.common.utils.StringUtils;
-import com.xy.framework.provider.JwtTokenProvider;
+import com.xy.common.provider.JwtTokenProvider;
 import com.xy.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

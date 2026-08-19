@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import useUserStore from "@/store/modules/user.ts";
 import {ArrowDown, User} from "@element-plus/icons-vue";
+import { ElMessage } from 'element-plus'
 
-const { userInfo } = storeToRefs(useUserStore())
+const router = useRouter()
+const userStore = useUserStore()
+const { userInfo } = storeToRefs(userStore)
+
+const handleLogout = async () => {
+  await userStore.logout()
+  ElMessage.success('退出成功')
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -19,7 +29,7 @@ const { userInfo } = storeToRefs(useUserStore())
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item>个人资料</el-dropdown-item>
-        <el-dropdown-item>退出登录</el-dropdown-item>
+        <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

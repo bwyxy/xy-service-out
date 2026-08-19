@@ -6,6 +6,7 @@ import com.xy.common.core.domain.R;
 import com.xy.common.entity.SysOperLog;
 import com.xy.common.enums.BusinessType;
 import com.xy.system.service.ISysOperLogService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +50,15 @@ public class SysOperLogController {
     public R<Void> clean() {
         operLogService.cleanOperLog();
         return R.ok();
+    }
+
+    /**
+     * 导出操作日志
+     * */
+    @PreAuthorize("@auth.hasPermi('system:operlog:export')")
+    @Log(title = "操作日志", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, @RequestBody SysOperLog operLog) {
+        operLogService.exportOperLog(operLog, response);
     }
 }

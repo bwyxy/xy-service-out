@@ -12,7 +12,7 @@ import com.xy.common.entity.User;
 import com.xy.common.exception.BusinessException;
 import com.xy.common.utils.EncryptionUtils;
 import com.xy.common.utils.StringUtils;
-import com.xy.framework.provider.JwtTokenProvider;
+import com.xy.common.provider.JwtTokenProvider;
 import com.xy.framework.web.service.VerifyService;
 import com.xy.system.service.wk.WKClientService;
 import org.springframework.beans.factory.annotation.Autowired;

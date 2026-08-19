@@ -5,9 +5,9 @@ import com.xy.app.service.IWeChatLoginService;
 import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.SysUser;
-import com.xy.framework.provider.JwtTokenProvider;
+import com.xy.common.provider.JwtTokenProvider;
 import com.xy.framework.web.service.AuthService;
-import com.xy.framework.web.service.TokenBlacklistService;
+import com.xy.common.web.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

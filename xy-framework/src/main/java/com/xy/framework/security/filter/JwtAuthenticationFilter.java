@@ -1,7 +1,8 @@
 package com.xy.framework.security.filter;
 
-import com.xy.framework.provider.JwtTokenProvider;
-import com.xy.framework.web.service.TokenBlacklistService;
+import com.xy.common.core.redis.RedisCache;
+import com.xy.common.provider.JwtTokenProvider;
+import com.xy.common.web.service.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
+
+    @Autowired
+    private RedisCache redisCache;
+
+    private static final String ONLINE_TOKEN_KEY = "online:token:";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

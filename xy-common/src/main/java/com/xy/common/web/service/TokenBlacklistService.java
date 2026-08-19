@@ -1,4 +1,4 @@
-package com.xy.framework.web.service;
+package com.xy.common.web.service;
 
 import com.xy.common.core.redis.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;

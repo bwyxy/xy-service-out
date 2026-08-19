@@ -1,10 +1,9 @@
-package com.xy.framework.provider;
+package com.xy.common.provider;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +36,6 @@ public class JwtTokenProvider {
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
-        // HS256 要求密钥至少 256 bits (32 bytes)
         if (keyBytes.length < 32) {
             log.warn("JWT 密钥长度不足 ({} bytes)，自动补齐至 32 bytes", keyBytes.length);
             keyBytes = Arrays.copyOf(keyBytes, 32);
@@ -74,7 +72,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(now)
-                .setExpiration(expirationDate)  // ✅ 确保设置了过期时间
+                .setExpiration(expirationDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -111,7 +109,6 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            // Token 过期时，返回 Claims（包含过期时间）
             log.warn("JWT 已过期：{}", e.getMessage());
             return e.getClaims();
         } catch (Exception e) {
@@ -134,7 +131,6 @@ public class JwtTokenProvider {
                 return false;
             }
 
-            // 验证用户名匹配
             boolean usernameMatches = username.equals(userDetails.getUsername());
             if (!usernameMatches) {
                 log.warn("JWT 用户名不匹配：{} != {}", username, userDetails.getUsername());
@@ -163,16 +159,15 @@ public class JwtTokenProvider {
         try {
             Date expirationDate = getExpirationDateFromToken(token);
 
-            // ✅ 检查是否为 null
             if (expirationDate == null) {
                 log.warn("JWT 中没有过期时间声明");
-                return true; // 没有过期时间，视为已过期
+                return true;
             }
 
             return expirationDate.before(new Date());
         } catch (Exception e) {
             log.error("检查 JWT 过期时间失败：{}", e.getMessage());
-            return true; // 解析失败，视为已过期
+            return true;
         }
     }
 
