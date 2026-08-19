@@ -181,6 +181,30 @@ public class RedisCache
     }
 
     /**
+     * 向缓存set中添加单个成员
+     *
+     * @param key 缓存键值
+     * @param value 成员值
+     * @return 新增成员数量
+     */
+    public <T> Long addCacheSetMember(final String key, final T value)
+    {
+        return redisTemplate.opsForSet().add(key, value);
+    }
+
+    /**
+     * 从缓存set中移除单个成员
+     *
+     * @param key 缓存键值
+     * @param value 成员值
+     * @return 移除成员数量
+     */
+    public <T> Long removeCacheSetMember(final String key, final T value)
+    {
+        return redisTemplate.opsForSet().remove(key, value);
+    }
+
+    /**
      * 缓存Map
      *
      * @param key
