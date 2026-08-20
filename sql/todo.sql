@@ -400,4 +400,14 @@ from sys_menu m
          left join sys_role ro on ur.role_id = ro.id
          left join sys_user u on ur.user_id = u.id
 where u.id = 10000001 and m.menu_type in ('M', 'C') and m.status = '0'  AND ro.status = 1
-order by m.parent_id, m.order_num
+order by m.parent_id, m.order_num;
+
+create table sys_im_user (
+    id bigint auto_increment primary key comment '账号Id',
+    avatar varchar(255) comment '头像',
+    nickname varchar(64) comment '系统账号名称',
+    user_key varchar(64) comment '账号标识',
+    wk_im_key varchar(64) comment '悟空IM系统账号标识',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '更新时间'
+) engine=InnoDB default charset=utf8mb4 comment '悟空IM系统账号';

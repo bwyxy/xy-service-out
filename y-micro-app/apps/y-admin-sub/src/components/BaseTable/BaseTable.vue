@@ -56,6 +56,8 @@ const resetData = () => {
   getTableData()
 }
 
+defineExpose({ getTableData })
+
 watch(() => columns.value, () => {
   formToParams()
 
@@ -66,7 +68,7 @@ watch(() => columns.value, () => {
 <template>
   <div class="search-table">
     <div class="search-table-top">
-      <el-form :inline="true">
+      <el-form v-if="ruleForm.length > 0" :inline="true">
         <el-form-item
             v-for="(item, index) in ruleForm"
             :key="index"

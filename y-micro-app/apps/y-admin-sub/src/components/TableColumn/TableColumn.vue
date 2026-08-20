@@ -15,7 +15,7 @@ defineProps<{
   >
     <template v-if="column.type && column.type === 'image'" #default="{ row }">
       <el-image
-          style="max-width: 120px;max-height: 80px"
+          class="image-box"
           :src="row[column.prop]"
       >
         <template #error>
@@ -40,5 +40,10 @@ defineProps<{
 </template>
 
 <style scoped lang="scss">
-
+.image-box {
+  width: 40px;
+  height: 40px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+  border-radius: 8px;
+}
 </style>

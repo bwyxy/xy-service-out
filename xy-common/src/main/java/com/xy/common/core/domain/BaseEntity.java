@@ -19,9 +19,9 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableField(exist = false, updateStrategy = FieldStrategy.NEVER)
-    private int pageNum;
+    private int pageNum = 1;
     @TableField(exist = false, updateStrategy = FieldStrategy.NEVER)
-    private int pageSize;
+    private int pageSize = 10;
 
     @TableField(fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NEVER)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

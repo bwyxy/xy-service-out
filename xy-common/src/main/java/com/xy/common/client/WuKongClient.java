@@ -70,4 +70,16 @@ public interface WuKongClient {
      * */
     @GetMapping("/user/systemuids")
     List<String> getSystemUids();
+
+    /**
+     * 添加系统用户
+     * */
+    @PostMapping("/user/systemuids_add")
+    ResultVO<?> addSystemUids(@RequestBody List<String> systemUids);
+
+    /**
+     * 删除系统用户
+     * */
+    @PostMapping("/user/systemuids_remove")
+    ResultVO<?> removeSystemUids(@RequestBody List<String> systemUids);
 }
