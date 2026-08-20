@@ -1,0 +1,38 @@
+server:
+  port: 0
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:xy_ai_test;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  sql:
+    init:
+      schema-locations: classpath:schema-test.sql
+      mode: always
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 1
+  ai:
+    openai:
+      api-key: test-key
+      base-url: http://localhost:9999
+      chat:
+        options:
+          model: test-model
+
+jwt:
+  secret: test-secret-key-for-ai-module-unit-test-only-32bytes
+  expiration: 86400000
+  refresh-expiration: 604800000
+  header: Authorization
+  prefix: Bearer
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

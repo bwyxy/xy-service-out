@@ -112,8 +112,10 @@ const useChatStore = defineStore('chat', () => {
     console.log('聊天消息', message, payload)
     let senderName = ''
     if (message.channelType === 1) {
-      const { nickname } = await fetchUserInfo(message.fromUid)
-      senderName = nickname
+      if (!isNaN(Number(message.fromUid))) {
+        const { nickname } = await fetchUserInfo(message.fromUid)
+        senderName = nickname
+      }
     }
     const isSelf = message.fromUid === uid.value
     const isCurrentChannel =

@@ -1,10 +1,12 @@
 server:
-  port: 7070
+  port: 9070
 
 spring:
   profiles:
     group:
-      prod: prod
+      dev: base,cp
+      prod: base,prod,cp
+    active: dev
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:}

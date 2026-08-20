@@ -1,39 +1,49 @@
 package com.chat.ai.controller;
 
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.retry.NonTransientAiException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.chat.ai.dto.ChatRequest;
+import com.chat.ai.dto.ChatResponse;
+import com.chat.ai.provider.core.AiStreamChunk;
+import com.chat.ai.service.AiChatService;
+import com.xy.common.core.domain.R;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
+/**
+ * AI 对话接口
+ */
+@Slf4j
 @RestController
+@RequestMapping("/ai")
 public class AiController {
 
-    private final ChatClient chatClient;
+    private final AiChatService chatService;
 
-
-    public AiController(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
+    public AiController(AiChatService chatService) {
+        this.chatService = chatService;
     }
 
-    @GetMapping("/ai/chat")
-    public ResponseEntity<?> chat(@RequestParam String message) {
-        try {
-            String content = this.chatClient.prompt()
-                    .user(message)
-                    .call()
-                    .content();
+    /**
+     * 同步对话
+     */
+    @PostMapping("/chat")
+    public R<ChatResponse> chat(@Valid @RequestBody ChatRequest request) {
+        return R.ok(chatService.chat(request));
+    }
 
-            return ResponseEntity.ok(content);
-        } catch (NonTransientAiException e) {
-            if (e.getMessage() != null && e.getMessage().contains("Insufficient Balance")) {
-                return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED)
-                        .body("AI 服务账户余额不足，请联系管理员充值。");
-            }
-            // 其他异常处理...
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI 服务暂不可用");
-        }
+    /**
+     * 流式对话（SSE）
+     */
+    @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<AiStreamChunk> streamChat(@Valid @RequestBody ChatRequest request) {
+        return chatService.streamChat(request).onErrorResume(error -> {
+            log.warn("流式对话异常", error);
+            return Flux.just(AiStreamChunk.builder()
+                    .errorMsg(error.getMessage())
+                    .done(true)
+                    .build());
+        });
     }
 }

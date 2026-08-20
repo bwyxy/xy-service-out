@@ -1,6 +1,9 @@
 package com.chat.fg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xy.common.entity.SysImUser;
 import com.xy.common.enums.OfficialAccount;
+import com.xy.system.mapper.SysImUserMapper;
 import com.xy.system.mapper.UserMapper;
 import com.chat.fg.pojo.dto.ConversationDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
@@ -27,13 +30,13 @@ public class ConversationServiceImpl implements IConversationService {
     private WuKongClient wuKongClient;
 
     @Autowired
-    private UserServiceImpl userService;
-
-    @Autowired
     private UserMapper userMapper;
 
     @Autowired
     private GroupMapper groupMapper;
+
+    @Autowired
+    private SysImUserMapper sysImUserMapper;
 
     /**
      * 获取会话列表
@@ -53,6 +56,7 @@ public class ConversationServiceImpl implements IConversationService {
 
         List<String> personalIds = new ArrayList<>();
         List<String> groupIds = new ArrayList<>();
+
         Map<String, Boolean> isSystemMap = new HashMap<>();
 
         for (ConversationVO conv : conversations) {
@@ -72,6 +76,7 @@ public class ConversationServiceImpl implements IConversationService {
         // 获取信息
         Map<Long, User> userMap = queryUsers(personalIds);
         Map<Long, Group> groupMap = queryGroups(groupIds);
+        Map<String, SysImUser> systemUserMap = querySystemUsers(systemUids);
 
         List<UserConversationVO> result = new ArrayList<>();
 
@@ -93,8 +98,14 @@ public class ConversationServiceImpl implements IConversationService {
                 String channelId = conv.getChannelId();
                 if (isSystemMap.getOrDefault(channelId, false)) {
                     // 系统账号
-                    vo.setName(getSystemName(channelId));
-                    vo.setAvatar(getSystemAvatar(channelId));
+                    SysImUser sysImUser = systemUserMap.get(channelId);
+                    if (sysImUser != null) {
+                        vo.setName(sysImUser.getNickname());
+                        vo.setAvatar(sysImUser.getAvatar());
+                    } else {
+                        vo.setName("系统账号");
+                        vo.setAvatar("");
+                    }
                     vo.setSystem(true);
                 } else {
                     // 普通用户
@@ -200,6 +211,21 @@ public class ConversationServiceImpl implements IConversationService {
     }
 
     /**
+     * 批量查询系统用户
+     * */
+    private Map<String, SysImUser> querySystemUsers(List<String> uIds) {
+        if (uIds.isEmpty()) return new HashMap<>();
+
+        LambdaQueryWrapper<SysImUser> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.in(SysImUser::getWkImKey, uIds);
+
+        List<SysImUser> sysImUsers = sysImUserMapper.selectList(queryWrapper);
+
+        return sysImUsers.stream().collect(Collectors.toMap(SysImUser::getWkImKey, Function.identity()));
+    }
+
+    /**
      * 批量查询群组
      * */
     private Map<Long, Group> queryGroups(List<String> gIds) {
@@ -210,16 +236,6 @@ public class ConversationServiceImpl implements IConversationService {
         List<Group> groups = groupMapper.selectBatchIds(groupIds);
 
         return groups.stream().collect(Collectors.toMap(Group::getGroupId, Function.identity()));
-    }
-
-    private String getSystemName(String channelId) {
-        if ("system_admin".equals(channelId)) return "飞鸽团队";
-        if ("fg_ai".equals(channelId)) return "飞鸽AI助手";
-        return "系统消息";
-    }
-
-    private String getSystemAvatar(String channelId) {
-        return "";
     }
 
     private void setDefaultUserInfo(UserConversationVO userConversationVO) {

@@ -2,7 +2,7 @@
 # xy-ai 生产环境配置
 # ===========================================
 server:
-  port: ${SERVER_PORT:7070}
+  port: ${SERVER_PORT:9070}
 
 spring:
   ai:
