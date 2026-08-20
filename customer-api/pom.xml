@@ -18,6 +18,7 @@
     <modules>
         <module>xy-app</module>
         <module>xy-blog</module>
+        <module>fg-chat</module>
     </modules>
 
 </project>

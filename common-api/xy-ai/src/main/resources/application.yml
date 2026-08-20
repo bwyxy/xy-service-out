@@ -3,9 +3,7 @@ server:
 
 spring:
   profiles:
-    group:
-      dev: base,cp
-      prod: base,prod,cp
+    default: base,cp
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:}

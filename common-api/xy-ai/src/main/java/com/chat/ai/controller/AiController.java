@@ -29,7 +29,6 @@ public class AiController {
     /**
      * 同步对话
      */
-    @Anonymous
     @PostMapping("/chat")
     public R<ChatResponse> chat(@Valid @RequestBody ChatRequest request) {
         return R.ok(chatService.chat(request));
@@ -38,7 +37,6 @@ public class AiController {
     /**
      * 流式对话（SSE）
      */
-    @Anonymous
     @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<AiStreamChunk> streamChat(@Valid @RequestBody ChatRequest request) {
         return chatService.streamChat(request).onErrorResume(error -> {

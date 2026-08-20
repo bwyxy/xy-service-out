@@ -43,3 +43,8 @@ jwt:
   expiration: 86400000
   refresh-expiration: 604800000
   prefix:
+
+# xy-ai 配置
+xy-ai:
+  apiKey: ${XY_AI_API_KEY}
+  secret: ${XY_AI_SECRET}

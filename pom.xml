@@ -22,7 +22,7 @@
         <module>xy-admin</module>
         <module>xy-system</module>
         <module>xy-common</module>
-        <module>chat-api</module>
+        <module>common-api</module>
         <module>customer-api</module>
     </modules>
 
