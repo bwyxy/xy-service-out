@@ -58,6 +58,16 @@ public class JwtTokenProvider {
         return createToken(new HashMap<>(), openId, jwtExpiration);
     }
 
+    /**
+     * 创建指定有效期和主题的 token
+     *
+     * @param subject          主题（用户标识）
+     * @param expirationMillis 有效期（毫秒）
+     */
+    public String createToken(String subject, long expirationMillis) {
+        return createToken(new HashMap<>(), subject, expirationMillis);
+    }
+
     public String generateRefreshToken(UserDetails userDetails) {
         return createToken(new HashMap<>(), userDetails.getUsername(), refreshExpiration);
     }

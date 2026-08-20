@@ -129,7 +129,25 @@ INSERT INTO ai_model_provider (name, code, type, endpoint, api_key, model, prior
 ('OpenAI 兼容接口', 'openai', 'OPENAI_COMPATIBLE', 'https://ws-cn7y90ayoe81zjvl.cn-beijing.maas.aliyuncs.com/compatible-mode', '', 'deepseek-v4-flash', 10, 1, '{"temperature":0.7,"maxTokens":2048}', NOW(), NOW()),
 ('阿里云百炼', 'dashscope', 'DASHSCOPE', 'https://dashscope.aliyuncs.com/compatible-mode/v1', '', 'qwen-max', 5, 0, '{"temperature":0.7,"maxTokens":2048}', NOW(), NOW());
 
+-- API 密钥表
+CREATE TABLE ai_api_key (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键 ID',
+    app_name VARCHAR(64) NOT NULL COMMENT '应用名称',
+    api_key VARCHAR(64) NOT NULL COMMENT '访问密钥 Key',
+    api_secret VARCHAR(255) NOT NULL COMMENT '访问密钥 Secret',
+    enabled TINYINT DEFAULT 1 COMMENT '是否启用 0-禁用 1-启用',
+    expire_time DATETIME COMMENT '密钥过期时间，NULL 表示永不过期',
+    token_expire_seconds INT DEFAULT 86400000 COMMENT '签发的 token 有效期（秒）',
+    create_time DATETIME COMMENT '创建时间',
+    update_time DATETIME COMMENT '更新时间',
+    UNIQUE INDEX uk_api_key (api_key)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'AI API 密钥表';
+
 -- 初始化示例工具
 INSERT INTO ai_tool (name, code, description, parameters_schema, implementation_bean, enabled, create_time, update_time) VALUES
 ('查询当前时间', 'current_time', '返回服务器当前时间，支持指定时区。', '{"type":"object","properties":{"timezone":{"type":"string","description":"时区，如 Asia/Shanghai"}},"required":[]}', 'currentTimeTool', 1, NOW(), NOW()),
 ('简单计算器', 'calculator', '执行基础数学运算。', '{"type":"object","properties":{"expression":{"type":"string","description":"数学表达式，如 1+2*3"}},"required":["expression"]}', 'calculatorTool', 1, NOW(), NOW());
+
+-- 初始化示例 API 密钥（生产环境请删除或修改）
+INSERT INTO ai_api_key (app_name, api_key, api_secret, enabled, expire_time, token_expire_seconds, create_time, update_time) VALUES
+('飞鸽即时通讯', 'demo-api-key', 'demo-api-secret', 1, NULL, 3600, NOW(), NOW());

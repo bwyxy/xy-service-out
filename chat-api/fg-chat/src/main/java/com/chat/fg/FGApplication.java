@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 })
 @MapperScan({"com.xy.*.mapper", "com.chat.*.mapper"})
 @EnableScheduling
-@EnableFeignClients(basePackages = {"com.xy.common.client"})
+@EnableFeignClients(basePackages = {"com.xy.common.client", "com.chat.fg.client"})
 public class FGApplication {
 
     public static void main(String[] args) {

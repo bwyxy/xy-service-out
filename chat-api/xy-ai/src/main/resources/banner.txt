@@ -1,0 +1,10 @@
+Application Version: ${application.version}
+Spring Boot Version: ${spring-boot.version}
+///////////////////////////////////
+//             A      III.      //
+//            A A      I       //
+//           AAAAA     I.     //
+//          A     A    I     //
+//         A       A  III   //
+//         项目启动成功      //
+/////////////////////////////

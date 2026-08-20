@@ -48,21 +48,26 @@ public class DotenvApplicationContextInitializer
     }
 
     private Dotenv findAndLoadDotenv(String projectRoot) {
-        // 尝试从项目根目录加载
-        File envFile = new File(projectRoot, ".env");
-        if (envFile.exists()) {
-            System.out.println("Loading .env from: " + envFile.getAbsolutePath());
-            return Dotenv.configure().directory(projectRoot).load();
+        // 从当前工作目录向上递归查找 .env 文件（兼容多模块子项目启动）
+        File currentDir = new File(projectRoot);
+        int maxDepth = 10;
+
+        for (int i = 0; i < maxDepth && currentDir != null; i++) {
+            File envFile = new File(currentDir, ".env");
+            if (envFile.exists()) {
+                String dir = currentDir.getAbsolutePath();
+                System.out.println("Loading .env from: " + envFile.getAbsolutePath());
+                return Dotenv.configure().directory(dir).load();
+            }
+            // 到达文件系统根目录则停止
+            File parent = currentDir.getParentFile();
+            if (parent == null || parent.equals(currentDir)) {
+                break;
+            }
+            currentDir = parent;
         }
 
-        // 尝试从上级目录加载（多模块项目场景）
-        File parentEnvFile = new File(projectRoot + File.separator + "..", ".env");
-        if (parentEnvFile.exists()) {
-            System.out.println("Loading .env from: " + parentEnvFile.getAbsolutePath());
-            return Dotenv.configure().directory(parentEnvFile.getParent()).load();
-        }
-
-        System.out.println("Warning: .env file not found in " + projectRoot + " or parent directory");
+        System.out.println("Warning: .env file not found in " + projectRoot + " or parent directories");
         return null;
     }
 }

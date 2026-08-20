@@ -102,3 +102,15 @@ CREATE TABLE IF NOT EXISTS ai_user_quota (
     create_time TIMESTAMP,
     update_time TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS ai_api_key (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    app_name VARCHAR(64) NOT NULL,
+    api_key VARCHAR(64) NOT NULL,
+    api_secret VARCHAR(255) NOT NULL,
+    enabled TINYINT DEFAULT 1,
+    expire_time TIMESTAMP,
+    token_expire_seconds INT DEFAULT 3600,
+    create_time TIMESTAMP,
+    update_time TIMESTAMP
+);

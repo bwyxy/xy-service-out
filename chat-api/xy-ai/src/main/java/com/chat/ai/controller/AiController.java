@@ -4,6 +4,7 @@ import com.chat.ai.dto.ChatRequest;
 import com.chat.ai.dto.ChatResponse;
 import com.chat.ai.provider.core.AiStreamChunk;
 import com.chat.ai.service.AiChatService;
+import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class AiController {
     /**
      * 同步对话
      */
+    @Anonymous
     @PostMapping("/chat")
     public R<ChatResponse> chat(@Valid @RequestBody ChatRequest request) {
         return R.ok(chatService.chat(request));
@@ -36,6 +38,7 @@ public class AiController {
     /**
      * 流式对话（SSE）
      */
+    @Anonymous
     @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<AiStreamChunk> streamChat(@Valid @RequestBody ChatRequest request) {
         return chatService.streamChat(request).onErrorResume(error -> {

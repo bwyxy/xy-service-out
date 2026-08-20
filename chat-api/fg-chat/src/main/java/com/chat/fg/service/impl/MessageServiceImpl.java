@@ -2,6 +2,9 @@ package com.chat.fg.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.chat.fg.client.AiChatClient;
+import com.chat.fg.pojo.dto.AiChatRequest;
+import com.chat.fg.pojo.dto.AiChatResponse;
 import com.chat.fg.pojo.dto.MsgDTO;
 import com.chat.fg.pojo.dto.SendMsgDTO;
 import com.chat.fg.service.IMessageService;
@@ -10,13 +13,19 @@ import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.MessageSendRequest;
 import com.xy.common.client.dto.request.MsgRequest;
 import com.xy.common.client.vo.MessageVO;
+import com.xy.common.core.domain.R;
 import com.xy.common.exception.BusinessException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Base64;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -24,6 +33,12 @@ public class MessageServiceImpl implements IMessageService {
 
     @Autowired
     private WuKongClient wuKongClient;
+
+    @Autowired
+    private AiChatClient aiChatClient;
+
+    @Value("${ai.assistant.uid:fg_ai}")
+    private String aiAssistantUid;
 
     /**
      * 查询频道历史消息
@@ -90,10 +105,80 @@ public class MessageServiceImpl implements IMessageService {
                 uId, sendMsgDTO.getChannelId(), sendMsgDTO.getType());
 
         try {
-            return wuKongClient.sendMessage(request);
+            Object result = wuKongClient.sendMessage(request);
+
+            // 若用户发送给 AI 助手，异步调用 AI 并回复
+            if (aiAssistantUid.equals(sendMsgDTO.getChannelId())) {
+                String token = getCurrentToken();
+                log.info("AI 助手请求, userId={}, tokenExists={}", uId, token != null && !token.isEmpty());
+                CompletableFuture.runAsync(() -> sendAiReply(uId, sendMsgDTO, token));
+            }
+
+            return result;
         } catch (Exception e) {
             log.error("发送消息到悟空 IM 失败", e);
             throw new BusinessException("发送消息失败：" + e.getMessage());
         }
+    }
+
+    /**
+     * 调用 AI 服务并作为 AI 助手发送回复
+     */
+    private void sendAiReply(Long userId, SendMsgDTO sendMsgDTO, String token) {
+        try {
+            AiChatRequest aiRequest = new AiChatRequest();
+            aiRequest.setUserId(userId);
+            aiRequest.setUserType("CLIENT");
+            aiRequest.setMessage(sendMsgDTO.getContent());
+            aiRequest.setEnableTools(true);
+
+            R<AiChatResponse> aiResponse = aiChatClient.chat(token, aiRequest);
+            if (aiResponse == null || aiResponse.getData() == null) {
+                log.warn("AI 服务返回为空");
+                return;
+            }
+
+            AiChatResponse data = aiResponse.getData();
+            if (data.getContent() == null || data.getContent().isEmpty()) {
+                log.warn("AI 回复内容为空");
+                return;
+            }
+
+            // 构造 AI 回复消息 payload
+            JSONObject payload = new JSONObject();
+            payload.put("type", sendMsgDTO.getType());
+            payload.put("content", data.getContent());
+            String payloadBase64 = Base64.getEncoder().encodeToString(payload.toJSONString().getBytes());
+
+            MessageSendRequest replyRequest = new MessageSendRequest();
+            replyRequest.setFromUid(aiAssistantUid);
+            replyRequest.setChannelId(String.valueOf(userId));
+            replyRequest.setChannelType(1);
+            replyRequest.setPayload(payloadBase64);
+            replyRequest.setClientMsgNo(UUID.randomUUID().toString().replace("-", ""));
+
+            MessageSendRequest.MessageHeader header = new MessageSendRequest.MessageHeader();
+            header.setNoPersist(0);
+            header.setRedDot(1);
+            replyRequest.setHeader(header);
+
+            wuKongClient.sendMessage(replyRequest);
+            log.info("AI 助手回复已发送, userId={}, contentLength={}", userId, data.getContent().length());
+        } catch (Exception e) {
+            log.error("AI 助手回复失败", e);
+        }
+    }
+
+    /**
+     * 获取当前请求的登录 token
+     */
+    private String getCurrentToken() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        HttpServletRequest request = attributes.getRequest();
+        return request.getHeader("token");
     }
 }

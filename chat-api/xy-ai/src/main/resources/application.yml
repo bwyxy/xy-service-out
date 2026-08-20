@@ -6,7 +6,6 @@ spring:
     group:
       dev: base,cp
       prod: base,prod,cp
-    active: dev
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:}
@@ -14,3 +13,11 @@ spring:
       chat:
         options:
           model: ${OPENAI_MODEL:deepseek-v4-flash}
+
+# JWT 配置
+jwt:
+  header: access_token
+  secret: ${TOKEN_SECRET}
+  expiration: 86400000
+  refresh-expiration: 604800000
+  prefix:

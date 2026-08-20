@@ -22,6 +22,12 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.web.servlet.mvc.method.annotation: DEBUG
 
+ai:
+  service:
+    url: ${AI_SERVICE_URL:http://localhost:9070}
+  assistant:
+    uid: ${AI_ASSISTANT_UID:fg_ai}
+
 feign:
   client:
     config:
@@ -33,7 +39,7 @@ feign:
 # JWT 配置
 jwt:
   header: token
-  secret: ${TOKEN_SECRET:xy-jwt-secret-key-at-least-32-bytes}
+  secret: ${TOKEN_SECRET}
   expiration: 86400000
   refresh-expiration: 604800000
   prefix:
