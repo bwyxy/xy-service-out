@@ -1,4 +1,4 @@
-package com.chat.ai.dto;
+package com.xy.common.dto.ai;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.chat.ai.entity;
+package com.xy.common.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

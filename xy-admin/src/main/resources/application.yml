@@ -5,3 +5,8 @@ spring:
     group:
       prod: base,prod,cp
       dev: base,dev,cp
+
+# AI 服务地址
+ai:
+  service:
+    url: ${AI_SERVICE_URL:http://localhost:9070}

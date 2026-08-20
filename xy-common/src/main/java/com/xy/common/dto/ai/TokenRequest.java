@@ -1,4 +1,4 @@
-package com.chat.ai.dto;
+package com.xy.common.dto.ai;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

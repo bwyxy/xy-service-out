@@ -1,13 +1,13 @@
 package com.chat.ai.controller;
 
-import com.chat.ai.dto.TokenRequest;
-import com.chat.ai.dto.TokenResponse;
-import com.chat.ai.service.AiApiKeyService;
 import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
+import com.xy.common.dto.ai.TokenRequest;
+import com.xy.common.dto.ai.TokenResponse;
+import com.xy.system.service.ISysAiApiKeyService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/ai/auth")
+@RequiredArgsConstructor
 public class AiAuthController {
 
-    @Autowired
-    private AiApiKeyService apiKeyService;
+    private final ISysAiApiKeyService apiKeyService;
 
     /**
      * 使用 API Key + Secret 换取访问令牌
