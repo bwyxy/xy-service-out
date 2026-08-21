@@ -8,10 +8,7 @@ import com.xy.system.service.ISysAiApiKeyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * AI 模块认证接口
@@ -34,5 +31,14 @@ public class AiAuthController {
         TokenResponse response = apiKeyService.exchangeToken(request.getApiKey(), request.getApiSecret());
         log.info("API Key 换 token 成功, apiKey={}, cost={}ms", request.getApiKey(), System.currentTimeMillis() - start);
         return R.ok(response);
+    }
+
+    /**
+     * test
+     * */
+    @Anonymous
+    @GetMapping("/test")
+    public R<?> test() {
+        return R.ok("test");
     }
 }

@@ -14,7 +14,7 @@ spring:
 
 # JWT 配置
 jwt:
-  header: access_token
+  header: accessToken
   secret: ${TOKEN_SECRET}
   expiration: 86400000
   refresh-expiration: 604800000

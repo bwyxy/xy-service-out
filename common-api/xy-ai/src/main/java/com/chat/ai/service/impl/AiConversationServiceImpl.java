@@ -35,15 +35,21 @@ public class AiConversationServiceImpl extends ServiceImpl<AiConversationMapper,
     }
 
     @Override
-    public AiConversation createConversation(Long userId, String userType, String title,
-                                             String providerCode, String model, String systemPrompt) {
+    public AiConversation createConversation(AiConversation aiConversation) {
         AiConversation conversation = new AiConversation();
-        conversation.setUserId(userId);
-        conversation.setUserType(userType);
+
+        String title = aiConversation.getTitle();
+
+        if (aiConversation.getConversationId() != null) {
+            conversation.setConversationId(aiConversation.getConversationId());
+        }
+
+        conversation.setUserId(aiConversation.getUserId());
+        conversation.setUserType(aiConversation.getUserType());
         conversation.setTitle(title != null && !title.isEmpty() ? title : "新对话");
-        conversation.setProviderCode(providerCode);
-        conversation.setModel(model);
-        conversation.setSystemPrompt(systemPrompt);
+        conversation.setProviderCode(aiConversation.getProviderCode());
+        conversation.setModel(aiConversation.getModel());
+        conversation.setSystemPrompt(aiConversation.getSystemPrompt());
         conversation.setStatus(ConversationStatus.ACTIVE.getCode());
         conversation.setCreateTime(LocalDateTime.now());
         conversation.setUpdateTime(LocalDateTime.now());
@@ -84,6 +90,17 @@ public class AiConversationServiceImpl extends ServiceImpl<AiConversationMapper,
         conversation.setStatus(status);
         conversation.setUpdateTime(LocalDateTime.now());
         return updateById(conversation);
+    }
+
+    @Override
+    public AiConversation getLatestActiveConversation(Long userId, String userType) {
+        LambdaQueryWrapper<AiConversation> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AiConversation::getUserId, userId)
+                .eq(AiConversation::getUserType, userType)
+                .eq(AiConversation::getStatus, ConversationStatus.ACTIVE.getCode())
+                .orderByDesc(AiConversation::getUpdateTime)
+                .last("limit 1");
+        return getOne(wrapper);
     }
 
     private ConversationVo convertToVo(AiConversation conversation) {

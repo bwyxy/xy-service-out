@@ -71,6 +71,13 @@ public class SysAiApiKeyServiceImpl extends ServiceImpl<SysAiApiKeyMapper, AiApi
     }
 
     @Override
+    public AiApiKey getByApiKey(String apiKey) {
+        LambdaQueryWrapper<AiApiKey> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AiApiKey::getApiKey, apiKey).last("limit 1");
+        return getOne(wrapper);
+    }
+
+    @Override
     public ApiKeyGenerateResponse generate(String appName, Integer tokenExpireSeconds) {
         if (tokenExpireSeconds == null || tokenExpireSeconds <= 0) {
             tokenExpireSeconds = 3600;

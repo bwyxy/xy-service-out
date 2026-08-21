@@ -4,33 +4,37 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import com.xy.common.annotation.Anonymous;   // 请根据你项目的实际包路径导入
+import com.xy.common.annotation.Anonymous;
 
 /**
  * 配置白名单资源路径（仅收集 @Anonymous 注解的接口）
  */
 @Component
 @ConfigurationProperties(prefix = "security.ignore")
-public class PermitAllUrlProperties implements InitializingBean {
+public class PermitAllUrlProperties {
 
-    private Set<String> whites = new HashSet<>();
+    private final Set<String> whites = new HashSet<>();
+
+    private volatile boolean initialized;
 
     @Autowired
     private RequestMappingHandlerMapping handlerMapping;
 
-    public Set<String> getWhites() {
+    public synchronized Set<String> getWhites() {
+        if (!initialized) {
+            collectAnonymousUrls();
+            initialized = true;
+        }
         return whites;
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    private void collectAnonymousUrls() {
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
         handlerMethods.forEach((info, handlerMethod) -> {
             // 判断方法或类上是否有 @Anonymous 注解

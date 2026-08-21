@@ -15,7 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Configuration
 public class FeignConfig {
 
-    private static final String TOKEN_HEADER = "token";
+    private static final String TOKEN_HEADER = "accessToken";
 
     @Bean
     public RequestInterceptor tokenRequestInterceptor() {

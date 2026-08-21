@@ -3,6 +3,7 @@ package com.chat.fg.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chat.fg.client.AiChatClient;
+import com.chat.fg.config.AiApiKeyTokenProvider;
 import com.chat.fg.pojo.dto.AiChatRequest;
 import com.chat.fg.pojo.dto.AiChatResponse;
 import com.chat.fg.pojo.dto.MsgDTO;
@@ -15,13 +16,10 @@ import com.xy.common.client.dto.request.MsgRequest;
 import com.xy.common.client.vo.MessageVO;
 import com.xy.common.core.domain.R;
 import com.xy.common.exception.BusinessException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Base64;
 import java.util.UUID;
@@ -36,6 +34,9 @@ public class MessageServiceImpl implements IMessageService {
 
     @Autowired
     private AiChatClient aiChatClient;
+
+    @Autowired
+    private AiApiKeyTokenProvider aiApiKeyTokenProvider;
 
     @Value("${ai.assistant.uid:fg_ai}")
     private String aiAssistantUid;
@@ -109,7 +110,7 @@ public class MessageServiceImpl implements IMessageService {
 
             // 若用户发送给 AI 助手，异步调用 AI 并回复
             if (aiAssistantUid.equals(sendMsgDTO.getChannelId())) {
-                String token = getCurrentToken();
+                String token = aiApiKeyTokenProvider.getToken();
                 log.info("AI 助手请求, userId={}, tokenExists={}", uId, token != null && !token.isEmpty());
                 CompletableFuture.runAsync(() -> sendAiReply(uId, sendMsgDTO, token));
             }
@@ -128,6 +129,7 @@ public class MessageServiceImpl implements IMessageService {
         try {
             AiChatRequest aiRequest = new AiChatRequest();
             aiRequest.setUserId(userId);
+            aiRequest.setConversationId(userId);
             aiRequest.setUserType("CLIENT");
             aiRequest.setMessage(sendMsgDTO.getContent());
             aiRequest.setEnableTools(true);
@@ -169,16 +171,4 @@ public class MessageServiceImpl implements IMessageService {
         }
     }
 
-    /**
-     * 获取当前请求的登录 token
-     */
-    private String getCurrentToken() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes)
-                RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            return null;
-        }
-        HttpServletRequest request = attributes.getRequest();
-        return request.getHeader("token");
-    }
 }

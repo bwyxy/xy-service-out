@@ -129,22 +129,49 @@ public class AiChatServiceImpl implements AiChatService {
         if (request.getConversationId() != null) {
             AiConversation conversation = conversationService.getById(request.getConversationId());
             if (conversation != null) {
+                if (conversation.getProviderCode() == null || conversation.getProviderCode().isEmpty()) {
+                    conversation.setProviderCode(resolveDefaultProviderCode());
+                }
                 return conversation;
             }
         }
+
+        // 未指定会话时，复用用户最近的活跃会话，实现多轮对话记忆
+        String userType = UserType.of(request.getUserType()).getCode();
+        AiConversation latest = conversationService.getLatestActiveConversation(request.getUserId(), userType);
+        if (latest != null) {
+            if (latest.getProviderCode() == null || latest.getProviderCode().isEmpty()) {
+                latest.setProviderCode(resolveDefaultProviderCode());
+            }
+            return latest;
+        }
+
         String providerCode = request.getProviderCode() != null ? request.getProviderCode()
-                : providerFactory.hasProvider("openai") ? "openai" : null;
-        if (providerCode == null) {
+                : resolveDefaultProviderCode();
+        if (providerCode == null || providerCode.isEmpty()) {
             throw new AiException("未配置默认模型提供者");
         }
-        return conversationService.createConversation(
-                request.getUserId(),
-                UserType.of(request.getUserType()).getCode(),
-                request.getMessage().length() > 20 ? request.getMessage().substring(0, 20) + "..." : request.getMessage(),
-                providerCode,
-                request.getModel(),
-                request.getSystemPrompt()
-        );
+
+        AiConversation aiConversation = new AiConversation();
+        aiConversation.setUserId(request.getUserId());
+        aiConversation.setUserType(userType);
+        aiConversation.setTitle(request.getMessage().length() > 20 ? request.getMessage().substring(0, 20) + "..." : request.getMessage());
+        aiConversation.setProviderCode(providerCode);
+        aiConversation.setConversationId(request.getConversationId());
+        aiConversation.setModel(request.getModel());
+        aiConversation.setSystemPrompt(request.getSystemPrompt());
+
+        return conversationService.createConversation(aiConversation);
+    }
+
+    private String resolveDefaultProviderCode() {
+        if (providerFactory.hasProvider("deepseek")) {
+            return "deepseek";
+        }
+        if (providerFactory.hasProvider("openai")) {
+            return "openai";
+        }
+        return null;
     }
 
     private AiChatOptions buildOptions(ChatRequest request, AiConversation conversation) {

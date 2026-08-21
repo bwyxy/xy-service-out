@@ -17,8 +17,7 @@ public interface AiConversationService extends IService<AiConversation> {
     /**
      * 创建会话
      */
-    AiConversation createConversation(Long userId, String userType, String title,
-                                      String providerCode, String model, String systemPrompt);
+    AiConversation createConversation(AiConversation aiConversation);
 
     /**
      * 分页查询会话
@@ -34,4 +33,9 @@ public interface AiConversationService extends IService<AiConversation> {
      * 归档/删除会话
      */
     boolean updateStatus(Long id, Integer status);
+
+    /**
+     * 获取用户最新的活跃会话
+     */
+    AiConversation getLatestActiveConversation(Long userId, String userType);
 }

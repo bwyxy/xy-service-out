@@ -1,7 +1,12 @@
 package com.xy.common.provider;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -83,7 +88,7 @@ public class JwtTokenProvider {
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -96,8 +101,9 @@ public class JwtTokenProvider {
     }
 
     public long getRemainingExpiration(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -188,7 +194,7 @@ public class JwtTokenProvider {
             claims.setExpiration(new Date(System.currentTimeMillis() + refreshExpiration));
             return Jwts.builder()
                     .setClaims(claims)
-                    .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                    .signWith(getSigningKey())
                     .compact();
         } catch (ExpiredJwtException e) {
             throw new JwtException("刷新令牌已过期，请重新登录");

@@ -126,6 +126,7 @@ CREATE TABLE ai_user_quota (
 
 -- 初始化默认模型提供者（OpenAI 兼容接口）
 INSERT INTO ai_model_provider (name, code, type, endpoint, api_key, model, priority, enabled, config_json, create_time, update_time) VALUES
+('DeepSeek', 'deepseek', 'OPENAI_COMPATIBLE', 'https://api.deepseek.com', '', 'deepseek-chat', 20, 1, '{"temperature":0.7,"maxTokens":2048}', NOW(), NOW()),
 ('OpenAI 兼容接口', 'openai', 'OPENAI_COMPATIBLE', 'https://ws-cn7y90ayoe81zjvl.cn-beijing.maas.aliyuncs.com/compatible-mode', '', 'deepseek-v4-flash', 10, 1, '{"temperature":0.7,"maxTokens":2048}', NOW(), NOW()),
 ('阿里云百炼', 'dashscope', 'DASHSCOPE', 'https://dashscope.aliyuncs.com/compatible-mode/v1', '', 'qwen-max', 5, 0, '{"temperature":0.7,"maxTokens":2048}', NOW(), NOW());
 

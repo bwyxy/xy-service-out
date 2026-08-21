@@ -1,6 +1,7 @@
 package com.chat.ai.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -36,4 +37,7 @@ public class AiConversation {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    private Long conversationId;
 }

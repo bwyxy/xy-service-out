@@ -1,5 +1,6 @@
 package com.xy.common.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xy.common.enums.ResultCode;
 import lombok.Data;
 
@@ -56,6 +57,7 @@ public class R<T> implements Serializable {
         return new R<>(code, message, null);
     }
 
+    @JsonIgnore
     public boolean isOk() {
         return this.code != null && this.code == 200;
     }

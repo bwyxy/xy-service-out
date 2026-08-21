@@ -17,9 +17,9 @@ public interface AiChatClient {
     /**
      * 同步对话
      *
-     * @param token     当前登录用户的 JWT token
+     * @param token     xy-ai access token
      * @param request   AI 对话请求
      */
     @PostMapping("/ai/chat")
-    R<AiChatResponse> chat(@RequestHeader("token") String token, @RequestBody AiChatRequest request);
+    R<AiChatResponse> chat(@RequestHeader("accessToken") String token, @RequestBody AiChatRequest request);
 }

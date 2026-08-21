@@ -15,6 +15,7 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.function.FunctionToolCallback;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -29,6 +30,7 @@ import java.util.function.Function;
  * OpenAI 兼容模型提供者实现
  */
 @Slf4j
+@Primary
 @Component
 public class OpenAiModelProvider implements ModelProvider {
 
@@ -140,8 +142,10 @@ public class OpenAiModelProvider implements ModelProvider {
                 .apiKey(config.getApiKey())
                 .build();
 
+        String model = options.getModel() != null && !options.getModel().isEmpty()
+                ? options.getModel() : config.getModel();
         OpenAiChatOptions.Builder chatOptionsBuilder = OpenAiChatOptions.builder()
-                .model(options.getModel() != null ? options.getModel() : config.getModel());
+                .model(model);
 
         Map<String, Object> ext = parseConfig(config.getConfigJson());
         if (options.getTemperature() != null) {

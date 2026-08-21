@@ -23,6 +23,14 @@ public interface ISysAiApiKeyService extends IService<AiApiKey> {
     TokenResponse exchangeToken(String apiKey, String apiSecret);
 
     /**
+     * 根据 API Key 查询密钥信息
+     *
+     * @param apiKey 访问密钥 Key
+     * @return 密钥实体
+     */
+    AiApiKey getByApiKey(String apiKey);
+
+    /**
      * 生成新的 API 密钥对
      *
      * @param appName            应用名称
