@@ -10,6 +10,7 @@ import com.chat.ai.exception.AiException;
 import com.chat.ai.provider.core.*;
 import com.chat.ai.service.AiChatService;
 import com.chat.ai.service.AiConversationService;
+import com.chat.ai.service.AiKnowledgeBaseService;
 import com.chat.ai.service.AiMessageService;
 import com.chat.ai.service.AiQuotaService;
 import com.chat.ai.tool.core.ToolRegistry;
@@ -41,16 +42,20 @@ public class AiChatServiceImpl implements AiChatService {
 
     private final ToolRegistry toolRegistry;
 
+    private final AiKnowledgeBaseService knowledgeBaseService;
+
     public AiChatServiceImpl(ModelProviderFactory providerFactory,
                              AiConversationService conversationService,
                              AiMessageService messageService,
                              AiQuotaService quotaService,
-                             ToolRegistry toolRegistry) {
+                             ToolRegistry toolRegistry,
+                             AiKnowledgeBaseService knowledgeBaseService) {
         this.providerFactory = providerFactory;
         this.conversationService = conversationService;
         this.messageService = messageService;
         this.quotaService = quotaService;
         this.toolRegistry = toolRegistry;
+        this.knowledgeBaseService = knowledgeBaseService;
     }
 
     @Override
@@ -193,9 +198,20 @@ public class AiChatServiceImpl implements AiChatService {
 
         // RAG 上下文增强
         if (options.getKnowledgeBaseIds() != null && !options.getKnowledgeBaseIds().isEmpty()) {
-            StringBuilder context = new StringBuilder("请参考以下知识库内容回答问题：\n");
-            // 此处通过依赖注入获取 KnowledgeBaseService 会循环依赖，简化为空实现；
-            // 实际可在 Controller 层拼接或引入检索代理。
+            StringBuilder context = new StringBuilder("请参考以下知识库内容回答问题。如果知识库中没有相关信息，请基于自身能力回答，不要编造：\n");
+            int chunkIndex = 1;
+            for (Long kbId : options.getKnowledgeBaseIds()) {
+                try {
+                    List<String> chunks = knowledgeBaseService.retrieveChunks(kbId, request.getMessage(), 3);
+                    if (chunks != null && !chunks.isEmpty()) {
+                        for (String chunk : chunks) {
+                            context.append("[").append(chunkIndex++).append("] ").append(chunk).append("\n");
+                        }
+                    }
+                } catch (Exception e) {
+                    log.warn("知识库检索失败，kbId={}", kbId, e);
+                }
+            }
             messages.add(new SystemMessage(context.toString()));
         }
 

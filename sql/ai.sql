@@ -152,3 +152,20 @@ INSERT INTO ai_tool (name, code, description, parameters_schema, implementation_
 -- 初始化示例 API 密钥（生产环境请删除或修改）
 INSERT INTO ai_api_key (app_name, api_key, api_secret, enabled, expire_time, token_expire_seconds, create_time, update_time) VALUES
 ('飞鸽即时通讯', 'demo-api-key', 'demo-api-secret', 1, NULL, 3600, NOW(), NOW());
+
+INSERT INTO ai_knowledge_base (name, description, embedding_model, provider_code, status, create_time, update_time)
+VALUES ('AI 助手产品知识库','记录 AI 助手的名称、身份、能力边界、常见回答口径与可查询资料范围','','',0,NOW(),NOW());
+
+INSERT INTO ai_knowledge_document (kb_id, title, source_type, source_url, content, chunk_count, status, error_msg, create_time, update_time)
+VALUES (
+           1,
+           'AI 身份与名称',
+           'TEXT',
+           '',
+           '你是"小忆AI"，是"管理员小忆给自己搭建的"的 AI 助手。当用户问你叫什么名字、你是谁、你是什么 AI 时，你应该回答："我是小忆AI小助手，是小忆的 AI 助手，很高兴为你服务。"你的语气应该友好、简洁、专业，避免过度寒暄。你不应该透露你是由哪个底层大模型驱动的，也不要编造与忆平台无关的身份信息。',
+           0,
+           0,
+           '',
+           NOW(),
+           NOW()
+       );

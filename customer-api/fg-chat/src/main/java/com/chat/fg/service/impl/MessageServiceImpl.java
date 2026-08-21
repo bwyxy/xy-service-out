@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -127,6 +129,7 @@ public class MessageServiceImpl implements IMessageService {
      */
     private void sendAiReply(Long userId, SendMsgDTO sendMsgDTO, String token) {
         try {
+
             AiChatRequest aiRequest = new AiChatRequest();
             aiRequest.setUserId(userId);
             aiRequest.setConversationId(userId);
