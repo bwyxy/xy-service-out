@@ -1,4 +1,4 @@
-package com.chat.ai.entity;
+package com.xy.common.entity.ai;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,32 +8,24 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * AI 模型提供者配置
+ * AI 知识库
  */
 @Data
-@TableName("ai_model_provider")
-public class AiModelProvider {
+@TableName("ai_knowledge_base")
+public class AiKnowledgeBase {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
     private String name;
 
-    private String code;
+    private String description;
 
-    private String type;
+    private String embeddingModel;
 
-    private String endpoint;
+    private String providerCode;
 
-    private String apiKey;
-
-    private String model;
-
-    private Integer priority;
-
-    private Integer enabled;
-
-    private String configJson;
+    private Integer status;
 
     private LocalDateTime createTime;
 

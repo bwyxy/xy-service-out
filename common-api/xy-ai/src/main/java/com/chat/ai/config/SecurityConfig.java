@@ -1,5 +1,6 @@
 package com.chat.ai.config;
 
+import com.chat.ai.security.InternalApiKeyFilter;
 import com.chat.ai.security.JwtAuthenticationFilter;
 import com.chat.ai.security.JsonAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private final InternalApiKeyFilter internalApiKeyFilter;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -42,6 +45,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new JsonAuthenticationEntryPoint()));
 
+        http.addFilterBefore(internalApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

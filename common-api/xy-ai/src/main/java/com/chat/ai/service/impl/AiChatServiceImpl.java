@@ -66,17 +66,19 @@ public class AiChatServiceImpl implements AiChatService {
         messageService.saveUserMessage(conversation.getId(), request.getMessage());
 
         AiChatOptions options = buildOptions(request, conversation);
+
         List<Message> messages = buildMessages(conversation, request, options);
 
         AiMessage assistantMessage = messageService.saveAssistantMessage(conversation.getId(),
                 options.getModel() != null ? options.getModel() : conversation.getModel());
 
+        log.warn("ai 对话选项-{}", options);
         try {
             ModelProvider provider = providerFactory.getProvider(conversation.getProviderCode());
+
             AiModelResponse modelResponse = provider.chat(messages, options);
             messageService.completeAssistantMessage(assistantMessage.getId(),
                     modelResponse.getContent(), modelResponse.getUsage());
-
             return ChatResponse.builder()
                     .conversationId(conversation.getId())
                     .messageId(assistantMessage.getId())
@@ -180,6 +182,7 @@ public class AiChatServiceImpl implements AiChatService {
     }
 
     private AiChatOptions buildOptions(ChatRequest request, AiConversation conversation) {
+        log.warn("对话模型-{}-{}", request.getModel(), conversation.getModel());
         return AiChatOptions.builder()
                 .model(request.getModel() != null ? request.getModel() : conversation.getModel())
                 .systemPrompt(request.getSystemPrompt() != null ? request.getSystemPrompt() : conversation.getSystemPrompt())

@@ -145,7 +145,7 @@ onMounted(() => {
             />
           </div>
           <div v-else class="message-bubble">
-            <div class="message-content">{{ msg.content }}</div>
+            <div class="message-content" v-html="msg.content"></div>
           </div>
         </div>
         <!-- 发送失败 -->

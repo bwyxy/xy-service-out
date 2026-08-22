@@ -169,3 +169,9 @@ VALUES (
            NOW(),
            NOW()
        );
+
+SELECT endpoint, api_key, model, type FROM ai_model_provider WHERE code = 'deepseek' AND enabled = 1;
+
+SELECT code, endpoint, api_key, model FROM ai_model_provider;
+
+SELECT id, name, provider_code, embedding_model FROM ai_knowledge_base WHERE id = 1;

@@ -1,7 +1,7 @@
-package com.chat.ai.mapper;
+package com.xy.system.mapper.ai;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.chat.ai.entity.AiModelProvider;
+import com.xy.common.entity.ai.AiModelProvider;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

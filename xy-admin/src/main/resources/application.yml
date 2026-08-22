@@ -10,3 +10,4 @@ spring:
 ai:
   service:
     url: ${AI_SERVICE_URL:http://localhost:9070}
+    internal-api-key: ${AI_SERVICE_INTERNAL_API_KEY:}

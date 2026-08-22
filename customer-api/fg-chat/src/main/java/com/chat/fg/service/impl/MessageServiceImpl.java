@@ -129,13 +129,17 @@ public class MessageServiceImpl implements IMessageService {
      */
     private void sendAiReply(Long userId, SendMsgDTO sendMsgDTO, String token) {
         try {
+            List<Long> knowledgeBaseIds = new ArrayList<>();
+            knowledgeBaseIds.add(1L);
 
             AiChatRequest aiRequest = new AiChatRequest();
             aiRequest.setUserId(userId);
             aiRequest.setConversationId(userId);
             aiRequest.setUserType("CLIENT");
+            aiRequest.setKnowledgeBaseIds(knowledgeBaseIds);
+            aiRequest.setModel("deepseek-v4-pro");
             aiRequest.setMessage(sendMsgDTO.getContent());
-            aiRequest.setEnableTools(true);
+            aiRequest.setEnableTools(false);
 
             R<AiChatResponse> aiResponse = aiChatClient.chat(token, aiRequest);
             if (aiResponse == null || aiResponse.getData() == null) {

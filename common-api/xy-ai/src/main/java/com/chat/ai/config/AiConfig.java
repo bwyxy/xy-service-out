@@ -1,7 +1,5 @@
 package com.chat.ai.config;
 
-import com.chat.ai.entity.AiModelProvider;
-import com.chat.ai.service.AiProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -10,8 +8,11 @@ import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.util.StringUtils;
 
 /**
  * AI 模块配置
@@ -19,6 +20,15 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class AiConfig {
+
+    @Value("${ai.embedding.base-url}")
+    private String embeddingBaseUrl;
+
+    @Value("${ai.embedding.api-key}")
+    private String embeddingApiKey;
+
+    @Value("${ai.embedding.model}")
+    private String embeddingModelName;
 
     /**
      * 向量存储：默认使用内存版 SimpleVectorStore。
@@ -30,25 +40,33 @@ public class AiConfig {
     }
 
     /**
-     * 嵌入模型：默认使用 OpenAI 兼容接口的 embedding 模型。
-     * 若未配置 API Key，调用时会返回空向量（由 EmbeddingService 捕获）。
+     * 全局默认嵌入模型：从 ai.embedding.* 配置读取，支持独立配置 Embedding Key/Endpoint/Model。
+     * 未配置 API Key 时退化为空 EmbeddingModel，避免启动或调用时直接报错。
+     * 知识库也可在 ai_knowledge_base 表中按 provider_code + embedding_model 单独指定嵌入模型。
      */
+    @Primary
     @Bean
-    public EmbeddingModel embeddingModel(AiProviderService providerService) {
-        AiModelProvider provider;
-        try {
-            provider = providerService.getEnabledProvider("openai");
-        } catch (Exception e) {
-            log.warn("未找到 OpenAI 提供者，使用空 EmbeddingModel");
+    public EmbeddingModel embeddingModel() {
+        if (!StringUtils.hasText(embeddingApiKey)) {
+            log.warn("未配置 ai.embedding.api-key，使用空 EmbeddingModel，RAG 知识库检索将返回空结果");
             return new EmptyEmbeddingModel();
         }
         OpenAiApi api = OpenAiApi.builder()
-                .baseUrl(provider.getEndpoint())
-                .apiKey(provider.getApiKey())
+                .baseUrl(embeddingBaseUrl)
+                .apiKey(embeddingApiKey)
                 .build();
         OpenAiEmbeddingOptions options = OpenAiEmbeddingOptions.builder()
-                .model("text-embedding-v3")
+                .model(embeddingModelName)
                 .build();
+        log.info("默认 EmbeddingModel 已初始化：baseUrl={}, model={}, apiKey={}",
+                embeddingBaseUrl, embeddingModelName, maskKey(embeddingApiKey));
         return new OpenAiEmbeddingModel(api, MetadataMode.EMBED, options);
+    }
+
+    private String maskKey(String key) {
+        if (!StringUtils.hasText(key) || key.length() <= 8) {
+            return "***";
+        }
+        return key.substring(0, 4) + "****" + key.substring(key.length() - 4);
     }
 }

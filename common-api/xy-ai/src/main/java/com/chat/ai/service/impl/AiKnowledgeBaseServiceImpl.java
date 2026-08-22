@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chat.ai.dto.KnowledgeBaseRequest;
 import com.chat.ai.dto.KnowledgeDocumentRequest;
-import com.chat.ai.entity.AiKnowledgeBase;
-import com.chat.ai.entity.AiKnowledgeDocument;
-import com.chat.ai.enums.DocumentStatus;
-import com.chat.ai.enums.KnowledgeBaseStatus;
-import com.chat.ai.mapper.AiKnowledgeBaseMapper;
-import com.chat.ai.mapper.AiKnowledgeDocumentMapper;
+import com.xy.common.entity.ai.AiKnowledgeBase;
+import com.xy.common.entity.ai.AiKnowledgeDocument;
+import com.xy.common.enums.ai.DocumentStatus;
+import com.xy.common.enums.ai.KnowledgeBaseStatus;
+import com.xy.system.mapper.ai.AiKnowledgeBaseMapper;
+import com.xy.system.mapper.ai.AiKnowledgeDocumentMapper;
 import com.chat.ai.rag.DocumentChunker;
 import com.chat.ai.rag.VectorStoreService;
 import com.chat.ai.service.AiKnowledgeBaseService;
@@ -103,7 +103,8 @@ public class AiKnowledgeBaseServiceImpl extends ServiceImpl<AiKnowledgeBaseMappe
                 Map<String, Object> metadata = new HashMap<>();
                 metadata.put("docId", document.getId());
                 metadata.put("index", i);
-                vectorStoreService.addChunk(request.getKbId(), document.getId(), chunks.get(i), metadata);
+                vectorStoreService.addChunk(request.getKbId(), document.getId(), chunks.get(i), metadata,
+                        kb.getProviderCode(), kb.getEmbeddingModel());
                 count++;
             }
             document.setChunkCount(count);
@@ -131,7 +132,10 @@ public class AiKnowledgeBaseServiceImpl extends ServiceImpl<AiKnowledgeBaseMappe
         if (kb == null || KnowledgeBaseStatus.DISABLED.getCode() == kb.getStatus()) {
             return Collections.emptyList();
         }
-        return vectorStoreService.search(kbId, query, topK);
+        // 检索最相似的 topK 个片段
+        List<String> topKChunks = vectorStoreService.search(kbId, query, topK, kb.getProviderCode(), kb.getEmbeddingModel());
+        log.warn("检索最相似的 topK 个片段-{}", topKChunks);
+        return topKChunks;
     }
 
     private KnowledgeBaseVo convertToVo(AiKnowledgeBase kb) {

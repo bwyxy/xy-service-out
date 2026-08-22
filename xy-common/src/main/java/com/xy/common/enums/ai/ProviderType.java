@@ -1,4 +1,4 @@
-package com.chat.ai.enums;
+package com.xy.common.enums.ai;
 
 import lombok.Getter;
 

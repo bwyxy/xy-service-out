@@ -1,4 +1,4 @@
-package com.chat.ai.entity;
+package com.xy.common.entity.ai;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,30 +8,26 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * AI 知识库文档
+ * AI 知识库版本
  */
 @Data
-@TableName("ai_knowledge_document")
-public class AiKnowledgeDocument {
+@TableName("ai_knowledge_base_version")
+public class AiKnowledgeBaseVersion {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long kbId;
 
-    private String title;
+    private String version;
 
-    private String sourceType;
+    private String description;
 
-    private String sourceUrl;
-
-    private String content;
-
-    private Integer chunkCount;
+    private Integer docCount;
 
     private Integer status;
 
-    private String errorMsg;
+    private LocalDateTime publishedTime;
 
     private LocalDateTime createTime;
 

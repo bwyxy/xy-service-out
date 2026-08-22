@@ -1,6 +1,4 @@
--- ==================== AI 助手知识库示例数据 ====================
--- 说明：
---   1. 本脚本仅作为示例，演示如何向 ai_knowledge_base / ai_knowledge_document 表写入数据。
+--   1. 演示如何向 ai_knowledge_base / ai_knowledge_document 表写入数据。
 --   2. 由于知识库文档需要经过分片与向量化才能在 RAG 检索中使用，
 --      强烈建议通过 xy-ai 服务提供的 REST API 创建知识库并添加文档，
 --      以便自动完成文本分片、Embedding 生成与向量存储。

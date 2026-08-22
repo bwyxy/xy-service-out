@@ -24,6 +24,13 @@ spring:
         options:
           model: test-model
 
+ai:
+  embedding:
+    # 测试环境不配置真实 API Key，默认使用空 EmbeddingModel，避免触发真实 HTTP 调用
+    api-key:
+    base-url: http://localhost:9999/embedding
+    model: text-embedding-test
+
 jwt:
   secret: test-secret-key-for-ai-module-unit-test-only-32bytes
   expiration: 86400000

@@ -1,7 +1,7 @@
 package com.chat.ai.service.impl;
 
 import com.chat.ai.dto.ModelProviderRequest;
-import com.chat.ai.entity.AiModelProvider;
+import com.xy.common.entity.ai.AiModelProvider;
 import com.chat.ai.exception.AiException;
 import com.chat.ai.service.AiProviderService;
 import com.chat.ai.vo.ModelProviderVo;

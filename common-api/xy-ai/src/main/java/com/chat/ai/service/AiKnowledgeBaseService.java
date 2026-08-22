@@ -3,7 +3,7 @@ package com.chat.ai.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chat.ai.dto.KnowledgeBaseRequest;
 import com.chat.ai.dto.KnowledgeDocumentRequest;
-import com.chat.ai.entity.AiKnowledgeBase;
+import com.xy.common.entity.ai.AiKnowledgeBase;
 import com.chat.ai.vo.KnowledgeBaseVo;
 import com.xy.common.core.domain.PageResult;
 

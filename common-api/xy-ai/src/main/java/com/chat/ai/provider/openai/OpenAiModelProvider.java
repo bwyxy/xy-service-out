@@ -1,6 +1,6 @@
 package com.chat.ai.provider.openai;
 
-import com.chat.ai.entity.AiModelProvider;
+import com.xy.common.entity.ai.AiModelProvider;
 import com.chat.ai.provider.core.*;
 import com.chat.ai.service.AiProviderService;
 import com.fasterxml.jackson.databind.ObjectMapper;

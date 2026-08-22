@@ -6,11 +6,11 @@ spring:
     default: base,cp
   ai:
     openai:
-      api-key: ${OPENAI_API_KEY:}
-      base-url: ${OPENAI_BASE_URL:https://ws-cn7y90ayoe81zjvl.cn-beijing.maas.aliyuncs.com/compatible-mode}
+      api-key: ${OPENAI_API_KEY}
+      base-url: ${OPENAI_BASE_URL}
       chat:
         options:
-          model: ${OPENAI_MODEL:deepseek-v4-flash}
+          model: ${OPENAI_MODEL}
 
 # JWT 配置
 jwt:

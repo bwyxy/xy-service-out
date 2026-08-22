@@ -1,10 +1,13 @@
 package com.chat.ai.rag;
 
-import com.chat.ai.entity.AiKnowledgeChunk;
-import com.chat.ai.mapper.AiKnowledgeChunkMapper;
+import com.xy.common.entity.ai.AiKnowledgeChunk;
+import com.xy.system.mapper.ai.AiKnowledgeChunkMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.embedding.EmbeddingRequest;
+import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,20 +25,29 @@ public class VectorStoreService {
 
     private final AiKnowledgeChunkMapper chunkMapper;
 
-    private final EmbeddingService embeddingService;
+    private final EmbeddingModelFactory embeddingModelFactory;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public VectorStoreService(AiKnowledgeChunkMapper chunkMapper, EmbeddingService embeddingService) {
+    public VectorStoreService(AiKnowledgeChunkMapper chunkMapper,
+                              EmbeddingModelFactory embeddingModelFactory) {
         this.chunkMapper = chunkMapper;
-        this.embeddingService = embeddingService;
+        this.embeddingModelFactory = embeddingModelFactory;
     }
 
     /**
      * 添加文档片段到向量库
+     *
+     * @param kbId           知识库 ID
+     * @param docId          文档 ID
+     * @param content        片段内容
+     * @param metadata       元数据
+     * @param providerCode   嵌入模型提供者编码
+     * @param embeddingModel 嵌入模型名称
      */
-    public void addChunk(Long kbId, Long docId, String content, Map<String, Object> metadata) {
-        List<Double> embedding = embeddingService.embed(content);
+    public void addChunk(Long kbId, Long docId, String content, Map<String, Object> metadata,
+                         String providerCode, String embeddingModel) {
+        List<Double> embedding = embed(content, providerCode, embeddingModel);
         AiKnowledgeChunk chunk = new AiKnowledgeChunk();
         chunk.setKbId(kbId);
         chunk.setDocId(docId);
@@ -52,9 +64,16 @@ public class VectorStoreService {
 
     /**
      * 检索最相似的 topK 个片段
+     *
+     * @param kbId           知识库 ID
+     * @param query          查询文本
+     * @param topK           返回数量
+     * @param providerCode   嵌入模型提供者编码
+     * @param embeddingModel 嵌入模型名称
      */
-    public List<String> search(Long kbId, String query, int topK) {
-        List<Double> queryEmbedding = embeddingService.embed(query);
+    public List<String> search(Long kbId, String query, int topK,
+                               String providerCode, String embeddingModel) {
+        List<Double> queryEmbedding = embed(query, providerCode, embeddingModel);
         if (queryEmbedding.isEmpty()) {
             return Collections.emptyList();
         }
@@ -76,6 +95,30 @@ public class VectorStoreService {
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<>();
         wrapper.eq(AiKnowledgeChunk::getDocId, docId);
         chunkMapper.delete(wrapper);
+    }
+
+    private List<Double> embed(String text, String providerCode, String embeddingModel) {
+        log.info("生成 Embedding：providerCode={}, embeddingModel={}", providerCode, embeddingModel);
+        try {
+            EmbeddingModel model = embeddingModelFactory.getModel(providerCode, embeddingModel);
+            if (model == null) {
+                log.warn("未获取到 EmbeddingModel，返回空向量");
+                return Collections.emptyList();
+            }
+            EmbeddingResponse response = model.call(new EmbeddingRequest(List.of(text), null));
+            if (response.getResults() == null || response.getResults().isEmpty()) {
+                return Collections.emptyList();
+            }
+            float[] output = response.getResults().get(0).getOutput();
+            List<Double> vector = new ArrayList<>(output.length);
+            for (float v : output) {
+                vector.add((double) v);
+            }
+            return vector;
+        } catch (Exception e) {
+            log.warn("嵌入向量生成失败，返回空向量: {}", text.substring(0, Math.min(text.length(), 50)), e);
+            return Collections.emptyList();
+        }
     }
 
     private List<Double> parseEmbedding(String embeddingJson) {
