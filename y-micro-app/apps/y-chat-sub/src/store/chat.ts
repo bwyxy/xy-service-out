@@ -1,7 +1,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import useUserStore from '@/store/user.ts'
-import { getUserInfo } from '@/api/user.ts'
+import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
 import { wukongIMService, messageHandlerService, MessageType } from '@/services/im'
 import { sendMessage as apiSendMessage, getMessageList } from '@/api/chat.ts'
 import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk'
@@ -114,6 +114,10 @@ const useChatStore = defineStore('chat', () => {
     if (message.channelType === 1) {
       if (!isNaN(Number(message.fromUid))) {
         const { nickname } = await fetchUserInfo(message.fromUid)
+        senderName = nickname
+      } else {
+        const { nickname } = await getSystemUserInfo(message.fromUid)
+
         senderName = nickname
       }
     }

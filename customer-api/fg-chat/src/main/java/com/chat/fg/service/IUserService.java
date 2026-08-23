@@ -3,6 +3,7 @@ package com.chat.fg.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chat.fg.pojo.dto.EditPasswordDTO;
 import com.chat.fg.pojo.vo.UserInfoVO;
+import com.xy.common.entity.SysImUser;
 import com.xy.common.entity.User;
 
 /**
@@ -14,6 +15,11 @@ public interface IUserService extends IService<User> {
      * 根据 uId查询用户信息
      * */
     UserInfoVO getUserInfoByUId(Long userId);
+
+    /**
+     * 根据系统标识查询系统用户信息
+     * */
+    SysImUser getSysImUserBySystemKey(String systemKey);
 
     /**
      * 更新用户头像

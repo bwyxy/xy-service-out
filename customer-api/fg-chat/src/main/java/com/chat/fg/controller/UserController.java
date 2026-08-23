@@ -21,11 +21,25 @@ public class UserController {
 
     /**
      * 根据用户 Id 查询用户信息
+     * @param uId 用户 Id
      * */
-    @GetMapping("/{uId}")
-    public R<UserInfoVO> getUserInfoByUId(@PathVariable Long uId) {
+    @GetMapping("/{uId}/{channelType}")
+    public R<UserInfoVO> getUserInfoByUId(
+            @PathVariable Long uId,
+            @PathVariable String channelType
+    ) {
         UserInfoVO userInfoVO = userService.getUserInfoByUId(uId);
 
         return R.ok(userInfoVO);
+    }
+
+    /**
+     * 根据系统标识 查询系统用户信息
+     * */
+    @GetMapping("/system/{systemrKey}")
+    public R<?> getSystemByUserKey(
+            @PathVariable String systemrKey
+    ) {
+        return R.ok(userService.getSysImUserBySystemKey(systemrKey));
     }
 }

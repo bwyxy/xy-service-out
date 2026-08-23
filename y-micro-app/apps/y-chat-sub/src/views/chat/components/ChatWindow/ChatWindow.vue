@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import useUserStore from '@/store/user.ts'
 import useChatStore from '@/store/chat.ts'
 import { MessageType } from '@/services/im/constants'
-import { getUserInfo } from '@/api/user.ts'
+import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
 import { Warning } from '@element-plus/icons-vue'
 import RichInput from './RichInput.vue'
 
@@ -36,12 +36,19 @@ const loadChannelInfo = async () => {
   }
 
   if (activeContact.value.channelType === 1) {
-    const response = await getUserInfo(activeContact.value.uid)
-    if (response.code === 200) {
+    let response;
+    if (!isNaN(Number(activeContact.value.uid))) {
+      response = await getUserInfo(activeContact.value.uid)
+    } else {
+      response = await getSystemUserInfo(activeContact.value.uid)
+    }
+    if (response && response.code === 200) {
       channelInfo.value = response.data || {}
       // 同步昵称/头像到联系人
       activeContact.value.name = response.data?.nickname || activeContact.value.name
       activeContact.value.avatar = response.data?.avatar || activeContact.value.avatar
+    } else {
+      channelInfo.value = { nickname: activeContact.value.name }
     }
   } else {
     channelInfo.value = { nickname: activeContact.value.name }
@@ -116,6 +123,14 @@ onMounted(() => {
         alt="avatar"
       />
       <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
+      <div class="chat-window-header-rt">
+        <div class="chat-rt-icon">
+          <img src="@/assets/images/video_audio_icon.png" alt="icon" />
+        </div>
+        <div class="chat-rt-icon">
+          <img src="@/assets/images/more_icon.png" alt="icon" />
+        </div>
+      </div>
     </div>
 
     <div ref="messageListRef" class="chat-window-main">
@@ -180,7 +195,7 @@ onMounted(() => {
   overflow: hidden;
 
   &-header {
-    height: size(100);
+    height: size(70);
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, .06);
     box-sizing: border-box;
@@ -189,16 +204,35 @@ onMounted(() => {
     align-items: center;
 
     .header-avatar {
-      width: size(48);
-      height: size(48);
+      width: size(36);
+      height: size(36);
       border-radius: 50%;
-      margin-right: size(16);
+      margin-right: size(8);
     }
 
     .channel-name {
-      font-size: size(24);
-      letter-spacing: 1px;
+      font-size: size(18);
       color: #1f1f1f;
+    }
+
+    &-rt {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      .chat-rt-icon {
+        width: size(42);
+        height: size(42);
+        border-radius: 4px;
+        cursor: pointer;
+        @include flexCenter;
+        img {
+          width: size(24);
+          height: size(24);
+        }
+        &:hover {
+          background: rgba(0, 0, 0, .06);
+        }
+      }
     }
   }
 
@@ -302,9 +336,9 @@ onMounted(() => {
 
   &-footer {
     box-sizing: border-box;
-    padding: size(24);
-    background: #fff;
-    border-top: 1px solid rgba(0, 0, 0, .06);
+    padding: size(8);
+    //background: #fff;
+    //border-top: 1px solid rgba(0, 0, 0, .06);
   }
 }
 

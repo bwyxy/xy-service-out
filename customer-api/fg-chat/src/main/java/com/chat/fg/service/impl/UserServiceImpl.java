@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chat.fg.pojo.dto.EditPasswordDTO;
 import com.chat.fg.pojo.vo.UserInfoVO;
 import com.chat.fg.utils.SecurityUtils;
+import com.xy.common.entity.SysImUser;
 import com.xy.common.exception.BusinessException;
 import com.xy.common.utils.EncryptionUtils;
 import com.xy.common.utils.StringUtils;
@@ -13,6 +14,7 @@ import com.xy.framework.web.service.VerifyService;
 import com.xy.system.mapper.UserMapper;
 import com.chat.fg.service.IUserService;
 import com.xy.common.entity.User;
+import com.xy.system.service.impl.SysImUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private EncryptionUtils encryptionUtils;
+
+    @Autowired
+    private SysImUserServiceImpl sysImUserService;
 
     /**
      * 根据 uId查询用户信息
@@ -46,6 +51,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         userInfoVO.setSex(user.getSex());
 
         return userInfoVO;
+    }
+
+    /**
+     * 根据系统标识查询系统用户信息
+     * */
+    @Override
+    public SysImUser getSysImUserBySystemKey(String systemKey) {
+        LambdaQueryWrapper<SysImUser> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysImUser::getUserKey, systemKey);
+
+        return sysImUserService.getOne(queryWrapper);
     }
 
     /**

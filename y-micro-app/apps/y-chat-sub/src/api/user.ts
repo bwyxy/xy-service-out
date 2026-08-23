@@ -9,3 +9,13 @@ export const getUserInfo = (uId: string) => {
         method: 'GET'
     })
 }
+
+/**
+ * 根据系统标识 查询系统用户信息
+ * */
+export const getSystemUserInfo = (systemKey : string) => {
+    return request({
+        url: `/user/system/${systemKey}`,
+        method: 'GET'
+    })
+}

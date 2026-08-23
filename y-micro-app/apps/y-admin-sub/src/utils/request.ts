@@ -1,6 +1,7 @@
 // @ts-ignore
 import { createAxios } from '@xy/utils'
 import { getToken } from '@/utils/auth.ts'
+import useUserStore from "@/store/modules/user.ts";
 
 const request = createAxios({
     config: {
@@ -19,6 +20,12 @@ const request = createAxios({
             const data = response.data
 
             if (data.code === 401) {
+                const userStore = useUserStore()
+                userStore.logout().then(() => {
+                    window.location.href = '/'
+                }).catch(() => {
+                    window.location.href = '/'
+                })
 
             }
 
