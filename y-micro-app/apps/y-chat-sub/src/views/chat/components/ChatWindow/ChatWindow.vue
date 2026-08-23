@@ -7,12 +7,14 @@ import { MessageType } from '@/services/im/constants'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
 import { Warning } from '@element-plus/icons-vue'
 import RichInput from './RichInput.vue'
+import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 
 const chatStore = useChatStore()
 const { activeContact, messages } = storeToRefs(chatStore)
 const { userInfo } = storeToRefs(useUserStore())
 
 const sending = ref(false)
+const isShowChatInfo = ref<boolean>(false)
 const messageListRef = ref<HTMLDivElement | null>(null)
 const channelInfo = ref<{ nickname?: string; avatar?: string }>({})
 const richInputRef = ref<InstanceType<typeof RichInput> | null>(null)
@@ -117,70 +119,76 @@ onMounted(() => {
   <div class="chat-window">
     <div class="chat-window-header">
       <img
-        v-if="activeContact?.avatar"
-        class="header-avatar"
-        :src="activeContact.avatar"
-        alt="avatar"
+          v-if="activeContact?.avatar"
+          class="header-avatar"
+          :src="activeContact.avatar"
+          alt="avatar"
       />
       <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
       <div class="chat-window-header-rt">
         <div class="chat-rt-icon">
           <img src="@/assets/images/video_audio_icon.png" alt="icon" />
         </div>
-        <div class="chat-rt-icon">
+        <div class="chat-rt-icon" @click="isShowChatInfo = !isShowChatInfo">
           <img src="@/assets/images/more_icon.png" alt="icon" />
         </div>
       </div>
     </div>
 
-    <div ref="messageListRef" class="chat-window-main">
-      <div
-        v-for="msg in currentMessages"
-        :key="msg.id"
-        class="message-item"
-        :class="{ self: msg.isSelf }"
-      >
-        <!-- 自己 -->
-        <div v-if="msg.isSelf" class="me-user">
-          <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
-          <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
-        </div>
-        <!-- 对方 -->
-        <div v-if="!msg.isSelf" class="me-user">
-          <img v-if="activeContact" class="user-head" :src="activeContact.avatar" alt="avatar" />
-          <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
-        </div>
-        <div>
-          <div  v-if="msg.type === MessageType.IMAGE" class="msg-image-box">
-            <el-image
-                class="message-image"
-                :src="msg.content"
-                :show-progress="true"
-                :preview-src-list="[msg.content]"
-            />
+    <div class="chat-window-content">
+      <div class="chat-window-lt">
+        <div ref="messageListRef" class="chat-window-main">
+          <div
+              v-for="msg in currentMessages"
+              :key="msg.id"
+              class="message-item"
+              :class="{ self: msg.isSelf }"
+          >
+            <!-- 自己 -->
+            <div v-if="msg.isSelf" class="me-user">
+              <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
+              <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
+            </div>
+            <!-- 对方 -->
+            <div v-if="!msg.isSelf" class="me-user">
+              <img v-if="activeContact" class="user-head" :src="activeContact.avatar" alt="avatar" />
+              <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
+            </div>
+            <div>
+              <div  v-if="msg.type === MessageType.IMAGE" class="msg-image-box">
+                <el-image
+                    class="message-image"
+                    :src="msg.content"
+                    :show-progress="true"
+                    :preview-src-list="[msg.content]"
+                />
+              </div>
+              <div v-else class="message-bubble">
+                <div class="message-content" v-html="msg.content"></div>
+              </div>
+            </div>
+            <!-- 发送失败 -->
+            <div v-if="msg.isError" class="error-msg">
+              <el-icon><Warning /></el-icon>
+            </div>
           </div>
-          <div v-else class="message-bubble">
-            <div class="message-content" v-html="msg.content"></div>
+
+          <div v-if="currentMessages.length === 0" class="empty-hint">
+            暂无消息，发送一条消息开始聊天吧
           </div>
         </div>
-        <!-- 发送失败 -->
-        <div v-if="msg.isError" class="error-msg">
-          <el-icon><Warning /></el-icon>
+
+        <div class="chat-window-footer">
+          <RichInput
+              ref="richInputRef"
+              :disabled="!activeContact"
+              @send-text="handleSendText"
+              @send-image="handleSendImage"
+          />
         </div>
       </div>
-
-      <div v-if="currentMessages.length === 0" class="empty-hint">
-        暂无消息，发送一条消息开始聊天吧
-      </div>
-    </div>
-
-    <div class="chat-window-footer">
-      <RichInput
-        ref="richInputRef"
-        :disabled="!activeContact"
-        @send-text="handleSendText"
-        @send-image="handleSendImage"
-      />
+      <!-- 聊天信息 -->
+      <chat-info v-model="isShowChatInfo" :info="channelInfo" />
     </div>
   </div>
 </template>
@@ -190,9 +198,25 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   background: #fafafa;
+  transition: 1s;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+  .chat-window-content {
+    flex: 1;
+    transition: 1s;
+    display: flex;
+    overflow: hidden;
+  }
+  &-lt {
+    flex: 1;
+    height: 100%;
+    transition: 1s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
 
   &-header {
     height: size(70);
