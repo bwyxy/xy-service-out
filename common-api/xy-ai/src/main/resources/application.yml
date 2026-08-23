@@ -12,6 +12,10 @@ spring:
         options:
           model: ${OPENAI_MODEL}
 
+ai:
+  service:
+    internal-api-key: xyai_211shCqYCXaYEmbabzCWnmXl
+
 # JWT 配置
 jwt:
   header: accessToken

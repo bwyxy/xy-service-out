@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class AiServiceClientImpl implements AiServiceClient {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(INTERNAL_API_KEY_HEADER, config.getInternalApiKey());
+        log.info("调用 xy-ai 同步文档: url={}, internalApiKeyEmpty={}", url, !StringUtils.hasText(config.getInternalApiKey()));
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
         try {

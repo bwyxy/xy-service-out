@@ -46,3 +46,12 @@ qiniu:
 wechat:
   appid: ${WECHAT_APPID:}
   secret: ${WECHAT_SECRET:}
+
+ai:
+  service:
+    internal-api-key: xyai_211shCqYCXaYEmbabzCWnmXl
+
+# xy-ai 配置
+xy-ai:
+  apiKey: xyai_211shCqYCXaYEmbabzCWnmXl
+  secret: OjUPCikTNhzusIL043rw2Qos/NrmefoALmpZHOd2WNCfIrsStIchuR5pApjE3NDtIbAtKWRSBHsSe/fQp/x8rQ==

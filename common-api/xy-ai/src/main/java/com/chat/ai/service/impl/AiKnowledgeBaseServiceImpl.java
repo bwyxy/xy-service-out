@@ -122,8 +122,9 @@ public class AiKnowledgeBaseServiceImpl extends ServiceImpl<AiKnowledgeBaseMappe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeDocument(Long docId) {
+        // 只删除向量片段，文档元数据由 xy-system 管理
         vectorStoreService.deleteByDocId(docId);
-        return documentMapper.deleteById(docId) > 0;
+        return true;
     }
 
     @Override

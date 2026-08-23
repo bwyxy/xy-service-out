@@ -5,8 +5,6 @@ xy:
   wk-api-url: ${WK_API_URL}
 
 ai:
-  service:
-    internal-api-key: ${AI_SERVICE_INTERNAL_API_KEY:}
   embedding:
     # 支持独立配置 Embedding Key/Endpoint/Model；未配置时默认复用 OPENAI_* 保持兼容
     api-key: ${EMBEDDING_API_KEY:${OPENAI_API_KEY:}}

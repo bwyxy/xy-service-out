@@ -156,8 +156,8 @@ public class AiKnowledgeBaseAdminController {
     @Log(title = "AI 知识库文档管理", businessType = BusinessType.UPDATE)
     @PostMapping("/document/{id}/reindex")
     public R<Void> reindexDocument(@PathVariable Long id) {
-        aiServiceClient.removeDocument(id);
         KnowledgeDocumentVo document = knowledgeBaseAdminService.resetDocumentProcessing(id);
+        aiServiceClient.removeDocument(id);
         syncDocument(document);
         return R.ok();
     }

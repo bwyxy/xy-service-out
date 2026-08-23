@@ -15,5 +15,5 @@ public class AiServiceProperties {
     /**
      * 内部调用 API Key，用于后台管理服务调用 xy-ai
      */
-    private String internalApiKey = "";
+    private String internalApiKey;
 }
