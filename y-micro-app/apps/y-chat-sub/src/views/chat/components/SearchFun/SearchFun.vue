@@ -38,17 +38,19 @@ const openSearchDialog = () => {
 
 <style scoped lang="scss">
 .search-fun {
+  height: size(70);
   box-sizing: border-box;
-  padding: size(24);
+  padding: 0 size(14);
   border-bottom: 1px solid rgba(0, 0, 0, .06);
   display: flex;
   align-items: center;
   .search-box {
     flex: 1;
-    height: size(48);
+    height: size(36);
+    background: #e6e6e6;
     box-sizing: border-box;
     .el-input__inner {
-      background: #f0f0f0;
+      background: #e6e6e6;
     }
   }
   .action-icons {
@@ -58,8 +60,8 @@ const openSearchDialog = () => {
     gap: size(12);
   }
   .icon-btn {
-    width: size(48);
-    height: size(48);
+    width: size(36);
+    height: size(36);
     background: #f0f0f0;
     border-radius: size(6);
     cursor: pointer;

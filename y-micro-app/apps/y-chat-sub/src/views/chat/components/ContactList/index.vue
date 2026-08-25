@@ -156,22 +156,21 @@ onMounted(() => {
   width: 100%;
   flex: 1;
   box-sizing: border-box;
-  padding: size(24);
+  padding: size(14);
   overflow: hidden;
   overflow-y: scroll;
 
   .msg-item {
-    height: size(100);
     background: #fff;
     display: flex;
     align-items: center;
     margin-bottom: size(13);
-    border-radius: size(13);
+    border-radius: size(10);
     box-shadow: rgba(50, 50, 93, 0.15) 0 2px 5px -1px,
                 rgba(0, 0, 0, 0.2) 0 1px 3px -1px;
     box-sizing: border-box;
     cursor: pointer;
-    padding: size(18);
+    padding: size(14);
 
     &:hover,
     &.active {
@@ -227,10 +226,11 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: size(18);
 
       span {
-        font-size: size(20);
-        font-weight: bold;
+        font-size: size(17);
+        font-weight: 500;
         letter-spacing: 1px;
         @include textEllipsis(1);
       }
@@ -243,7 +243,7 @@ onMounted(() => {
     }
 
     .msg-text {
-      font-size: size(16);
+      font-size: size(12);
       color: #bfbfbf;
       letter-spacing: 1px;
       @include textEllipsis(1);

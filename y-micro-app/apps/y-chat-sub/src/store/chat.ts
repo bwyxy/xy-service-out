@@ -156,7 +156,7 @@ const useChatStore = defineStore('chat', () => {
    * 查询用户信息
    * */
   async function fetchUserInfo(uid: string) {
-    const result = await getUserInfo(uid)
+    const result = await getUserInfo(Number(uid))
 
     if (result.code === 200) {
       return result.data

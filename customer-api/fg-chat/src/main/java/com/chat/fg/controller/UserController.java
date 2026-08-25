@@ -23,10 +23,9 @@ public class UserController {
      * 根据用户 Id 查询用户信息
      * @param uId 用户 Id
      * */
-    @GetMapping("/{uId}/{channelType}")
+    @GetMapping("/{uId}")
     public R<UserInfoVO> getUserInfoByUId(
-            @PathVariable Long uId,
-            @PathVariable String channelType
+            @PathVariable Long uId
     ) {
         UserInfoVO userInfoVO = userService.getUserInfoByUId(uId);
 

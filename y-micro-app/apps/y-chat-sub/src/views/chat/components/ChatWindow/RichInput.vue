@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, toRefs } from 'vue'
 import { Picture, Pointer, ChatRound } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { uploadImage } from '@/api/upload'
 import { compressImage, isOversize } from '@/utils/image'
 
 const props = defineProps<{
-  disabled?: boolean
+  disabled?: boolean,
+  isSystemUser: boolean,
 }>()
 
 const emit = defineEmits<{
@@ -15,6 +16,7 @@ const emit = defineEmits<{
   /** 发送图片消息 */
   (e: 'send-image', url: string): void
 }>()
+const { isSystemUser } = toRefs(props)
 
 const inputRef = ref<HTMLDivElement | null>(null)
 const sendingImage = ref(false)
@@ -148,6 +150,8 @@ const onFileChange = (e: Event) => {
 const onPaste = (e: ClipboardEvent) => {
   if (props.disabled || sendingImage.value) return
 
+  if (isSystemUser.value) return
+
   const items = e.clipboardData?.items
   if (!items) return
 
@@ -260,7 +264,7 @@ defineExpose({
         </div>
       </div>
 
-      <div class="toolbar-item">
+      <div v-if="!isSystemUser" class="toolbar-item">
         <el-button
           link
           :disabled="disabled || sendingImage"
@@ -278,7 +282,7 @@ defineExpose({
         />
       </div>
 
-      <div class="toolbar-item">
+      <div v-if="!isSystemUser" class="toolbar-item">
         <el-button
           link
           :disabled="disabled || sendingImage"
