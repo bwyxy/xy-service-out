@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xy.common.core.domain.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,6 +37,8 @@ public class ForumBoard extends BaseEntity implements Serializable {
     /**
      * 板块名称
      */
+    @NotNull(message = "版块名称不能 null")
+    @NotBlank(message = "版块名称不能为空")
     private String name;
 
     /**

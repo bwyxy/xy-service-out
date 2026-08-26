@@ -1,12 +1,11 @@
 package com.chat.fg.forum.controller;
 
-import com.chat.fg.forum.service.IForumCommentService;
 import com.xy.common.core.domain.R;
+import com.xy.system.service.forum.IForumCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * 论坛评论 控制层
@@ -22,7 +21,8 @@ public class ForumCommentController {
      * 评论列表
      */
     @GetMapping("/post/{postId}")
-    public R<List<Map<String, Object>>> listByPost(@PathVariable Long postId) {
-        return R.ok(commentService.listByPost(postId));
+    public R<Object> listByPost(@PathVariable Long postId) {
+        // TODO 后续实现评论列表业务
+        return R.ok(new ArrayList<>());
     }
 }

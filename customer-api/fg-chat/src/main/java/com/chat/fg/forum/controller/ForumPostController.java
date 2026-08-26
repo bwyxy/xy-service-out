@@ -1,14 +1,12 @@
 package com.chat.fg.forum.controller;
 
 import com.chat.fg.forum.pojo.dto.CreatePostDTO;
-import com.chat.fg.forum.service.IForumPostService;
 import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.core.domain.R;
+import com.xy.system.service.forum.IForumPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 论坛帖子 控制层
@@ -26,14 +24,16 @@ public class ForumPostController {
     @PostMapping
     public R<Long> create(@Valid @RequestBody CreatePostDTO dto) {
         Long currentUid = SecurityUtils.getUId();
-        return R.ok(postService.create(currentUid, dto));
+        // TODO 后续实现帖子发布业务
+        return R.ok(null);
     }
 
     /**
      * 帖子详情
      */
     @GetMapping("/{postId}")
-    public R<Map<String, Object>> detail(@PathVariable Long postId) {
-        return R.ok(postService.detail(postId));
+    public R<Object> detail(@PathVariable Long postId) {
+        // TODO 后续实现帖子详情业务
+        return R.ok(null);
     }
 }
