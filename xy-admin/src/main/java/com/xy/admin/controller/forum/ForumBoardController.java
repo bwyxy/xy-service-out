@@ -23,9 +23,9 @@ public class ForumBoardController {
      * 查询论坛版块列表
      * */
     @PostMapping("/boards/list")
-    public PageResult<ForumBoard> getForumBoards(@RequestBody ForumBoard forumBoard) {
+    public R<PageResult<ForumBoard>> getForumBoards(@RequestBody ForumBoard forumBoard) {
 
-        return forumBoardService.selectForumBoardList(forumBoard);
+        return R.ok(forumBoardService.selectForumBoardList(forumBoard));
     }
 
     /**
