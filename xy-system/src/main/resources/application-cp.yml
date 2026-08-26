@@ -3,6 +3,7 @@
 # ===========================================
 xy:
   wk-api-url: ${WK_API_URL}
+  wk-wss-url: ${WK_WSS_API}
 
 ai:
   embedding:

@@ -48,3 +48,15 @@ jwt:
 xy-ai:
   apiKey: ${XY_AI_API_KEY}
   secret: ${XY_AI_SECRET}
+
+# 论坛业务配置
+forum:
+  # 发帖限流：同一用户 5 分钟最多 3 篇
+  post-limit-per-user: 3
+  post-limit-window-minutes: 5
+  # 评论限流：同一用户 1 分钟最多 10 条
+  comment-limit-per-user: 10
+  comment-limit-window-minutes: 1
+  # 搜索限流：同一 IP 1 分钟最多 30 次
+  search-limit-per-ip: 30
+  search-limit-window-minutes: 1

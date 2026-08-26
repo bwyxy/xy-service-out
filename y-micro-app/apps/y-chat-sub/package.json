@@ -15,6 +15,7 @@
     "@xy/qiankun-communication": "workspace:*",
     "@xy/utils": "workspace:*",
     "animate.css": "catalog:",
+    "cropper-next-vue": "^0.4.0",
     "easyjssdk": "^2.0.1",
     "element-plus": "catalog:",
     "js-cookie": "catalog:",

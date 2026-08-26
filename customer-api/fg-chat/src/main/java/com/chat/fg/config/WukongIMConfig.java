@@ -3,6 +3,7 @@ package com.chat.fg.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,15 @@ public class WukongIMConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "wukongim")
-    public WukongIMProperties wukongIMProperties() {
+    public WukongIMProperties wukongIMProperties(
+            @Value("${xy.wk-api-url}") String wkApiUrl,
+            @Value("${xy.wk-wss-url}") String wkWSSUrl
+    ) {
+
+        WukongIMProperties properties = new WukongIMProperties();
+        properties.setApiUrl(wkApiUrl);
+        properties.setWsUrl(wkWSSUrl);
+
         return new WukongIMProperties();
     }
 
@@ -38,9 +47,9 @@ public class WukongIMConfig {
     @Data
     public static class WukongIMProperties {
         /** API 地址 */
-        private String apiUrl = "https://www.bwyxy.cn/wk-api";
+        private String apiUrl;
         /** WebSocket 地址 */
-        private String wsUrl = "wss://www.bwyxy.cn/wk/ws";
+        private String wsUrl;
         /** 管理员密钥 */
         private String managerToken = "";
     }
