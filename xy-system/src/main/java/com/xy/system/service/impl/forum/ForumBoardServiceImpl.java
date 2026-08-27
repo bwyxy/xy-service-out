@@ -18,8 +18,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 论坛板块 Service 实现
@@ -48,6 +52,56 @@ public class ForumBoardServiceImpl extends ServiceImpl<ForumBoardMapper, ForumBo
         Page<ForumBoard> page = this.page(new Page<>(forumBoard.getPageNum(), forumBoard.getPageSize()), queryWrapper);
 
         return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+    }
+
+    /**
+     * 查询版块树
+     * */
+    @Override
+    public List<ForumBoard> selectForumBoardTree(ForumBoard forumBoard) {
+        LambdaQueryWrapper<ForumBoard> queryWrapper = new LambdaQueryWrapper<>();
+
+        if (forumBoard != null && forumBoard.getStatus() != null) {
+            queryWrapper.eq(ForumBoard::getStatus, forumBoard.getStatus());
+        }
+
+        // 默认按 sortOrder 升序、createTime 升序
+        queryWrapper.orderByAsc(ForumBoard::getSortOrder)
+                .orderByAsc(ForumBoard::getCreateTime);
+
+        List<ForumBoard> allBoards = list(queryWrapper);
+        if (allBoards.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 按 parentId 分组
+        Map<Long, List<ForumBoard>> parentGroup = allBoards.stream()
+                .collect(Collectors.groupingBy(b -> b.getParentId() != null ? b.getParentId() : 0L));
+
+        // 构建树：从顶层 parentId = 0 开始递归挂载子节点
+        List<ForumBoard> rootBoards = parentGroup.getOrDefault(0L, new ArrayList<>());
+        rootBoards.sort(Comparator.comparing(ForumBoard::getSortOrder, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(ForumBoard::getCreateTime, Comparator.nullsLast(Comparator.naturalOrder())));
+
+        for (ForumBoard root : rootBoards) {
+            buildChildren(root, parentGroup);
+        }
+
+        return rootBoards;
+    }
+
+    /**
+     * 递归挂载子版块
+     */
+    private void buildChildren(ForumBoard parent, Map<Long, List<ForumBoard>> parentGroup) {
+        List<ForumBoard> children = parentGroup.getOrDefault(parent.getBoardId(), new ArrayList<>());
+        children.sort(Comparator.comparing(ForumBoard::getSortOrder, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(ForumBoard::getCreateTime, Comparator.nullsLast(Comparator.naturalOrder())));
+        parent.setChildren(children);
+
+        for (ForumBoard child : children) {
+            buildChildren(child, parentGroup);
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.xy.common.entity.forum;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xy.common.core.domain.BaseEntity;
@@ -11,6 +12,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 论坛板块表 t_forum_board
@@ -32,7 +34,7 @@ public class ForumBoard extends BaseEntity implements Serializable {
     /**
      * 父板块ID，0-顶级
      */
-    private Long parentId;
+    private Long parentId = 0L;
 
     /**
      * 板块名称
@@ -75,4 +77,10 @@ public class ForumBoard extends BaseEntity implements Serializable {
      * 关注数
      */
     private Long followCount;
+
+    /**
+     * 子列表
+     * */
+    @TableField(exist = false)
+    private List<ForumBoard> children;
 }

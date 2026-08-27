@@ -88,6 +88,11 @@ const columns = reactive<ColumnType[]>([
     prop: 'boardId',
   },
   {
+    key: 'parentId',
+    label: '父版块ID',
+    prop: 'parentId',
+  },
+  {
     key: 'name',
     label: '版块名称',
     prop: 'name',

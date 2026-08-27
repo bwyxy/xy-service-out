@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 论坛板块 控制层
  */
@@ -16,6 +18,14 @@ import org.springframework.web.bind.annotation.*;
 public class ForumBoardController {
 
     private final IForumBoardService boardService;
+
+    /**
+     * 查询板块树
+     */
+    @GetMapping("/tree")
+    public R<List<ForumBoard>> tree(ForumBoard forumBoard) {
+        return R.ok(boardService.selectForumBoardTree(forumBoard));
+    }
 
     /**
      * 更新板块

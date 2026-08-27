@@ -1,6 +1,7 @@
 package com.xy.common.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -41,6 +42,7 @@ public class SysOperLog extends BaseEntity {
     /**
      * 业务类型数组
      * */
+    @TableField(exist = false)
     private Integer[] businessTypes;
 
     /**

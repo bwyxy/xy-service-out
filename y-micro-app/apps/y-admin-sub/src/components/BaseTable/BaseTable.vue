@@ -115,7 +115,7 @@ watch(() => columns.value, () => {
           :key="index"
           :column="item"
       />
-      <el-table-column label="操作" align="center">
+      <el-table-column fixed="right" min-width="180" label="操作" align="center">
         <template #default="{ row }">
           <slot name="operate" :row="row"></slot>
         </template>

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.forum.ForumBoard;
 
+import java.util.List;
+
 /**
  * 论坛板块 Service 接口
  */
@@ -13,6 +15,11 @@ public interface IForumBoardService extends IService<ForumBoard> {
      * 查询版块列表
      * */
     PageResult<ForumBoard> selectForumBoardList(ForumBoard forumBoard);
+
+    /**
+     * 查询版块树
+     * */
+    List<ForumBoard> selectForumBoardTree(ForumBoard forumBoard);
 
     /**
      * 添加版块

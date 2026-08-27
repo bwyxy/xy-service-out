@@ -2,6 +2,7 @@
 
 defineProps<{
   column: ColumnType,
+  width?: number | string
 }>()
 </script>
 
@@ -9,7 +10,7 @@ defineProps<{
   <el-table-column
       :label="column.label"
       :prop="column.prop"
-      :width="column.width || ''"
+      :width="column.width || width || ''"
       align="center"
       :show-overflow-tooltip="true"
   >
