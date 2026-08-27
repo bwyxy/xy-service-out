@@ -18,4 +18,14 @@ public interface IForumPostService extends IService<ForumPost> {
      * 审核或拒绝
      * */
     String auditPost(Long postId, int status);
+
+    /**
+     * 帖子置顶或取消
+     * */
+    void topPost(Long postId);
+
+    /**
+     * 帖子加精或取消
+     * */
+    void essencePost(Long postId);
 }

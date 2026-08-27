@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.forum.ForumPost;
+import com.xy.common.enums.YesNoEnum;
 import com.xy.common.enums.forum.PostStatus;
 import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
@@ -47,12 +48,7 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
      * 审核通过或拒绝
      * */
     public String auditPost(Long postId, int status) {
-
-        ForumPost forumPost = getForumPost(postId);
-
-        if (forumPost == null) {
-            throw new ServiceException("查无帖子信息");
-        }
+        validatePost(postId);
 
         if (status != PostStatus.published.getCode() || status != PostStatus.refuse.getCode()) {
             throw new ServiceException("传入帖子状态错误");
@@ -71,6 +67,63 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
         } else {
             return "帖子已发布";
         }
+    }
+
+    /**
+     * 帖子置顶或取消
+     * */
+    public void topPost(Long postId) {
+        ForumPost forumPost = validatePost(postId);
+
+        LocalDateTime now = LocalDateTime.now();
+        LambdaUpdateWrapper<ForumPost> updateWrapper = new LambdaUpdateWrapper<>();
+        // 是否置顶
+        int isTop = forumPost.getIsTop();
+        updateWrapper.eq(ForumPost::getPostId, postId);
+        if (isTop == YesNoEnum.YES.getCode()) {
+            updateWrapper.set(ForumPost::getIsTop, YesNoEnum.NO.getCode());
+        } else {
+            updateWrapper.set(ForumPost::getIsTop, YesNoEnum.YES.getCode());
+        }
+        updateWrapper.set(ForumPost::getUpdateTime, now);
+        update(updateWrapper);
+    }
+
+    /**
+     * 帖子加精或取消
+     * */
+    public void essencePost(Long postId) {
+        ForumPost forumPost = validatePost(postId);
+
+        LocalDateTime now = LocalDateTime.now();
+        LambdaUpdateWrapper<ForumPost> updateWrapper = new LambdaUpdateWrapper<>();
+        // 是否是精品
+        int isEssence = forumPost.getIsEssence();
+        updateWrapper.eq(ForumPost::getPostId, postId);
+        if (isEssence == YesNoEnum.YES.getCode()) {
+            updateWrapper.set(ForumPost::getIsEssence, YesNoEnum.NO.getCode());
+        } else {
+            updateWrapper.set(ForumPost::getIsEssence, YesNoEnum.YES.getCode());
+        }
+        updateWrapper.set(ForumPost::getUpdateTime, now);
+        update(updateWrapper);
+    }
+
+    /**
+     * 验证信息传入帖子 ID正确性并返回帖子信息
+     * */
+    private ForumPost validatePost(Long postId) {
+        if (postId == null) {
+            throw new ServiceException("帖子 ID不能为空");
+        }
+
+        ForumPost forumPost = getForumPost(postId);
+
+        if (forumPost == null) {
+            throw new ServiceException("查无帖子信息");
+        }
+
+        return forumPost;
     }
 
     /**
