@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 悟空 IM系统账号
+ * */
 @RestController
 @RequestMapping("/wk")
 @RequiredArgsConstructor

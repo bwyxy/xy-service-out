@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 内容配置 控制层
+ * 内容配置
  * */
 @RestController
 @RequestMapping("/config")

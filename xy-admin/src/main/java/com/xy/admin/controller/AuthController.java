@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 认证控制器
+ * 认证
  * */
 @Slf4j
 @RestController

@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 角色管理 控制层
+ * 角色管理
  * */
 @RestController
 @RequestMapping("/system/role")

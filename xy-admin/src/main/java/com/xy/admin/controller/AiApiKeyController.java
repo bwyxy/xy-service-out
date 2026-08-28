@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * AI API 密钥管理控制层
+ * AI API 密钥管理
  */
 @RestController
 @RequestMapping("/ai/api-key")

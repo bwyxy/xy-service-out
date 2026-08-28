@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- *
+ * 博客文章管理
  * */
 @RestController
 @RequestMapping("/article")

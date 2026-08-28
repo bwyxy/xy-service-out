@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 博客文章分类
+ * */
 @RestController
 @RequestMapping("/category")
 @RequiredArgsConstructor

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * AI 知识库后台管理控制层
+ * AI 知识库后台管理
  */
 @RestController
 @RequestMapping("/admin/ai/knowledge")

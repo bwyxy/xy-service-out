@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 论坛版块 控制层
+ * 论坛版块
  * */
 @RestController
 @RequestMapping("/admin/forum")

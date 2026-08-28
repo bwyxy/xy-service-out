@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * AI 模型提供者后台管理控制层
+ * AI 模型提供者后台管理
  */
 @RestController
 @RequestMapping("/admin/ai/model")

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 在线用户管理 控制层
+ * 在线用户管理
  * */
 @RestController
 @RequestMapping("/system/online")

@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * 文件资源
+ * */
 @RestController
 @RequestMapping("/upload")
 @RequiredArgsConstructor

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 论坛帖子 控制层
+ * 论坛帖子
  * */
 @RestController
 @RequestMapping("/admin/forum")

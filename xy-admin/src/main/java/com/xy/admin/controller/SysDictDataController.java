@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 字典数据管理 控制层
+ * 字典数据管理
  * */
 @RestController
 @RequestMapping("/system/dict/data")

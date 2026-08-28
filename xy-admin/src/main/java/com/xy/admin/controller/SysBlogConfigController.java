@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 博客配置
+ * */
 @RestController
 @RequestMapping("/blog")
 @RequiredArgsConstructor

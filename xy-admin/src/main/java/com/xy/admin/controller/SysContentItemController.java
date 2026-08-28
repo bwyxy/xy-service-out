@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 内容通用项
+ * */
 @RestController
 @RequestMapping("/contentItem")
 @RequiredArgsConstructor

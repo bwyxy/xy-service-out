@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 字典类型管理 控制层
+ * 字典类型管理
  * */
 @RestController
 @RequestMapping("/system/dict")

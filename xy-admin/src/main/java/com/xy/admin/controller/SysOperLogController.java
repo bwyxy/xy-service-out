@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 操作日志管理 控制层
+ * 操作日志管理
  * */
 @RestController
 @RequestMapping("/system/operlog")

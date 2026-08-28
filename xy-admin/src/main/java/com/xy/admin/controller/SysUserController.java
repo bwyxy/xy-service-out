@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 系统用户管理 控制层
+ * 系统用户管理
  * */
 @RestController
 @RequestMapping("/system/user")
