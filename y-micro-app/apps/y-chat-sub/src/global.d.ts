@@ -2,7 +2,7 @@
  * 论坛帖子
  */
 interface ForumPost {
-    postId?: number
+    postId: number
     authorId?: number
     avatar?: string
     nickname?: string
@@ -15,6 +15,7 @@ interface ForumPost {
     status?: number
     visibility?: number
     isTop?: number
+    isLike?: number
     isEssence?: number
     viewCount?: number
     likeCount?: number
@@ -51,4 +52,17 @@ interface R<T> {
     msg: string
 
     data: T
+}
+
+interface PageResult<T> {
+
+    pageNum: number
+
+    pageSize: number
+
+    pages: number
+
+    total: number
+
+    list: T
 }

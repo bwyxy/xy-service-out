@@ -7,7 +7,6 @@ import com.xy.common.entity.forum.ForumBoard;
 import com.xy.system.service.forum.IForumBoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +19,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ForumBoardController {
 
-    @Autowired
-    private IBoardService boardService;
+    private final IForumBoardService forumBoardService;
+
+    private final IBoardService boardService;
+
+    /**
+     * 查询板块树
+     */
+    @GetMapping("/board/tree")
+    public R<List<ForumBoard>> tree(ForumBoard forumBoard) {
+        return R.ok(forumBoardService.selectForumBoardTree(forumBoard));
+    }
 
     /**
      * 查询板块列表
      */
     @PostMapping("/boards")
     public R<List<ForumBoard>> list(@RequestBody BoardDTO boardDTO) {
-
         return R.ok(boardService.selectBoards(boardDTO));
+    }
+
+    /**
+     * 更新板块
+     */
+    @PutMapping("/board/{boardId}")
+    public R<Void> update(@PathVariable Long boardId, @Valid @RequestBody ForumBoard forumBoard) {
+        forumBoard.setBoardId(boardId);
+        forumBoardService.updateForumBoard(forumBoard);
+        return R.ok();
     }
 }

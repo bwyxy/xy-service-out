@@ -14,7 +14,7 @@ const boardId = ref<number>(0)
     <board-tabs v-model="boardId" />
 
     <div class="forum-box-content">
-      <forum-list />
+      <forum-list :boardId="boardId" />
     </div>
   </div>
 </template>

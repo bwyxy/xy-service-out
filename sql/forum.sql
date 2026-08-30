@@ -47,6 +47,9 @@ CREATE TABLE t_forum_post (
                               INDEX idx_route (route_key)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '论坛帖子表';
 
+insert into t_forum_post (author_id, board_id, title, summary, content, content_type, cover_image, status, visibility, is_top, is_essence, view_count, like_count, comment_count, favorite_count, share_count, route_key, published_time, create_time, update_time)
+    values (10000000, 4, '这是第一篇帖子', '', '', 2, '', 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, now(), now(), now());
+
 -- 评论表
 CREATE TABLE t_forum_comment (
                                  comment_id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '评论ID',

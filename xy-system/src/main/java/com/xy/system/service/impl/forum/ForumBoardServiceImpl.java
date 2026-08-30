@@ -65,7 +65,6 @@ public class ForumBoardServiceImpl extends ServiceImpl<ForumBoardMapper, ForumBo
             queryWrapper.eq(ForumBoard::getStatus, forumBoard.getStatus());
         }
 
-        // 默认按 sortOrder 升序、createTime 升序
         queryWrapper.orderByAsc(ForumBoard::getSortOrder)
                 .orderByAsc(ForumBoard::getCreateTime);
 
@@ -74,11 +73,9 @@ public class ForumBoardServiceImpl extends ServiceImpl<ForumBoardMapper, ForumBo
             return new ArrayList<>();
         }
 
-        // 按 parentId 分组
         Map<Long, List<ForumBoard>> parentGroup = allBoards.stream()
                 .collect(Collectors.groupingBy(b -> b.getParentId() != null ? b.getParentId() : 0L));
 
-        // 构建树：从顶层 parentId = 0 开始递归挂载子节点
         List<ForumBoard> rootBoards = parentGroup.getOrDefault(0L, new ArrayList<>());
         rootBoards.sort(Comparator.comparing(ForumBoard::getSortOrder, Comparator.nullsLast(Comparator.naturalOrder()))
                 .thenComparing(ForumBoard::getCreateTime, Comparator.nullsLast(Comparator.naturalOrder())));

@@ -10,12 +10,34 @@ import com.xy.common.entity.forum.ForumPost;
 public interface IForumPostService extends IService<ForumPost> {
 
     /**
-     * 查询论坛列表
+     * 查询帖子列表（支持分页、排序、条件筛选）
      * */
     PageResult<ForumPost> getForumPosts(ForumPost forumPost);
 
     /**
-     * 审核或拒绝
+     * 查询帖子详情
+     * */
+    ForumPost getForumPostDetail(Long postId);
+
+    /**
+     * 点赞 / 取消点赞
+     *
+     * @return true-点赞 false-取消点赞
+     * */
+    boolean likePost(Long postId, Long uId);
+
+    /**
+     * 查询用户是否已点赞
+     * */
+    boolean hasLiked(Long postId, Long uId);
+
+    /**
+     * 增加帖子浏览量（带防重复）
+     * */
+    void incrementViewCount(Long postId, Long uId);
+
+    /**
+     * 审核通过或拒绝
      * */
     String auditPost(Long postId, int status);
 

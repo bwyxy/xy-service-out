@@ -1,53 +1,60 @@
 <script setup lang="ts">
 import { V3waterfall } from 'v3-waterfall'
 import 'v3-waterfall/dist/style.css'
-import {computed, ref} from "vue";
+import {computed, reactive, ref, watch, toRefs} from "vue";
+import { getPosts, setPostLike, hasPostLike } from '@/api/forum.ts'
 
-const forums = ref<ForumPost[]>([{
-  postId: 0,
-  authorId: 0,
-  boardId: 0,
-  title: '',
-  summary: '',
-  content: '',
-  contentType: 0,
-  coverImage: '',
-  status: 0,
-  visibility: 0,
-  isTop: 0,
-  isEssence: 0,
-  viewCount: 0,
-  likeCount: 0,
-  commentCount: 0,
-  favoriteCount: 0,
-  shareCount: 0,
-  publishedTime: '',
-  createTime: '',
-  updateTime: ''
-},{
-  postId: 0,
-  authorId: 0,
-  boardId: 0,
-  title: '',
-  summary: '',
-  content: '',
-  contentType: 0,
-  coverImage: '',
-  status: 0,
-  visibility: 0,
-  isTop: 0,
-  isEssence: 0,
-  viewCount: 0,
-  likeCount: 0,
-  commentCount: 0,
-  favoriteCount: 0,
-  shareCount: 0,
-  publishedTime: '',
-  createTime: '',
-  updateTime: ''
-}])
+const props = defineProps<{
+  boardId?: number
+}>()
+const params = reactive({
+  pageNum: 1,
+  pageSize: 30,
+  boardId: 0
+})
+const forums = ref<ForumPost[]>([])
 const forumListRefs = ref<HTMLDivElement>()
+const { boardId }  = toRefs(props)
 
+const getPostList = async () => {
+  const response = await getPosts(params)
+
+  if (response.code !== 200) return;
+
+  if (response.data.pageNum !== 1) {
+    forums.value.push(...response.data.list)
+  } else {
+    forums.value = response.data.list
+  }
+}
+/** 点赞 */
+const isLikeLoading = ref<boolean>(false)
+const handleLike = async (row :ForumPost) => {
+  if (isLikeLoading.value) return;
+  isLikeLoading.value = true
+  const response = await setPostLike(row.postId)
+
+  if (response.code !== 200) {
+    isLikeLoading.value = false
+    return
+  }
+
+  const res = await hasPostLike(row.postId);
+
+  if (res.code === 200) {
+    row.isLike = Number(res.data)
+    let count = row.likeCount || 0
+    if (res.data) {
+      count++
+    } else {
+      if (count > 0) {
+        count--
+      }
+    };
+    row.likeCount = count
+  }
+  isLikeLoading.value = false
+}
 /** 设置瀑布流item 宽度 */
 const getColWidth = computed(() => {
   const colWidth = forumListRefs.value?.clientWidth || window.innerWidth
@@ -61,9 +68,15 @@ const setLikeCount = (count: number) => {
   if (count >= 9999) {
     return '9999+'
   } else {
-    return count || 9999
+    return count
   }
 }
+
+watch(() => boardId.value, () => {
+  params.boardId = boardId.value || 0
+  params.pageNum = 1
+  getPostList()
+}, {immediate: true})
 </script>
 
 <template>
@@ -95,7 +108,9 @@ const setLikeCount = (count: number) => {
               </el-image>
               <span>{{ item.nickname || '未知用户' }}</span>
             </div>
-            <div class="post-like">
+            <div class="post-like" @click="handleLike(item)">
+              <img v-if="!item.isLike" src="@/assets/images/like.png" alt="like" />
+              <img v-else src="@/assets/images/like_avtive.png" alt="like_avtive" />
               <span>{{ setLikeCount(item.likeCount || 0) }}</span>
             </div>
           </div>
@@ -175,6 +190,11 @@ const setLikeCount = (count: number) => {
     .post-like {
       display: flex;
       cursor: pointer;
+      img {
+        width: 10px;
+        height: 10px;
+        margin-right: 2px;
+      }
       span {
         font-size: 10px;
         color: #888;
