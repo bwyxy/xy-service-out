@@ -27,6 +27,12 @@ const routes = [
                 meta: { title: '用户' }
             },
             {
+                path: '/forum',
+                name: 'ForumPage',
+                component: () => import('@/views/forum/index.vue'),
+                meta: { title: '论坛' }
+            },
+            {
                 path: '/notice',
                 name: 'NoticePage',
                 component: () => import('@/views/notice/index.vue'),

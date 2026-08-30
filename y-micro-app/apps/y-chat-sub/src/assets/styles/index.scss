@@ -1,6 +1,7 @@
 @use "variables" as *;
 @use "mixins" as *;
 @use "element-plus" as *;
+@use "reset" as *;
 
 :root {
   --vw: calc(100vw / 1920);
@@ -97,4 +98,12 @@ body {
 
 .upload-avatar-dialog {
   width: size(480) !important;
+}
+
+ul {
+  li {
+    &::marker {
+      display: none;
+    }
+  }
 }

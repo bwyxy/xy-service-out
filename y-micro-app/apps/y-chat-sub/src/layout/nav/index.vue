@@ -18,7 +18,7 @@ const navs = reactive([
     name: '好友'
   },
   {
-    path: '',
+    path: '/forum',
     icon: Orange,
     name: '友圈'
   }
