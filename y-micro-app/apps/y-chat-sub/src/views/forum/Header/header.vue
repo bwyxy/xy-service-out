@@ -1,24 +1,47 @@
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import { Search, UserFilled } from '@element-plus/icons-vue'
+import { getBoards } from '@/api/forum.ts'
+import useForumStore from "@/store/forum.ts";
 
-const tabs = reactive([
-  {
-    key: 'recommend',
-    name: '推荐'
-  },
+const tabs = reactive<ForumBoard[]>([
   {
     key: 'focus',
     name: '关注'
   }
 ])
 const tabActive = ref<string>('recommend')
+const forumStore = useForumStore()
+
+const getBoardList = async () => {
+  const response = await getBoards({})
+
+  if (response.code === 200) {
+    response.data.map((item) => {
+      item.key = item.slug
+    })
+    setCurrentBoardId(response.data)
+    tabs.push(...response.data)
+  }
+}
+/** 设置当前版块Id */
+const setCurrentBoardId = (list : ForumBoard[]) => {
+  const boards = list.find(item => item.key === tabActive.value)
+
+  if (boards) {
+    forumStore.currentBoardId = boards.boardId || 0
+  } else if (list.length > 0) {
+    forumStore.currentBoardId = list[0].boardId
+  }
+}
+
+onMounted(() => getBoardList())
 </script>
 
 <template>
   <div class="forum-header">
     <div class="search-box">
-      <el-input :prefix-icon="Search" />
+      <el-input :prefix-icon="Search" placeholder="查询帖子, 热点" />
     </div>
 
     <ul class="forum-header-content">
@@ -35,7 +58,7 @@ const tabActive = ref<string>('recommend')
     <div class="forum-header-rt">
       <div class="rt-item">
         <el-icon><UserFilled /></el-icon>
-        <span>个人中心</span>
+        <span>创作中心</span>
       </div>
     </div>
   </div>
@@ -56,6 +79,16 @@ const tabActive = ref<string>('recommend')
     border-radius: size(6);
     position: absolute;
     left: size(42);
+    :deep(.el-input) {
+      height: 100%;
+      .el-input__wrapper {
+        background: rgba(0, 0, 0, .04);
+        box-shadow: none;
+      }
+      .el-input__inner {
+        height: 100%;
+      }
+    }
   }
 
   &-content {

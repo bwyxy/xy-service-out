@@ -21,6 +21,7 @@
     "js-cookie": "catalog:",
     "pinia": "catalog:",
     "sass": "catalog:",
+    "v3-waterfall": "^2.0.1",
     "vite-plugin-qiankun": "catalog:",
     "vue": "catalog:vue3",
     "vue-router": "catalog:vue-router5",
