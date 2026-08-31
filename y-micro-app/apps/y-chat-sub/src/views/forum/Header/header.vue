@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
+import { useRouter } from "vue-router";
 import { Search, UserFilled } from '@element-plus/icons-vue'
 import { getBoards } from '@/api/forum.ts'
 import useForumStore from "@/store/forum.ts";
 
-const tabs = reactive<ForumBoard[]>([
-  {
-    key: 'focus',
-    name: '关注'
-  }
-])
+const router = useRouter()
+const tabs = reactive<ForumBoard[]>([])
 const tabActive = ref<string>('recommend')
 const forumStore = useForumStore()
 
@@ -34,6 +31,11 @@ const setCurrentBoardId = (list : ForumBoard[]) => {
     forumStore.currentBoardId = list[0].boardId
   }
 }
+const toPage = (url : string) => {
+  router.push({
+    path: url
+  })
+}
 
 onMounted(() => getBoardList())
 </script>
@@ -56,7 +58,7 @@ onMounted(() => getBoardList())
     </ul>
 
     <div class="forum-header-rt">
-      <div class="rt-item">
+      <div class="rt-item" @click="toPage('/creationCenter')">
         <el-icon><UserFilled /></el-icon>
         <span>创作中心</span>
       </div>

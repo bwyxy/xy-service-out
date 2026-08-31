@@ -45,6 +45,21 @@ public class ForumPostController {
     }
 
     /**
+     * 获取个人帖子
+     * */
+    @GetMapping("/me")
+    private R<PageResult<ForumPostVO>> mePosts(@RequestParam int page, @RequestParam int size) {
+        Long currentUid = SecurityUtils.getUId();
+
+        ForumPost forumPost = new ForumPost();
+        forumPost.setPageNum(page);
+        forumPost.setPageSize(size);
+        forumPost.setAuthorId(currentUid);
+
+        return R.ok(postService.getForumPosts(forumPost, null));
+    }
+
+    /**
      * 帖子详情
      */
     @GetMapping("/{postId}")

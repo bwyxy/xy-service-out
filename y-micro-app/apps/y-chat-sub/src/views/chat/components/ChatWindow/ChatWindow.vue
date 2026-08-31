@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, nextTick, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import useUserStore from '@/store/user.ts'
 import useChatStore from '@/store/chat.ts'
 import { MessageType } from '@/services/im/constants'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
-import { Warning } from '@element-plus/icons-vue'
 import RichInput from './RichInput.vue'
 import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 import MessageBox from "@/components/MessageBox/MessageBox.vue";
 
 const chatStore = useChatStore()
 const { activeContact, messages } = storeToRefs(chatStore)
-const { userInfo } = storeToRefs(useUserStore())
 
 const sending = ref(false)
 const isShowChatInfo = ref<boolean>(false)

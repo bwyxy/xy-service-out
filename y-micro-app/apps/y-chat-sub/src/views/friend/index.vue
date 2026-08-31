@@ -18,7 +18,7 @@ const fetchFriends = async () => {
 
 /** 获取联系人详细信息 */
 const getInfo = async (uId: string) => {
-  const response = await getUserInfo(uId)
+  const response = await getUserInfo(Number(uId))
 
   if (response.code === 200) {
     friendInfo.value = response.data

@@ -33,6 +33,12 @@ const routes = [
                 meta: { title: '论坛' }
             },
             {
+                path: '/creationCenter',
+                name: 'CreationCenterPage',
+                component: () => import('@/views/creationCenter/index.vue'),
+                meta: { title: '创作中心' }
+            },
+            {
                 path: '/notice',
                 name: 'NoticePage',
                 component: () => import('@/views/notice/index.vue'),

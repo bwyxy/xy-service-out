@@ -24,7 +24,8 @@
   padding: 0;
 }
 
-body {
+#app {
+  min-width: 1200px;
   background: linear-gradient(160deg, #d9f7be,#f6ffed, #fafafa , #fff);
 }
 

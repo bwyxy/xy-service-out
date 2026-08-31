@@ -32,6 +32,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .app-container {
   width: 100vw;
+  min-width: 100%;
   height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
