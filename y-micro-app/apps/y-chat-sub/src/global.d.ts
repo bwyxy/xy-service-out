@@ -15,7 +15,8 @@ interface ForumPost {
     status?: number
     visibility?: number
     isTop?: number
-    isLike?: number
+    liked?: boolean
+    favorited?: boolean
     isEssence?: number
     viewCount?: number
     likeCount?: number

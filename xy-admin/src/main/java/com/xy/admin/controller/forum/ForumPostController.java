@@ -24,7 +24,7 @@ public class ForumPostController {
     @PostMapping("/posts")
     public R<?> list(@RequestBody ForumPost post) {
 
-        return R.ok(forumPostService.getForumPosts(post));
+        return R.ok(forumPostService.getForumPosts(post, null));
     }
 
     /**

@@ -2,7 +2,7 @@
 import { V3waterfall } from 'v3-waterfall'
 import 'v3-waterfall/dist/style.css'
 import {computed, reactive, ref, watch, toRefs} from "vue";
-import { getPosts, setPostLike, hasPostLike } from '@/api/forum.ts'
+import { getPosts, setPostLike } from '@/api/forum.ts'
 
 const props = defineProps<{
   boardId?: number
@@ -39,20 +39,16 @@ const handleLike = async (row :ForumPost) => {
     return
   }
 
-  const res = await hasPostLike(row.postId);
-
-  if (res.code === 200) {
-    row.isLike = Number(res.data)
-    let count = row.likeCount || 0
-    if (res.data) {
-      count++
-    } else {
-      if (count > 0) {
-        count--
-      }
-    };
-    row.likeCount = count
+  row.liked = response.data
+  let count = row.likeCount || 0
+  if (response.data) {
+    count++
+  } else {
+    if (count > 0) {
+      count--
+    }
   }
+  row.likeCount = count
   isLikeLoading.value = false
 }
 /** 设置瀑布流item 宽度 */
@@ -109,7 +105,7 @@ watch(() => boardId.value, () => {
               <span>{{ item.nickname || '未知用户' }}</span>
             </div>
             <div class="post-like" @click="handleLike(item)">
-              <img v-if="!item.isLike" src="@/assets/images/like.png" alt="like" />
+              <img v-if="!item.liked" src="@/assets/images/like.png" alt="like" />
               <img v-else src="@/assets/images/like_avtive.png" alt="like_avtive" />
               <span>{{ setLikeCount(item.likeCount || 0) }}</span>
             </div>
@@ -160,7 +156,7 @@ watch(() => boardId.value, () => {
   }
 
   .post-title {
-    font-size: 18px;
+    font-size: 16px;
     color: #1f1f1f;
     letter-spacing: 1px;
     box-sizing: border-box;

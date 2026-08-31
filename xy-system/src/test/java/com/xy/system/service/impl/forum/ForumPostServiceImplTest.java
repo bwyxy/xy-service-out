@@ -8,10 +8,14 @@ import com.xy.common.core.domain.PageResult;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.session.Configuration;
 import com.xy.common.core.redis.RedisCache;
+import com.xy.common.entity.forum.ForumFavorite;
 import com.xy.common.entity.forum.ForumLike;
 import com.xy.common.entity.forum.ForumPost;
 import com.xy.common.enums.forum.PostStatus;
 import com.xy.common.exception.ServiceException;
+import com.xy.common.vo.forum.ForumPostVO;
+import com.xy.system.mapper.UserMapper;
+import com.xy.system.mapper.forum.ForumFavoriteMapper;
 import com.xy.system.mapper.forum.ForumLikeMapper;
 import com.xy.system.mapper.forum.ForumPostMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +46,12 @@ class ForumPostServiceImplTest {
     private ForumLikeMapper likeMapper;
 
     @Mock
+    private ForumFavoriteMapper favoriteMapper;
+
+    @Mock
+    private UserMapper userMapper;
+
+    @Mock
     private RedisCache redisCache;
 
     @InjectMocks
@@ -55,6 +65,8 @@ class ForumPostServiceImplTest {
         MapperBuilderAssistant builderAssistant = new MapperBuilderAssistant(configuration, "");
         TableInfoHelper.initTableInfo(builderAssistant, ForumPost.class);
         TableInfoHelper.initTableInfo(builderAssistant, ForumLike.class);
+        TableInfoHelper.initTableInfo(builderAssistant, ForumFavorite.class);
+        TableInfoHelper.initTableInfo(builderAssistant, com.xy.common.entity.User.class);
     }
 
     @Test
@@ -71,7 +83,7 @@ class ForumPostServiceImplTest {
 
         when(postMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class))).thenReturn(page);
 
-        PageResult<ForumPost> result = postService.getForumPosts(query);
+        PageResult<ForumPostVO> result = postService.getForumPosts(query, 100L);
 
         assertNotNull(result);
         assertEquals(1, result.getTotal());
@@ -84,7 +96,7 @@ class ForumPostServiceImplTest {
         ForumPost post = createPost(1L, "测试帖子", PostStatus.published.getCode());
         when(postMapper.selectById(1L)).thenReturn(post);
 
-        ForumPost result = postService.getForumPostDetail(1L);
+        ForumPostVO result = postService.getForumPostDetail(1L, 100L);
 
         assertNotNull(result);
         assertEquals("测试帖子", result.getTitle());
@@ -95,7 +107,7 @@ class ForumPostServiceImplTest {
         when(postMapper.selectById(1L)).thenReturn(null);
 
         ServiceException exception = assertThrows(ServiceException.class,
-                () -> postService.getForumPostDetail(1L));
+                () -> postService.getForumPostDetail(1L, 100L));
         assertEquals("帖子不存在", exception.getMessage());
     }
 
@@ -105,7 +117,7 @@ class ForumPostServiceImplTest {
         when(postMapper.selectById(1L)).thenReturn(post);
 
         ServiceException exception = assertThrows(ServiceException.class,
-                () -> postService.getForumPostDetail(1L));
+                () -> postService.getForumPostDetail(1L, 100L));
         assertEquals("帖子未发布或已被下架", exception.getMessage());
     }
 

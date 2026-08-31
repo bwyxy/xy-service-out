@@ -6,12 +6,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.redis.RedisCache;
+import com.xy.common.entity.User;
+import com.xy.common.entity.forum.ForumFavorite;
 import com.xy.common.entity.forum.ForumLike;
 import com.xy.common.entity.forum.ForumPost;
 import com.xy.common.enums.YesNoEnum;
 import com.xy.common.enums.forum.PostStatus;
 import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
+import com.xy.common.vo.forum.ForumPostVO;
+import com.xy.system.mapper.UserMapper;
+import com.xy.system.mapper.forum.ForumFavoriteMapper;
 import com.xy.system.mapper.forum.ForumLikeMapper;
 import com.xy.system.mapper.forum.ForumPostMapper;
 import com.xy.system.service.forum.IForumPostService;
@@ -21,7 +26,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 论坛帖子 Service 实现
@@ -43,11 +55,20 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
     private static final String LIKE_CACHE_KEY_PREFIX = "forum:like:post:";
 
     /**
+     * 缓存前缀：用户收藏状态
+     * */
+    private static final String FAVORITE_CACHE_KEY_PREFIX = "forum:favorite:post:";
+
+    /**
      * 缓存前缀：用户浏览记录
      * */
     private static final String VIEW_CACHE_KEY_PREFIX = "forum:view:post:";
 
     private final ForumLikeMapper likeMapper;
+
+    private final ForumFavoriteMapper favoriteMapper;
+
+    private final UserMapper userMapper;
 
     private final RedisCache redisCache;
 
@@ -55,7 +76,7 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
      * 查询帖子列表（支持分页、排序、条件筛选）
      * */
     @Override
-    public PageResult<ForumPost> getForumPosts(ForumPost forumPost) {
+    public PageResult<ForumPostVO> getForumPosts(ForumPost forumPost, Long currentUid) {
         long start = System.currentTimeMillis();
         LambdaQueryWrapper<ForumPost> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -87,19 +108,21 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
                 queryWrapper
         );
 
+        List<ForumPostVO> voList = enrichPostList(page.getRecords(), currentUid);
+
         long cost = System.currentTimeMillis() - start;
         if (cost > 300) {
             log.warn("查询帖子列表耗时超过300ms，cost={}ms", cost);
         }
 
-        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+        return PageResult.of(voList, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     /**
      * 查询帖子详情
      * */
     @Override
-    public ForumPost getForumPostDetail(Long postId) {
+    public ForumPostVO getForumPostDetail(Long postId, Long currentUid) {
         if (postId == null) {
             throw new ServiceException("帖子ID不能为空");
         }
@@ -114,7 +137,167 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
             throw new ServiceException("帖子未发布或已被下架");
         }
 
-        return forumPost;
+        return enrichPost(forumPost, currentUid);
+    }
+
+    /**
+     * 填充帖子列表的扩展信息
+     * */
+    private List<ForumPostVO> enrichPostList(List<ForumPost> posts, Long currentUid) {
+        if (posts == null || posts.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 批量查询作者信息
+        Set<Long> authorIds = posts.stream()
+                .map(ForumPost::getAuthorId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, User> userMap = batchGetUsers(authorIds);
+
+        // 批量查询当前用户点赞状态
+        Set<Long> postIds = posts.stream()
+                .map(ForumPost::getPostId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Long, Boolean> likeMap = batchGetLikeStatus(postIds, currentUid);
+
+        // 批量查询当前用户收藏状态
+        Map<Long, Boolean> favoriteMap = batchGetFavoriteStatus(postIds, currentUid);
+
+        return posts.stream()
+                .map(post -> {
+                    ForumPostVO vo = convertToVO(post);
+                    User user = userMap.get(post.getAuthorId());
+                    if (user != null) {
+                        vo.setNickname(user.getNickname());
+                        vo.setAvatar(user.getAvatar());
+                    }
+                    vo.setLiked(likeMap.getOrDefault(post.getPostId(), false));
+                    vo.setFavorited(favoriteMap.getOrDefault(post.getPostId(), false));
+                    return vo;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 填充单个帖子的扩展信息
+     * */
+    private ForumPostVO enrichPost(ForumPost post, Long currentUid) {
+        ForumPostVO vo = convertToVO(post);
+
+        User user = userMapper.selectById(post.getAuthorId());
+        if (user != null) {
+            vo.setNickname(user.getNickname());
+            vo.setAvatar(user.getAvatar());
+        }
+
+        if (currentUid != null) {
+            vo.setLiked(hasLiked(post.getPostId(), currentUid));
+            vo.setFavorited(hasFavorited(post.getPostId(), currentUid));
+        } else {
+            vo.setLiked(false);
+            vo.setFavorited(false);
+        }
+
+        return vo;
+    }
+
+    /**
+     * 批量查询作者信息
+     * */
+    private Map<Long, User> batchGetUsers(Set<Long> authorIds) {
+        if (authorIds == null || authorIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(User::getUId, authorIds);
+        return userMapper.selectList(wrapper).stream()
+                .collect(Collectors.toMap(User::getUId, Function.identity(), (a, b) -> a));
+    }
+
+    /**
+     * 批量查询点赞状态
+     * */
+    private Map<Long, Boolean> batchGetLikeStatus(Set<Long> postIds, Long currentUid) {
+        if (postIds == null || postIds.isEmpty() || currentUid == null) {
+            return Collections.emptyMap();
+        }
+
+        LambdaQueryWrapper<ForumLike> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ForumLike::getTargetType, LIKE_TARGET_POST)
+                .eq(ForumLike::getUId, currentUid)
+                .in(ForumLike::getTargetId, postIds)
+                .eq(ForumLike::getStatus, 1);
+
+        return likeMapper.selectList(wrapper).stream()
+                .collect(Collectors.toMap(ForumLike::getTargetId, like -> true, (a, b) -> a));
+    }
+
+    /**
+     * 批量查询收藏状态
+     * */
+    private Map<Long, Boolean> batchGetFavoriteStatus(Set<Long> postIds, Long currentUid) {
+        if (postIds == null || postIds.isEmpty() || currentUid == null) {
+            return Collections.emptyMap();
+        }
+
+        LambdaQueryWrapper<ForumFavorite> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ForumFavorite::getUId, currentUid)
+                .in(ForumFavorite::getPostId, postIds);
+
+        return favoriteMapper.selectList(wrapper).stream()
+                .collect(Collectors.toMap(ForumFavorite::getPostId, favorite -> true, (a, b) -> a));
+    }
+
+    /**
+     * 查询用户是否已点赞
+     * */
+    @Override
+    public boolean hasLiked(Long postId, Long uId) {
+        if (postId == null || uId == null) {
+            return false;
+        }
+
+        String likeKey = LIKE_CACHE_KEY_PREFIX + postId + ":" + uId;
+        Boolean cached = redisCache.getCacheObject(likeKey);
+        if (cached != null) {
+            return cached;
+        }
+
+        LambdaQueryWrapper<ForumLike> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ForumLike::getTargetType, LIKE_TARGET_POST)
+                .eq(ForumLike::getTargetId, postId)
+                .eq(ForumLike::getUId, uId)
+                .eq(ForumLike::getStatus, 1);
+        boolean liked = likeMapper.selectCount(wrapper) > 0;
+
+        redisCache.setCacheObject(likeKey, liked, 5, TimeUnit.MINUTES);
+        return liked;
+    }
+
+    /**
+     * 查询用户是否已收藏
+     * */
+    @Override
+    public boolean hasFavorited(Long postId, Long uId) {
+        if (postId == null || uId == null) {
+            return false;
+        }
+
+        String favoriteKey = FAVORITE_CACHE_KEY_PREFIX + postId + ":" + uId;
+        Boolean cached = redisCache.getCacheObject(favoriteKey);
+        if (cached != null) {
+            return cached;
+        }
+
+        LambdaQueryWrapper<ForumFavorite> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ForumFavorite::getPostId, postId)
+                .eq(ForumFavorite::getUId, uId);
+        boolean favorited = favoriteMapper.selectCount(wrapper) > 0;
+
+        redisCache.setCacheObject(favoriteKey, favorited, 5, TimeUnit.MINUTES);
+        return favorited;
     }
 
     /**
@@ -174,7 +357,7 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
             log.info("用户 {} 取消点赞帖子 {}", uId, postId);
         }
 
-        // 刷新缓存中的点赞状态，设置5分钟过期
+        // 刷新缓存中的点赞状态
         String likeKey = LIKE_CACHE_KEY_PREFIX + postId + ":" + uId;
         redisCache.setCacheObject(likeKey, isLiked, 5, TimeUnit.MINUTES);
 
@@ -209,32 +392,6 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
         update(updateWrapper);
 
         log.info("帖子 {} 浏览量 +1", postId);
-    }
-
-    /**
-     * 查询用户是否已点赞
-     * */
-    @Override
-    public boolean hasLiked(Long postId, Long uId) {
-        if (postId == null || uId == null) {
-            return false;
-        }
-
-        String likeKey = LIKE_CACHE_KEY_PREFIX + postId + ":" + uId;
-        Boolean cached = redisCache.getCacheObject(likeKey);
-        if (cached != null) {
-            return cached;
-        }
-
-        LambdaQueryWrapper<ForumLike> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(ForumLike::getTargetType, LIKE_TARGET_POST)
-                .eq(ForumLike::getTargetId, postId)
-                .eq(ForumLike::getUId, uId)
-                .eq(ForumLike::getStatus, 1);
-        boolean liked = likeMapper.selectCount(wrapper) > 0;
-
-        redisCache.setCacheObject(likeKey, liked, 5, TimeUnit.MINUTES);
-        return liked;
     }
 
     /**
@@ -344,5 +501,31 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
         updateWrapper.setSql("like_count = like_count + " + delta);
         updateWrapper.set(ForumPost::getUpdateTime, LocalDateTime.now());
         update(updateWrapper);
+    }
+
+    /**
+     * 实体转换为 VO
+     * */
+    private ForumPostVO convertToVO(ForumPost post) {
+        ForumPostVO vo = new ForumPostVO();
+        vo.setPostId(post.getPostId());
+        vo.setAuthorId(post.getAuthorId());
+        vo.setBoardId(post.getBoardId());
+        vo.setTitle(post.getTitle());
+        vo.setSummary(post.getSummary());
+        vo.setContent(post.getContent());
+        vo.setContentType(post.getContentType());
+        vo.setCoverImage(post.getCoverImage());
+        vo.setStatus(post.getStatus());
+        vo.setVisibility(post.getVisibility());
+        vo.setIsTop(post.getIsTop());
+        vo.setIsEssence(post.getIsEssence());
+        vo.setViewCount(post.getViewCount());
+        vo.setLikeCount(post.getLikeCount());
+        vo.setCommentCount(post.getCommentCount());
+        vo.setFavoriteCount(post.getFavoriteCount());
+        vo.setPublishedTime(post.getPublishedTime());
+        vo.setCreateTime(post.getCreateTime());
+        return vo;
     }
 }

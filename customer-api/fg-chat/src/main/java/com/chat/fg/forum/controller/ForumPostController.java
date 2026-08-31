@@ -5,6 +5,7 @@ import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.forum.ForumPost;
+import com.xy.common.vo.forum.ForumPostVO;
 import com.xy.system.service.forum.IForumPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,21 +35,22 @@ public class ForumPostController {
      * 查询帖子列表
      */
     @PostMapping
-    public R<PageResult<ForumPost>> list(@RequestBody ForumPost forumPost) {
+    public R<PageResult<ForumPostVO>> list(@RequestBody ForumPost forumPost) {
         // 客户端只查询已发布帖子
         if (forumPost.getStatus() == null) {
             forumPost.setStatus(2);
         }
-        return R.ok(postService.getForumPosts(forumPost));
+        Long currentUid = SecurityUtils.getUId();
+        return R.ok(postService.getForumPosts(forumPost, currentUid));
     }
 
     /**
      * 帖子详情
      */
     @GetMapping("/{postId}")
-    public R<ForumPost> detail(@PathVariable Long postId) {
+    public R<ForumPostVO> detail(@PathVariable Long postId) {
         Long currentUid = SecurityUtils.getUId();
-        ForumPost post = postService.getForumPostDetail(postId);
+        ForumPostVO post = postService.getForumPostDetail(postId, currentUid);
         // 统计浏览量
         postService.incrementViewCount(postId, currentUid);
         return R.ok(post);
