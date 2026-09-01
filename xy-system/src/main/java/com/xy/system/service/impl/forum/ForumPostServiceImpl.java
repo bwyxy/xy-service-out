@@ -6,20 +6,30 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.redis.RedisCache;
+import com.xy.common.dto.forum.CreatePostDTO;
 import com.xy.common.entity.User;
+import com.xy.common.entity.forum.ForumBoard;
 import com.xy.common.entity.forum.ForumFavorite;
 import com.xy.common.entity.forum.ForumLike;
 import com.xy.common.entity.forum.ForumPost;
+import com.xy.common.entity.forum.ForumPostTopic;
+import com.xy.common.entity.forum.ForumTopic;
 import com.xy.common.enums.YesNoEnum;
 import com.xy.common.enums.forum.PostStatus;
 import com.xy.common.exception.ServiceException;
+import com.xy.common.ip.AddressUtils;
+import com.xy.common.ip.IpUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.common.vo.forum.ForumPostVO;
 import com.xy.system.mapper.UserMapper;
+import com.xy.system.mapper.forum.ForumBoardMapper;
 import com.xy.system.mapper.forum.ForumFavoriteMapper;
 import com.xy.system.mapper.forum.ForumLikeMapper;
 import com.xy.system.mapper.forum.ForumPostMapper;
+import com.xy.system.mapper.forum.ForumPostTopicMapper;
+import com.xy.system.mapper.forum.ForumTopicMapper;
 import com.xy.system.service.forum.IForumPostService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -70,7 +80,128 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
 
     private final UserMapper userMapper;
 
+    private final ForumBoardMapper boardMapper;
+
+    private final ForumTopicMapper topicMapper;
+
+    private final ForumPostTopicMapper postTopicMapper;
+
     private final RedisCache redisCache;
+
+    /**
+     * 发布帖子
+     * */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long createPost(CreatePostDTO dto, Long uId, HttpServletRequest request) {
+        if (dto == null || uId == null) {
+            throw new ServiceException("参数错误");
+        }
+
+        String ip = IpUtils.getIpAddr(request);
+        String ipAddr = AddressUtils.getRealAddressByIP(ip);
+        LocalDateTime now = LocalDateTime.now();
+
+        ForumPost post = new ForumPost();
+        post.setAuthorId(uId);
+        post.setTitle(dto.getTitle().trim());
+        post.setBoardId(4L);
+        post.setContent(dto.getContent());
+        post.setSummary(generateSummary(dto.getContent()));
+        post.setContentType(dto.getContentType());
+        post.setCoverImage(dto.getCoverImage());
+        post.setVisibility(dto.getVisibility());
+        post.setStatus(PostStatus.underReview.getCode());
+        post.setIsTop(0);
+        post.setIsEssence(0);
+        post.setViewCount(0L);
+        post.setLikeCount(0L);
+        post.setCommentCount(0L);
+        post.setFavoriteCount(0L);
+        post.setShareCount(0L);
+        post.setPublishedTime(now);
+        post.setCreateTime(now);
+        post.setUpdateTime(now);
+        post.setIp(ip);
+        post.setIpAddr(ipAddr);
+
+        baseMapper.insert(post);
+        Long postId = post.getPostId();
+
+        // 处理话题
+        handleTopics(postId, dto.getTopicNames(), now);
+
+        log.info("用户 {} 发布帖子 {}", uId, postId);
+        return postId;
+    }
+
+    /**
+     * 生成摘要
+     * */
+    private String generateSummary(String content) {
+        if (StringUtils.isBlank(content)) {
+            return "";
+        }
+        // 去除 HTML 标签
+        String text = content.replaceAll("<[^>]+>", "");
+        text = text.replaceAll("&\\w+;", " ");
+        text = text.trim();
+        if (text.length() <= 200) {
+            return text;
+        }
+        return text.substring(0, 200);
+    }
+
+    /**
+     * 处理话题关联
+     * */
+    private void handleTopics(Long postId, List<String> topicNames, LocalDateTime now) {
+        if (postId == null || topicNames == null || topicNames.isEmpty()) {
+            return;
+        }
+
+        for (String topicName : topicNames) {
+            if (StringUtils.isBlank(topicName)) {
+                continue;
+            }
+            String name = topicName.trim();
+
+            LambdaQueryWrapper<ForumTopic> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ForumTopic::getName, name);
+            ForumTopic topic = topicMapper.selectOne(wrapper);
+
+            if (topic == null) {
+                topic = new ForumTopic();
+                topic.setName(name);
+                topic.setSlug(generateSlug(name));
+                topic.setStatus(1);
+                topic.setPostCount(0L);
+                topic.setFollowCount(0L);
+                topic.setCreateTime(now);
+                topic.setUpdateTime(now);
+                topicMapper.insert(topic);
+            }
+
+            ForumPostTopic postTopic = new ForumPostTopic();
+            postTopic.setPostId(postId);
+            postTopic.setTopicId(topic.getTopicId());
+            postTopicMapper.insert(postTopic);
+        }
+    }
+
+    /**
+     * 生成话题 URL 别名
+     * */
+    private String generateSlug(String name) {
+        String slug = name.toLowerCase()
+                .replaceAll("[^\\w\\u4e00-\\u9fa5]", "-")
+                .replaceAll("-+", "-")
+                .replaceAll("^-|-$", "");
+        if (StringUtils.isBlank(slug)) {
+            slug = "topic";
+        }
+        return slug;
+    }
 
     /**
      * 查询帖子列表（支持分页、排序、条件筛选）

@@ -3,7 +3,7 @@ import {computed, reactive, ref} from 'vue'
 import MePage from './me/index.vue'
 import PublishPage from './publish/index.vue'
 import StatPage from './stat/index.vue'
-import { Histogram, UserFilled, Promotion } from '@element-plus/icons-vue'
+import { UserFilled, Promotion } from '@element-plus/icons-vue'
 
 interface TabType {
   key: ('me' | 'publish' | 'stat'),
@@ -23,11 +23,11 @@ const tabs = reactive<TabType[]>([
     name: '发布',
     icon: Promotion
   },
-  {
-    key: 'stat',
-    name: '统计',
-    icon: Histogram
-  }
+  // {
+  //   key: 'stat',
+  //   name: '统计',
+  //   icon: Histogram
+  // }
 ])
 
 const mainContainer = computed(() => {
@@ -52,7 +52,10 @@ const mainContainer = computed(() => {
           @click="currentTab = item.key"
       >
         <el-icon>
-          <component :is="item.icon" />
+          <component
+              :is="item.icon"
+              @switchTab="(tab :('me' | 'publish' | 'stat')) => currentTab = tab"
+          />
         </el-icon>
         <span>{{ item.name }}</span>
       </div>

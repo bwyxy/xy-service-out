@@ -1,12 +1,13 @@
 package com.chat.fg.forum.controller;
 
-import com.chat.fg.forum.pojo.dto.CreatePostDTO;
 import com.chat.fg.utils.SecurityUtils;
+import com.xy.common.dto.forum.CreatePostDTO;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.forum.ForumPost;
 import com.xy.common.vo.forum.ForumPostVO;
 import com.xy.system.service.forum.IForumPostService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,9 @@ public class ForumPostController {
      * 发布帖子
      */
     @PostMapping("/create")
-    public R<Long> create(@Valid @RequestBody CreatePostDTO dto) {
+    public R<Long> create(@Valid @RequestBody CreatePostDTO dto, HttpServletRequest request) {
         Long currentUid = SecurityUtils.getUId();
-        // TODO 后续实现帖子发布业务
-        return R.ok(null);
+        return R.ok(postService.createPost(dto, currentUid, request));
     }
 
     /**
@@ -56,7 +56,7 @@ public class ForumPostController {
         forumPost.setPageSize(size);
         forumPost.setAuthorId(currentUid);
 
-        return R.ok(postService.getForumPosts(forumPost, null));
+        return R.ok(postService.getForumPosts(forumPost, currentUid));
     }
 
     /**

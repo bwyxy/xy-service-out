@@ -41,11 +41,22 @@ const setLikeCount = (count: number) => {
 
 <template>
   <div class="post-item">
-    <el-image class="post-cover" :src="item.coverImage">
-      <template #error>
-        <div class="post-cover-error"></div>
-      </template>
-    </el-image>
+    <div class="post-cover">
+      <el-image class="post-cover-image" :src="item.coverImage">
+        <template #error>
+          <div class="post-cover-error"></div>
+        </template>
+      </el-image>
+      <div v-if="item.status === 1 || item.status === 3" class="post-audit">
+        <span>{{ item.status === 3 ? '未通过' : '审核中' }}</span>
+      </div>
+      <div
+          v-if="item.status === 2 && item.visibility === 3"
+          class="post-visibility"
+      >
+        <span>私密</span>
+      </div>
+    </div>
 
     <div class="post-title">
       <span>{{ item.title || 'title' }}</span>
@@ -78,12 +89,45 @@ const setLikeCount = (count: number) => {
     width: 100%;
     box-sizing: border-box;
     border-radius: 13px;
-    border: 1px solid #dbdbdb;
+    background: rgba(0, 0, 0, .04);
+    border: 1px solid rgba(0, 0, 0, .1);
+    overflow: hidden;
+    position: relative;
+    &-image {
+      width: 100%;
+    }
     &-error {
       width: 100%;
       height: 220px;
       background: #f0f0f0;
     }
+  }
+
+  .post-audit {
+    background: rgba(255, 120, 117, 0.3);
+    box-sizing: border-box;
+    border: 1px solid #ff7875;
+    padding: 2px 6px;
+    border-radius: 50px;
+    font-size: 10px;
+    color: #f5222d;
+    z-index: 1;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+  }
+
+  .post-visibility {
+    background: rgba(255, 192, 105, 0.3);
+    box-sizing: border-box;
+    border: 1px solid #ffc069;
+    padding: 2px 6px;
+    border-radius: 50px;
+    font-size: 10px;
+    color: #fa8c16;
+    position: absolute;
+    right: 4px;
+    top: 4px;
   }
 
   .user-avatar {
@@ -98,12 +142,12 @@ const setLikeCount = (count: number) => {
   }
 
   .post-title {
-    font-size: 16px;
+    font-size: 12px;
     color: #1f1f1f;
     letter-spacing: 1px;
     box-sizing: border-box;
     padding: 0 10px;
-    margin: 14px 0;
+    margin: 4px 0 14px;
     @include textEllipsis(2);
   }
 

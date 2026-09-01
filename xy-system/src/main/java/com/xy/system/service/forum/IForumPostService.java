@@ -2,8 +2,10 @@ package com.xy.system.service.forum;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xy.common.core.domain.PageResult;
+import com.xy.common.dto.forum.CreatePostDTO;
 import com.xy.common.entity.forum.ForumPost;
 import com.xy.common.vo.forum.ForumPostVO;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 论坛帖子 Service 接口
@@ -19,6 +21,12 @@ public interface IForumPostService extends IService<ForumPost> {
      * 查询帖子详情
      * */
     ForumPostVO getForumPostDetail(Long postId, Long currentUid);
+
+    /**
+     * 发布帖子
+     * @return 帖子ID
+     * */
+    Long createPost(CreatePostDTO dto, Long uId, HttpServletRequest request);
 
     /**
      * 点赞 / 取消点赞

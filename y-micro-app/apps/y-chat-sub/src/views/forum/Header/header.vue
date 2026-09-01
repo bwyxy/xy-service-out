@@ -68,23 +68,24 @@ onMounted(() => getBoardList())
 
 <style scoped lang="scss">
 .forum-header {
-  height: size(80);
+  height: 70px;
   box-sizing: border-box;
-  padding: 0 size(42);
+  padding: 0 42px;
   display: flex;
   align-items: center;
   position: relative;
   .search-box {
-    width: size(320);
-    height: size(40);
+    width: 320px;
+    height: 40px;
     //background: rgba(0, 0, 0, .04);
-    border-radius: size(6);
+    border-radius: 10px;
     position: absolute;
-    left: size(42);
+    left: 42px;
     :deep(.el-input) {
       height: 100%;
       .el-input__wrapper {
         background: rgba(0, 0, 0, .04);
+        border-radius: 10px;
         box-shadow: none;
       }
       .el-input__inner {
@@ -100,7 +101,7 @@ onMounted(() => getBoardList())
     justify-content: center;
     align-items: center;
     li {
-      width: size(80);
+      width: 80px;
       height: 100%;
       cursor: pointer;
       display: flex;
@@ -108,19 +109,19 @@ onMounted(() => getBoardList())
       position: relative;
       span {
         z-index: 1;
-        font-size: size(15);
+        font-size: 16px;
         letter-spacing: 1px;
         text-align: center;
         position: absolute;
       }
       img {
-        width: size(32);
-        height: size(36);
+        width: 32px;
+        height: 36px;
         transform: rotate(45deg);
         display: none;
         position: absolute;
-        right: size(28);
-        bottom: size(14);
+        right: 26px;
+        bottom: 10px;
       }
     }
     .tab-active {
@@ -135,16 +136,16 @@ onMounted(() => getBoardList())
 
   &-rt {
     position: absolute;
-    right: size(42);
+    right: 42px;
     .rt-item {
-      font-size: size(13);
+      font-size: 14px;
       color: #1f1f1f;
       letter-spacing: 1px;
       cursor: pointer;
       display: flex;
       align-items: center;
       span {
-        margin-left: size(4);
+        margin-left: 6px;
       }
     }
   }

@@ -66,4 +66,14 @@ public class ForumComment extends BaseEntity implements Serializable {
      * 状态：0-待审核 1-显示 2-删除
      */
     private Integer status;
+
+    /**
+     * ip 地址
+     * */
+    private String ip;
+
+    /**
+     * ip 所属地
+     * */
+    private String ipAddr;
 }

@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import useUserStore from "@/store/user.ts";
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import WaterfallList from "@/components/WaterfallList/WaterfallList.vue";
+import { getMePosts, getStat } from '@/api/forum.ts'
 
 const { userInfo } = storeToRefs(useUserStore())
 
+const params = reactive({
+  pageNum: 1,
+  pageSize: 30,
+})
 const currentTab = ref<number>(1)
 const postTabs = reactive([
   {
@@ -30,10 +35,41 @@ const postTabs = reactive([
   }
 ])
 const posts = ref<ForumPost[]>([])
+const isLoading = ref<boolean>(false)
+const creatorStat = ref<CreatorStat>({} as CreatorStat)
+
+const getPosts = async () => {
+  if (isLoading.value) return;
+  isLoading.value = true
+
+  let response = {} as R<any>;
+  if (currentTab.value === 1) {
+    response = await getMePosts(params.pageNum, params.pageSize);
+  }
+
+  if (response.code === 200) {
+    posts.value = response.data.list;
+  }
+
+  isLoading.value = false
+}
+
+const getCreatorStat = async () => {
+  const response = await getStat()
+
+  if (response.code === 200) {
+    creatorStat.value = response.data
+  }
+}
 
 const handleTabs = (id :number) => {
   currentTab.value = id
 }
+
+onMounted(() => {
+  getPosts()
+  getCreatorStat()
+})
 </script>
 
 <template>
@@ -49,10 +85,10 @@ const handleTabs = (id :number) => {
       <div class="me-info">
         <span class="user-name">{{ userInfo.nickname }}</span>
         <ul>
-          <li>0粉丝</li>
-          <li>0关注</li>
-          <li>0点赞与收藏</li>
-          <li>0评论</li>
+          <li>{{ creatorStat.followerCount }}粉丝</li>
+          <li>{{ creatorStat.followingCount }}关注</li>
+          <li>{{ creatorStat.likeCount + creatorStat.favoriteCount }}点赞与收藏</li>
+          <li>{{ creatorStat.commentCount }}评论</li>
         </ul>
       </div>
     </div>
@@ -71,7 +107,10 @@ const handleTabs = (id :number) => {
     <div class="me-content">
       <el-empty v-if="posts.length === 0" description="暂无帖子" />
 
-      <waterfall-list :list="posts" />
+      <waterfall-list
+          :list="posts"
+          :isLoading="isLoading"
+      />
     </div>
   </div>
 </template>

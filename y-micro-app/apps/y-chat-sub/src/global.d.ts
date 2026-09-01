@@ -25,7 +25,9 @@ interface ForumPost {
     shareCount?: number
     publishedTime?: string
     createTime?: string
-    updateTime?: string
+    updateTime?: string,
+    ip?: string
+    ipAddr?: string
 }
 
 /**
@@ -45,6 +47,14 @@ interface ForumBoard {
     followCount?: number
     createTime?: string
     updateTime?: string
+}
+
+interface CreatorStat {
+    followerCount: number
+    followingCount: number
+    likeCount: number
+    favoriteCount: number
+    commentCount: number
 }
 
 interface R<T> {

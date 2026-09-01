@@ -119,4 +119,14 @@ public class ForumPost extends BaseEntity implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime publishedTime;
+
+    /**
+     * ip地址
+     * */
+    private String ip;
+
+    /**
+     * ip所属地
+     * */
+    private String ipAddr;
 }
