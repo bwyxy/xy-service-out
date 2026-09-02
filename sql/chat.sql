@@ -46,7 +46,7 @@ create table t_group_member (
     role int default 0 comment '角色 0-成员 1-管理员 2-群主',
     status tinyint default 1 comment '状态 1-正常 0-已退出',
     joined_at datetime comment '加入时间',
-    exit_time datetime comment '退出时间',
+    exit_time datetime default null comment '退出时间',
     mute_end_time datetime default null comment '禁言结束时间',
     group_nickname varchar(50) default '' comment '群内昵称',
     last_ack_seq bigint default 0 comment '已读到的最大消息seq'
