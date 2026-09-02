@@ -4,7 +4,7 @@ import com.chat.fg.pojo.dto.FriendRequestDTO;
 import com.chat.fg.pojo.dto.HandleFriendRequestDTO;
 import com.chat.fg.pojo.vo.FriendRequestVO;
 import com.chat.fg.pojo.vo.FriendVO;
-import com.xy.common.entity.FriendRequest;
+import com.xy.common.entity.chat.FriendRequest;
 import com.xy.common.entity.User;
 
 import java.util.List;

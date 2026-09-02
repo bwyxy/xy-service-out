@@ -26,6 +26,12 @@ create table t_group (
     owner_uid bigint not null comment '群主Id',
     is_ban int default 0 comment '是否允许发言',
     disband int default 0 comment '是否解散群组',
+    notice varchar(500) default '' comment '群简介/公告摘要',
+    max_member int default 200 comment '最大成员数',
+    join_type tinyint default 0 comment '加群方式 0-邀请 1-扫码 2-自由加入',
+    invite_permission tinyint default 1 comment '邀请权限 0-仅管理员 1-所有成员',
+    speak_permission tinyint default 1 comment '发言权限 0-仅管理员 1-所有成员',
+    history_visible tinyint default 1 comment '新成员是否可见历史消息 0-不可见 1-可见',
     create_by bigint not null comment '创建者',
     update_by bigint not null comment '更新者',
     create_time datetime comment '创建时间',
@@ -37,10 +43,25 @@ create table t_group_member (
     id bigint primary key auto_increment comment 'id',
     group_id bigint not null comment '关联群组ID',
     u_id bigint not null comment '用户Id',
-    role int default 0 comment '角色 0-成员 1-管理员',
-    status char(1) default '0' comment '状态 0-正常 1-已退出',
-    joined_at datetime comment '加入时间'
+    role int default 0 comment '角色 0-成员 1-管理员 2-群主',
+    status tinyint default 1 comment '状态 1-正常 0-已退出',
+    joined_at datetime comment '加入时间',
+    exit_time datetime comment '退出时间',
+    mute_end_time datetime default null comment '禁言结束时间',
+    group_nickname varchar(50) default '' comment '群内昵称',
+    last_ack_seq bigint default 0 comment '已读到的最大消息seq'
 ) engine = InnoDB default CHARSET=utf8mb4  comment '群组成员表';
+
+create table t_group_announcement (
+  id bigint primary key auto_increment comment '公告ID',
+    group_id bigint not null comment '群组ID',
+  title varchar(100) default '' comment '标题',
+    content text comment '内容',
+  publisher_uid bigint not null comment '发布人Id',
+  is_pinned tinyint default 1 comment '是否置顶',
+  create_time datetime comment '创建时间',
+  update_time datetime comment '更新时间'
+) engine = InnoDB default CHARSET=utf8mb4  comment '群公告表';
 
 -- 好友表
 create table t_friend (
@@ -82,6 +103,66 @@ create table t_notification (
     index idx_user_read (u_id, is_read),
     index idx_user_type (u_id, type)
 ) engine = InnoDB default CHARSET=utf8mb4  comment '通知表';
+
+CREATE TABLE t_private_message_extra (
+     `id` bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+     `channel_id` varchar(64) NOT NULL COMMENT '频道ID',
+     `channel_type` tinyint NOT NULL COMMENT '频道类型 1-个人 2-群',
+     `message_seq` bigint NOT NULL COMMENT '消息seq',
+     `from_uid` bigint NOT NULL COMMENT '发送者',
+     `to_uid` bigint COMMENT '接收者（单聊）',
+     `is_recall` tinyint DEFAULT 0 COMMENT '是否已撤回',
+     `recall_time` datetime DEFAULT NULL COMMENT '撤回时间',
+     `read_count` int DEFAULT 0 COMMENT '已读人数',
+     `extra` json COMMENT '扩展字段',
+     `create_time` datetime COMMENT '创建时间',
+     UNIQUE INDEX uk_channel_seq (channel_id, channel_type, message_seq),
+     INDEX idx_from_uid (from_uid),
+     INDEX idx_to_uid (to_uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息扩展信息';
+
+CREATE TABLE t_conversation_setting (
+    `id` bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    `u_id` bigint NOT NULL COMMENT '用户ID',
+    `channel_id` varchar(64) NOT NULL COMMENT '频道ID',
+    `channel_type` tinyint NOT NULL COMMENT '频道类型',
+    `mute` tinyint DEFAULT 0 COMMENT '是否免打扰',
+    `top` tinyint DEFAULT 0 COMMENT '是否置顶',
+    `draft` varchar(500) DEFAULT '' COMMENT '草稿',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '更新时间',
+    UNIQUE INDEX uk_user_channel (u_id, channel_id, channel_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会话个人设置';
+
+CREATE TABLE t_rtc_room (
+    `room_id` varchar(64) PRIMARY KEY COMMENT '房间ID',
+    `room_type` tinyint NOT NULL COMMENT '房间类型 1-语音 2-视频 3-会议',
+    `host_uid` bigint NOT NULL COMMENT '房主/主持人',
+    `channel_id` varchar(64) COMMENT '关联悟空IM频道',
+    `max_participants` int DEFAULT 2 COMMENT '最大人数',
+    `status` tinyint DEFAULT 0 COMMENT '状态 0-呼叫中 1-通话中 2-已结束',
+    `start_time` datetime COMMENT '开始时间',
+    `end_time` datetime COMMENT '结束时间',
+    `sfu_node` varchar(255) COMMENT '分配的SFU节点',
+    `create_time` datetime COMMENT '创建时间',
+    INDEX idx_status (status),
+    INDEX idx_host_uid (host_uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='RTC房间';
+
+CREATE TABLE t_rtc_participant (
+   `id` bigint PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+   `room_id` varchar(64) NOT NULL COMMENT '房间ID',
+   `u_id` bigint NOT NULL COMMENT '用户ID',
+   `role` tinyint DEFAULT 0 COMMENT '角色 0-普通 1-主持人',
+   `status` tinyint DEFAULT 0 COMMENT '状态 0-呼叫中 1-已加入 2-已离开 3-拒绝 4-忙线',
+   `join_time` datetime COMMENT '加入时间',
+   `leave_time` datetime COMMENT '离开时间',
+   `audio_muted` tinyint DEFAULT 0 COMMENT '是否静音',
+   `video_muted` tinyint DEFAULT 0 COMMENT '是否关闭视频',
+   `create_time` datetime COMMENT '创建时间',
+   UNIQUE INDEX uk_room_user (room_id, u_id),
+   INDEX idx_room_id (room_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='RTC房间参与者';
 
 insert into t_user (u_id, password, nickname, avatar, phone, email, status, sex, wx_open_id, is_bind_chat, create_time, update_time) values
     (10000000, '$2a$10$Bqq1b4dioOjYqdaFuZH3Au/zxA8UheNcQaSnUWy0UuUX7haYobVK2', '管理员', '', '18637649731', 'bwyxy@qq.com', '0', '1', '', '0', now(), now());

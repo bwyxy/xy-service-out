@@ -1,7 +1,7 @@
 package com.chat.fg.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xy.common.entity.Friend;
+import com.xy.common.entity.chat.Friend;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

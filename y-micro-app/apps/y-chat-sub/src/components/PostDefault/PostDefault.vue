@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import {Plus, Edit} from '@element-plus/icons-vue'
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import { formatRelativeTime } from '@/utils/utils.ts'
+import { getPostDetail, setPostLike } from '@/api/forum.ts'
+import { ElMessage } from 'element-plus'
+
+const props = defineProps<{
+  post?: ForumPost
+}>()
 
 const isShow = defineModel('modelValue', {
   type: Boolean
@@ -9,9 +15,50 @@ const isShow = defineModel('modelValue', {
 
 const defaultCover = new URL('@/assets/images/logo.jpg', import.meta.url).toString()
 const postInfo = ref<ForumPost>({} as ForumPost)
+const likeLoading = ref(false)
+
+const loadDetail = async () => {
+  if (!props.post?.postId) return
+  const response = await getPostDetail(props.post.postId)
+  if (response.code === 200) {
+    postInfo.value = response.data
+  } else {
+    ElMessage.error(response.msg || '获取帖子详情失败')
+  }
+}
+
 const handleClose = () => {
   isShow.value = false
 }
+
+const handleLike = async () => {
+  if (likeLoading.value || !postInfo.value.postId) return
+  likeLoading.value = true
+  try {
+    const response = await setPostLike(postInfo.value.postId)
+    if (response.code === 200) {
+      postInfo.value.liked = response.data
+      let count = postInfo.value.likeCount || 0
+      if (response.data) {
+        count++
+      } else if (count > 0) {
+        count--
+      }
+      postInfo.value.likeCount = count
+    } else {
+      ElMessage.error(response.msg || '操作失败')
+    }
+  } finally {
+    likeLoading.value = false
+  }
+}
+
+watch(() => isShow.value, (val) => {
+  if (val) {
+    postInfo.value = props.post || ({} as ForumPost)
+    loadDetail()
+  }
+})
 </script>
 
 <template>
@@ -28,7 +75,11 @@ const handleClose = () => {
     >
       <div class="post-default">
         <div class="post-default-cover">
-          <el-image class="cover-image" :src="defaultCover"></el-image>
+          <el-image class="cover-image" :src="postInfo.coverImage || defaultCover">
+            <template #error>
+              <el-image class="cover-image" :src="defaultCover" />
+            </template>
+          </el-image>
         </div>
         <div class="post-default-rt">
           <div class="post-default-header">
@@ -71,9 +122,10 @@ const handleClose = () => {
                 <el-icon><Edit /></el-icon>
                 <span>🚂想说点什么</span>
               </div>
-              <div class="post-option">
+              <div class="post-option" @click="handleLike">
                 <div class="post-option-icon">
-                  <img src="@/assets/images/like.png" alt="icon" />
+                  <img v-if="!postInfo.liked" src="@/assets/images/like.png" alt="icon" />
+                  <img v-else src="@/assets/images/like_avtive.png" alt="icon" />
                 </div>
                 <span>{{ postInfo.likeCount || 0 }}</span>
               </div>

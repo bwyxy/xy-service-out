@@ -12,15 +12,19 @@ defineProps<{
 
 const waterfallListRefs = ref<HTMLDivElement>()
 const isShowDefault = ref<boolean>(false)
+const currentPost = ref<ForumPost>({} as ForumPost)
+
+/** 点击帖子 */
+const handlePostItem = (row:ForumPost) => {
+  isShowDefault.value = true
+  currentPost.value = row
+}
 
 /** 设置瀑布流item 宽度 */
 const getColWidth = () => {
   if (window.innerWidth <= 768) return 160;
-  if (window.innerWidth <= 1024) return 220;
 
-  const colWidth =  waterfallListRefs.value?.clientWidth || 0
-
-  return colWidth / 9
+  return 180
 }
 </script>
 
@@ -36,12 +40,15 @@ const getColWidth = () => {
       :virtual-time="400"
     >
       <template v-slot:default="{ item }">
-        <post-item :item="item" />
+        <post-item
+            :item="item"
+            @item-click="handlePostItem"
+        />
       </template>
     </v3waterfall>
   </div>
 
-  <post-default v-model="isShowDefault" />
+  <post-default v-model="isShowDefault" :post="currentPost" />
 </template>
 
 <style scoped lang="scss">

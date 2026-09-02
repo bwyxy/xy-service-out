@@ -83,4 +83,12 @@ public class ForumPostVO implements Serializable {
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
+
+    /**
+     * ip地址
+     * */
+    private String ip;
+
+    /** ip 所属地 */
+    private String ipAddr;
 }

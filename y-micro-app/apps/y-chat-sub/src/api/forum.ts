@@ -58,3 +58,10 @@ export const hasPostLike = (postId :number) :Promise<R<boolean>> => {
         method: 'get'
     })
 }
+
+export const getPostDetail = (postId :number) :Promise<R<ForumPost>> => {
+    return request({
+        url: `/forum/posts/${postId}`,
+        method: 'get'
+    })
+}

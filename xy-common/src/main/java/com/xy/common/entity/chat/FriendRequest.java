@@ -1,4 +1,4 @@
-package com.xy.common.entity;
+package com.xy.common.entity.chat;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -11,12 +11,12 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 好友表 t_friend
+ * 好友请求表 t_friend_request
  * */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("t_friend")
-public class Friend extends BaseEntity implements Serializable {
+@TableName("t_friend_request")
+public class FriendRequest extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -28,17 +28,27 @@ public class Friend extends BaseEntity implements Serializable {
     private Long id;
 
     /**
-     * 用户ID
+     * 请求发送者用户ID
      * */
-    private Long uId;
+    private Long fromUid;
 
     /**
-     * 好友用户ID
+     * 请求接收者用户ID
      * */
-    private Long friendId;
+    private Long toUid;
 
     /**
-     * 状态 0-正常 1-拉黑
+     * 状态 0-待处理 1-已同意 2-已拒绝 3-已取消 4-已过期
      * */
-    private String status;
+    private Integer status;
+
+    /**
+     * 申请备注消息
+     * */
+    private String applyMsg;
+
+    /**
+     * 处理回复消息
+     * */
+    private String replyMsg;
 }

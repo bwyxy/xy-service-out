@@ -12,7 +12,7 @@ import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.ConversationRequest;
 import com.xy.common.client.vo.ConversationVO;
-import com.xy.common.entity.Group;
+import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.User;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;

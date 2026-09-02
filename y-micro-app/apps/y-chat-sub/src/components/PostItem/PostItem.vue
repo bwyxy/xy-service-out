@@ -5,6 +5,9 @@ import { setPostLike } from '@/api/forum.ts'
 defineProps<{
   item: ForumPost
 }>()
+const emit = defineEmits<{
+  (e :'item-click', row :ForumPost): void
+}>()
 /** 点赞 */
 const isLikeLoading = ref<boolean>(false)
 const handleLike = async (row :ForumPost) => {
@@ -40,7 +43,7 @@ const setLikeCount = (count: number) => {
 </script>
 
 <template>
-  <div class="post-item">
+  <div class="post-item" @click="emit('item-click', item)">
     <div class="post-cover">
       <el-image class="post-cover-image" :src="item.coverImage">
         <template #error>
@@ -71,7 +74,7 @@ const setLikeCount = (count: number) => {
         </el-image>
         <span>{{ item.nickname || '未知用户' }}</span>
       </div>
-      <div class="post-like" @click="handleLike(item)">
+      <div class="post-like" @click.stop="handleLike(item)">
         <img v-if="!item.liked" src="@/assets/images/like.png" alt="like" />
         <img v-else src="@/assets/images/like_avtive.png" alt="like_avtive" />
         <span>{{ setLikeCount(item.likeCount || 0) }}</span>

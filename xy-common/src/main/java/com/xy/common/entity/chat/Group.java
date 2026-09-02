@@ -1,4 +1,4 @@
-package com.xy.common.entity;
+package com.xy.common.entity.chat;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -47,6 +47,36 @@ public class Group extends BaseEntity implements Serializable {
      * 是否解散群组
      * */
     private Integer disband;
+
+    /**
+     * 群简介/公告摘要
+     * */
+    private String notice;
+
+    /**
+     * 最大成员数 - 200
+     * */
+    private Integer maxMember = 200;
+
+    /**
+     * 加群方式 0-邀请 1-扫码 2-自由加入
+     * */
+    private int joinType;
+
+    /**
+     * 邀请权限 0-仅管理员 1-所有成员
+     * */
+    private int invitePermission;
+
+    /**
+     * 发言权限 0-仅管理员 1-所有成员
+     * */
+    private int speakPermission;
+
+    /**
+     * 新成员是否可见历史消息 0-不可见 1-可见
+     * */
+    private int historyVisible;
 
     /**
      * 创建者

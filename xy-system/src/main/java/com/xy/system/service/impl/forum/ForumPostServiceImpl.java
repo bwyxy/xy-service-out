@@ -657,6 +657,7 @@ public class ForumPostServiceImpl extends ServiceImpl<ForumPostMapper, ForumPost
         vo.setFavoriteCount(post.getFavoriteCount());
         vo.setPublishedTime(post.getPublishedTime());
         vo.setCreateTime(post.getCreateTime());
+        vo.setIpAddr(post.getIpAddr());
         return vo;
     }
 }
