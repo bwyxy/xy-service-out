@@ -1,9 +1,12 @@
 package com.chat.fg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chat.fg.mapper.GroupMemberMapper;
 import com.chat.fg.service.IGroupMemberService;
 import com.xy.common.entity.chat.GroupMember;
+import com.xy.common.exception.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,6 +18,22 @@ import java.util.List;
  * */
 @Service
 public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, GroupMember> implements IGroupMemberService {
+
+    /**
+     * 根据id查询群成员在群里的拓展信息
+     * */
+    @Override
+    public GroupMember getGroupMemberByUid(Long uId, Long groupId) {
+        if (uId == null || groupId == null) {
+            throw new ServiceException("用户Id和群聊Id不能为空");
+        }
+        LambdaQueryWrapper<GroupMember> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(GroupMember::getGroupId, groupId)
+                .eq(GroupMember::getUId, uId);
+
+        return this.getOne(queryWrapper);
+    }
 
     /**
      * 批量添加成员

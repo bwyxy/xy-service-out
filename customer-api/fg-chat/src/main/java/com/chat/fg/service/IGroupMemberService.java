@@ -1,5 +1,7 @@
 package com.chat.fg.service;
 
+import com.xy.common.entity.chat.GroupMember;
+
 import java.util.List;
 
 /**
@@ -11,4 +13,9 @@ public interface IGroupMemberService {
      * 批量添加成员
      * */
     void batchGroupMember(Long groupId, List<Long> memberIds);
+
+    /**
+     * 根据id查询群成员在群里的拓展信息
+     * */
+    GroupMember getGroupMemberByUid(Long uId, Long groupId);
 }
