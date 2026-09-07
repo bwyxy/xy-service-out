@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import { Plus, ArrowRight } from '@element-plus/icons-vue'
+import { ArrowRight } from '@element-plus/icons-vue'
+import AddGroup from "@/components/AddGroup/AddGroup.vue";
 
 const chatDrawerRefs = ref<HTMLElement>()
 const isShow = defineModel('modelValue', {
@@ -24,12 +25,7 @@ defineProps<{
           :head="info.avatar"
       />
       <!-- 添加群聊 -->
-      <div class="add-group">
-        <div class="add-group-icon">
-          <el-icon><Plus /></el-icon>
-        </div>
-        <span>发起群聊</span>
-      </div>
+      <add-group />
     </div>
 
     <div class="view-chat-record">

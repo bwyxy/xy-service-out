@@ -55,6 +55,11 @@ public class Constants {
      */
     public static final String LOGIN_USER_KEY = "login_user_key";
 
+    /**
+     * 群聊 ID前缀
+     * */
+    public static final String GROUP_ID_PREFIX = "g_";
+
     public static class HttpStatus {
         public static final Integer OK = 200;
         public static final Integer BAD_REQUEST = 400;

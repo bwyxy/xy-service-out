@@ -153,33 +153,6 @@ onMounted(() => {
                 :item="msg"
                 :avatar="activeContact ? activeContact.avatar : ''"
             />
-            <!-- 自己 -->
-<!--            <div v-if="msg.isSelf" class="me-user">-->
-<!--              <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />-->
-<!--              <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />-->
-<!--            </div>-->
-            <!-- 对方 -->
-<!--            <div v-if="!msg.isSelf" class="me-user">-->
-<!--              <img v-if="activeContact" class="user-head" :src="activeContact.avatar" alt="avatar" />-->
-<!--              <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />-->
-<!--            </div>-->
-<!--            <div>-->
-<!--              <div  v-if="msg.type === MessageType.IMAGE" class="msg-image-box">-->
-<!--                <el-image-->
-<!--                    class="message-image"-->
-<!--                    :src="msg.content"-->
-<!--                    :show-progress="true"-->
-<!--                    :preview-src-list="[msg.content]"-->
-<!--                />-->
-<!--              </div>-->
-<!--              <div v-else class="message-bubble">-->
-<!--                <div class="message-content" v-html="msg.content"></div>-->
-<!--              </div>-->
-<!--            </div>-->
-            <!-- 发送失败 -->
-<!--            <div v-if="msg.isError" class="error-msg">-->
-<!--              <el-icon><Warning /></el-icon>-->
-<!--            </div>-->
           </div>
 
           <div v-if="currentMessages.length === 0" class="empty-hint">

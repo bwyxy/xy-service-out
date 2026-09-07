@@ -28,7 +28,7 @@ public class CreateGroupDTO {
      * */
     @NotBlank(message = "群主ID不能为空")
     @NotNull(message = "群主ID不能为空")
-    private Long uId;
+    private Long uid;
 
     /**
      * 群成员 ID
@@ -36,4 +36,9 @@ public class CreateGroupDTO {
     @NotEmpty(message = "群成员ID不能为空")
     @Size(min = 2, message = "群成员ID列表不能低于两个成员")
     private List<Long> memberIds;
+
+    /**
+     * 创建群聊加入成员通知
+     * */
+    private String remark;
 }

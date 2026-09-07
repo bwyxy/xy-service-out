@@ -74,6 +74,10 @@ create table t_friend (
     unique index uk_user_friend (u_id, friend_id)
 ) engine = InnoDB default CHARSET=utf8mb4  comment '好友表';
 
+insert into t_friend (u_id, friend_id, status, create_time, update_time) VALUES
+    (10000000, 10000002, 0, now(), now()),
+    (10000002, 10000000, 0, now(), now());
+
 -- 好友请求表
 create table t_friend_request (
     id bigint primary key auto_increment comment 'id',

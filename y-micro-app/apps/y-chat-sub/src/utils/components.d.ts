@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AddGroup: typeof import('./../components/AddGroup/AddGroup.vue')['default']
     ChannelNull: typeof import('./../components/ChannelNull/ChannelNull.vue')['default']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -34,6 +35,7 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElUpload: typeof import('element-plus/es')['ElUpload']
+    FriendList: typeof import('./../components/FriendList/FriendList.vue')['default']
     InfoCard: typeof import('./../components/InfoCard/InfoCard.vue')['default']
     MessageBox: typeof import('./../components/MessageBox/MessageBox.vue')['default']
     PostDefault: typeof import('./../components/PostDefault/PostDefault.vue')['default']

@@ -53,6 +53,8 @@ const useChatStore = defineStore('chat', () => {
   const messages = ref<Message[]>([])
   const conversations = ref<unknown[]>([])
   const userInfo = ref<Record<string, unknown> | null>(null)
+  /** 刷新会话 */
+  const isRefreshConversations = ref<boolean>(false)
 
   const notificationStore = useNotificationStore()
 
@@ -447,7 +449,8 @@ const useChatStore = defineStore('chat', () => {
     addContact,
     selectContact,
     sendMessage,
-    resetChatData
+    resetChatData,
+    isRefreshConversations
   }
 })
 

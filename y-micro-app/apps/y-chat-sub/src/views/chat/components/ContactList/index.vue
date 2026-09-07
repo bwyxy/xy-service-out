@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import useUserStore from '@/store/user.ts'
@@ -11,7 +11,7 @@ import {isImageUrl} from "@/utils/utils.ts";
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
-const { contacts } = storeToRefs(chatStore)
+const { contacts, isRefreshConversations } = storeToRefs(chatStore)
 
 const loading = ref(false)
 
@@ -23,6 +23,13 @@ interface ApiConversationItem {
   channel_type: number
   unread_count?: number
 }
+
+watch(() => isRefreshConversations.value, () => {
+  if (isRefreshConversations.value) {
+    fetchConversations()
+    isRefreshConversations.value = false
+  }
+}, {deep: true})
 
 /**
  * 从后端获取会话列表并同步到 chat store

@@ -40,12 +40,12 @@ const openSearchDialog = () => {
 
     <div class="action-icons">
       <el-dropdown>
-        <div class="icon-btn" @click="openSearchDialog">
+        <div class="icon-btn">
           <el-icon><Plus /></el-icon>
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>添加好友</el-dropdown-item>
+            <el-dropdown-item @click="openSearchDialog">添加好友</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
