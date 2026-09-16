@@ -81,6 +81,11 @@ function filterAsyncRouter(asyncRouterMap: any[], _lastRouter = false, type = fa
                 route.component = loadView(route.component);
             }
         }
+        // 后端 hidden 同步到 meta.hidden，侧边栏统一按 meta.hidden 过滤
+        if (route.hidden !== undefined) {
+            route.meta = route.meta || {};
+            route.meta.hidden = route.hidden;
+        }
         if (route.children != null && route.children && route.children.length) {
             route.children = filterAsyncRouter(route.children, route, type);
         } else {

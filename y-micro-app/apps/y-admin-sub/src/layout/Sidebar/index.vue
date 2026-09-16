@@ -14,7 +14,7 @@ const permissionStore = usePermissionStore()
  */
 const routes = computed(() => {
   return permissionStore.routes.filter(
-    (r: RouteRecordRaw) => !r.meta?.hidden
+    (r: RouteRecordRaw) => !r.hidden && !r.meta?.hidden
   )
 })
 
@@ -35,7 +35,7 @@ const resolvePath = (parentPath: string, childPath: string): string => {
  */
 const hasOneShowingChild = (children: RouteRecordRaw[]): boolean => {
   const showingChildren = children.filter(
-    (c: RouteRecordRaw) => !c.meta?.hidden
+    (c: RouteRecordRaw) => !c.hidden && !c.meta?.hidden
   )
   return showingChildren.length === 1
 }
@@ -63,7 +63,7 @@ const handleSelect = (path: string) => {
         <el-sub-menu
           v-if="
             menu.children &&
-            menu.children.filter((c: any) => !c.meta?.hidden).length >= 1 &&
+            menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden).length >= 1 &&
             (menu.meta?.alwaysShow || !hasOneShowingChild(menu.children))
           "
           :index="resolvePath(menu.path, menu.children[0]?.path || '')"
@@ -72,10 +72,9 @@ const handleSelect = (path: string) => {
             <span>{{ menu.meta?.title }}</span>
           </template>
           <el-menu-item
-            v-for="child in menu.children.filter((c: any) => !c.meta?.hidden)"
+            v-for="child in menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)"
             :key="child.path"
             :index="resolvePath(menu.path, child.path)"
-          >
             {{ child.meta?.title }}
           </el-menu-item>
         </el-sub-menu>
@@ -84,11 +83,11 @@ const handleSelect = (path: string) => {
         <el-menu-item
           v-else-if="
             menu.children &&
-            menu.children.filter((c: any) => !c.meta?.hidden).length === 1
+            menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden).length === 1
           "
-          :index="resolvePath(menu.path, menu.children.filter((c: any) => !c.meta?.hidden)[0].path)"
+          :index="resolvePath(menu.path, menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)[0].path)"
         >
-          {{ menu.children.filter((c: any) => !c.meta?.hidden)[0].meta?.title }}
+          {{ menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)[0].meta?.title }}
         </el-menu-item>
 
         <!-- 无子菜单：直接显示 -->

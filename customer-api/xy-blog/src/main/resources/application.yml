@@ -1,0 +1,50 @@
+server:
+  port: 9190
+  servlet:
+    context-path: /blog-api
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 1000
+    threads:
+      max: 800
+      min-spare: 100
+
+spring:
+  profiles:
+    default: base,cp
+
+logging:
+  level:
+    com.chat: warn
+    org.springframework: warn
+    com.xy.common.client.WuKongClient: DEBUG
+    com.xy.common.client: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation: DEBUG
+
+ai:
+  service:
+    url: ${AI_SERVICE_URL:http://localhost:9070}
+  assistant:
+    uid: ${AI_ASSISTANT_UID:fg_ai}
+
+feign:
+  client:
+    config:
+      wukongClient:
+        loggerLevel: full
+      default:
+        loggerLevel: full
+
+# JWT 配置
+jwt:
+  header: token
+  secret: ${TOKEN_SECRET}
+  expiration: 86400000
+  refresh-expiration: 604800000
+  prefix:
+
+# xy-ai 配置
+xy-ai:
+  apiKey: ${XY_AI_API_KEY}
+  secret: ${XY_AI_SECRET}

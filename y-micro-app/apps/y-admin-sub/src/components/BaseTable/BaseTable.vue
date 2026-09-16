@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import {reactive, ref, toRefs, watch} from "vue";
+import {computed, reactive, ref, toRefs, watch} from "vue";
 import { Search, Refresh } from '@element-plus/icons-vue'
 import TableColumn from "@/components/TableColumn/TableColumn.vue";
 
 const props = defineProps<{
-  columns: Array<ColumnType>,
-  api: (data :any) => Promise<any>
+  columns?: Array<ColumnType>,
+  api?: (data :any) => Promise<any>,
+  list?: Array<any>,
 }>()
-const { columns } = toRefs(props)
+const { columns, list } = toRefs(props)
 
 const tableData = ref<Array<any>>([])
 /** 表单查询 */
@@ -21,6 +22,7 @@ const queryParams = reactive<any>({
 
 /** 设置查询数据 */
 const formToParams = () => {
+  if (!columns.value) return []
   ruleForm.value = []
   for (let i = 0; i < columns.value.length; i++) {
     const item = columns.value[i]
@@ -35,8 +37,23 @@ const formToParams = () => {
     }
   }
 }
+
+const getColumns = () => {
+  if (!columns.value) {
+    return []
+  }
+  return columns.value.filter(item => item.key !== 'expand')
+}
+
+const isChildren = computed(() => {
+  if (!columns.value) {
+    return false
+  }
+  return !!columns.value.find(item => item.key === 'expand')
+})
 /** 获取数据 */
 const getTableData = async () => {
+  if (!props.api) return;
   isLoading.value = true
   ruleForm.value.forEach(item => {
     queryParams[item.key] = item.value
@@ -45,6 +62,12 @@ const getTableData = async () => {
 
   isLoading.value = false
   if (response.code === 200) {
+
+    if (!response.data.list) {
+      tableData.value = response.data
+      queryParams.total = 1
+      return
+    }
     const { list, total } = response.data
     tableData.value = list
     queryParams.total = total
@@ -62,6 +85,10 @@ watch(() => columns.value, () => {
   formToParams()
 
   getTableData()
+
+  if (list.value) {
+    tableData.value = list.value
+  }
 }, {immediate: true})
 </script>
 
@@ -110,10 +137,34 @@ watch(() => columns.value, () => {
         :data="tableData"
         class="search-table-main"
     >
+      <el-table-column v-if="isChildren" type="expand">
+        <template #default="{row}">
+          <el-table :data="row.children">
+            <table-column
+                v-for="(item, index) in getColumns()"
+                :key="index"
+                :column="item"
+                :columns="getColumns()"
+            />
+            <el-table-column fixed="right" min-width="180" label="操作" align="center">
+              <template #default="{ row }">
+                <slot name="operate" :row="row"></slot>
+              </template>
+            </el-table-column>
+            <template #empty>
+              <div class="empty-null">
+                <img src="@/assets/images/null.png" alt="empty" />
+                <span>暂无数据</span>
+              </div>
+            </template>
+          </el-table>
+        </template>
+      </el-table-column>
       <table-column
-          v-for="(item, index) in columns"
+          v-for="(item, index) in getColumns()"
           :key="index"
           :column="item"
+          :columns="getColumns()"
       />
       <el-table-column fixed="right" min-width="180" label="操作" align="center">
         <template #default="{ row }">
@@ -164,6 +215,16 @@ watch(() => columns.value, () => {
 
 .search-table-option {
   margin-bottom: size(24);
+}
+
+:deep(.el-table__expanded-cell) {
+  background: none;
+  .search-table-top {
+    display: none;
+  }
+  .base-pagination {
+    display: none;
+  }
 }
 
 :deep(.el-form) {

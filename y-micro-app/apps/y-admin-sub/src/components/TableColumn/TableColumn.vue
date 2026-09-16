@@ -2,7 +2,9 @@
 
 defineProps<{
   column: ColumnType,
-  width?: number | string
+  columns?: ColumnType[]
+  width?: number | string,
+  isSub?: boolean
 }>()
 </script>
 
@@ -33,9 +35,6 @@ defineProps<{
           {{ tag.label }}
         </el-tag>
       </div>
-    </template>
-    <template #default v-if="column.children">
-      <table-column v-for="col in column.children" :key="col.key" :column="col" />
     </template>
   </el-table-column>
 </template>

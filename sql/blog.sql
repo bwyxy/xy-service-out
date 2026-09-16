@@ -1,3 +1,34 @@
+-- 菜单表
+create table blog_menu (
+    id bigint primary key auto_increment comment '菜单Id',
+    name varchar(50) comment '菜单名称',
+    parent_id bigint comment '上级菜单Id',
+    order_num int(4) default 0 comment '排序',
+    path varchar(200) default '' comment '路由地址',
+    route_name varchar(50) default '' comment '路由名称',
+    is_frame int(1) default 1 comment '是否为外链（0是 1否）',
+    status tinyint default 1 comment '菜单状态（1正常 0停用）',
+    icon varchar(100) default '#' comment '菜单图标',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime comment '更新时间',
+    deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)',
+    remark varchar(500) default '' comment '备注'
+) engine=innodb comment = '博客菜单表';
+
+-- 菜单信息表(负责处理每个菜单显示的配置信息)
+create table blog_menu_config (
+    id bigint primary key auto_increment comment 'Id',
+    menu_id bigint not null comment '关联的菜单Id',
+    config_key varchar(255) not null comment '配置标识',
+    config_type varchar(50) comment '配置类型: text-文本 image-图片',
+    config_value text comment '配置值',
+    create_by varchar(64) default '' comment '创建者',
+    create_time datetime comment '创建时间',
+    update_by varchar(64) default '' comment '更新者',
+    update_time datetime comment '更新时间'
+) engine=innodb comment = '博客菜单信息配置表';
 
 -- 文章分类表
 create table sys_category (

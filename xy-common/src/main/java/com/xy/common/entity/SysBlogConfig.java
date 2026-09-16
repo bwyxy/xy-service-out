@@ -34,6 +34,11 @@ public class SysBlogConfig extends BaseEntity implements Serializable {
     private String configValue;
 
     /**
+     * 排序
+     * */
+    private Integer orderNum;
+
+    /**
      * 描述
      * */
     private String description;
