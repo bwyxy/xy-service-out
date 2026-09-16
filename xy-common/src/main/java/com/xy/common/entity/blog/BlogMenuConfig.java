@@ -25,4 +25,6 @@ public class BlogMenuConfig extends BaseEntity {
     private String configType;
 
     private String configValue;
+
+    private String configName;
 }
