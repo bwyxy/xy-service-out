@@ -56,6 +56,8 @@ const handleSelect = (path: string) => {
       :default-active="activeMenu"
       :collapse="false"
       mode="vertical"
+      text-color="#fff"
+      background-color="#597ef7"
       @select="handleSelect"
     >
       <template v-for="menu in routes" :key="menu.path">
@@ -75,6 +77,7 @@ const handleSelect = (path: string) => {
             v-for="child in menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)"
             :key="child.path"
             :index="resolvePath(menu.path, child.path)"
+          >
             {{ child.meta?.title }}
           </el-menu-item>
         </el-sub-menu>
@@ -101,19 +104,20 @@ const handleSelect = (path: string) => {
 
 <style scoped lang="scss">
 .sidebar-container {
-  width: size(240);
+  width: 200px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.4);
+  background: #030852;
   box-shadow: rgba(0, 0, 0, 0.04) 4px 2px 6px 0, rgba(0, 0, 0, 0.04) -4px -2px 6px 0px;
-  border-radius: size(14);
+  //border-radius: size(14);
   box-sizing: border-box;
-  margin-right: size(24);
-  padding: size(14);
+  //margin-right: size(24);
+  //padding: size(14);
   overflow-y: auto;
 
   :deep(.el-menu) {
     border-right: none;
     background: transparent;
+    color: #fff;
   }
 }
 </style>

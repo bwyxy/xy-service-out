@@ -201,12 +201,7 @@ watch(() => columns.value, () => {
   flex-direction: column;
   &-top {
     width: 100%;
-    background: rgba(255, 255, 255, 0.5);
-    box-shadow: rgba(0, 0, 0, 0.04) 2px 2px 6px 0, rgba(0, 0, 0, 0.04) -2px -2px 2px 0px;
-    border-radius: size(14);
     box-sizing: border-box;
-    margin: 0 auto size(24);
-    padding: size(24) size(24) 0;
   }
   &-main {
     flex: 1;
@@ -230,8 +225,8 @@ watch(() => columns.value, () => {
 :deep(.el-form) {
 
   .el-form-item {
-    margin-bottom: size(24);
-    margin-right: size(24);
+    margin-bottom: 14px;
+    margin-right: 14px;
   }
 }
 

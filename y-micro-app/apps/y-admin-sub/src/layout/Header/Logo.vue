@@ -10,15 +10,17 @@
 
 <style scoped lang="scss">
 .logo {
-  width: size(240);
-  font-size: size(20);
-  font-weight: 700;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #003eb3, #69b1ff);
-  --webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  width: 200px;
   display: flex;
   justify-content: center;
+  span {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #003eb3, #69b1ff);
+    --webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 </style>

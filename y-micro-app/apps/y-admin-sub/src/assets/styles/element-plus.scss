@@ -1,11 +1,11 @@
 @use "mixins" as *;
 // el-table
 .el-table {
-  border-radius: size(13);
-  background-color: transparent !important;
-  box-shadow: rgba(0, 0, 0, 0.06) 0 1px 4px;
+  //border-radius: size(13);
+  //background-color: transparent !important;
+  //box-shadow: rgba(0, 0, 0, 0.06) 0 1px 4px;
   thead {
-    background: rgba(255, 255, 255, .6) !important;
+    background: #f5f5f5 !important;
     border-radius: 50%;
   }
 }
@@ -14,21 +14,20 @@
 }
 .el-table th.el-table__cell {
   background: none !important;
-  padding: size(16) 0;
-
+  padding: 14px 0;
 }
 .el-table .cell {
   color: #1f1f1f;
-  font-size: size(18);
+  font-size: 14px;
   letter-spacing: 1px;
   font-weight: 600;
-  line-height: size(20) !important;
+  line-height: 16px !important;
 }
 .el-table .el-table__row .el-table__cell {
-  background: rgba(255, 255, 255, .3) !important;
-  padding: size(20) 0;
+  //background: rgba(255, 255, 255, .3) !important;
+  padding: 14px 0;
   .cell {
-    font-size: size(16);
+    font-size: 14px;
     font-weight: 400;
   }
 }
