@@ -12,6 +12,11 @@ public interface IBlogMenuConfigService {
     List<BlogMenuConfig> selectBlogMenuConfigByMenuId(Long menuId);
 
     /**
+     * 获取菜单配置信息
+     * */
+    BlogMenuConfig selectBlogMenuConfigById(Long id);
+
+    /**
      * 添加菜单配置
      * */
     void addBlogMenuConfig(BlogMenuConfig blogMenuConfig);

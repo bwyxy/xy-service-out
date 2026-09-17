@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import useUserStore from '@/store/modules/user'
 
+const { t } = useI18n()
 const userStore = useUserStore()
 </script>
 
@@ -8,10 +10,10 @@ const userStore = useUserStore()
   <div class="home-container">
     <el-card>
       <template #header>
-        <span>欢迎回来</span>
+        <span>{{ t('home.welcomeBack') }}</span>
       </template>
-      <p>你好，{{ userStore.userInfo?.nickname || userStore.userInfo?.username || '管理员' }}</p>
-      <p>欢迎使用忆待办后台管理系统</p>
+      <p>{{ t('home.hello', { name: userStore.userInfo?.nickname || userStore.userInfo?.username || t('home.admin') }) }}</p>
+      <p>{{ t('home.systemWelcome') }}</p>
     </el-card>
   </div>
 </template>

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import {computed, reactive, ref, toRefs, watch} from "vue";
+import { useI18n } from 'vue-i18n'
 import { Search, Refresh } from '@element-plus/icons-vue'
 import TableColumn from "@/components/TableColumn/TableColumn.vue";
+
+const { t } = useI18n()
 
 const props = defineProps<{
   columns?: Array<ColumnType>,
@@ -90,6 +93,12 @@ watch(() => columns.value, () => {
     tableData.value = list.value
   }
 }, {immediate: true})
+
+watch(() => list.value, () => {
+  if (list.value) {
+    tableData.value = list.value
+  }
+}, {deep: true})
 </script>
 
 <template>
@@ -122,8 +131,8 @@ watch(() => columns.value, () => {
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button :icon="Search" type="primary" @click="getTableData">查询</el-button>
-          <el-button :icon="Refresh" plain @click="resetData">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="getTableData">{{ t('common.search') }}</el-button>
+          <el-button :icon="Refresh" plain @click="resetData">{{ t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
 
@@ -146,7 +155,7 @@ watch(() => columns.value, () => {
                 :column="item"
                 :columns="getColumns()"
             />
-            <el-table-column fixed="right" min-width="180" label="操作" align="center">
+            <el-table-column fixed="right" min-width="180" :label="t('common.operate')" align="center">
               <template #default="{ row }">
                 <slot name="operate" :row="row"></slot>
               </template>
@@ -154,7 +163,7 @@ watch(() => columns.value, () => {
             <template #empty>
               <div class="empty-null">
                 <img src="@/assets/images/null.png" alt="empty" />
-                <span>暂无数据</span>
+                <span>{{ t('common.noData') }}</span>
               </div>
             </template>
           </el-table>
@@ -166,7 +175,7 @@ watch(() => columns.value, () => {
           :column="item"
           :columns="getColumns()"
       />
-      <el-table-column fixed="right" min-width="180" label="操作" align="center">
+      <el-table-column fixed="right" min-width="180" :label="t('common.operate')" align="center">
         <template #default="{ row }">
           <slot name="operate" :row="row"></slot>
         </template>
@@ -174,7 +183,7 @@ watch(() => columns.value, () => {
       <template #empty>
         <div class="empty-null">
           <img src="@/assets/images/null.png" alt="empty" />
-          <span>暂无数据</span>
+          <span>{{ t('common.noData') }}</span>
         </div>
       </template>
     </el-table>
@@ -222,6 +231,15 @@ watch(() => columns.value, () => {
   }
 }
 
+:deep(.el-table-fixed-column--right) {
+  background: var(--app-sidebar-bg) !important;
+  border-left: 1px solid var(--app-bg-color);
+}
+
+:deep(th.el-table__cell.el-table-fixed-column--right) {
+  background: var(--el-fill-color-light) !important;
+}
+
 :deep(.el-form) {
 
   .el-form-item {
@@ -250,6 +268,24 @@ watch(() => columns.value, () => {
   span {
     font-size: size(20);
     letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 768px) {
+  :deep(.el-form) {
+    .el-form-item {
+      width: 100%;
+      margin-right: 0;
+
+      .el-input,
+      .el-select {
+        width: 100% !important;
+      }
+    }
+  }
+
+  .base-pagination {
+    justify-content: center;
   }
 }
 </style>

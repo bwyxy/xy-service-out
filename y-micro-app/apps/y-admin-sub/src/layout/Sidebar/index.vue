@@ -1,104 +1,38 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import usePermissionStore from '@/store/modules/permission'
-import type { RouteRecordRaw } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+import useAppStore from '@/store/modules/app'
+import SidebarMenu from './SidebarMenu.vue'
 
-const route = useRoute()
-const router = useRouter()
-const permissionStore = usePermissionStore()
+const { t } = useI18n()
 
-/**
- * 获取显示的路由（仿若依常规模板）
- * 过滤掉 hidden 的路由
- */
-const routes = computed(() => {
-  return permissionStore.routes.filter(
-    (r: RouteRecordRaw) => !r.hidden && !r.meta?.hidden
-  )
-})
-
-/**
- * 解析路径（仿若依 resolvePath）
- * 处理父路径 + 子路径拼接
- */
-const resolvePath = (parentPath: string, childPath: string): string => {
-  if (childPath.startsWith('/')) {
-    return childPath
-  }
-  return `${parentPath}/${childPath}`.replace(/\/+/g, '/')
-}
-
-/**
- * 获取菜单项（仿若依 getMenuItem）
- * 判断是否只有一个子菜单：如果只有一个可见子菜单且 alwaysShow 不为 true，直接显示子菜单
- */
-const hasOneShowingChild = (children: RouteRecordRaw[]): boolean => {
-  const showingChildren = children.filter(
-    (c: RouteRecordRaw) => !c.hidden && !c.meta?.hidden
-  )
-  return showingChildren.length === 1
-}
-
-/** 当前激活菜单 */
-const activeMenu = computed(() => route.path)
-
-/** 点击菜单项 */
-const handleSelect = (path: string) => {
-  if (path === route.path) return
-  router.push(path)
-}
+// const appStore = useAppStore()
+const { isMobile, sidebarOpened } = storeToRefs(useAppStore())
 </script>
 
 <template>
   <div class="sidebar-container">
-    <el-menu
-      :default-active="activeMenu"
-      :collapse="false"
-      mode="vertical"
-      text-color="#fff"
-      background-color="#597ef7"
-      @select="handleSelect"
+    <!-- 桌面端菜单 -->
+    <SidebarMenu class="desktop-menu" />
+
+    <!-- 移动端抽屉 -->
+    <el-drawer
+      v-if="isMobile"
+      v-model="sidebarOpened"
+      direction="ltr"
+      :size="220"
+      :with-header="false"
+      :append-to-body="true"
+      :modal-append-to-body="true"
+      class="mobile-sidebar-drawer"
     >
-      <template v-for="menu in routes" :key="menu.path">
-        <!-- 有子菜单且 alwaysShow=true 或子菜单 > 1 -->
-        <el-sub-menu
-          v-if="
-            menu.children &&
-            menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden).length >= 1 &&
-            (menu.meta?.alwaysShow || !hasOneShowingChild(menu.children))
-          "
-          :index="resolvePath(menu.path, menu.children[0]?.path || '')"
-        >
-          <template #title>
-            <span>{{ menu.meta?.title }}</span>
-          </template>
-          <el-menu-item
-            v-for="child in menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)"
-            :key="child.path"
-            :index="resolvePath(menu.path, child.path)"
-          >
-            {{ child.meta?.title }}
-          </el-menu-item>
-        </el-sub-menu>
-
-        <!-- 只有一个子菜单且 alwaysShow 不为 true：直接显示子菜单 -->
-        <el-menu-item
-          v-else-if="
-            menu.children &&
-            menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden).length === 1
-          "
-          :index="resolvePath(menu.path, menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)[0].path)"
-        >
-          {{ menu.children.filter((c: any) => !c.hidden && !c.meta?.hidden)[0].meta?.title }}
-        </el-menu-item>
-
-        <!-- 无子菜单：直接显示 -->
-        <el-menu-item v-else :index="menu.path">
-          {{ menu.meta?.title }}
-        </el-menu-item>
-      </template>
-    </el-menu>
+      <div class="mobile-sidebar-content">
+        <div class="mobile-sidebar-logo">
+          <span>{{ t('login.title') }}</span>
+        </div>
+        <SidebarMenu />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -106,18 +40,114 @@ const handleSelect = (path: string) => {
 .sidebar-container {
   width: 200px;
   height: 100%;
-  background: #030852;
+  flex-shrink: 0;
+  background: var(--app-sidebar-bg);
   box-shadow: rgba(0, 0, 0, 0.04) 4px 2px 6px 0, rgba(0, 0, 0, 0.04) -4px -2px 6px 0px;
-  //border-radius: size(14);
   box-sizing: border-box;
-  //margin-right: size(24);
-  //padding: size(14);
   overflow-y: auto;
 
   :deep(.el-menu) {
     border-right: none;
+    background: transparent !important;
+    color: var(--app-sidebar-text);
+
+    .el-sub-menu__title,
+    .el-menu-item {
+      display: flex;
+      align-items: center;
+      background: transparent !important;
+
+      .menu-icon {
+        margin-right: 10px;
+        flex-shrink: 0;
+      }
+    }
+
+    .el-menu-item {
+      &.is-active {
+        color: var(--app-sidebar-text);
+        background-color: var(--el-color-primary);
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      &.is-disabled {
+        opacity: 0.5;
+      }
+    }
+
+    .el-sub-menu__title:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .el-sub-menu.is-active .el-sub-menu__title {
+      color: var(--app-sidebar-text);
+    }
+
+    html.dark & {
+      color: var(--app-sidebar-text);
+
+      .el-sub-menu__title,
+      .el-menu-item {
+        color: var(--app-sidebar-text);
+        background: transparent !important;
+      }
+
+      .el-menu-item:hover,
+      .el-sub-menu__title:hover {
+        background-color: var(--app-hover-bg);
+      }
+
+      .el-menu-item.is-active {
+        background-color: var(--el-color-primary);
+      }
+
+      .el-sub-menu.is-active .el-sub-menu__title {
+        color: var(--app-sidebar-text);
+      }
+    }
+  }
+}
+
+.mobile-sidebar-content {
+  height: 100%;
+  background: var(--app-sidebar-bg);
+  overflow-y: auto;
+}
+
+.mobile-sidebar-logo {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  span {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #003eb3, #69b1ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  html.dark & span {
+    text-shadow: 0 0 12px rgba(105, 177, 255, 0.6), 0 0 24px rgba(105, 177, 255, 0.3);
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    width: auto;
     background: transparent;
-    color: #fff;
+    box-shadow: none;
+  }
+
+  .desktop-menu {
+    display: none;
   }
 }
 </style>

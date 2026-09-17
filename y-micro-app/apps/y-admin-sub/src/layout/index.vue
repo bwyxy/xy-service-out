@@ -1,8 +1,25 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
 import Sidebar from './Sidebar/index.vue'
 import HeaderBar from './Header/index.vue'
 import AppMain from './AppMain.vue'
+import TagsView from './TagsView/index.vue'
+import useAppStore from '@/store/modules/app'
 
+const appStore = useAppStore()
+
+const checkMobile = () => {
+  appStore.setMobile(window.innerWidth <= 768)
+}
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
+})
 </script>
 
 <template>
@@ -12,9 +29,10 @@ import AppMain from './AppMain.vue'
 
     <div class="main-container">
 
-      <Sidebar />
+      <Sidebar class="desktop-sidebar" />
 
       <div class="app-main">
+        <TagsView />
         <app-main />
       </div>
     </div>
@@ -26,8 +44,7 @@ import AppMain from './AppMain.vue'
   display: flex;
   width: 100%;
   height: 100vh;
-  //background: linear-gradient(170deg, #bae0ff, #fafafa, #fff);
-  //background: #f0f0f0;
+  background: var(--app-bg-color);
   overflow: hidden;
   flex-direction: column;
 }
@@ -45,8 +62,21 @@ import AppMain from './AppMain.vue'
 
 .app-main {
   flex: 1;
-  box-sizing: border-box;
-  padding: 24px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.breadcrumb-wrapper {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .desktop-sidebar {
+    display: none;
+  }
+
+  .app-main {
+    width: 100%;
+  }
 }
 </style>

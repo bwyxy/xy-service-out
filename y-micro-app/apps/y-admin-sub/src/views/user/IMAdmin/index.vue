@@ -78,44 +78,46 @@ const handleClose = () => {
 </script>
 
 <template>
-  <base-table ref="baseTableRef" :columns="columns" :api="getSystemUser">
-    <template #option>
-      <el-button @click="dialogVisible = true" :icon="Plus" plain type="success">添加</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button
-        text
-        type="warning"
-        size="small"
-        :icon="EditPen"
-        @click="handleEdit(row)"
-      >编辑</el-button>
-      <el-button
-        text
-        type="danger"
-        size="small"
-        :icon="Delete"
-      >删除</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRef" :columns="columns" :api="getSystemUser">
+      <template #option>
+        <el-button @click="dialogVisible = true" :icon="Plus" plain type="success">添加</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button
+            text
+            type="warning"
+            size="small"
+            :icon="EditPen"
+            @click="handleEdit(row)"
+        >编辑</el-button>
+        <el-button
+            text
+            type="danger"
+            size="small"
+            :icon="Delete"
+        >删除</el-button>
+      </template>
+    </base-table>
 
-  <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
-    <el-form ref="ruleFormRefs" :model="ruleForm" label-width="80px">
-      <el-form-item label="头像" prop="avatar">
-        <image-upload v-model="ruleForm.avatar" />
-      </el-form-item>
-      <el-form-item label="系统名称" prop="nickname">
-        <el-input v-model="ruleForm.nickname" />
-      </el-form-item>
-      <el-form-item label="系统标识" prop="userKey">
-        <el-input v-model="ruleForm.userKey" />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button plain>取消</el-button>
-      <el-button v-loading="isLoading" type="primary" @click="submit(ruleFormRefs)">确认</el-button>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
+      <el-form ref="ruleFormRefs" :model="ruleForm" label-width="80px">
+        <el-form-item label="头像" prop="avatar">
+          <image-upload v-model="ruleForm.avatar" />
+        </el-form-item>
+        <el-form-item label="系统名称" prop="nickname">
+          <el-input v-model="ruleForm.nickname" />
+        </el-form-item>
+        <el-form-item label="系统标识" prop="userKey">
+          <el-input v-model="ruleForm.userKey" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button plain>取消</el-button>
+        <el-button v-loading="isLoading" type="primary" @click="submit(ruleFormRefs)">确认</el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">

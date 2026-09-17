@@ -18,9 +18,13 @@
     font-weight: 700;
     letter-spacing: 2px;
     background: linear-gradient(90deg, #003eb3, #69b1ff);
-    --webkit-background-clip: text;
+    -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  html.dark & span {
+    text-shadow: 0 0 12px rgba(105, 177, 255, 0.6), 0 0 24px rgba(105, 177, 255, 0.3);
   }
 }
 </style>

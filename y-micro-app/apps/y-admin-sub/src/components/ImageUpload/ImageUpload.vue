@@ -111,7 +111,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: () => [],
   limit: 9,
   maxSize: 2,
-  multiple: false,
+  multiple: true,
   disabled: false,
   uploadText: '上传图片',
   accept: 'image/*'
@@ -127,7 +127,8 @@ const emit = defineEmits<{
 const uploadRef = ref<any>(null)
 const previewVisible = ref(false)
 const previewUrl = ref('')
-const isUploading = ref(false)
+const uploadingCount = ref(0)
+const isUploading = computed(() => uploadingCount.value > 0)
 
 const currentUpload = ref({
   status: 'ready' as 'ready' | 'uploading' | 'success' | 'error',
@@ -136,7 +137,8 @@ const currentUpload = ref({
 
 const modelValueList = computed<string[]>(() => {
   if (!props.modelValue) return []
-  return Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
+  if (Array.isArray(props.modelValue)) return props.modelValue
+  return props.modelValue.split(';').filter(Boolean)
 })
 
 const acceptTip = computed(() => {
@@ -144,10 +146,10 @@ const acceptTip = computed(() => {
 })
 
 const updateModelValue = (urls: string[]) => {
-  if (props.multiple) {
+  if (Array.isArray(props.modelValue)) {
     emit('update:modelValue', urls)
   } else {
-    emit('update:modelValue', urls.length > 0 ? urls[0] : '')
+    emit('update:modelValue', urls.join(';'))
   }
 }
 
@@ -170,7 +172,7 @@ const beforeUpload = (file: File) => {
 
 const handleUpload = async (options: any) => {
   const file: File = options.file
-  isUploading.value = true
+  uploadingCount.value++
   currentUpload.value = { status: 'uploading', percentage: 0 }
 
   try {
@@ -183,7 +185,11 @@ const handleUpload = async (options: any) => {
 
     if (res.code === 200) {
       const url = res.data
-      const newUrls = props.multiple ? [...modelValueList.value, url] : [url]
+      let newUrls = props.multiple ? [...modelValueList.value, url] : [url]
+      if (newUrls.length > props.limit) {
+        ElMessage.warning(`最多只能上传 ${props.limit} 张图片，超出部分已忽略`)
+        newUrls = newUrls.slice(0, props.limit)
+      }
       updateModelValue(newUrls)
       currentUpload.value.status = 'success'
       ElMessage.success('上传成功')
@@ -197,10 +203,12 @@ const handleUpload = async (options: any) => {
     ElMessage.error(message)
     emit('error', error, file)
   } finally {
-    isUploading.value = false
-    setTimeout(() => {
-      currentUpload.value = { status: 'ready', percentage: 0 }
-    }, 500)
+    uploadingCount.value--
+    if (uploadingCount.value === 0) {
+      setTimeout(() => {
+        currentUpload.value = { status: 'ready', percentage: 0 }
+      }, 500)
+    }
   }
 }
 

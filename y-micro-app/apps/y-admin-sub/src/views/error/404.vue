@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
+const { t } = useI18n()
 const goHome = () => {
   router.push('/')
 }
@@ -11,8 +13,8 @@ const goHome = () => {
   <div class="error-page">
     <div class="error-content">
       <h1 class="error-code">404</h1>
-      <p class="error-desc">抱歉，你访问的页面不存在</p>
-      <el-button type="primary" @click="goHome">返回首页</el-button>
+      <p class="error-desc">{{ t('error.pageNotFound') }}</p>
+      <el-button type="primary" @click="goHome">{{ t('error.goHome') }}</el-button>
     </div>
   </div>
 </template>
@@ -33,13 +35,13 @@ const goHome = () => {
 .error-code {
   font-size: 80px;
   font-weight: bold;
-  color: #dcdfe6;
+  color: var(--el-text-color-placeholder);
   margin: 0 0 16px;
 }
 
 .error-desc {
   font-size: 16px;
-  color: #909399;
+  color: var(--app-text-secondary);
   margin-bottom: 24px;
 }
 </style>

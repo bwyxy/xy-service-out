@@ -10,6 +10,13 @@ export const getMenuConfigs = (menuId :number) => {
     })
 }
 
+export const getMenuConfigById = (id :number) => {
+    return request({
+        url: api + `/info/${id}`,
+        method: 'GET'
+    })
+}
+
 /** 添加菜单配置 */
 export const addMenuConfig = (data :any) => {
     return request({

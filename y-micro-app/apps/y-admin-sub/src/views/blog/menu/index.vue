@@ -121,24 +121,25 @@ const handleClose = () => {
 </script>
 
 <template>
-  <base-table ref="baseTableRefs" :columns="columns" :api="getMenuList">
-    <template #option>
-      <el-button
-          :icon="Plus"
-          type="success"
-          plain
-          @click="isShow = true"
-      >添加</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button size="small" text type="primary" :icon="Edit" @click="handleEdit(row.id)"></el-button>
-      <el-button size="small" text type="danger" :icon="Delete"></el-button>
-      <el-button size="small" text type="warning" :icon="Plus" @click="handAddSubMenu(row.id)">子菜单</el-button>
-      <el-button size="small" text type="primary" :icon="Setting" @click="configMenu(row.id)">菜单配置</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRefs" :columns="columns" :api="getMenuList">
+      <template #option>
+        <el-button
+            :icon="Plus"
+            type="success"
+            plain
+            @click="isShow = true"
+        >添加</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button size="small" text type="primary" :icon="Edit" @click="handleEdit(row.id)"></el-button>
+        <el-button size="small" text type="danger" :icon="Delete"></el-button>
+        <el-button size="small" text type="warning" :icon="Plus" @click="handAddSubMenu(row.id)">子菜单</el-button>
+        <el-button size="small" text type="primary" :icon="Setting" @click="configMenu(row.id)">菜单配置</el-button>
+      </template>
+    </base-table>
 
-  <el-dialog v-model="isShow" :before-close="handleClose">
+    <el-dialog v-model="isShow" :before-close="handleClose">
     <el-form ref="ruleFormRefs" :model="ruleForm">
       <el-form-item label="菜单名称" prop="name">
         <el-input v-model="ruleForm.name" />
@@ -179,6 +180,7 @@ const handleClose = () => {
       <el-button v-loading="isLoading" type="primary" @click="handleSubmit(ruleFormRefs)">确认</el-button>
     </template>
   </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">

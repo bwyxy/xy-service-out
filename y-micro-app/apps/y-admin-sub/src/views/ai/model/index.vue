@@ -177,66 +177,68 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <base-table ref="baseTableRef" :columns="columns" :api="pageModelProvider">
-    <template #option>
-      <el-button :icon="Plus" plain type="success" @click="handleAdd">添加模型提供者</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">编辑</el-button>
-      <el-button size="small" text type="warning" @click="handleToggle(row)">
-        {{ row.enabled === 1 ? '禁用' : '启用' }}
-      </el-button>
-      <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRef" :columns="columns" :api="pageModelProvider">
+      <template #option>
+        <el-button :icon="Plus" plain type="success" @click="handleAdd">添加模型提供者</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">编辑</el-button>
+        <el-button size="small" text type="warning" @click="handleToggle(row)">
+          {{ row.enabled === 1 ? '禁用' : '启用' }}
+        </el-button>
+        <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
+      </template>
+    </base-table>
 
-  <el-dialog v-model="dialogVisible" :title="dialogTitle" width="620px" append-to-body>
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="120px">
-      <el-form-item label="提供者名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入提供者名称" />
-      </el-form-item>
-      <el-form-item label="提供者编码" prop="code">
-        <el-input v-model="form.code" placeholder="请输入唯一编码，如 openai" />
-      </el-form-item>
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="form.type" placeholder="请选择类型" style="width: 100%">
-          <el-option
-            v-for="item in providerTypeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Endpoint">
-        <el-input v-model="form.endpoint" placeholder="请输入接口地址" />
-      </el-form-item>
-      <el-form-item label="API Key">
-        <el-input v-model="form.apiKey" type="password" show-password placeholder="请输入 API Key" />
-      </el-form-item>
-      <el-form-item label="默认模型">
-        <el-input v-model="form.model" placeholder="请输入默认模型名称" />
-      </el-form-item>
-      <el-form-item label="优先级">
-        <el-input-number v-model="form.priority" :min="0" controls-position="right" />
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-radio-group v-model="form.enabled">
-          <el-radio :label="1">启用</el-radio>
-          <el-radio :label="0">禁用</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="扩展配置 JSON">
-        <el-input v-model="form.configJson" type="textarea" :rows="3" placeholder='{"temperature": 0.7}' />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="submitForm">确 定</el-button>
-      </div>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="620px" append-to-body>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="120px">
+        <el-form-item label="提供者名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入提供者名称" />
+        </el-form-item>
+        <el-form-item label="提供者编码" prop="code">
+          <el-input v-model="form.code" placeholder="请输入唯一编码，如 openai" />
+        </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="form.type" placeholder="请选择类型" style="width: 100%">
+            <el-option
+                v-for="item in providerTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Endpoint">
+          <el-input v-model="form.endpoint" placeholder="请输入接口地址" />
+        </el-form-item>
+        <el-form-item label="API Key">
+          <el-input v-model="form.apiKey" type="password" show-password placeholder="请输入 API Key" />
+        </el-form-item>
+        <el-form-item label="默认模型">
+          <el-input v-model="form.model" placeholder="请输入默认模型名称" />
+        </el-form-item>
+        <el-form-item label="优先级">
+          <el-input-number v-model="form.priority" :min="0" controls-position="right" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-radio-group v-model="form.enabled">
+            <el-radio :label="1">启用</el-radio>
+            <el-radio :label="0">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="扩展配置 JSON">
+          <el-input v-model="form.configJson" type="textarea" :rows="3" placeholder='{"temperature": 0.7}' />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="submitLoading" @click="submitForm">确 定</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">

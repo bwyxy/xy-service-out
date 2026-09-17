@@ -19,14 +19,15 @@
 @mixin boxBtn($w, $h, $r) {
   min-width: size($w);
   height: size($h);
-  background: #fff;
+  background: var(--app-card-bg);
   border-radius: size($r);
   padding: 0 size(12);
-  color: #1f1f1f;
-  box-shadow: rgba(0, 0, 0, 0.18) 0 2px 4px;
+  color: var(--app-text-color);
+  box-shadow: rgba(0, 0, 0, 0.08) 0 2px 4px;
+  border: 1px solid var(--app-border-color);
   cursor: pointer;
   @include flexCenter;
   &:hover {
-    background: #fafafa;
+    background: var(--app-hover-bg);
   }
 }

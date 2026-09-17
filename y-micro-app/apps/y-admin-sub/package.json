@@ -19,14 +19,15 @@
     "sass": "catalog:",
     "vite-plugin-qiankun": "catalog:",
     "vue": "catalog:vue3",
+    "vue-i18n": "^9.14.4",
     "vue-router": "catalog:vue-router5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "catalog:",
     "@vue/tsconfig": "catalog:",
+    "typescript": "catalog:",
     "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",
-    "typescript": "catalog:",
     "vite": "catalog:",
     "vue-tsc": "catalog:"
   }

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { listRole, getRole, addRole, updateRole, delRole } from '@/api/role'
 import { listMenu } from '@/api/menu'
 import BaseTable from '@/components/BaseTable/BaseTable.vue'
 import { EditPen, Delete, Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+
+const { t } = useI18n()
 
 const baseTableRef = ref()
 const dialogVisible = ref(false)
@@ -28,50 +31,50 @@ const form = reactive<any>({
 const formRef = ref()
 const rules = {
   roleName: [
-    { required: true, message: '请输入角色名称', trigger: 'blur' }
+    { required: true, message: t('role.roleNameRequired'), trigger: 'blur' }
   ],
   roleKey: [
-    { required: true, message: '请输入权限字符', trigger: 'blur' }
+    { required: true, message: t('role.roleKeyRequired'), trigger: 'blur' }
   ],
   roleSort: [
-    { required: true, message: '请输入显示顺序', trigger: 'blur' }
+    { required: true, message: t('role.roleSortRequired'), trigger: 'blur' }
   ]
 }
 
 const columns = reactive<ColumnType[]>([
   {
     key: 'roleName',
-    label: '角色名称',
+    label: t('role.roleName'),
     prop: 'roleName',
     render: { el: 'search' }
   },
   {
     key: 'roleKey',
-    label: '权限字符',
+    label: t('role.roleKey'),
     prop: 'roleKey',
     render: { el: 'search' }
   },
   {
     key: 'roleSort',
-    label: '显示顺序',
+    label: t('role.roleSort'),
     prop: 'roleSort'
   },
   {
     key: 'status',
-    label: '状态',
+    label: t('common.status'),
     prop: 'status',
     type: 'tag',
     render: {
       el: 'select',
       list: [
-        { label: '正常', value: '1', elTagType: "success" },
-        { label: '停用', value: '0', elTagType: "danger" }
+        { label: t('menu.normal'), value: '1', elTagType: 'success' },
+        { label: t('menu.disabled'), value: '0', elTagType: 'danger' }
       ]
     }
   },
   {
     key: 'createTime',
-    label: '创建时间',
+    label: t('role.createTime'),
     prop: 'createTime'
   }
 ])
@@ -116,7 +119,7 @@ const resetForm = () => {
 const handleAdd = () => {
   resetForm()
   isEdit.value = false
-  dialogTitle.value = '添加角色'
+  dialogTitle.value = t('role.addRole')
   dialogVisible.value = true
   loadMenus()
 }
@@ -124,7 +127,7 @@ const handleAdd = () => {
 const handleEdit = async (row: any) => {
   resetForm()
   isEdit.value = true
-  dialogTitle.value = '编辑角色'
+  dialogTitle.value = t('role.editRole')
   dialogVisible.value = true
   await loadMenus()
   const res = await getRole(row.id)
@@ -135,17 +138,17 @@ const handleEdit = async (row: any) => {
 }
 
 const handleDelete = (row: any) => {
-  ElMessageBox.confirm(`确定删除角色 "${row.roleName}" 吗？`, '系统提示', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
+  ElMessageBox.confirm(t('role.deleteConfirm', { name: row.roleName }), t('common.tips'), {
+    confirmButtonText: t('common.confirm'),
+    cancelButtonText: t('common.cancel'),
     type: 'warning'
   }).then(async () => {
     const res = await delRole(row.id)
     if (res.code === 200) {
-      ElMessage.success('删除成功')
+      ElMessage.success(t('role.deleteSuccess'))
       baseTableRef.value?.getTableData()
     } else {
-      ElMessage.error(res.msg || '删除失败')
+      ElMessage.error(res.msg || t('role.deleteFailed'))
     }
   }).catch(() => {})
 }
@@ -161,11 +164,11 @@ const submitForm = async () => {
     const data = { ...form }
     const res = isEdit.value ? await updateRole(data) : await addRole(data)
     if (res.code === 200) {
-      ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
+      ElMessage.success(isEdit.value ? t('role.editSuccess') : t('role.addSuccess'))
       dialogVisible.value = false
       baseTableRef.value?.getTableData()
     } else {
-      ElMessage.error(res.msg || (isEdit.value ? '修改失败' : '新增失败'))
+      ElMessage.error(res.msg || (isEdit.value ? t('role.updateFailed') : t('role.addFailed')))
     }
   } finally {
     submitLoading.value = false
@@ -174,60 +177,62 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <base-table ref="baseTableRef" :columns="columns" :api="listRole">
-    <template #option>
-      <el-button :icon="Plus" plain type="success" @click="handleAdd">添加</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">编辑</el-button>
-      <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRef" :columns="columns" :api="listRole">
+      <template #option>
+        <el-button :icon="Plus" plain type="success" @click="handleAdd">{{ t('common.add') }}</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">{{ t('common.edit') }}</el-button>
+        <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">{{ t('common.delete') }}</el-button>
+      </template>
+    </base-table>
 
-  <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" append-to-body>
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-      <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="form.roleName" placeholder="请输入角色名称" />
-      </el-form-item>
-      <el-form-item label="权限字符" prop="roleKey">
-        <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
-      </el-form-item>
-      <el-form-item label="显示顺序" prop="roleSort">
-        <el-input-number v-model="form.roleSort" :min="0" controls-position="right" />
-      </el-form-item>
-      <el-form-item label="数据范围" prop="dataScope">
-        <el-select v-model="form.dataScope" placeholder="请选择数据范围" style="width: 100%">
-          <el-option label="全部数据" value="1" />
-          <el-option label="自定义数据" value="2" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="form.status">
-          <el-radio label="1">正常</el-radio>
-          <el-radio label="0">停用</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="菜单权限">
-        <el-tree
-            ref="menuTreeRef"
-            :data="menuOptions"
-            show-checkbox
-            node-key="id"
-            :props="{ children: 'children', label: 'label' }"
-            style="width: 100%; max-height: 300px; overflow-y: auto;"
-        />
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :rows="2" placeholder="请输入备注" />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="submitForm">确 定</el-button>
-      </div>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" append-to-body>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
+        <el-form-item :label="t('role.roleName')" prop="roleName">
+          <el-input v-model="form.roleName" :placeholder="t('role.roleNamePlaceholder')" />
+        </el-form-item>
+        <el-form-item :label="t('role.roleKey')" prop="roleKey">
+          <el-input v-model="form.roleKey" :placeholder="t('role.roleKeyPlaceholder')" />
+        </el-form-item>
+        <el-form-item :label="t('role.roleSort')" prop="roleSort">
+          <el-input-number v-model="form.roleSort" :min="0" controls-position="right" />
+        </el-form-item>
+        <el-form-item :label="t('role.dataScope')" prop="dataScope">
+          <el-select v-model="form.dataScope" :placeholder="t('role.dataScopePlaceholder')" style="width: 100%">
+            <el-option :label="t('role.dataScopeAll')" value="1" />
+            <el-option :label="t('role.dataScopeCustom')" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="t('common.status')" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio label="1">{{ t('menu.normal') }}</el-radio>
+            <el-radio label="0">{{ t('menu.disabled') }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item :label="t('role.menuPermission')">
+          <el-tree
+              ref="menuTreeRef"
+              :data="menuOptions"
+              show-checkbox
+              node-key="id"
+              :props="{ children: 'children', label: 'label' }"
+              style="width: 100%; max-height: 300px; overflow-y: auto;"
+          />
+        </el-form-item>
+        <el-form-item :label="t('role.remark')" prop="remark">
+          <el-input v-model="form.remark" type="textarea" :rows="2" :placeholder="t('role.remarkPlaceholder')" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">{{ t('common.cancel') }}</el-button>
+          <el-button type="primary" :loading="submitLoading" @click="submitForm">{{ t('common.confirm') }}</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">

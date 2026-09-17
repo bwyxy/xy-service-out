@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import useUserStore from "@/store/modules/user.ts";
 import {ArrowDown, User} from "@element-plus/icons-vue";
 import { ElMessage } from 'element-plus'
@@ -8,10 +9,11 @@ import { ElMessage } from 'element-plus'
 const router = useRouter()
 const userStore = useUserStore()
 const { userInfo } = storeToRefs(userStore)
+const { t } = useI18n()
 
 const handleLogout = async () => {
   await userStore.logout()
-  ElMessage.success('退出成功')
+  ElMessage.success(t('common.logoutSuccess'))
   router.push('/login')
 }
 </script>
@@ -23,13 +25,13 @@ const handleLogout = async () => {
         <img v-if="userInfo.avatar" :src="userInfo.avatar" alt="avatar" />
         <el-icon v-else><User /></el-icon>
       </div>
-      <span>{{ userInfo.nickname || '未登录' }}</span>
+      <span>{{ userInfo.nickname || t('common.notLoggedIn') }}</span>
       <el-icon><ArrowDown /></el-icon>
     </div>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>个人资料</el-dropdown-item>
-        <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
+        <el-dropdown-item>{{ t('header.profile') }}</el-dropdown-item>
+        <el-dropdown-item divided @click="handleLogout">{{ t('common.logout') }}</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -47,7 +49,7 @@ const handleLogout = async () => {
 .user-avatar {
   width: size(24);
   height: size(24);
-  background: #4096ff;
+  background: var(--el-color-primary);
   border-radius: 50%;
   color: #fff;
   margin-right: size(8);

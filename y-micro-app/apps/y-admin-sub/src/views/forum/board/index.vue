@@ -140,75 +140,77 @@ const handleClose = () => {
 </script>
 
 <template>
-  <base-table ref="baseTableRefs" :columns="columns" :api="getForumBoards">
-    <template #option>
-      <el-button
-          type="success"
-          :icon="Plus"
-          plain
-          @click="isShowOption = true"
-      >添加</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button
-          text
-          type="success"
-          :icon="Plus"
-          size="small"
-          @click="handleEdit(row, 'addSub')"
-      >添加子版块</el-button>
-      <el-button
-          text
-          type="primary"
-          :icon="Edit"
-          size="small"
-          @click="handleEdit(row, 'edit')"
-      >编辑</el-button>
-      <el-button
-        text
-        type="danger"
-        :icon="Delete"
-        size="small"
-        @click="handleDelete(row.boardId)"
-      >删除</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRefs" :columns="columns" :api="getForumBoards">
+      <template #option>
+        <el-button
+            type="success"
+            :icon="Plus"
+            plain
+            @click="isShowOption = true"
+        >添加</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button
+            text
+            type="success"
+            :icon="Plus"
+            size="small"
+            @click="handleEdit(row, 'addSub')"
+        >添加子版块</el-button>
+        <el-button
+            text
+            type="primary"
+            :icon="Edit"
+            size="small"
+            @click="handleEdit(row, 'edit')"
+        >编辑</el-button>
+        <el-button
+            text
+            type="danger"
+            :icon="Delete"
+            size="small"
+            @click="handleDelete(row.boardId)"
+        >删除</el-button>
+      </template>
+    </base-table>
 
-  <el-dialog
-      v-model="isShowOption"
-      :title="dialogTitle"
-      width="600px"
-      :before-close="handleClose"
-  >
-    <el-form ref="ruleFormRefs" :model="ruleForm" :rules="rules" label-width="80px">
-      <el-form-item label="版块名称" prop="name">
-        <el-input v-model="ruleForm.name" />
-      </el-form-item>
-      <el-form-item label="URL别名" prop="slug">
-        <el-input v-model="ruleForm.slug" />
-      </el-form-item>
-      <el-form-item label="排序" prop="sortOrder">
-        <el-input-number v-model="ruleForm.sortOrder" />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-switch
-            v-model="ruleForm.status"
-            :active-value="1"
-            :inactive-value="0"
-        />
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input
-            v-model="ruleForm.description"
-            type="textarea"
-        />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button plain @click="isShowOption = false">取消</el-button>
-      <el-button type="primary" @click="handleSubmit(ruleFormRefs)">确认</el-button>
-    </template>
-  </el-dialog>
+    <el-dialog
+        v-model="isShowOption"
+        :title="dialogTitle"
+        width="600px"
+        :before-close="handleClose"
+    >
+      <el-form ref="ruleFormRefs" :model="ruleForm" :rules="rules" label-width="80px">
+        <el-form-item label="版块名称" prop="name">
+          <el-input v-model="ruleForm.name" />
+        </el-form-item>
+        <el-form-item label="URL别名" prop="slug">
+          <el-input v-model="ruleForm.slug" />
+        </el-form-item>
+        <el-form-item label="排序" prop="sortOrder">
+          <el-input-number v-model="ruleForm.sortOrder" />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-switch
+              v-model="ruleForm.status"
+              :active-value="1"
+              :inactive-value="0"
+          />
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input
+              v-model="ruleForm.description"
+              type="textarea"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button plain @click="isShowOption = false">取消</el-button>
+        <el-button type="primary" @click="handleSubmit(ruleFormRefs)">确认</el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">

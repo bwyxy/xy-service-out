@@ -1,8 +1,10 @@
 import { createApp, type App } from 'vue'
 import AppDom from './App.vue'
 import router from './router'
+import i18n from '@/i18n'
 import '@/assets/styles/index.scss'
 import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 /** qiankun */
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 import { registerGlobalListeners, microComm } from '@/qiankun/index.ts'
@@ -21,6 +23,7 @@ const render = (props: any) => {
     setupStore(app)
 
     app.use(router)
+    app.use(i18n)
 
     app.mount(mountRoot);
 }

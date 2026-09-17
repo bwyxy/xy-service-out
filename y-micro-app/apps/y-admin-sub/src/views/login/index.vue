@@ -2,6 +2,7 @@
 import { User, Lock } from '@element-plus/icons-vue'
 import {reactive, ref} from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from 'vue-i18n'
 import type { FormInstance, FormRules } from 'element-plus'
 import useUserStore from "@/store/modules/user.ts";
 
@@ -12,6 +13,7 @@ interface RuleFormType {
 
 const router = useRouter()
 const userStore = useUserStore()
+const { t } = useI18n()
 const ruleFormRefs = ref<FormInstance>()
 
 const isLoading = ref<boolean>(false)
@@ -22,10 +24,10 @@ const ruleForm = reactive<RuleFormType>({
 
 const rules = reactive<FormRules<RuleFormType>>({
   username: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
+    { required: true, message: t('login.usernameRequired'), trigger: 'blur' },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
+    { required: true, message: t('login.passwordRequired'), trigger: 'blur' },
   ]
 })
 
@@ -51,14 +53,14 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
     <el-form :model="ruleForm" :rules="rules" ref="ruleFormRefs">
       <el-form-item>
         <div class="login-title">
-          <span>您好, 欢迎登录!</span>
+          <span>{{ t('login.title') }}</span>
         </div>
       </el-form-item>
       <el-form-item prop="username">
         <el-input
             v-model="ruleForm.username"
             style="height: 42px"
-            placeholder="用户名"
+            :placeholder="t('login.username')"
             :prefix-icon="User"
         />
       </el-form-item>
@@ -69,11 +71,11 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
             :prefix-icon="Lock"
             type="password"
             show-password
-            placeholder="密码"
+            :placeholder="t('login.password')"
         />
       </el-form-item>
       <el-form-item>
-        <el-checkbox>记住密码</el-checkbox>
+        <el-checkbox>{{ t('login.remember') }}</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -82,7 +84,7 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
             class="login-btn"
             type="primary"
         >
-        登录</el-button>
+        {{ t('login.login') }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -92,7 +94,7 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
 .login-container {
   width: 100vw;
   height: 100vh;
-  background: #f0f5ff;
+  background: var(--app-bg-color);
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -101,7 +103,7 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
 
 .login-title {
   font-size: 24px;
-  color: #1f1f1f;
+  color: var(--app-text-color);
   font-weight: bold;
   letter-spacing: 2px;
   margin-bottom: 14px;

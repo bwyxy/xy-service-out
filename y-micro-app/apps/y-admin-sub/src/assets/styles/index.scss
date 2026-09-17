@@ -1,13 +1,58 @@
 @use "reset" as *;
 @use "element-plus" as *;
+@use "transition" as *;
+
+@font-face {
+  font-family: 'font-text';
+  src: url('@/assets/font/font-text.woff2');
+  font-display: swap
+}
+
 
 * {
   margin: 0;
   padding: 0;
 }
 
+body {
+  font-family: 'font-text', serif;
+}
+
 :root {
   --vw: calc(100vw / 1920);
+
+  /* 浅色主题变量 */
+  --app-bg-color: #f5f7fa;
+  --app-text-color: #303133;
+  --app-text-secondary: #606266;
+  --app-header-bg: #ffffff;
+  --app-sidebar-bg: #fff;
+  --app-sidebar-text: #1f1f1f;
+  --app-border-color: #e4e7ed;
+  --app-card-bg: #ffffff;
+  --app-hover-bg: #f5f7fa;
+}
+
+html.dark {
+  /* 深色主题变量 */
+  --app-bg-color: #141414;
+  --app-text-color: #e0e0e0;
+  --app-text-secondary: #a0a0a0;
+  --app-header-bg: #1f1f1f;
+  --app-sidebar-bg: #1f1f1f;
+  --app-sidebar-text: #e0e0e0;
+  --app-border-color: #434343;
+  --app-card-bg: #1f1f1f;
+  --app-hover-bg: #2c2c2c;
+}
+
+/* 主题切换过渡动画 */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, fill 0.4s ease, stroke 0.4s ease !important;
+  animation: none !important;
 }
 
 @media all and (max-width: 1320px) {

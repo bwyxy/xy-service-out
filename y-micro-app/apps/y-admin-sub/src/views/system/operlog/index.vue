@@ -8,14 +8,14 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 const baseTableRef = ref()
 const exportLoading = ref(false)
 
-const businessTypeList = [
+const businessTypeList: Value[] = [
   { label: '新增', value: 1, elTagType: 'success' },
   { label: '修改', value: 2, elTagType: 'warning' },
   { label: '删除', value: 3, elTagType: 'danger' },
   { label: '其它', value: 0, elTagType: 'info' }
 ]
 
-const statusList = [
+const statusList: Value[] = [
   { label: '正常', value: 0, elTagType: 'success' },
   { label: '异常', value: 1, elTagType: 'danger' }
 ]

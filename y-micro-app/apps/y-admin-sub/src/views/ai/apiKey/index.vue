@@ -147,66 +147,68 @@ const handleDelete = (row: any) => {
 </script>
 
 <template>
-  <base-table ref="baseTableRef" :columns="columns" :api="pageApiKey">
-    <template #option>
-      <el-button :icon="Plus" plain type="success" @click="handleAdd">生成密钥</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button v-if="row.enabled === 0" size="small" text type="primary" @click="handleEnable(row)">启用</el-button>
-      <el-button v-if="row.enabled === 1" size="small" text type="warning" @click="handleDisable(row)">禁用</el-button>
-      <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRef" :columns="columns" :api="pageApiKey">
+      <template #option>
+        <el-button :icon="Plus" plain type="success" @click="handleAdd">生成密钥</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button v-if="row.enabled === 0" size="small" text type="primary" @click="handleEnable(row)">启用</el-button>
+        <el-button v-if="row.enabled === 1" size="small" text type="warning" @click="handleDisable(row)">禁用</el-button>
+        <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
+      </template>
+    </base-table>
 
-  <!-- 生成密钥表单 -->
-  <el-dialog v-model="dialogVisible" title="生成 AI API 密钥" width="560px" append-to-body>
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="130px">
-      <el-form-item label="应用名称" prop="appName">
-        <el-input v-model="form.appName" placeholder="请输入应用名称" />
-      </el-form-item>
-      <el-form-item label="Token 有效期(秒)" prop="tokenExpireSeconds">
-        <el-input-number v-model="form.tokenExpireSeconds" :min="60" :step="60" style="width: 100%" />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="generateLoading" @click="submitForm">确 定</el-button>
-      </div>
-    </template>
-  </el-dialog>
+    <!-- 生成密钥表单 -->
+    <el-dialog v-model="dialogVisible" title="生成 AI API 密钥" width="560px" append-to-body>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="130px">
+        <el-form-item label="应用名称" prop="appName">
+          <el-input v-model="form.appName" placeholder="请输入应用名称" />
+        </el-form-item>
+        <el-form-item label="Token 有效期(秒)" prop="tokenExpireSeconds">
+          <el-input-number v-model="form.tokenExpireSeconds" :min="60" :step="60" style="width: 100%" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="generateLoading" @click="submitForm">确 定</el-button>
+        </div>
+      </template>
+    </el-dialog>
 
-  <!-- 生成结果展示 -->
-  <el-dialog v-model="resultDialogVisible" title="密钥生成成功" width="620px" append-to-body>
-    <el-alert title="API Secret 仅展示一次，请妥善保存，关闭后将无法再次查看。" type="warning" :closable="false" show-icon />
-    <div class="key-result">
-      <div class="key-item">
-        <div class="key-label">API Key</div>
-        <div class="key-value">
-          <el-input v-model="generatedResult.apiKey" readonly>
-            <template #append>
-              <el-button :icon="CopyDocument" @click="copyText(generatedResult.apiKey)">复制</el-button>
-            </template>
-          </el-input>
+    <!-- 生成结果展示 -->
+    <el-dialog v-model="resultDialogVisible" title="密钥生成成功" width="620px" append-to-body>
+      <el-alert title="API Secret 仅展示一次，请妥善保存，关闭后将无法再次查看。" type="warning" :closable="false" show-icon />
+      <div class="key-result">
+        <div class="key-item">
+          <div class="key-label">API Key</div>
+          <div class="key-value">
+            <el-input v-model="generatedResult.apiKey" readonly>
+              <template #append>
+                <el-button :icon="CopyDocument" @click="copyText(generatedResult.apiKey)">复制</el-button>
+              </template>
+            </el-input>
+          </div>
+        </div>
+        <div class="key-item">
+          <div class="key-label">API Secret</div>
+          <div class="key-value">
+            <el-input v-model="generatedResult.apiSecret" type="password" show-password readonly>
+              <template #append>
+                <el-button :icon="CopyDocument" @click="copyText(generatedResult.apiSecret)">复制</el-button>
+              </template>
+            </el-input>
+          </div>
         </div>
       </div>
-      <div class="key-item">
-        <div class="key-label">API Secret</div>
-        <div class="key-value">
-          <el-input v-model="generatedResult.apiSecret" type="password" show-password readonly>
-            <template #append>
-              <el-button :icon="CopyDocument" @click="copyText(generatedResult.apiSecret)">复制</el-button>
-            </template>
-          </el-input>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="resultDialogVisible = false">我已保存</el-button>
         </div>
-      </div>
-    </div>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button type="primary" @click="resultDialogVisible = false">我已保存</el-button>
-      </div>
-    </template>
-  </el-dialog>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -219,7 +221,7 @@ const handleDelete = (row: any) => {
 .key-label {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #606266;
+  color: var(--app-text-secondary);
 }
 .key-value {
   width: 100%;

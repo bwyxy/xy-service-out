@@ -178,59 +178,61 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <base-table ref="baseTableRef" :columns="columns" :api="listUser">
-    <template #option>
-      <el-button :icon="Plus" plain type="success" @click="handleAdd">添加</el-button>
-    </template>
-    <template #operate="{ row }">
-      <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">编辑</el-button>
-      <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
-    </template>
-  </base-table>
+  <div>
+    <base-table ref="baseTableRef" :columns="columns" :api="listUser">
+      <template #option>
+        <el-button :icon="Plus" plain type="success" @click="handleAdd">添加</el-button>
+      </template>
+      <template #operate="{ row }">
+        <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">编辑</el-button>
+        <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
+      </template>
+    </base-table>
 
-  <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" append-to-body>
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.username" placeholder="请输入用户名" />
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" show-password placeholder="请输入密码，编辑时留空不修改" />
-      </el-form-item>
-      <el-form-item label="昵称" prop="nickname">
-        <el-input v-model="form.nickname" placeholder="请输入昵称" />
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="请输入邮箱" />
-      </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input v-model="form.phone" placeholder="请输入手机号" />
-      </el-form-item>
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="form.sex">
-          <el-radio label="0">未知</el-radio>
-          <el-radio label="1">男</el-radio>
-          <el-radio label="2">女</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="form.status">
-          <el-radio label="0">正常</el-radio>
-          <el-radio label="1">停用</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="角色" prop="roleIds">
-        <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
-          <el-option v-for="role in roleOptions" :key="role.id" :label="role.roleName" :value="role.id" />
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="submitForm">确 定</el-button>
-      </div>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" append-to-body>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="form.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="form.password" type="password" show-password placeholder="请输入密码，编辑时留空不修改" />
+        </el-form-item>
+        <el-form-item label="昵称" prop="nickname">
+          <el-input v-model="form.nickname" placeholder="请输入昵称" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" placeholder="请输入邮箱" />
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone">
+          <el-input v-model="form.phone" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="form.sex">
+            <el-radio label="0">未知</el-radio>
+            <el-radio label="1">男</el-radio>
+            <el-radio label="2">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio label="0">正常</el-radio>
+            <el-radio label="1">停用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="角色" prop="roleIds">
+          <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
+            <el-option v-for="role in roleOptions" :key="role.id" :label="role.roleName" :value="role.id" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="submitLoading" @click="submitForm">确 定</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped lang="scss">

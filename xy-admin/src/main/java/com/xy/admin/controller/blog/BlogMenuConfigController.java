@@ -24,6 +24,13 @@ public class BlogMenuConfigController {
         return R.ok(list);
     }
 
+    @GetMapping("/info/{id}")
+    public R<BlogMenuConfig> info(@PathVariable Long id){
+        BlogMenuConfig blogMenuConfig = blogMenuConfigService.selectBlogMenuConfigById(id);
+
+        return R.ok(blogMenuConfig);
+    }
+
     @PostMapping
     public R<String> addBlogMenuConfig(@RequestBody BlogMenuConfig blogMenuConfig){
         blogMenuConfigService.addBlogMenuConfig(blogMenuConfig);

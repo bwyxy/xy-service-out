@@ -32,6 +32,21 @@ public class BlogMenuConfigServiceImpl extends ServiceImpl<BlogMenuConfigMapper,
     }
 
     /**
+     * 获取菜单配置信息
+     * */
+    @Override
+    public BlogMenuConfig selectBlogMenuConfigById(Long id) {
+        if (id == null) {
+            throw new ServiceException("菜单配置Id不能为空");
+        }
+        LambdaQueryWrapper<BlogMenuConfig> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(BlogMenuConfig::getId, id);
+
+        return this.getOne(queryWrapper);
+    }
+
+    /**
      * 添加菜单配置
      * */
     @Override

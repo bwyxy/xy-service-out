@@ -28,7 +28,7 @@ td {
 }
 
 html {
-  color:#000;
+  color: var(--app-text-color);
   overflow-y:scroll;
 }
 
@@ -64,7 +64,7 @@ a{text-decoration:none}
 
 a:hover{text-decoration: none}
 
-legend{color:#000}
+legend{color:var(--app-text-color)}
 
 fieldset,img{border:0}
 
@@ -88,7 +88,7 @@ textarea{resize:vertical}
 
 .inline{display:inline}
 
-.error{color:#F00;font-size:12px}
+.error{color:var(--el-color-danger);font-size:12px}
 
 label,button{cursor:pointer}
 
@@ -109,14 +109,14 @@ img{border:0}
 .box-title {
   font-weight: 500;
   font-size: 20px;
-  color: #212121;
+  color: var(--app-text-color);
   line-height: 28px;
 }
 
 .box-text {
   font-weight: 500;
   font-size: 16px;
-  color: #A4A4A4;
+  color: var(--app-text-secondary);
   line-height: 22px;
 }
 
@@ -165,7 +165,7 @@ input:-webkit-autofill {
 .warp-title {
   font-weight: 500;
   font-size: 14px;
-  color: #333333;
+  color: var(--app-text-color);
   line-height: 20px;
 }
 
