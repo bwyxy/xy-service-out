@@ -62,4 +62,9 @@ public interface TodoTaskMapper extends BaseMapper<TodoTask> {
      */
     int deleteAdminTask(@Param("taskId") Long taskId);
 
+    /**
+     * 管理后台查询日程表任务（按时间范围重叠）
+     */
+    List<TodoTask> selectAdminScheduleTasks(@Param("task") TodoTask todoTask);
+
 }

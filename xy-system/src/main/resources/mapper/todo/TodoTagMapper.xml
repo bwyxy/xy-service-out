@@ -16,7 +16,7 @@
     </resultMap>
 
     <select id="selectAdminTagList" resultType="com.xy.common.entity.TodoTag">
-        select t.tag_id, t.user_id, t.tag_name, t.create_by, t.create_time, t.update_by, t.update_time
+        select t.tag_id, t.user_id, t.tag_name, t.color, t.create_by, t.create_time, t.update_by, t.update_time
         from todo_tag t
         <where>
             <if test="tag.tagName != null and tag.tagName != ''">
@@ -42,20 +42,21 @@
     </select>
 
     <select id="selectAdminTagById" resultType="com.xy.common.entity.TodoTag">
-        select t.tag_id, t.user_id, t.tag_name, t.create_by, t.create_time, t.update_by, t.update_time
+        select t.tag_id, t.user_id, t.tag_name, t.color, t.create_by, t.create_time, t.update_by, t.update_time
         from todo_tag t
         where t.tag_id = #{tagId}
     </select>
 
     <insert id="insertAdminTag" useGeneratedKeys="true" keyProperty="tag.tagId">
-        insert into todo_tag (user_id, tag_name, create_by, create_time, update_by, update_time)
-        values (#{tag.userId}, #{tag.tagName}, #{tag.createBy}, #{tag.createTime}, #{tag.updateBy}, #{tag.updateTime})
+        insert into todo_tag (user_id, tag_name, color, create_by, create_time, update_by, update_time)
+        values (#{tag.userId}, #{tag.tagName}, #{color}, #{tag.createBy}, #{tag.createTime}, #{tag.updateBy}, #{tag.updateTime})
     </insert>
 
     <update id="updateAdminTag">
         update todo_tag
         <set>
             <if test="tag.tagName != null and tag.tagName != ''">tag_name = #{tag.tagName},</if>
+            <if test="tag.color != null and tag.color != ''">color = #{tag.color}</if>
             <if test="tag.userId != null">user_id = #{tag.userId},</if>
             <if test="tag.updateBy != null">update_by = #{tag.updateBy},</if>
             <if test="tag.updateTime != null">update_time = #{tag.updateTime},</if>

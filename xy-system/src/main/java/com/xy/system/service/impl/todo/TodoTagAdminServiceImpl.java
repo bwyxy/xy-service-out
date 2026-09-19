@@ -1,5 +1,7 @@
 package com.xy.system.service.impl.todo;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.TodoTag;
 import com.xy.common.enums.ResultCode;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +26,17 @@ public class TodoTagAdminServiceImpl implements ITodoTagAdminService {
         int pageNum = tag.getPageNum() <= 0 ? 1 : tag.getPageNum();
         int pageSize = tag.getPageSize() <= 0 ? 10 : tag.getPageSize();
 
-        List<TodoTag> list = todoTagMapper.selectAdminTagList(tag);
-        Long total = todoTagMapper.countAdminTagList(tag);
+        LambdaQueryWrapper<TodoTag> queryWrapper = new LambdaQueryWrapper<>();
+        if (!StringUtils.isEmpty(tag.getTagName())) {
+            queryWrapper.like(TodoTag::getTagName, tag.getTagName());
+        }
+        if (tag.getUserId() != null) {
+            queryWrapper.eq(TodoTag::getUserId, tag.getUserId());
+        }
+        queryWrapper.orderByDesc(TodoTag::getCreateTime);
 
-        int fromIndex = (pageNum - 1) * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, list.size());
-        List<TodoTag> records = fromIndex >= list.size() ? List.of() : list.subList(fromIndex, toIndex);
-
-        return PageResult.of(records, total, (long) pageNum, (long) pageSize);
+        Page<TodoTag> page = todoTagMapper.selectPage(new Page<>(pageNum, pageSize), queryWrapper);
+        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override
@@ -40,7 +44,7 @@ public class TodoTagAdminServiceImpl implements ITodoTagAdminService {
         if (tagId == null) {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "标签ID不能为空");
         }
-        return todoTagMapper.selectAdminTagById(tagId);
+        return todoTagMapper.selectById(tagId);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class TodoTagAdminServiceImpl implements ITodoTagAdminService {
         validateTag(tag);
         tag.setCreateTime(LocalDateTime.now());
         tag.setUpdateTime(LocalDateTime.now());
-        todoTagMapper.insertAdminTag(tag);
+        todoTagMapper.insert(tag);
         return tag.getTagId();
     }
 
@@ -60,12 +64,12 @@ public class TodoTagAdminServiceImpl implements ITodoTagAdminService {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "标签ID不能为空");
         }
         validateTag(tag);
-        TodoTag existing = todoTagMapper.selectAdminTagById(tag.getTagId());
+        TodoTag existing = todoTagMapper.selectById(tag.getTagId());
         if (existing == null) {
             throw new BusinessException(ResultCode.DATA_NOT_FOUND, "标签不存在");
         }
         tag.setUpdateTime(LocalDateTime.now());
-        return todoTagMapper.updateAdminTag(tag) > 0;
+        return todoTagMapper.updateById(tag) > 0;
     }
 
     @Override
@@ -74,11 +78,11 @@ public class TodoTagAdminServiceImpl implements ITodoTagAdminService {
         if (tagId == null) {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "标签ID不能为空");
         }
-        TodoTag existing = todoTagMapper.selectAdminTagById(tagId);
+        TodoTag existing = todoTagMapper.selectById(tagId);
         if (existing == null) {
             throw new BusinessException(ResultCode.DATA_NOT_FOUND, "标签不存在");
         }
-        return todoTagMapper.deleteAdminTag(tagId) > 0;
+        return todoTagMapper.deleteById(tagId) > 0;
     }
 
     private void validateTag(TodoTag tag) {

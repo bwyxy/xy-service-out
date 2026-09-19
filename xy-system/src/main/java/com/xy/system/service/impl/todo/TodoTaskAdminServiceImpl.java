@@ -1,9 +1,12 @@
 package com.xy.system.service.impl.todo;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.TodoTask;
 import com.xy.common.enums.ResultCode;
 import com.xy.common.exception.BusinessException;
+import com.xy.common.utils.SecurityUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.todo.TodoTaskMapper;
 import com.xy.system.service.todo.ITodoTaskAdminService;
@@ -27,14 +30,24 @@ public class TodoTaskAdminServiceImpl implements ITodoTaskAdminService {
         int pageNum = task.getPageNum() <= 0 ? 1 : task.getPageNum();
         int pageSize = task.getPageSize() <= 0 ? 10 : task.getPageSize();
 
-        List<TodoTask> list = todoTaskMapper.selectAdminTaskList(task);
-        Long total = todoTaskMapper.countAdminTaskList(task);
+        LambdaQueryWrapper<TodoTask> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TodoTask::getDeleted, 0);
+        if (!StringUtils.isEmpty(task.getTaskTitle())) {
+            queryWrapper.like(TodoTask::getTaskTitle, task.getTaskTitle());
+        }
+        if (task.getUserId() != null) {
+            queryWrapper.eq(TodoTask::getUserId, task.getUserId());
+        }
+        if (task.getCompleted() != null) {
+            queryWrapper.eq(TodoTask::getCompleted, task.getCompleted());
+        }
+        if (task.getUrgencyLevel() != 0) {
+            queryWrapper.eq(TodoTask::getUrgencyLevel, task.getUrgencyLevel());
+        }
+        queryWrapper.orderByDesc(TodoTask::getCreateTime);
 
-        int fromIndex = (pageNum - 1) * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, list.size());
-        List<TodoTask> records = fromIndex >= list.size() ? List.of() : list.subList(fromIndex, toIndex);
-
-        return PageResult.of(records, total, (long) pageNum, (long) pageSize);
+        Page<TodoTask> page = todoTaskMapper.selectPage(new Page<>(pageNum, pageSize), queryWrapper);
+        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override
@@ -42,7 +55,7 @@ public class TodoTaskAdminServiceImpl implements ITodoTaskAdminService {
         if (taskId == null) {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "任务ID不能为空");
         }
-        return todoTaskMapper.selectAdminTaskById(taskId);
+        return todoTaskMapper.selectById(taskId);
     }
 
     @Override
@@ -55,9 +68,13 @@ public class TodoTaskAdminServiceImpl implements ITodoTaskAdminService {
         if (task.getUrgencyLevel() == 0) {
             task.setUrgencyLevel(1);
         }
+        if (task.getUserId() == null) {
+            task.setUserId(SecurityUtils.getUserId());
+        }
+        task.setDeleted(0);
         task.setCreateTime(LocalDateTime.now());
         task.setUpdateTime(LocalDateTime.now());
-        todoTaskMapper.insertAdminTask(task);
+        todoTaskMapper.insert(task);
         return task.getTaskId();
     }
 
@@ -68,12 +85,12 @@ public class TodoTaskAdminServiceImpl implements ITodoTaskAdminService {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "任务ID不能为空");
         }
         validateTask(task);
-        TodoTask existing = todoTaskMapper.selectAdminTaskById(task.getTaskId());
+        TodoTask existing = todoTaskMapper.selectById(task.getTaskId());
         if (existing == null) {
             throw new BusinessException(ResultCode.DATA_NOT_FOUND, "任务不存在");
         }
         task.setUpdateTime(LocalDateTime.now());
-        return todoTaskMapper.updateAdminTask(task) > 0;
+        return todoTaskMapper.updateById(task) > 0;
     }
 
     @Override
@@ -82,11 +99,15 @@ public class TodoTaskAdminServiceImpl implements ITodoTaskAdminService {
         if (taskId == null) {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "任务ID不能为空");
         }
-        TodoTask existing = todoTaskMapper.selectAdminTaskById(taskId);
+        TodoTask existing = todoTaskMapper.selectById(taskId);
         if (existing == null) {
             throw new BusinessException(ResultCode.DATA_NOT_FOUND, "任务不存在");
         }
-        return todoTaskMapper.deleteAdminTask(taskId) > 0;
+        TodoTask update = new TodoTask();
+        update.setTaskId(taskId);
+        update.setDeleted(1);
+        update.setUpdateTime(LocalDateTime.now());
+        return todoTaskMapper.updateById(update) > 0;
     }
 
     @Override
@@ -94,13 +115,15 @@ public class TodoTaskAdminServiceImpl implements ITodoTaskAdminService {
         if (start == null || end == null) {
             throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "时间范围不能为空");
         }
-        return todoTaskMapper.selectTaskByDate(buildQueryTask(start, end));
+        return todoTaskMapper.selectAdminScheduleTasks(buildQueryTask(start, end));
     }
 
     @Override
     public Map<String, Long> getDashboardStatistics() {
         Map<String, Long> stats = new HashMap<>();
-        List<TodoTask> allTasks = todoTaskMapper.selectAdminTaskList(new TodoTask());
+        LambdaQueryWrapper<TodoTask> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TodoTask::getDeleted, 0);
+        List<TodoTask> allTasks = todoTaskMapper.selectList(queryWrapper);
         long total = allTasks.size();
         long completed = allTasks.stream().filter(t -> t.getCompleted() != null && t.getCompleted() == 1).count();
         long pending = total - completed;

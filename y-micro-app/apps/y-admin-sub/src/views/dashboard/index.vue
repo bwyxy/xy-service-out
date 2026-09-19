@@ -77,6 +77,73 @@ const loadStatistics = async () => {
   }
 }
 
+const toGanttTask = (task: any): GanttTask => {
+  const urgency = task.urgencyLevel || 1
+  const startDate = task.startTime ? task.startTime.split(' ')[0] : formatDate(getDateOffset(0))
+  const endDate = task.dueDate ? task.dueDate.split(' ')[0] : startDate
+  const progress = task.completed === 1 ? 1 : 0
+  return {
+    id: String(task.taskId),
+    name: task.taskTitle,
+    start: startDate,
+    end: endDate,
+    progress,
+    color: urgencyColorMap[urgency] || '#3b82f6'
+  }
+}
+
+const buildTaskRows = (tasks: any[]): GanttRow[] => {
+  if (!tasks.length) return []
+
+  const taskMap: Record<string, any> = {}
+  const childrenMap: Record<string, any[]> = {}
+
+  tasks.forEach((task: any) => {
+    taskMap[task.taskId] = task
+    if (task.parentId) {
+      if (!childrenMap[task.parentId]) childrenMap[task.parentId] = []
+      childrenMap[task.parentId].push(task)
+    }
+  })
+
+  const rows: GanttRow[] = []
+  const processedChildren = new Set<string>()
+
+  tasks.forEach((task: any) => {
+    if (task.parentId) return
+
+    const children = childrenMap[task.taskId] || []
+    if (children.length > 0) {
+      const completed = children.filter((t: any) => t.completed === 1).length
+      rows.push({
+        id: `parent-${task.taskId}`,
+        name: `${task.taskTitle} (${completed}/${children.length})`,
+        tasks: children.map(toGanttTask)
+      })
+      children.forEach((child: any) => processedChildren.add(String(child.taskId)))
+    } else {
+      rows.push({
+        id: String(task.taskId),
+        name: task.taskTitle,
+        tasks: [toGanttTask(task)]
+      })
+    }
+  })
+
+  // 父任务不在查询结果中（但其子任务在）时，兜底把子任务作为独立行展示
+  tasks.forEach((task: any) => {
+    if (!task.parentId) return
+    if (processedChildren.has(String(task.taskId))) return
+    rows.push({
+      id: String(task.taskId),
+      name: task.taskTitle,
+      tasks: [toGanttTask(task)]
+    })
+  })
+
+  return rows
+}
+
 const loadScheduleTasks = async () => {
   loading.value = true
   try {
@@ -84,38 +151,7 @@ const loadScheduleTasks = async () => {
     const end = formatDate(getDateOffset(Math.floor(timerNum.value / 2))) + ' 23:59:59'
     const res = await listScheduleTasks({ start, end })
     if (res.code === 200) {
-      const tasks = res.data || []
-      const grouped: Record<string, GanttRow> = {}
-      tasks.forEach((task: any) => {
-        const urgency = task.urgencyLevel || 1
-        const startDate = task.startTime ? task.startTime.split(' ')[0] : formatDate(getDateOffset(0))
-        const endDate = task.dueDate ? task.dueDate.split(' ')[0] : startDate
-        const progress = task.completed === 1 ? 1 : 0
-        const ganttTask: GanttTask = {
-          id: String(task.taskId),
-          name: task.taskTitle,
-          start: startDate,
-          end: endDate,
-          progress,
-          color: urgencyColorMap[urgency] || '#3b82f6'
-        }
-        const groupKey = `urgency-${urgency}`
-        const urgencyLabels: Record<number, string> = {
-          1: '不重要不紧急',
-          2: '紧急不重要',
-          3: '重要不紧急',
-          4: '重要且紧急'
-        }
-        if (!grouped[groupKey]) {
-          grouped[groupKey] = {
-            id: groupKey,
-            name: urgencyLabels[urgency] || '其他',
-            tasks: []
-          }
-        }
-        grouped[groupKey].tasks.push(ganttTask)
-      })
-      rows.value = Object.values(grouped)
+      rows.value = buildTaskRows(res.data || [])
     } else {
       ElMessage.error(res.msg || '加载日程数据失败')
     }

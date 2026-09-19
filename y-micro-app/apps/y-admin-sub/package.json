@@ -12,6 +12,8 @@
     "@dizzy_yakov/vue-gantt": "^1.10.0",
     "@element-plus/icons-vue": "catalog:",
     "@types/node": "catalog:",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "@xy/qiankun-communication": "workspace:*",
     "@xy/utils": "workspace:*",
     "element-plus": "catalog:",

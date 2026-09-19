@@ -40,6 +40,72 @@ interface R<T> {
     data: T
 }
 
+/** 文章 */
+interface Article {
+    articleId: number | null;
+    /** 文章标题 */
+    title: string;
+    /** URL 别名 */
+    slug: string;
+    /** 摘要 */
+    summary: string;
+    /** 正文 */
+    content: string;
+    /** 封面 */
+    coverImage: string;
+    /**
+     * 状态
+     * 0-草稿 1-已发布 2-私密
+     */
+    status: string;
+    /** 浏览次数 */
+    viewCount: number;
+    /** 点赞数 */
+    likeCount: number;
+    /** 评论数 */
+    commentCount: number;
+    /** 作者 Id */
+    authorId: number | null;
+    /** 分类 Id */
+    categoryId: number | null;
+    /** 发布时间 */
+    publishedTime: string;
+    /** 标签 Ids */
+    tagIds: number[];
+}
+
+/** 分类 */
+interface Category {
+    categoryId: number | null;
+    /** 分类名称 */
+    name: string;
+    /** URL 别名 */
+    slug: string;
+    /** 描述 */
+    description: string;
+    createTime: string;
+    updateTime: string;
+}
+
+/** 标签 */
+interface Tag {
+    tagId: number | null;
+    /** 标签名称 */
+    name: string;
+    /** 颜色 */
+    color: string;
+    /** 水平 */
+    level: number | null;
+    /** URL 别名 */
+    slug: string;
+    /** 描述 */
+    description: string;
+    /** 文章数量（非数据库字段） */
+    articleCount: number | null;
+    createTime: string;
+    updateTime: string;
+}
+
 /**
  * 论坛板块
  */

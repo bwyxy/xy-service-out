@@ -36,4 +36,9 @@ public class TodoTag extends BaseEntity implements Serializable {
      * 标签名称
      * */
     private String tagName;
+
+    /**
+     * 颜色
+     * */
+    private String color;
 }

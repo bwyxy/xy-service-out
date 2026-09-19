@@ -177,4 +177,47 @@
             update_time = now()
         where task_id = #{taskId}
     </update>
+
+    <select id="selectAdminScheduleTasks" parameterType="com.xy.common.entity.TodoTask" resultMap="TodoWithTagsMap">
+        select distinct tt.task_id, tt.user_id, tt.task_title, tt.description, tt.completed, tt.completion_time,
+                        tt.urgency_level, tt.start_time, tt.due_date, tt.create_by, tt.create_time, tt.update_by,
+                        tt.update_time, tt.deleted, t.tag_name
+        from todo_task tt
+        left join todo_task_tag ttt on ttt.task_id = tt.task_id
+        left join todo_tag t on t.tag_id = ttt.tag_id
+        where tt.deleted = 0
+          and (
+              tt.task_id in (
+                  select task_id from todo_task t2
+                  where t2.deleted = 0
+                    and (
+                        (t2.start_time is not null and t2.due_date is not null
+                            and t2.start_time &lt;= #{task.dueDate} and t2.due_date &gt;= #{task.startTime})
+                        or
+                        (t2.start_time is null and t2.due_date is not null
+                            and t2.due_date between #{task.startTime} and #{task.dueDate})
+                        or
+                        (t2.start_time is not null and t2.due_date is null
+                            and t2.start_time between #{task.startTime} and #{task.dueDate})
+                    )
+              )
+              or
+              tt.task_id in (
+                  select t3.parent_id from todo_task t3
+                  where t3.deleted = 0
+                    and t3.parent_id is not null
+                    and (
+                        (t3.start_time is not null and t3.due_date is not null
+                            and t3.start_time &lt;= #{task.dueDate} and t3.due_date &gt;= #{task.startTime})
+                        or
+                        (t3.start_time is null and t3.due_date is not null
+                            and t3.due_date between #{task.startTime} and #{task.dueDate})
+                        or
+                        (t3.start_time is not null and t3.due_date is null
+                            and t3.start_time between #{task.startTime} and #{task.dueDate})
+                    )
+              )
+          )
+        order by tt.due_date asc, tt.urgency_level desc
+    </select>
 </mapper>

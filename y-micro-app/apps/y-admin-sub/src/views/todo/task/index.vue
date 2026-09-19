@@ -14,6 +14,8 @@ const submitLoading = ref(false)
 const form = reactive<any>({
   taskId: undefined,
   userId: undefined,
+  parentId: undefined,
+  parentTitle: '',
   taskTitle: '',
   description: '',
   completed: 0,
@@ -96,6 +98,8 @@ const columns = reactive<ColumnType[]>([
 const resetForm = () => {
   form.taskId = undefined
   form.userId = undefined
+  form.parentId = undefined
+  form.parentTitle = ''
   form.taskTitle = ''
   form.description = ''
   form.completed = 0
@@ -112,6 +116,15 @@ const handleAdd = () => {
   dialogVisible.value = true
 }
 
+const handleAddSubTask = (row: any) => {
+  resetForm()
+  isEdit.value = false
+  form.parentId = row.taskId
+  form.parentTitle = row.taskTitle
+  dialogTitle.value = '添加子任务'
+  dialogVisible.value = true
+}
+
 const handleEdit = async (row: any) => {
   resetForm()
   isEdit.value = true
@@ -120,6 +133,12 @@ const handleEdit = async (row: any) => {
   const res = await getTask(row.taskId)
   if (res.code === 200) {
     Object.assign(form, res.data)
+    if (form.parentId) {
+      const parentRes = await getTask(form.parentId)
+      if (parentRes.code === 200) {
+        form.parentTitle = parentRes.data?.taskTitle || ''
+      }
+    }
   }
 }
 
@@ -167,12 +186,16 @@ const submitForm = async () => {
       </template>
       <template #operate="{ row }">
         <el-button :icon="EditPen" size="small" text type="primary" @click="handleEdit(row)">编辑</el-button>
+        <el-button :icon="Plus" size="small" text type="success" @click="handleAddSubTask(row)">子任务</el-button>
         <el-button :icon="Delete" size="small" text type="danger" @click="handleDelete(row)">删除</el-button>
       </template>
     </base-table>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px" append-to-body>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
+        <el-form-item v-if="form.parentId" label="父任务">
+          <el-input v-model="form.parentTitle" disabled />
+        </el-form-item>
         <el-form-item label="任务标题" prop="taskTitle">
           <el-input v-model="form.taskTitle" placeholder="请输入任务标题" />
         </el-form-item>

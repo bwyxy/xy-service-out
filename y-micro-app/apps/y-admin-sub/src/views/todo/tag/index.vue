@@ -14,7 +14,8 @@ const submitLoading = ref(false)
 const form = reactive<any>({
   tagId: undefined,
   userId: undefined,
-  tagName: ''
+  tagName: '',
+  color: ''
 })
 
 const formRef = ref()
@@ -31,6 +32,11 @@ const columns = reactive<ColumnType[]>([
     label: '标签名称',
     prop: 'tagName',
     render: { el: 'search' }
+  },
+  {
+    key: 'color',
+    label: '颜色',
+    prop: 'color',
   },
   {
     key: 'createBy',
@@ -126,6 +132,9 @@ const submitForm = async () => {
       <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="标签名称" prop="tagName">
           <el-input v-model="form.tagName" placeholder="请输入标签名称" />
+        </el-form-item>
+        <el-form-item label="颜色" prop="color">
+          <el-color-picker v-model="form.color" />
         </el-form-item>
       </el-form>
       <template #footer>

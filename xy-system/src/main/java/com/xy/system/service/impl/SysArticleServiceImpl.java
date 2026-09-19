@@ -10,18 +10,24 @@ import com.xy.common.entity.SysBlogConfig;
 import com.xy.common.utils.SecurityUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.SysArticleMapper;
+import com.xy.system.mapper.SysArticleTagMapper;
 import com.xy.system.service.ISysArticleService;
 import com.xy.system.service.ISysArticleTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArticle> implements ISysArticleService {
 
     @Autowired
     private ISysArticleTagService sysArticleTagService;
+
+    @Autowired
+    private SysArticleTagMapper sysArticleTagMapper;
 
     /**
      * 分页查询文章列表
@@ -65,7 +71,19 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
 
         queryWrapper.eq(SysArticle::getArticleId, id);
 
-        return this.getOne(queryWrapper);
+        SysArticle article = this.getOne(queryWrapper);
+
+        if (article != null) {
+            LambdaQueryWrapper<com.xy.common.entity.SysArticleTag> tagQueryWrapper = new LambdaQueryWrapper<>();
+            tagQueryWrapper.eq(com.xy.common.entity.SysArticleTag::getArticleId, id);
+            List<Long> tagIds = sysArticleTagMapper.selectList(tagQueryWrapper)
+                    .stream()
+                    .map(com.xy.common.entity.SysArticleTag::getTagId)
+                    .collect(Collectors.toList());
+            article.setTagIds(tagIds);
+        }
+
+        return article;
     }
 
     /**
