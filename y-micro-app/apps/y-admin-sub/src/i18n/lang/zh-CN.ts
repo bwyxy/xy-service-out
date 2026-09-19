@@ -44,6 +44,9 @@ export default {
     ai: 'AI 管理',
     apiKey: 'API Key',
     blog: '博客管理',
+    todo: '待办管理',
+    task: '任务管理',
+    tag: '标签管理',
   },
   login: {
     title: '系统管理平台',

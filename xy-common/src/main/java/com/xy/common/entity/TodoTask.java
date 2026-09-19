@@ -101,6 +101,10 @@ public class TodoTask extends BaseEntity implements Serializable {
     @TableField(exist = false)
     private List<String> tags;
 
+    /** 子任务列表 */
+    @TableField(exist = false)
+    private List<TodoTask> tasks;
+
     public List<String> getTags() {
         return tags;
     }

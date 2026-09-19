@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.xy.app.mapper.TodoTaskMapper;
+import com.xy.system.mapper.todo.TodoTaskMapper;
 import com.xy.app.service.ITodoTaskCollaboratorService;
 import com.xy.app.service.ITodoTaskService;
 import com.xy.app.service.ITodoTaskTagService;

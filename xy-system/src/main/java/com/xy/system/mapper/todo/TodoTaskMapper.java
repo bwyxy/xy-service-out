@@ -1,4 +1,4 @@
-package com.xy.app.mapper;
+package com.xy.system.mapper.todo;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xy.common.entity.TodoTask;
@@ -31,5 +31,35 @@ public interface TodoTaskMapper extends BaseMapper<TodoTask> {
      * 返回 map 包含 parentTaskId, total, completed
      * */
     List<Map<String, Object>> countSubTasksByParentIds(@Param("parentIds") List<Long> parentIds);
+
+    /**
+     * 管理后台分页查询任务列表（关联用户名、标签）
+     */
+    List<TodoTask> selectAdminTaskList(@Param("task") TodoTask todoTask);
+
+    /**
+     * 管理后台统计任务总数
+     */
+    Long countAdminTaskList(@Param("task") TodoTask todoTask);
+
+    /**
+     * 根据任务ID查询任务及标签
+     */
+    TodoTask selectAdminTaskById(@Param("taskId") Long taskId);
+
+    /**
+     * 管理后台新增任务
+     */
+    int insertAdminTask(@Param("task") TodoTask task);
+
+    /**
+     * 管理后台修改任务
+     */
+    int updateAdminTask(@Param("task") TodoTask task);
+
+    /**
+     * 管理后台删除任务（逻辑删除）
+     */
+    int deleteAdminTask(@Param("taskId") Long taskId);
 
 }

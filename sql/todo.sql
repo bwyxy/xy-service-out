@@ -411,3 +411,33 @@ create table sys_im_user (
     create_time datetime comment '创建时间',
     update_time datetime comment '更新时间'
 ) engine=InnoDB default charset=utf8mb4 comment '悟空IM系统账号';
+
+-- 待办管理菜单
+insert into sys_menu values(2000, '待办管理', '0', 5, 'todo', null, '', '', 1, 1, 'M', '0', '0', '', 'list', 'admin', sysdate(), '', null, 0, '待办管理目录');
+insert into sys_menu values(2001, '任务管理', 2000, 1, 'task', 'todo/task/index', '', '', 1, 0, 'C', '0', '0', 'todo:task:list', 'checkbox', 'admin', sysdate(), '', null, 0, '任务管理菜单');
+insert into sys_menu values(2002, '标签管理', 2000, 2, 'tag', 'todo/tag/index', '', '', 1, 0, 'C', '0', '0', 'todo:tag:list', 'collection-tag', 'admin', sysdate(), '', null, 0, '标签管理菜单');
+
+-- 任务管理按钮权限
+insert into sys_menu values(2010, '任务新增', 2001, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:add', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(2011, '任务编辑', 2001, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:edit', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(2012, '任务删除', 2001, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(2013, '任务查询', 2001, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:query', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 标签管理按钮权限
+insert into sys_menu values(2020, '标签新增', 2002, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:add', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(2021, '标签编辑', 2002, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:edit', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(2022, '标签删除', 2002, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:remove', '', 'admin', sysdate(), '', null, 0, '');
+insert into sys_menu values(2023, '标签查询', 2002, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:query', '', 'admin', sysdate(), '', null, 0, '');
+
+-- 为超级管理员角色绑定待办菜单
+insert into sys_role_menu values (1, 2000);
+insert into sys_role_menu values (1, 2001);
+insert into sys_role_menu values (1, 2002);
+insert into sys_role_menu values (1, 2010);
+insert into sys_role_menu values (1, 2011);
+insert into sys_role_menu values (1, 2012);
+insert into sys_role_menu values (1, 2013);
+insert into sys_role_menu values (1, 2020);
+insert into sys_role_menu values (1, 2021);
+insert into sys_role_menu values (1, 2022);
+insert into sys_role_menu values (1, 2023);

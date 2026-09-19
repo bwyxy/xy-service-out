@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.system.mapper.todo.TodoTagMapper">
+
+    <resultMap id="TodoTagMap" type="com.xy.common.entity.TodoTag">
+        <id column="tag_id" property="tagId"/>
+        <result column="user_id" property="userId"/>
+        <result column="tag_name" property="tagName"/>
+        <result column="color" property="color" />
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectAdminTagList" resultType="com.xy.common.entity.TodoTag">
+        select t.tag_id, t.user_id, t.tag_name, t.create_by, t.create_time, t.update_by, t.update_time
+        from todo_tag t
+        <where>
+            <if test="tag.tagName != null and tag.tagName != ''">
+                and t.tag_name like concat('%', #{tag.tagName}, '%')
+            </if>
+            <if test="tag.userId != null">
+                and t.user_id = #{tag.userId}
+            </if>
+        </where>
+        order by t.create_time desc
+    </select>
+
+    <select id="countAdminTagList" resultType="java.lang.Long">
+        select count(*) from todo_tag t
+        <where>
+            <if test="tag.tagName != null and tag.tagName != ''">
+                and t.tag_name like concat('%', #{tag.tagName}, '%')
+            </if>
+            <if test="tag.userId != null">
+                and t.user_id = #{tag.userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAdminTagById" resultType="com.xy.common.entity.TodoTag">
+        select t.tag_id, t.user_id, t.tag_name, t.create_by, t.create_time, t.update_by, t.update_time
+        from todo_tag t
+        where t.tag_id = #{tagId}
+    </select>
+
+    <insert id="insertAdminTag" useGeneratedKeys="true" keyProperty="tag.tagId">
+        insert into todo_tag (user_id, tag_name, create_by, create_time, update_by, update_time)
+        values (#{tag.userId}, #{tag.tagName}, #{tag.createBy}, #{tag.createTime}, #{tag.updateBy}, #{tag.updateTime})
+    </insert>
+
+    <update id="updateAdminTag">
+        update todo_tag
+        <set>
+            <if test="tag.tagName != null and tag.tagName != ''">tag_name = #{tag.tagName},</if>
+            <if test="tag.userId != null">user_id = #{tag.userId},</if>
+            <if test="tag.updateBy != null">update_by = #{tag.updateBy},</if>
+            <if test="tag.updateTime != null">update_time = #{tag.updateTime},</if>
+        </set>
+        where tag_id = #{tag.tagId}
+    </update>
+
+    <delete id="deleteAdminTag">
+        delete from todo_tag where tag_id = #{tagId}
+    </delete>
+</mapper>

@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dizzy_yakov/vue-gantt": "^1.10.0",
     "@element-plus/icons-vue": "catalog:",
     "@types/node": "catalog:",
     "@xy/qiankun-communication": "workspace:*",

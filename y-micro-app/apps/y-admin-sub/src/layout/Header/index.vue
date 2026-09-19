@@ -82,8 +82,8 @@ const handleLogout = async () => {
   height: 60px;
   background: var(--app-header-bg);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  //align-items: center;
+  //justify-content: space-between;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid var(--app-border-color);
   box-sizing: border-box;
@@ -92,8 +92,8 @@ const handleLogout = async () => {
   &-left {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex: 1;
+    //gap: 12px;
+    //flex: 1;
     min-width: 0;
   }
 
@@ -109,6 +109,7 @@ const handleLogout = async () => {
   }
 
   .header-bar-rt {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;

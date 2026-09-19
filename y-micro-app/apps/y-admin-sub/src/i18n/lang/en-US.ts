@@ -44,6 +44,9 @@ export default {
     ai: 'AI Management',
     apiKey: 'API Key',
     blog: 'Blog Management',
+    todo: 'Todo Management',
+    task: 'Task Management',
+    tag: 'Tag Management',
   },
   login: {
     title: 'Management Platform',
