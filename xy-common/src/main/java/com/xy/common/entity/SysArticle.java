@@ -82,6 +82,9 @@ public class SysArticle extends BaseEntity implements Serializable {
      * */
     private Long categoryId;
 
+    @TableField(exist = false)
+    private String categoryName;
+
     /**
      * 发布时间
      * */

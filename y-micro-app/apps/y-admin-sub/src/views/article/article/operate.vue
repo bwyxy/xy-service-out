@@ -46,10 +46,40 @@ const statusOptions = [
 ]
 
 const editorRef = ref<any>(null)
-const toolbarConfig = {}
+const toolbarConfig = {
+  toolbarKeys: [
+    'bold',
+    'italic',
+    'underline',
+    'through',
+    'fontFamily',   // 如果报错，删除
+    'fontSize',
+    'color',
+    'bgColor',
+    'headerSelect',
+    'blockquote',
+    'codeBlock',
+    'insertLink',
+    'insertImage',
+    'insertTable',
+    'bulletedList',
+    'numberedList',
+    'xy',         // 如果报错，删除
+    'indent',
+    'undo',
+    'redo',
+    'uploadImage'
+  ],
+  modalAppendToBody: false,
+  excludeKeys: []
+}
 const editorConfig = {
   placeholder: '请输入文章内容...',
-  MENU_CONF: {}
+  hoverbarKeys: {
+    image: {
+      menuKeys: ['imageWidth30', 'imageWidth50', 'blockquote', 'codeBlock','imageWidth100', 'editImage', 'viewImageLink', 'deleteImage'],
+    },
+  }
 }
 
 const loadCategories = async () => {
@@ -94,7 +124,7 @@ const submitForm = async () => {
     const res = isEdit ? await updateArticle(data) : await addArticle(data)
     if (res.code === 200) {
       ElMessage.success(isEdit ? '修改成功' : '新增成功')
-      router.push('/article/article')
+      router.push('/blog/article/article')
     } else {
       ElMessage.error(res.msg || (isEdit ? '修改失败' : '新增失败'))
     }
@@ -165,8 +195,8 @@ onMounted(() => {
       </el-form-item>
       <el-form-item label="正文" prop="content">
         <div class="editor-wrapper">
-          <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" mode="default" />
-          <Editor v-model="form.content" :defaultConfig="editorConfig" mode="default" style="height: 500px; overflow-y: hidden;" @onCreated="handleCreated" />
+          <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" />
+          <Editor v-model="form.content" :defaultConfig="editorConfig" style="height: 500px; overflow-y: hidden;" @onCreated="handleCreated" />
         </div>
       </el-form-item>
       <el-form-item>

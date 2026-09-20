@@ -59,9 +59,9 @@ const columns = reactive<ColumnType[]>([
     prop: 'commentCount'
   },
   {
-    key: 'createTime',
-    label: '创建时间',
-    prop: 'createTime'
+    key: 'publishedTime',
+    label: '发布时间',
+    prop: 'publishedTime'
   }
 ])
 

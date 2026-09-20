@@ -43,19 +43,10 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
             sysArticle.setPageSize(10);
         }
 
-        LambdaQueryWrapper<SysArticle> queryWrapper = new LambdaQueryWrapper<>();
+        Page<SysArticle> page = new Page<>(sysArticle.getPageNum(), sysArticle.getPageSize());
+        List<SysArticle> records = baseMapper.selectSysArticleList(page, sysArticle);
 
-        if (sysArticle.getTitle() != null && !StringUtils.isEmpty(sysArticle.getTitle())) {
-            queryWrapper.like(SysArticle::getTitle, sysArticle.getTitle());
-        }
-
-        if (sysArticle.getStatus() != null && !StringUtils.isEmpty(sysArticle.getStatus())) {
-            queryWrapper.eq(SysArticle::getStatus, sysArticle.getStatus());
-        }
-
-        Page<SysArticle> page = this.page(new Page<>(sysArticle.getPageNum(), sysArticle.getPageSize()), queryWrapper);
-
-        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+        return PageResult.of(records, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     /**
@@ -67,11 +58,7 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
             throw new SecurityException("文章 Id不能为空");
         }
 
-        LambdaQueryWrapper<SysArticle> queryWrapper = new LambdaQueryWrapper<>();
-
-        queryWrapper.eq(SysArticle::getArticleId, id);
-
-        SysArticle article = this.getOne(queryWrapper);
+        SysArticle article = baseMapper.selectSysArticleById(id);
 
         if (article != null) {
             LambdaQueryWrapper<com.xy.common.entity.SysArticleTag> tagQueryWrapper = new LambdaQueryWrapper<>();
