@@ -2,6 +2,9 @@ package com.xy.system.service;
 
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.SysCategory;
+import com.xy.common.vo.blog.CategoryVO;
+
+import java.util.List;
 
 public interface ISysCategoryService {
 

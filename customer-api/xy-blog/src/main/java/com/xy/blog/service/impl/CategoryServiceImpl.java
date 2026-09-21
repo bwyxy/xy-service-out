@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xy.blog.service.ICategoryService;
 import com.xy.common.entity.SysCategory;
 import com.xy.common.utils.StringUtils;
+import com.xy.common.vo.blog.CategoryVO;
 import com.xy.system.mapper.SysCategoryMapper;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,13 @@ public class CategoryServiceImpl extends ServiceImpl<SysCategoryMapper, SysCateg
         }
 
         return this.list(queryWrapper);
+    }
+
+    /**
+     * 查询分类关联文章列表
+     * */
+    @Override
+    public List<CategoryVO> listCategoryWithArticles() {
+        return this.baseMapper.listCategoryWithArticles();
     }
 }

@@ -13,6 +13,23 @@
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
+    
+    <resultMap id="CategoryWithArticlesMap" type="com.xy.common.vo.blog.CategoryVO">
+        <id property="categoryId" column="category_id" />
+        <result property="name" column="name" />
+
+        <collection property="articles" ofType="com.xy.common.vo.blog.ArticleVO">
+            <id property="articleId" column="article_id" />
+            <result property="title"        column="title"/>
+            <result property="slug"         column="slug"/>
+            <result property="coverImage"   column="cover_image"/>
+            <result property="viewCount"    column="view_count"/>
+            <result property="likeCount"    column="like_count"/>
+            <result property="commentCount" column="comment_count"/>
+            <result property="publishedTime" column="published_time"/>
+            <result property="tagNames" column="tag_names" />
+        </collection>
+    </resultMap>
 
     <select id="selectSysCategoryList" resultMap="SysCategoryResult">
         select sc.category_id, sc.name, sc.slug, sc.description,
@@ -25,6 +42,48 @@
             </if>
         </where>
         order by sc.create_time desc
+    </select>
+
+    <select id="listCategoryWithArticles" resultMap="CategoryWithArticlesMap">
+        SELECT
+        t.category_id,
+        t.name,
+        t.article_id,
+        t.title,
+        t.slug,
+        t.cover_image,
+        t.view_count,
+        t.like_count,
+        t.comment_count,
+        t.published_time,
+        (
+            select group_concat(tg.name order by tg.tag_id separator ',')
+            from sys_article_tag at
+            join sys_tag tg on tg.tag_id = at.tag_id
+            where at.article_id = t.article_id
+        ) as tag_names
+        FROM (
+        SELECT
+        sc.category_id,
+        sc.name,
+        sa.article_id,
+        sa.title,
+        sa.slug,
+        sa.cover_image,
+        sa.view_count,
+        sa.like_count,
+        sa.comment_count,
+        sa.published_time,
+        ROW_NUMBER() OVER (
+        PARTITION BY sc.category_id
+        ORDER BY sa.published_time DESC
+        ) AS rn
+        FROM sys_category sc
+        LEFT JOIN sys_article sa
+        ON sc.category_id = sa.category_id
+        ) t
+        WHERE t.rn &lt;= 6 OR t.rn IS NULL
+        ORDER BY t.category_id, t.published_time DESC;
     </select>
 
 </mapper>

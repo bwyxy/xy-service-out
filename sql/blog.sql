@@ -155,7 +155,82 @@ create table sys_comment (
     key idx_create_time (create_time)
 ) engine=innodb comment = '评论表';
 
+-- 访问日志表
+create table blog_event_log (
+    id bigint primary key auto_increment comment 'id',
+    event_type varchar(24) comment '事件类型: page_view/click/submit等',
+    path varchar(512) comment '界面路径',
+    referrer varchar(512) comment '来源页',
+    title varchar(240) comment '界面标题',
+    visitor_id varchar(64) comment '匿名用户Id',
+    session_id varchar(64) comment '会话Id',
+    login_user_id bigint comment '登录用户Id',
+    ip varchar(64) comment '客户端 IP，兼容 IPv6',
+    ua varchar(1024) comment 'User-Agent',
+    device varchar(64) comment '设备类型: PC/Mobile',
+    os varchar(64) comment '操作系统',
+    browser varchar(64) comment '浏览器',
+    props JSON comment '自定义属性',
+    created_at datetime(3) comment '事件发生时间，毫秒精度'
+) engine=innodb comment = '访问日志表';
+
+-- 访问统计索引优化
+alter table blog_event_log add index idx_event_time (event_type, created_at);
+alter table blog_event_log add index idx_created_at (created_at);
+alter table blog_event_log add index idx_path (path);
+alter table blog_event_log add index idx_referrer (referrer);
+alter table blog_event_log add index idx_device (device);
+
 select st.tag_id, st.name, st.slug, st.color, st.level, st.description, st.create_time, st.update_time, count(sat.article_id) as article_count from sys_tag st
 left join sys_article_tag sat on sat.tag_id = st.tag_id
 left join sys_article sa on sa.article_id = sat.article_id and sa.status = '1'
 group by st.tag_id, st.name;
+
+SELECT NULL AS stat_date,
+       COUNT(*) AS pv,
+       COUNT(DISTINCT visitor_id) AS uv,
+       COUNT(DISTINCT session_id) AS session_count,
+       0 AS duration_count,
+       0 AS total_duration_ms
+FROM blog_event_log
+WHERE event_type = 'page_view';
+
+SELECT
+    t.category_id,
+    t.name,
+    t.article_id,
+    t.title,
+    t.slug,
+    t.cover_image,
+    t.view_count,
+    t.like_count,
+    t.comment_count,
+    t.published_time,
+    (
+        select group_concat(tg.name order by tg.tag_id separator ',')
+        from sys_article_tag at
+        join sys_tag tg on tg.tag_id = at.tag_id
+        where at.article_id = t.article_id
+    ) as tag_names
+FROM (
+         SELECT
+             sc.category_id,
+             sc.name,
+             sa.article_id,
+             sa.title,
+             sa.slug,
+             sa.cover_image,
+             sa.view_count,
+             sa.like_count,
+             sa.comment_count,
+             sa.published_time,
+             ROW_NUMBER() OVER (
+                 PARTITION BY sc.category_id
+                 ORDER BY sa.published_time DESC
+                 ) AS rn
+         FROM sys_category sc
+                  LEFT JOIN sys_article sa
+                            ON sc.category_id = sa.category_id
+     ) t
+WHERE t.rn <= 6
+ORDER BY t.category_id, t.published_time ASC;
