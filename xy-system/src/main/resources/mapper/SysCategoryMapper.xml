@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.system.mapper.SysCategoryMapper">
+
+    <resultMap id="SysCategoryResult" type="com.xy.common.entity.SysCategory">
+        <id property="categoryId" column="category_id"/>
+        <result property="name" column="name"/>
+        <result property="slug" column="slug"/>
+        <result property="description" column="description"/>
+        <result property="articleCount" column="article_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="selectSysCategoryList" resultMap="SysCategoryResult">
+        select sc.category_id, sc.name, sc.slug, sc.description,
+               (select count(*) from sys_article sa where sa.category_id = sc.category_id) as article_count,
+                sc.create_time, sc.update_time
+        from sys_category sc
+        <where>
+            <if test="sysCategory.name != null and sysCategory.name != ''">
+                and sc.name like concat('%', #{sysCategory.name}, '%')
+            </if>
+        </where>
+        order by sc.create_time desc
+    </select>
+
+</mapper>

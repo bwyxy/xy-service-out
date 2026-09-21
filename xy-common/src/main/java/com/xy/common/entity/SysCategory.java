@@ -36,4 +36,10 @@ public class SysCategory extends BaseEntity implements Serializable {
      * 描述
      * */
     private String description;
+
+    /**
+     * 关联文章数量
+     * */
+    @TableField(exist = false)
+    private Long articleCount;
 }

@@ -41,6 +41,11 @@ const columns = reactive<ColumnType[]>([
     prop: 'description'
   },
   {
+    key: 'articleCount',
+    label: '文章数量',
+    prop: 'articleCount'
+  },
+  {
     key: 'createTime',
     label: '创建时间',
     prop: 'createTime'

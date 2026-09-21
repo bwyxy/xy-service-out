@@ -143,7 +143,7 @@ const submitForm = async () => {
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item label="颜色">
-              <el-color-picker v-model="form.color" show-alpha />
+              <el-color-picker v-model="form.color" show-alpha color-format="hex" />
             </el-form-item>
           </el-col>
           <el-col :span="12">

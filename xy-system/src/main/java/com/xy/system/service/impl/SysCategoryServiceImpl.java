@@ -12,6 +12,7 @@ import com.xy.system.service.ISysCategoryService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SysCategoryServiceImpl extends ServiceImpl<SysCategoryMapper, SysCategory> implements ISysCategoryService {
@@ -36,15 +37,10 @@ public class SysCategoryServiceImpl extends ServiceImpl<SysCategoryMapper, SysCa
             sysCategory.setPageSize(10);
         }
 
-        LambdaQueryWrapper<SysCategory> queryWrapper = new LambdaQueryWrapper<>();
+        Page<SysCategory> page = new Page<>(sysCategory.getPageNum(), sysCategory.getPageSize());
+        List<SysCategory> records = sysCategoryMapper.selectSysCategoryList(page, sysCategory);
 
-        if (sysCategory.getName() != null && !StringUtils.isEmpty(sysCategory.getName())) {
-            queryWrapper.like(SysCategory::getName, sysCategory.getName());
-        }
-
-        Page<SysCategory> page = this.page(new Page<>(sysCategory.getPageNum(), sysCategory.getPageSize()), queryWrapper);
-
-        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+        return PageResult.of(records, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     /**
