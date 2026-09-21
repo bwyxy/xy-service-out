@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.system.mapper.blog.BlogEventLogMapper">
+
+    <resultMap id="DailyStatsResult" type="com.xy.common.vo.blog.VisitDailyStatsVO">
+        <result property="statDate" column="stat_date"/>
+        <result property="pv" column="pv"/>
+        <result property="uv" column="uv"/>
+        <result property="sessionCount" column="session_count"/>
+        <result property="durationCount" column="duration_count"/>
+        <result property="totalDurationMs" column="total_duration_ms"/>
+    </resultMap>
+
+    <resultMap id="TopPageResult" type="com.xy.common.vo.blog.VisitTopPageVO">
+        <result property="path" column="path"/>
+        <result property="title" column="title"/>
+        <result property="pv" column="pv"/>
+        <result property="uv" column="uv"/>
+    </resultMap>
+
+    <resultMap id="TopSourceResult" type="com.xy.common.vo.blog.VisitTopSourceVO">
+        <result property="referrer" column="referrer"/>
+        <result property="pv" column="pv"/>
+        <result property="uv" column="uv"/>
+    </resultMap>
+
+    <resultMap id="DeviceResult" type="com.xy.common.vo.blog.VisitDeviceVO">
+        <result property="device" column="device"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <sql id="commonWhere">
+        <where>
+            created_at &gt;= #{startTime}
+            AND created_at &lt;= #{endTime}
+        </where>
+    </sql>
+
+    <select id="selectDailyStats" resultMap="DailyStatsResult">
+        SELECT DATE(created_at) AS stat_date,
+               SUM(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) AS pv,
+               COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN visitor_id END) AS uv,
+               COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN session_id END) AS session_count,
+               SUM(CASE WHEN event_type = 'duration' THEN 1 ELSE 0 END) AS duration_count,
+               SUM(CASE WHEN event_type = 'duration'
+                        THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(props, '$.duration')) AS SIGNED), 0)
+                        ELSE 0 END) AS total_duration_ms
+        FROM blog_event_log
+        <include refid="commonWhere"/>
+        GROUP BY DATE(created_at)
+        ORDER BY stat_date
+    </select>
+
+    <select id="selectTopPages" resultMap="TopPageResult">
+        SELECT path,
+               MAX(title) AS title,
+               COUNT(*) AS pv,
+               COUNT(DISTINCT visitor_id) AS uv
+        FROM blog_event_log
+        WHERE event_type = 'page_view'
+          AND created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+        GROUP BY path
+        ORDER BY pv DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectTopSources" resultMap="TopSourceResult">
+        SELECT IFNULL(referrer, '') AS referrer,
+               COUNT(*) AS pv,
+               COUNT(DISTINCT visitor_id) AS uv
+        FROM blog_event_log
+        WHERE event_type = 'page_view'
+          AND created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+        GROUP BY referrer
+        ORDER BY pv DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectDeviceDistribution" resultMap="DeviceResult">
+        SELECT IFNULL(device, '未知') AS device,
+               COUNT(*) AS count
+        FROM blog_event_log
+        WHERE event_type = 'page_view'
+          AND created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+        GROUP BY device
+        ORDER BY count DESC
+    </select>
+
+    <select id="selectTotalPvUv" resultMap="DailyStatsResult">
+        SELECT NULL AS stat_date,
+               COUNT(*) AS pv,
+               COUNT(DISTINCT visitor_id) AS uv,
+               COUNT(DISTINCT session_id) AS session_count,
+               0 AS duration_count,
+               0 AS total_duration_ms
+        FROM blog_event_log
+        WHERE event_type = 'page_view'
+          AND created_at &lt;= #{endTime}
+    </select>
+
+    <select id="selectDayStats" resultMap="DailyStatsResult">
+        SELECT DATE(created_at) AS stat_date,
+               SUM(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) AS pv,
+               COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN visitor_id END) AS uv,
+               COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN session_id END) AS session_count,
+               SUM(CASE WHEN event_type = 'duration' THEN 1 ELSE 0 END) AS duration_count,
+               SUM(CASE WHEN event_type = 'duration'
+                        THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(props, '$.duration')) AS SIGNED), 0)
+                        ELSE 0 END) AS total_duration_ms
+        FROM blog_event_log
+        WHERE created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+        GROUP BY DATE(created_at)
+    </select>
+
+</mapper>
