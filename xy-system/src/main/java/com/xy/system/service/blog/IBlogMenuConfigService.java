@@ -3,6 +3,7 @@ package com.xy.system.service.blog;
 import com.xy.common.entity.blog.BlogMenuConfig;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IBlogMenuConfigService {
 
@@ -10,6 +11,11 @@ public interface IBlogMenuConfigService {
      * 根据菜单Id获取菜单配置列表
      * */
     List<BlogMenuConfig> selectBlogMenuConfigByMenuId(Long menuId);
+
+    /**
+     *  根据菜单 Id获取菜单配置信息
+     * */
+    Map<String, Object> getBlogMenuConfigByMenuId(Long menuId);
 
     /**
      * 获取菜单配置信息

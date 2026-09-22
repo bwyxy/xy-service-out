@@ -68,7 +68,7 @@
                     select group_concat(tg.name order by tg.tag_id separator ',')
                     from sys_article_tag at
                     join sys_tag tg on tg.tag_id = at.tag_id
-                    where at.article_id = t.article_id
+                    where at.article_id = sa.article_id
                 ) as tag_names
         from sys_article sa
         left join sys_category sc on sc.category_id = sa.category_id

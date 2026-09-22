@@ -250,3 +250,70 @@ interface ForumOperLog {
     ip?: string
     createTime?: string
 }
+
+/**
+ * 友链
+ */
+interface FriendLink {
+    /** 站点 Id */
+    id?: number;
+
+    /** 站点名称 */
+    name?: string;
+
+    /** 站点地址 */
+    url?: string;
+
+    /** 站点 logo */
+    logo?: string;
+
+    /** 描述 */
+    description?: string;
+
+    /** 站长邮箱 */
+    email?: string;
+
+    /** 排序 */
+    sort?: number;
+
+    /** 状态 1-显示 0-隐藏 */
+    status?: number;
+
+    /** 备注 */
+    remark?: string;
+}
+
+/**
+ * 公告
+ */
+interface Notice {
+    /** 公告 Id */
+    id?: number;
+
+    /** 标题 */
+    title?: string;
+
+    /** 内容 */
+    content?: string;
+
+    /** 类型 1-普通 2-重要 3-紧急 */
+    type?: NoticeType;
+
+    /** 状态 1-发布 0-草稿 2-下线 */
+    status?: NoticeStatus;
+
+    /** 是否置顶 1-是 0-否 */
+    isTop?: number;
+
+    /** 排序 */
+    sort?: number;
+
+    /** 跳转链接 */
+    linkUrl?: string;
+
+    /** 生效时间，为空立即生效 */
+    startTime?: string;
+
+    /** 失效时间，为空永久有效 */
+    endTime?: string;
+}

@@ -1,5 +1,6 @@
 package com.xy.system.service.impl.blog;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,7 +12,11 @@ import com.xy.system.service.blog.IBlogMenuConfigService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogMenuConfigServiceImpl extends ServiceImpl<BlogMenuConfigMapper, BlogMenuConfig> implements IBlogMenuConfigService {
@@ -44,6 +49,34 @@ public class BlogMenuConfigServiceImpl extends ServiceImpl<BlogMenuConfigMapper,
         queryWrapper.eq(BlogMenuConfig::getId, id);
 
         return this.getOne(queryWrapper);
+    }
+
+    /**
+     *  根据菜单 Id获取菜单配置信息
+     * */
+    @Override
+    public Map<String, Object> getBlogMenuConfigByMenuId(Long menuId) {
+        Map<String, Object> configMap;
+
+        List<BlogMenuConfig> list = selectBlogMenuConfigByMenuId(menuId);
+
+        configMap = list.stream().collect(Collectors.toMap(
+                BlogMenuConfig::getConfigKey,
+                item -> parseConfigValue(item.getConfigValue())
+        ));
+
+        return Collections.unmodifiableMap(configMap);
+    }
+
+    private Object parseConfigValue(String value) {
+        if (value == null) return null;
+        // 尝试解析为 JSON 对象或数组
+        try {
+            return JSON.parse(value);
+        } catch (Exception e) {
+            // 不是合法 JSON，直接返回字符串
+            return value;
+        }
     }
 
     /**

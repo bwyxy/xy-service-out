@@ -1,6 +1,8 @@
 package com.xy.blog.controller;
 
+import com.xy.blog.pojo.vo.TagListVO;
 import com.xy.blog.service.ITagService;
+import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.SysTag;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +24,10 @@ public class tagController {
     /**
      * 获取标签列表
      * */
+    @Anonymous
     @PostMapping("/list")
     public R<?> getTagList() {
-        List<SysTag> list = tagService.getSysTagList();
+        List<TagListVO> list = tagService.getSysTagList();
         return R.ok(list);
     }
 

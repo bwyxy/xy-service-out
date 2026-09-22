@@ -95,6 +95,10 @@ public class SysCategoryServiceImpl extends ServiceImpl<SysCategoryMapper, SysCa
             updateWrapper.set(SysCategory::getSlug, sysCategory.getSlug());
         }
 
+        if (sysCategory.getType() != null && !StringUtils.isEmpty(sysCategory.getType())) {
+            updateWrapper.set(SysCategory::getType, sysCategory.getType());
+        }
+
         if (sysCategory.getDescription() != null && !StringUtils.isEmpty(sysCategory.getDescription())) {
             updateWrapper.set(SysCategory::getDescription, sysCategory.getDescription());
         }

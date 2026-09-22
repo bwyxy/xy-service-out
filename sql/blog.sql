@@ -35,6 +35,7 @@ create table sys_category (
     category_id bigint primary key auto_increment comment '分类Id',
     name varchar(24) not null comment '分类名称',
     slug varchar(100) default '' comment 'URL别名',
+    type varchar(64) default 'article' comment '分类类型 article-文章 album-相册 tool-工具',
     description varchar(255) default '' comment '描述',
     create_time datetime comment '创建时间',
     update_time datetime comment '更新时间',
@@ -173,6 +174,83 @@ create table blog_event_log (
     props JSON comment '自定义属性',
     created_at datetime(3) comment '事件发生时间，毫秒精度'
 ) engine=innodb comment = '访问日志表';
+
+-- 公告表
+create table blog_notice (
+    id bigint primary key auto_increment comment 'id',
+    title varchar(100) comment '标题',
+    content text not null comment '公告内容',
+    type tinyint default 1 comment '1-普通 2-重要 3-紧急',
+    status tinyint default 1 comment '1-发布 0-草稿 2-下线',
+    is_top tinyint default 0 comment '是否置顶',
+    sort int default 0 comment '排序',
+    link_url varchar(512) comment '跳转链接，可选',
+    start_time datetime(3) comment '生效时间，为空立即生效',
+    end_time datetime(3) comment '失效时间，为空永久有效',
+    create_time datetime default current_timestamp,
+    update_time datetime default current_timestamp on update current_timestamp,
+    INDEX idx_status_time (status, start_time, end_time),
+    INDEX idx_top_sort (is_top, sort),
+    INDEX idx_create_time (create_time)
+) engine=innodb comment = '公告表';
+
+-- 工具表
+create table blog_tool (
+    id bigint primary key auto_increment comment 'id',
+    category_id bigint comment '分类Id',
+    name varchar(100) not null comment '工具名称',
+    url varchar(512) not null comment '工具地址',
+    icon varchar(512) default null comment '图标/Logo',
+    description varchar(512) comment '描述',
+    platform varchar(64) comment '平台：Web/iOS/Android/Windows/Mac',
+    price_type tinyint default 0 comment '0=免费 1=付费 2=freemium',
+    sort int default 0 comment '排序',
+    status tinyint default 1 comment '1-显示 0-隐藏',
+    is_recommend int default 0 comment '1=站长推荐',
+    click_count int default 0 comment '点击次数',
+    create_time datetime default current_timestamp,
+    update_time datetime default current_timestamp on update current_timestamp,
+    index idx_category(category_id),
+    INDEX idx_status_sort (status, sort),
+    INDEX idx_recommend (is_recommend),
+    INDEX idx_create_time (create_time),
+    constraint fk_tool_category foreign key (category_id) references sys_category(category_id) on delete restrict
+) engine=innodb comment = '工具表';
+
+-- 照片表
+create table blog_photo (
+    id bigint primary key auto_increment comment 'id',
+    category_id bigint comment '分类Id',
+    name varchar(100) comment '名称',
+    photo_url varchar(255) comment '照片链接',
+    status tinyint default 1 comment '0-私密 1-公开',
+    description varchar(512) comment '照片描述',
+    sort int default 0 comment '排序',
+    published_time datetime default null comment '拍摄时间',
+    create_time datetime default current_timestamp,
+    update_time datetime default current_timestamp on update current_timestamp,
+    index idx_category(category_id),
+    INDEX idx_status_sort (status, sort),
+    INDEX idx_create_time (create_time),
+    constraint fk_photo_category foreign key (category_id) references sys_category(category_id) on delete restrict
+) engine=innodb comment '照片表';
+
+-- 友链表
+create table blog_friend_link (
+    id bigint primary key auto_increment comment 'id',
+    name varchar(100) not null comment '站点名称',
+    url varchar(255) not null comment '站点地址',
+    logo varchar(255) comment '站点logo',
+    description varchar(512) comment '站点描述',
+    email varchar(128) comment '站长邮箱',
+    sort int default 0 comment '排序',
+    status tinyint default 1 comment '1-显示 0-隐藏',
+    remark varchar(512) comment '备注',
+    create_time datetime default current_timestamp,
+    update_time datetime default current_timestamp on update current_timestamp,
+    INDEX idx_status_sort (status, sort),
+    INDEX idx_create_time (create_time)
+) engine=innodb comment = '友链表';
 
 -- 访问统计索引优化
 alter table blog_event_log add index idx_event_time (event_type, created_at);

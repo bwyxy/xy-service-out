@@ -33,6 +33,12 @@ public class SysCategory extends BaseEntity implements Serializable {
     private String slug;
 
     /**
+     * 类型
+     * article-文章 album-相册 tool-工具
+     * */
+    private String type;
+
+    /**
      * 描述
      * */
     private String description;

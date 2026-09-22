@@ -1,6 +1,7 @@
 package com.xy.blog.controller;
 
 import com.xy.blog.service.IArticleService;
+import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.domain.R;
 import com.xy.common.dto.blog.ArticleDTO;
@@ -21,6 +22,7 @@ public class ArticleController {
     /**
      * 获取文章列表
      * */
+    @Anonymous
     @PostMapping("/list")
     public R<?> list(@RequestBody ArticleDTO articleDTO) {
 

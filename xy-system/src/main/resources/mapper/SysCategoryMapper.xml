@@ -8,6 +8,7 @@
         <id property="categoryId" column="category_id"/>
         <result property="name" column="name"/>
         <result property="slug" column="slug"/>
+        <result property="type" column="type"/>
         <result property="description" column="description"/>
         <result property="articleCount" column="article_count"/>
         <result property="createTime" column="create_time"/>
@@ -32,13 +33,16 @@
     </resultMap>
 
     <select id="selectSysCategoryList" resultMap="SysCategoryResult">
-        select sc.category_id, sc.name, sc.slug, sc.description,
+        select sc.category_id, sc.name, sc.slug, sc.type, sc.description,
                (select count(*) from sys_article sa where sa.category_id = sc.category_id) as article_count,
                 sc.create_time, sc.update_time
         from sys_category sc
         <where>
             <if test="sysCategory.name != null and sysCategory.name != ''">
                 and sc.name like concat('%', #{sysCategory.name}, '%')
+            </if>
+            <if test="sysCategory.type != null and sysCategory.type != ''">
+                and sc.type = #{sysCategory.type}
             </if>
         </where>
         order by sc.create_time desc
@@ -82,7 +86,7 @@
         FROM sys_category sc
         LEFT JOIN sys_article sa
         ON sc.category_id = sa.category_id
-        where sa.status = 1
+        where sa.status = 1 and sc.type = 'article'
         ) t
         WHERE t.rn &lt;= 6 OR t.rn IS NULL
         ORDER BY t.category_id, t.published_time DESC;

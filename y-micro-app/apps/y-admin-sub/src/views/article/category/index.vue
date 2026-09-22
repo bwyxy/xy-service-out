@@ -15,6 +15,7 @@ const form = reactive<any>({
   categoryId: undefined,
   name: '',
   slug: '',
+  type: 'article',
   description: ''
 })
 
@@ -22,6 +23,12 @@ const formRef = ref()
 const rules = {
   name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
 }
+
+const typeOptions: any[] = [
+  { label: '文章', value: 'article', elTagType: 'success' },
+  { label: '相册', value: 'album', elTagType: 'warning' },
+  { label: '工具', value: 'tool', elTagType: 'primary' }
+]
 
 const columns = reactive<ColumnType[]>([
   {
@@ -34,6 +41,13 @@ const columns = reactive<ColumnType[]>([
     key: 'slug',
     label: 'URL别名',
     prop: 'slug'
+  },
+  {
+    key: 'type',
+    label: '类型',
+    prop: 'type',
+    type: 'tag',
+    render: { el: 'select', list: typeOptions as any }
   },
   {
     key: 'description',
@@ -56,6 +70,7 @@ const resetForm = () => {
   form.categoryId = undefined
   form.name = ''
   form.slug = ''
+  form.type = 'article'
   form.description = ''
   formRef.value?.resetFields()
 }
@@ -133,6 +148,16 @@ const submitForm = async () => {
         </el-form-item>
         <el-form-item label="URL别名">
           <el-input v-model="form.slug" placeholder="请输入URL别名" />
+        </el-form-item>
+        <el-form-item label="分类类型">
+          <el-select v-model="form.type" placeholder="请选择分类类型" style="width: 100%">
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="form.description" type="textarea" :rows="3" placeholder="请输入分类描述" />
