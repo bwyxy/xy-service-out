@@ -69,6 +69,7 @@
         sa.article_id,
         sa.title,
         sa.slug,
+        sa.status,
         sa.cover_image,
         sa.view_count,
         sa.like_count,
@@ -81,6 +82,7 @@
         FROM sys_category sc
         LEFT JOIN sys_article sa
         ON sc.category_id = sa.category_id
+        where sa.status = 1
         ) t
         WHERE t.rn &lt;= 6 OR t.rn IS NULL
         ORDER BY t.category_id, t.published_time DESC;

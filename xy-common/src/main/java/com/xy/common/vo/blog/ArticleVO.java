@@ -14,6 +14,8 @@ public class ArticleVO {
 
     private String title;
 
+    private String categoryName;
+
     private String slug;
 
     private String coverImage;

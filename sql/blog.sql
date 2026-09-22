@@ -220,6 +220,7 @@ FROM (
              sa.title,
              sa.slug,
              sa.cover_image,
+             sa.status,
              sa.view_count,
              sa.like_count,
              sa.comment_count,
@@ -231,6 +232,7 @@ FROM (
          FROM sys_category sc
                   LEFT JOIN sys_article sa
                             ON sc.category_id = sa.category_id
+         where sa.status = 1
      ) t
 WHERE t.rn <= 6
 ORDER BY t.category_id, t.published_time ASC;

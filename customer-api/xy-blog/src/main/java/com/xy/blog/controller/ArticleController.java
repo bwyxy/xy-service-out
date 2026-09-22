@@ -1,16 +1,17 @@
 package com.xy.blog.controller;
 
-import com.xy.blog.pojo.dto.ArticleDTO;
 import com.xy.blog.service.IArticleService;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.domain.R;
+import com.xy.common.dto.blog.ArticleDTO;
 import com.xy.common.entity.SysArticle;
+import com.xy.common.vo.blog.ArticleVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/web/article")
+@RequestMapping("/article")
 @RequiredArgsConstructor
 public class ArticleController {
 
@@ -23,7 +24,7 @@ public class ArticleController {
     @PostMapping("/list")
     public R<?> list(@RequestBody ArticleDTO articleDTO) {
 
-        PageResult<SysArticle> pageResult = articleService.selectSysArticle(articleDTO);
+        PageResult<ArticleVO> pageResult = articleService.selectSysArticle(articleDTO);
 
         return R.ok(pageResult);
     }

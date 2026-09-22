@@ -23,6 +23,19 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <resultMap id="ArticleMap" type="com.xy.common.vo.blog.ArticleVO">
+        <id property="articleId" column="article_id"/>
+        <result property="title" column="title"/>
+        <result property="slug" column="slug"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="publishedTime" column="published_time"/>
+        <result property="tagNames" column="tag_names" />
+    </resultMap>
+
     <sql id="selectSysArticleVo">
         select sa.article_id, sa.title, sa.slug, sa.summary, sa.content, sa.cover_image, sa.status,
                sa.view_count, sa.like_count, sa.comment_count, sa.author_id, sa.category_id,
@@ -45,6 +58,26 @@
             </if>
         </where>
         order by sa.published_time DESC
+    </select>
+
+    <select id="selectArticleVOList" resultMap="ArticleMap">
+        select sa.article_id, sa.title, sa.slug, sa.cover_image,
+               sa.view_count, sa.like_count, sa.comment_count,
+               sc.name as category_name, sa.published_time,
+                (
+                    select group_concat(tg.name order by tg.tag_id separator ',')
+                    from sys_article_tag at
+                    join sys_tag tg on tg.tag_id = at.tag_id
+                    where at.article_id = t.article_id
+                ) as tag_names
+        from sys_article sa
+        left join sys_category sc on sc.category_id = sa.category_id
+        <where>
+            sa.status = 1
+            <if test="articleDTO.title != null and articleDTO.title != ''">
+                and sa.title like concat('%', #{articleDTO.title}, '%')
+            </if>
+        </where>
     </select>
 
     <select id="selectSysArticleById" resultMap="SysArticleResult">

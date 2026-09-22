@@ -3,14 +3,17 @@ package com.xy.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xy.blog.pojo.dto.ArticleDTO;
+import com.xy.common.dto.blog.ArticleDTO;
 import com.xy.blog.service.IArticleService;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.SysArticle;
 import com.xy.common.utils.StringUtils;
+import com.xy.common.vo.blog.ArticleVO;
 import com.xy.system.mapper.SysArticleMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -20,32 +23,13 @@ public class ArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArticle
      * 查询文章列表
      * */
     @Override
-    public PageResult<SysArticle> selectSysArticle(ArticleDTO articleDTO) {
+    public PageResult<ArticleVO> selectSysArticle(ArticleDTO articleDTO) {
 
-        if (articleDTO.getPageSize() == 0) {
-            articleDTO.setPageSize(10);
-        }
+        Page<ArticleVO> page = new Page<>(articleDTO.getPageNum(), articleDTO.getPageSize());
 
-        if (articleDTO.getPageNum() == 0) {
-            articleDTO.setPageNum(1);
-        }
+        List<ArticleVO> records = baseMapper.selectArticleVOList(page, articleDTO);
 
-        LambdaQueryWrapper<SysArticle> queryWrapper = new LambdaQueryWrapper<>();
-
-        log.debug("queryWrapper:{}", articleDTO.getCategoryId());
-        if (articleDTO.getCategoryId() != null && articleDTO.getCategoryId() != 0) {
-            queryWrapper.eq(SysArticle::getCategoryId, articleDTO.getCategoryId());
-        }
-
-        if (articleDTO.getTitle() != null && !StringUtils.isEmpty(articleDTO.getTitle())) {
-            queryWrapper.like(SysArticle::getTitle, articleDTO.getTitle());
-        }
-
-        queryWrapper.orderByDesc(SysArticle::getPublishedTime);
-
-        Page<SysArticle> page = this.page(new Page<>(articleDTO.getPageNum(), articleDTO.getPageSize()), queryWrapper);
-
-        return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+        return PageResult.of(records, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     /**
