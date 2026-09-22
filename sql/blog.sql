@@ -235,6 +235,8 @@ create table blog_photo (
     constraint fk_photo_category foreign key (category_id) references sys_category(category_id) on delete restrict
 ) engine=innodb comment '照片表';
 
+alter table blog_photo auto_increment 2;
+
 -- 友链表
 create table blog_friend_link (
     id bigint primary key auto_increment comment 'id',

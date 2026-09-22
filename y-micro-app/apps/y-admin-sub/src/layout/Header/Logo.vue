@@ -4,7 +4,7 @@
 
 <template>
   <div class="logo">
-    <span>系统管理平台</span>
+    <span>忆管家</span>
   </div>
 </template>
 

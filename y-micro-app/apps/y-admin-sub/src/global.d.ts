@@ -317,3 +317,73 @@ interface Notice {
     /** 失效时间，为空永久有效 */
     endTime?: string;
 }
+
+/**
+ * 工具
+ */
+interface Tool {
+    /** 工具 Id */
+    id?: number;
+
+    /** 分类 Id（分类类型为 tool 的） */
+    categoryId?: number;
+
+    /** 工具名称 */
+    name?: string;
+
+    /** 工具地址 */
+    url?: string;
+
+    /** icon */
+    icon?: string;
+
+    /** 描述 */
+    description?: string;
+
+    /** 平台 */
+    platform?: string;
+
+    /** 是否收费 0-免费 1-付费 2-freemium */
+    priceType?: PriceType;
+
+    /** 排序 */
+    sort?: number;
+
+    /** 状态 1-显示 0-隐藏 */
+    status?: ShowStatus;
+
+    /** 是否站长推荐 1-是 0-否 */
+    isRecommend?: YesNo;
+
+    /** 点击次数 */
+    clickCount?: number;
+}
+
+/**
+ * 相册照片
+ */
+interface AlbumPhoto {
+    /** 照片 Id */
+    id?: number;
+
+    /** 分类 Id（分类类型为 album 的） */
+    categoryId?: number;
+
+    /** 名称 */
+    name?: string;
+
+    /** 照片链接 */
+    photoUrl?: string;
+
+    /** 照片状态 0-私密 1-公开 */
+    status?: PhotoStatus;
+
+    /** 描述 */
+    description?: string;
+
+    /** 排序 */
+    sort?: number;
+
+    /** 拍摄时间 */
+    publishedTime?: string;
+}

@@ -1,7 +1,9 @@
 package com.xy.common.entity.blog;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xy.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
 @TableName("blog_photo")
 public class BlogPhoto extends BaseEntity {
 
-    @TableId
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -38,7 +40,7 @@ public class BlogPhoto extends BaseEntity {
      * 照片状态
      * 0-私密 1-公开
      * */
-    private int status;
+    private Integer status;
 
     /**
      * 描述
@@ -53,5 +55,6 @@ public class BlogPhoto extends BaseEntity {
     /**
      * 拍摄时间
      * */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime publishedTime;
 }

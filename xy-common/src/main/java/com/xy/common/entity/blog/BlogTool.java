@@ -1,5 +1,6 @@
 package com.xy.common.entity.blog;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xy.common.core.domain.BaseEntity;
@@ -14,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @TableName("blog_tool")
 public class BlogTool extends BaseEntity {
 
-    @TableId
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
