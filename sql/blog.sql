@@ -316,3 +316,16 @@ FROM (
      ) t
 WHERE t.rn <= 6
 ORDER BY t.category_id, t.published_time ASC;
+
+select * from sys_comment
+    where status = 1 and comment_type = 'message'
+    order by rand() limit 30;
+
+select sa.article_id, sa.title, sa.slug, sa.summary, sa.content, sa.cover_image, sa.status,
+       sa.view_count, sa.like_count, sa.comment_count, sa.author_id, sa.category_id,
+       sc.name as category_name, sa.published_time, st.tag_id, st.name, st.color
+from sys_article sa
+     left join sys_category sc on sc.category_id = sa.category_id
+     left join sys_article_tag sat on sa.article_id = sat.article_id
+     left join sys_tag st on sat.tag_id = st.tag_id
+     where sa.article_id = 10;

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.SysArticle;
 import com.xy.common.entity.SysBlogConfig;
+import com.xy.common.entity.blog.BlogTool;
 import com.xy.common.utils.SecurityUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.SysArticleMapper;
@@ -47,6 +48,23 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
         List<SysArticle> records = baseMapper.selectSysArticleList(page, sysArticle);
 
         return PageResult.of(records, page.getTotal(), page.getCurrent(), page.getSize());
+    }
+
+    /**
+     * 查询推荐文章
+     * */
+    @Override
+    public List<SysArticle> selectArticleList() {
+        LambdaQueryWrapper<SysArticle> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysArticle::getStatus, 1)
+                .orderByDesc(SysArticle::getLikeCount)
+                .orderByDesc(SysArticle::getViewCount)
+                .orderByDesc(SysArticle::getPublishedTime);
+
+        Page<SysArticle> page = this.page(new Page<>(1, 3), queryWrapper);
+
+        return page.getRecords();
     }
 
     /**

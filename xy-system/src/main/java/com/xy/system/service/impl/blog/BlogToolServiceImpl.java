@@ -8,11 +8,14 @@ import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.blog.BlogTool;
 import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
+import com.xy.common.vo.blog.ToolRecommendVO;
 import com.xy.system.mapper.blog.BlogToolMapper;
 import com.xy.system.service.blog.IBlogToolService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BlogToolServiceImpl extends ServiceImpl<BlogToolMapper, BlogTool> implements IBlogToolService {
@@ -35,6 +38,36 @@ public class BlogToolServiceImpl extends ServiceImpl<BlogToolMapper, BlogTool> i
         Page<BlogTool> page = this.page(new Page<>(blogTool.getPageNum(), blogTool.getPageSize()), queryWrapper);
 
         return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+    }
+
+    /**
+     * 获取工具推荐位
+     * */
+    public List<ToolRecommendVO> selectBlogToolList() {
+        LambdaQueryWrapper<BlogTool> queryWrapper = new LambdaQueryWrapper<>();
+
+         queryWrapper.eq(BlogTool::getIsRecommend, 1)
+                .eq(BlogTool::getStatus, 1)
+                .orderByDesc(BlogTool::getSort);
+
+        List<BlogTool> list = baseMapper.selectList(queryWrapper);
+        List<ToolRecommendVO> voList = new ArrayList<>();
+
+        for (BlogTool blogTool : list) {
+            ToolRecommendVO vo = new ToolRecommendVO();
+
+            vo.setId(blogTool.getId());
+            vo.setName(blogTool.getName());
+            vo.setDescription(blogTool.getDescription());
+            vo.setIcon(blogTool.getIcon());
+            vo.setUrl(blogTool.getUrl());
+            vo.setPlatform(blogTool.getPlatform());
+            vo.setPriceType(blogTool.getPriceType());
+
+            voList.add(vo);
+        }
+
+        return voList;
     }
 
     /**

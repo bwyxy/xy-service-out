@@ -3,6 +3,7 @@ package com.xy.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xy.blog.pojo.dto.CommentDTO;
+import com.xy.blog.pojo.vo.BulletChatVO;
 import com.xy.blog.service.ICommentService;
 import com.xy.common.entity.SysComment;
 import com.xy.common.enums.CommentType;
@@ -145,4 +146,34 @@ public class CommentServiceImpl extends ServiceImpl<SysCommentMapper, SysComment
 
         return type;
     }
+
+    /**
+     * 获取随机弹幕留言
+     * */
+    @Override
+    public List<BulletChatVO> getBulletList() {
+        List<BulletChatVO> bulletChatVOList = new ArrayList<>();
+
+        LambdaQueryWrapper<SysComment> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysComment::getStatus, 1)
+                .eq(SysComment::getCommentType, "message")
+                .last("order by rand() limit " + 30);
+
+        List<SysComment> commentList = list(queryWrapper);
+
+        for (SysComment comment : commentList) {
+            BulletChatVO bulletChatVO = new BulletChatVO();
+
+            bulletChatVO.setId(comment.getId());
+            bulletChatVO.setAvatarEmoji(comment.getAvatarEmoji());
+            bulletChatVO.setNickname(comment.getNickname());
+            bulletChatVO.setIpAddress(comment.getIpAddress());
+            bulletChatVO.setContent(comment.getContent());
+
+            bulletChatVOList.add(bulletChatVO);
+        }
+
+        return bulletChatVOList;
+    };
 }

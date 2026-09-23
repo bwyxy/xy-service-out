@@ -7,7 +7,9 @@ import com.xy.common.dto.blog.ArticleDTO;
 import com.xy.blog.service.IArticleService;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.SysArticle;
+import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
+import com.xy.common.vo.ArticleDetailsVO;
 import com.xy.common.vo.blog.ArticleVO;
 import com.xy.system.mapper.SysArticleMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +49,20 @@ public class ArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArticle
         queryWrapper.eq(SysArticle::getArticleId, id);
 
         return this.getOne(queryWrapper);
+    }
+
+    /**
+     * 根据文章slug 查询文章详情
+     * */
+    @Override
+    public ArticleDetailsVO selectArticleDetailsBySlug(String slug) {
+        Long articleId = baseMapper.selectArticeIdBySlug(slug);
+
+        if (articleId == null){
+           throw new ServiceException("查询文章详情失败: 无效值");
+        }
+
+        return baseMapper.selectArticleDetailsById(articleId);
     }
 
     /**

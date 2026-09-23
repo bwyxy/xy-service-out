@@ -36,6 +36,33 @@
         <result property="tagNames" column="tag_names" />
     </resultMap>
 
+    <resultMap id="ArticleDetailsMap" type="com.xy.common.vo.ArticleDetailsVO">
+        <id property="articleId" column="article_id"/>
+        <result property="title" column="title"/>
+        <result property="slug" column="slug"/>
+        <result property="summary" column="summary"/>
+        <result property="content" column="content"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="status" column="status"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="authorId" column="author_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="publishedTime" column="published_time"/>
+        <collection property="tags" ofType="com.xy.common.entity.SysTag">
+            <id property="tagId" column="tag_id" />
+            <result property="name" column="name" />
+            <result property="color" column="color" />
+            <result property="level" column="level" />
+            <result property="slug" column="slug" />
+            <result property="description" column="description" />
+            <result property="createTime" column="create_time" />
+            <result property="updateTime" column="update_time" />
+        </collection>
+    </resultMap>
+
     <sql id="selectSysArticleVo">
         select sa.article_id, sa.title, sa.slug, sa.summary, sa.content, sa.cover_image, sa.status,
                sa.view_count, sa.like_count, sa.comment_count, sa.author_id, sa.category_id,
@@ -60,6 +87,22 @@
         order by sa.published_time DESC
     </select>
 
+    <select id="selectArticleDetailsById" resultMap="ArticleDetailsMap">
+        select sa.article_id, sa.title, sa.slug, sa.summary, sa.content, sa.cover_image, sa.status,
+               sa.view_count, sa.like_count, sa.comment_count, sa.author_id, sa.category_id,
+               sc.name as category_name, sa.published_time, st.tag_id, st.name, st.color
+        from sys_article sa
+        left join sys_category sc on sc.category_id = sa.category_id
+        left join sys_article_tag sat on sa.article_id = sat.article_id
+        left join sys_tag st on sat.tag_id = st.tag_id
+        where sa.article_id = #{id}
+    </select>
+
+    <select id="selectArticeIdBySlug">
+        select article_id from sys_article
+            where slug = #{slug}
+    </select>
+
     <select id="selectArticleVOList" resultMap="ArticleMap">
         select sa.article_id, sa.title, sa.slug, sa.cover_image,
                sa.view_count, sa.like_count, sa.comment_count,
@@ -78,6 +121,7 @@
                 and sa.title like concat('%', #{articleDTO.title}, '%')
             </if>
         </where>
+        order by sa.published_time DESC
     </select>
 
     <select id="selectSysArticleById" resultMap="SysArticleResult">

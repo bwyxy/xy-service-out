@@ -1,6 +1,7 @@
 package com.xy.blog.service;
 
 import com.xy.blog.pojo.dto.CommentDTO;
+import com.xy.blog.pojo.vo.BulletChatVO;
 import com.xy.common.entity.SysComment;
 
 import java.util.List;
@@ -24,4 +25,9 @@ public interface ICommentService {
      * 获取评论列表
      * */
     public List<SysComment> getCommentList(CommentDTO commentDTO);
+
+    /**
+     * 获取随机弹幕留言
+     * */
+    List<BulletChatVO>  getBulletList();
 }

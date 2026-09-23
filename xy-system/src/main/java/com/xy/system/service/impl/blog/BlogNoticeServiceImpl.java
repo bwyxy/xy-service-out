@@ -8,11 +8,15 @@ import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.blog.BlogNotice;
 import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
+import com.xy.common.vo.blog.NoticeVO;
 import com.xy.system.mapper.blog.BlogNoticeMapper;
 import com.xy.system.service.blog.IBlogNoticeService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogNoticeServiceImpl extends ServiceImpl<BlogNoticeMapper, BlogNotice> implements IBlogNoticeService {
@@ -39,6 +43,35 @@ public class BlogNoticeServiceImpl extends ServiceImpl<BlogNoticeMapper, BlogNot
         Page<BlogNotice> page = this.page(new Page<>(blogNotice.getPageNum(), blogNotice.getPageSize()), wrapper);
 
         return PageResult.of(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+    }
+
+    /**
+     * 查询公告列表
+     * */
+    @Override
+    public List<NoticeVO> selectNoticeList() {
+        List<NoticeVO> noticeVOList = new ArrayList<>();
+        LambdaQueryWrapper<BlogNotice> wrapper = new LambdaQueryWrapper<>();
+
+        wrapper.eq(BlogNotice::getStatus, 1)
+                .orderByDesc(BlogNotice::getSort)
+                .orderByDesc(BlogNotice::getIsTop);
+
+        List<BlogNotice> notices = baseMapper.selectList(wrapper);
+
+        for (BlogNotice notice : notices) {
+            NoticeVO noticeVO = new NoticeVO();
+
+            noticeVO.setId(notice.getId());
+            noticeVO.setTitle(notice.getTitle());
+            noticeVO.setContent(notice.getContent());
+            noticeVO.setLinkUrl(notice.getLinkUrl());
+            noticeVO.setType(notice.getType());
+
+            noticeVOList.add(noticeVO);
+        }
+
+        return  noticeVOList;
     }
 
     /**

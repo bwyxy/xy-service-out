@@ -1,8 +1,10 @@
 package com.xy.blog.service;
 
 import com.alibaba.fastjson2.JSON;
+import com.xy.common.vo.blog.NoticeVO;
 import com.xy.system.mapper.SysBlogConfigMapper;
 import com.xy.common.entity.SysBlogConfig;
+import com.xy.system.service.blog.IBlogNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,17 @@ public class SysBlogConfigService {
     @Autowired
     private SysBlogConfigMapper sysBlogConfigMapper;
 
+    @Autowired
+    private IBlogNoticeService blogNoticeService;
+
     private Map<String, Object> configMap;
+
+    /**
+     * 查询公告列表
+     * */
+    public List<NoticeVO> getNoticeList() {
+        return blogNoticeService.selectNoticeList();
+    }
 
     public Map<String, Object> loadAllConfigs() {
         List<SysBlogConfig> list = sysBlogConfigMapper.selectList(null);

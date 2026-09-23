@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class BlogMenuConfigServiceImpl extends ServiceImpl<BlogMenuConfigMapper, BlogMenuConfig> implements IBlogMenuConfigService {
 
     /**
-     * 根据菜单Id获取菜单配置列表
+     * 根据菜单Id 获取菜单配置列表
      * */
     @Override
     public List<BlogMenuConfig> selectBlogMenuConfigByMenuId(Long menuId) {

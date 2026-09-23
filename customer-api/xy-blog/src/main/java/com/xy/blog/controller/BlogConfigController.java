@@ -24,6 +24,12 @@ public class BlogConfigController {
         return R.ok(sysBlogConfigService.getAllConfigs());
     }
 
+    @Anonymous
+    @GetMapping("/notice")
+    public R<?> getNoticeList() {
+        return R.ok(sysBlogConfigService.getNoticeList());
+    }
+
     @GetMapping("/test")
     public R<?> test() {
         return R.ok("test");

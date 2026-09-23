@@ -2,6 +2,9 @@ package com.xy.system.service.blog;
 
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.blog.BlogNotice;
+import com.xy.common.vo.blog.NoticeVO;
+
+import java.util.List;
 
 public interface IBlogNoticeService {
 
@@ -9,6 +12,11 @@ public interface IBlogNoticeService {
      * 分页查询公告列表
      * */
     PageResult<BlogNotice> selectBlogNotice(BlogNotice blogNotice);
+
+    /**
+     * 查询公告列表
+     * */
+    List<NoticeVO> selectNoticeList();
 
     /**
      * 查询公告详情

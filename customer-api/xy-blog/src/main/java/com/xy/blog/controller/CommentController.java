@@ -1,7 +1,9 @@
 package com.xy.blog.controller;
 
 import com.xy.blog.pojo.dto.CommentDTO;
+import com.xy.blog.pojo.vo.BulletChatVO;
 import com.xy.blog.service.ICommentService;
+import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import com.xy.common.core.domain.model.LoginUser;
 import com.xy.common.entity.SysComment;
@@ -13,15 +15,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/web/comment")
+@RequestMapping("/comment")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -80,5 +79,16 @@ public class CommentController {
         List<SysComment> list = commentService.getCommentList(commentDTO);
 
         return R.ok(list);
+    }
+
+    /**
+     * 查询随机弹幕列表
+     * */
+    @Anonymous
+    @GetMapping("/bullet")
+    public R<?> bulletList() {
+        List<BulletChatVO> bulletList = commentService.getBulletList();
+
+        return R.ok(bulletList);
     }
 }
