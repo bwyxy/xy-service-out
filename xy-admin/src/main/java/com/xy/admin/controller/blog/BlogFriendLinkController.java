@@ -7,6 +7,9 @@ import com.xy.system.service.blog.IBlogFriendLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 友链管理
+ * */
 @RequestMapping("/blog/friendLink")
 @RestController
 public class BlogFriendLinkController {
@@ -14,6 +17,9 @@ public class BlogFriendLinkController {
     @Autowired
     private IBlogFriendLinkService blogFriendLinkService;
 
+    /**
+     * 友链列表
+     * */
     @PostMapping("/list")
     public R<PageResult<BlogFriendLink>> list(@RequestBody BlogFriendLink blogFriendLink){
         PageResult<BlogFriendLink> page = blogFriendLinkService.selectBlogFriendListByPage(blogFriendLink);
@@ -21,6 +27,9 @@ public class BlogFriendLinkController {
         return R.ok(page);
     }
 
+    /**
+     * 查询友链信息
+     * */
     @GetMapping("/{id}")
     public R<BlogFriendLink> getById(@PathVariable Long id){
         BlogFriendLink blogFriendLink = blogFriendLinkService.selectBlogFriendLinkById(id);
@@ -28,6 +37,9 @@ public class BlogFriendLinkController {
         return R.ok(blogFriendLink);
     }
 
+    /**
+     * 添加友链
+     * */
     @PostMapping("/add")
     public R<String> add(@RequestBody BlogFriendLink blogFriendLink){
         blogFriendLinkService.insertBlogFriendLink(blogFriendLink);
@@ -35,6 +47,9 @@ public class BlogFriendLinkController {
         return R.ok("添加友链");
     }
 
+    /**
+     * 更新友链
+     * */
     @PutMapping("/update")
     public R<String> update(@RequestBody BlogFriendLink blogFriendLink){
         blogFriendLinkService.updateBlogFriendLink(blogFriendLink);
@@ -42,6 +57,9 @@ public class BlogFriendLinkController {
         return R.ok("更新友链");
     }
 
+    /**
+     * 更新友链
+     * */
     @DeleteMapping("/{id}")
     public R<String> delete(@PathVariable Long id){
         blogFriendLinkService.deleteBlogFriendLinkById(id);

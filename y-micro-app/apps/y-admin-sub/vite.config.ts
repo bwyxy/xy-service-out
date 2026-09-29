@@ -69,6 +69,9 @@ export default ({ mode } :{mode :any}) :UserConfig => {
            `
         }
       }
+    },
+    build: {
+      outDir: '',
     }
   }
 

@@ -7,6 +7,9 @@ import com.xy.system.service.blog.IBlogPhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 照片
+ * */
 @RequestMapping("/blog/photo")
 @RestController
 public class BlogPhotoController {
@@ -14,6 +17,9 @@ public class BlogPhotoController {
     @Autowired
     private IBlogPhotoService blogPhotoService;
 
+    /**
+     * 查询照片列表
+     * */
     @PostMapping("/list")
     public R<PageResult<BlogPhoto>> list(@RequestBody BlogPhoto blogPhoto) {
 
@@ -22,6 +28,9 @@ public class BlogPhotoController {
         return R.ok(page);
     }
 
+    /**
+     * 查询照片信息
+     * */
     @GetMapping("/{id}")
     public R<BlogPhoto> getBlogPhoto(@PathVariable Long id) {
         BlogPhoto blogPhoto = blogPhotoService.getBlogPhotoById(id);
@@ -29,6 +38,9 @@ public class BlogPhotoController {
         return R.ok(blogPhoto);
     }
 
+    /**
+     * 添加
+     * */
     @PostMapping("/add")
     public R<String> addBlogPhoto(@RequestBody BlogPhoto blogPhoto) {
         blogPhotoService.addBlogPhoto(blogPhoto);
@@ -36,6 +48,9 @@ public class BlogPhotoController {
         return R.ok("添加成功");
     }
 
+    /**
+     * 更新
+     * */
     @PutMapping("/edit")
     public R<String> editBlogPhoto(@RequestBody BlogPhoto blogPhoto) {
         blogPhotoService.updateBlogPhoto(blogPhoto);
@@ -43,6 +58,9 @@ public class BlogPhotoController {
         return R.ok("更新成功");
     }
 
+    /**
+     * 删除
+     * */
     @DeleteMapping("/{id}")
     public R<String> deleteBlogPhoto(@PathVariable Long id) {
         blogPhotoService.deleteBlogPhoto(id);

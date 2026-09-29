@@ -7,6 +7,9 @@ import com.xy.system.service.blog.IBlogToolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 工具
+ * */
 @RequestMapping("/blog/tool")
 @RestController
 public class BlogToolController {
@@ -14,6 +17,9 @@ public class BlogToolController {
     @Autowired
     private IBlogToolService blogToolService;
 
+    /**
+     * 工具列表
+     * */
     @PostMapping("/list")
     public R<PageResult<BlogTool>> list(@RequestBody BlogTool blogTool){
 
@@ -22,6 +28,9 @@ public class BlogToolController {
         return R.ok(page);
     }
 
+    /**
+     * 根据Id 查询工具信息
+     * */
     @GetMapping("/{id}")
     public R<BlogTool> getBlogToolById(@PathVariable Long id){
 
@@ -30,6 +39,9 @@ public class BlogToolController {
         return R.ok(blogTool);
     }
 
+    /**
+     * 添加
+     * */
     @PostMapping("/add")
     public R<String> addBlogTool(@RequestBody BlogTool blogTool){
         blogToolService.addBlogTool(blogTool);
@@ -37,6 +49,9 @@ public class BlogToolController {
         return R.ok("添加成功");
     }
 
+    /**
+     * 更新
+     * */
     @PutMapping("/update")
     public R<String> updateBlogTool(@RequestBody BlogTool blogTool){
         blogToolService.updateBlogTool(blogTool);
@@ -44,6 +59,9 @@ public class BlogToolController {
         return R.ok("更新成功");
     }
 
+    /**
+     * 删除
+     * */
     @DeleteMapping("/{id}")
     public R<String> deleteBlogTool(@PathVariable Long id){
         blogToolService.deleteBlogTool(id);

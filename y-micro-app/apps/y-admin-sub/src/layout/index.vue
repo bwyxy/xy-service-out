@@ -72,6 +72,11 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .app-wrapper {
+    // 移动端使用动态视口高度，避免底部内容被浏览器工具栏遮挡
+    height: 100dvh;
+  }
+
   .desktop-sidebar {
     display: none;
   }

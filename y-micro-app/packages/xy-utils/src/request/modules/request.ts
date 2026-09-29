@@ -59,6 +59,7 @@ export function createAxios(options: CreateAxiosOptions = {}): AxiosInstance {
     instance.interceptors.response.use(
         (response: AxiosResponse) => {
 
+            console.log('response=====', response);
             return response;
         },
         (error) => {

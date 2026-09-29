@@ -32,6 +32,21 @@
         </collection>
     </resultMap>
 
+    <resultMap id="CategoryWithToolsMap" type="com.xy.common.vo.blog.ToolCategoryVO">
+        <id property="categoryId" column="category_id" />
+        <result property="categoryName" column="category_name" />
+
+        <collection property="tools" ofType="com.xy.common.entity.blog.BlogTool">
+            <id property="id" column="id" />
+            <result property="name" column="name" />
+            <result property="url" column="url" />
+            <result property="icon" column="icon" />
+            <result property="description" column="description" />
+            <result property="platform" column="platform" />
+            <result property="priceType" column="price_type" />
+        </collection>
+    </resultMap>
+
     <select id="selectSysCategoryList" resultMap="SysCategoryResult">
         select sc.category_id, sc.name, sc.slug, sc.type, sc.description,
                (select count(*) from sys_article sa where sa.category_id = sc.category_id) as article_count,
@@ -90,6 +105,35 @@
         ) t
         WHERE t.rn &lt;= 6 OR t.rn IS NULL
         ORDER BY t.category_id, t.published_time DESC;
+    </select>
+
+    <select id="listCategoryWithTools" resultMap="CategoryWithToolsMap">
+        select
+            t.category_id,
+            t.category_name,
+            t.id,
+            t.name,
+            t.url,
+            t.icon,
+            t.description,
+            t.platform,
+            t.price_type
+        from (
+          select
+              sc.category_id,
+              sc.name as category_name,
+              bt.id,
+              bt.name,
+              bt.url,
+              bt.icon,
+              bt.description,
+              bt.platform,
+              bt.price_type
+          from sys_category sc
+          left join blog_tool bt on sc.category_id = bt.category_id
+          where bt.status = 1
+          order by bt.sort, bt.is_recommend DESC
+        ) t
     </select>
 
 </mapper>

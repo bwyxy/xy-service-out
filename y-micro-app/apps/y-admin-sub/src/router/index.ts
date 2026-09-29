@@ -21,6 +21,20 @@ export const constantRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: '/user',
+    name: 'UserPage',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/user/profile',
+        name: 'Profile',
+        component: () => import('@/views/system/profile/index.vue'),
+        meta: { title: '个人资料', icon: 'User', hidden: true },
+      }
+    ]
+  } as RouteRecordRaw,
+  {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login/index.vue'),

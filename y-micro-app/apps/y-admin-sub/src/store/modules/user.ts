@@ -15,6 +15,8 @@ const useUserStore = defineStore('user', {
     // 登录
     async login(loginForm: { username: string; password: string }) {
       const res = await loginApi(loginForm)
+
+      console.log(res)
       const data = res.data
       setToken(data.token)
       this.token = data.token

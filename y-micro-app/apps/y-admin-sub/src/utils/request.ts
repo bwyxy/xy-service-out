@@ -30,6 +30,9 @@ const request = createAxios({
             }
 
             return data
+        },
+        responseError: (response :any) => {
+            console.error(response)
         }
     }
 })

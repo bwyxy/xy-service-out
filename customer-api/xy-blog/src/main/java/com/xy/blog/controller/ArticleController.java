@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 查询文章
+ * */
 @RestController
 @RequestMapping("/article")
 @RequiredArgsConstructor

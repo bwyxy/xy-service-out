@@ -157,7 +157,10 @@ const handleLogout = async () => {
 
 @media (max-width: 768px) {
   .header-bar {
-    padding: 0 12px;
+    // 适配移动端状态栏安全区（刘海屏/灵动岛，PWA 或 WebView 全屏场景）
+    height: auto;
+    min-height: calc(60px + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px) 12px 0;
 
     .desktop-only {
       display: none !important;

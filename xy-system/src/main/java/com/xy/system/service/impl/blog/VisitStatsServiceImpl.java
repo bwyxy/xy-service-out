@@ -1,13 +1,11 @@
-package com.xy.blog.service.impl;
+package com.xy.system.service.impl.blog;
 
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xy.blog.pojo.dto.BlogVisitTrackDTO;
-import com.xy.blog.pojo.dto.VisitStatsQuery;
-import com.xy.blog.service.IVisitStatsService;
-import com.xy.blog.service.VisitStatsCollector;
+import com.xy.common.dto.blog.BlogVisitTrackDTO;
+import com.xy.common.dto.blog.VisitStatsQuery;
 import com.xy.common.entity.blog.BlogEventLog;
 import com.xy.common.ip.IpUtils;
 import com.xy.common.utils.StringUtils;
@@ -17,6 +15,8 @@ import com.xy.common.vo.blog.VisitOverviewVO;
 import com.xy.common.vo.blog.VisitTopPageVO;
 import com.xy.common.vo.blog.VisitTopSourceVO;
 import com.xy.system.mapper.blog.BlogEventLogMapper;
+import com.xy.system.service.blog.IVisitStatsService;
+import com.xy.system.service.blog.VisitStatsCollector;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;

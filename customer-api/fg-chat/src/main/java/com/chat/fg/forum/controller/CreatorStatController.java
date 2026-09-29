@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 创作中心
+ * */
 @RestController
 @RequestMapping("/forum/creator")
 @RequiredArgsConstructor

@@ -33,6 +33,8 @@ const cachedViews = computed(() => tagsViewStore.cachedViews)
 @media (max-width: 768px) {
   .app-main-wrapper {
     padding: 12px;
+    // 适配底部安全区（全面屏手势条），避免底部内容被遮挡
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 }
 

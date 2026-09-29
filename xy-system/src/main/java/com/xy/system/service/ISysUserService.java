@@ -72,4 +72,20 @@ public interface ISysUserService extends IService<SysUser> {
      * */
     boolean isSuperAdmin(Long userId);
 
+    /**
+     * 修改个人资料（仅允许修改昵称、性别、邮箱、手机号、头像、简介）
+     * @param sysUser 用户信息（id 必填）
+     * @return 是否成功
+     * */
+    boolean updateUserProfile(SysUser sysUser);
+
+    /**
+     * 修改用户密码（校验旧密码）
+     * @param userId 用户ID
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @return 是否成功
+     * */
+    boolean updateUserPwd(Long userId, String oldPassword, String newPassword);
+
 }

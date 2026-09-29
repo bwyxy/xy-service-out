@@ -198,8 +198,7 @@ onMounted(() => {
           </el-select>
         </el-form-item>
         <el-form-item label="照片链接" prop="photoUrl">
-          <image-upload v-model="form.photoUrl" />
-<!--          <el-input v-model="form.photoUrl" placeholder="请输入照片链接" />-->
+          <el-input v-model="form.photoUrl" placeholder="请输入照片链接" />
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">

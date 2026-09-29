@@ -1,4 +1,4 @@
-package com.xy.blog.config;
+package com.xy.system.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

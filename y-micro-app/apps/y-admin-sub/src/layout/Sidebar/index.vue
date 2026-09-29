@@ -115,6 +115,8 @@ const { isMobile, sidebarOpened } = storeToRefs(useAppStore())
   height: 100%;
   background: var(--app-sidebar-bg);
   overflow-y: auto;
+  // 适配底部安全区，避免末尾菜单项被手势条遮挡
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .mobile-sidebar-logo {

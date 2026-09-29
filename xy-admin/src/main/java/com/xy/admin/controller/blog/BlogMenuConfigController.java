@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 博客网站菜单配置
+ * */
 @RequestMapping("/blog/menu/config")
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +20,9 @@ public class BlogMenuConfigController {
     @Autowired
     private IBlogMenuConfigService blogMenuConfigService;
 
+    /**
+     * 根据菜单Id 查询配置列表
+     * */
     @GetMapping("/{menuId}")
     public R<List<BlogMenuConfig>> list(@PathVariable Long menuId){
         List<BlogMenuConfig> list = blogMenuConfigService.selectBlogMenuConfigByMenuId(menuId);
@@ -24,6 +30,9 @@ public class BlogMenuConfigController {
         return R.ok(list);
     }
 
+    /**
+     * 获取配置信息
+     * */
     @GetMapping("/info/{id}")
     public R<BlogMenuConfig> info(@PathVariable Long id){
         BlogMenuConfig blogMenuConfig = blogMenuConfigService.selectBlogMenuConfigById(id);
@@ -31,6 +40,9 @@ public class BlogMenuConfigController {
         return R.ok(blogMenuConfig);
     }
 
+    /**
+     * 添加配置
+     * */
     @PostMapping
     public R<String> addBlogMenuConfig(@RequestBody BlogMenuConfig blogMenuConfig){
         blogMenuConfigService.addBlogMenuConfig(blogMenuConfig);
@@ -38,6 +50,9 @@ public class BlogMenuConfigController {
         return R.ok("添加成功");
     }
 
+    /**
+     * 更新配置
+     * */
     @PutMapping
     public R<String> updateBlogMenuConfig(@RequestBody BlogMenuConfig blogMenuConfig){
         blogMenuConfigService.editBlogMenuConfig(blogMenuConfig);
@@ -45,6 +60,9 @@ public class BlogMenuConfigController {
         return R.ok("编辑成功");
     }
 
+    /**
+     * 删除配置
+     * */
     @DeleteMapping("/{menuId}")
     public R<String> deleteBlogMenuConfig(@PathVariable Long menuId){
         blogMenuConfigService.deleteBlogMenuConfig(menuId);

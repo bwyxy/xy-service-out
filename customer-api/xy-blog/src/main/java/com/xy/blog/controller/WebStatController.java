@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 站点统计
+ * */
 @RequestMapping("/web")
 @RestController
 public class WebStatController {
@@ -16,6 +19,9 @@ public class WebStatController {
     @Autowired
     private IWebStatService webStatService;
 
+    /**
+     * 统计访问量
+     * */
     @Anonymous
     @GetMapping("/stat")
     public R<WebStatVO> getWebStat(){

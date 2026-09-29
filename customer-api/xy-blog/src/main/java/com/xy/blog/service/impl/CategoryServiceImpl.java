@@ -6,6 +6,7 @@ import com.xy.blog.service.ICategoryService;
 import com.xy.common.entity.SysCategory;
 import com.xy.common.utils.StringUtils;
 import com.xy.common.vo.blog.CategoryVO;
+import com.xy.common.vo.blog.ToolCategoryVO;
 import com.xy.system.mapper.SysCategoryMapper;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,36 @@ public class CategoryServiceImpl extends ServiceImpl<SysCategoryMapper, SysCateg
     @Override
     public List<CategoryVO> listCategoryWithArticles() {
         return this.baseMapper.listCategoryWithArticles();
+    }
+
+    /**
+     * 查询分类关联工具列表
+     * */
+    public List<ToolCategoryVO> listCategoryWithTools() {
+        return this.baseMapper.listCategoryWithTools();
+    }
+
+    /**
+     * 查询相册分类
+     * */
+    @Override
+    public List<SysCategory> listAlbumCategory() {
+        LambdaQueryWrapper<SysCategory> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysCategory::getType, "album");
+
+        return this.list(queryWrapper);
+    }
+
+    /**
+     * 查询工具分类
+     * */
+    @Override
+    public List<SysCategory> listToolCategory() {
+        LambdaQueryWrapper<SysCategory> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(SysCategory::getType, "tool");
+
+        return this.list(queryWrapper);
     }
 }

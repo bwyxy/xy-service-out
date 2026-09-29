@@ -246,6 +246,19 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.dashboard {
+  // 主题色变量：跟随全局主题自动切换
+  --db-bg: var(--app-card-bg, #ffffff);
+  --db-text: var(--app-text-color, #303133);
+  --db-text-secondary: var(--app-text-secondary, #606266);
+  --db-border: var(--app-border-color, #e4e7ed);
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
 .statistics-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -253,20 +266,23 @@ onMounted(() => {
   margin-bottom: 13px;
 
   .stat-card {
-    background: #fff;
+    background: var(--db-bg);
+    border: 1px solid var(--db-border);
     border-radius: 13px;
     padding: 16px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
 
     .stat-label {
       font-size: 14px;
-      color: #6b7280;
+      color: var(--db-text-secondary);
       margin-bottom: 8px;
+      transition: color 0.4s ease;
     }
 
     .stat-value {
       font-size: 28px;
       font-weight: 600;
+      transition: color 0.4s ease;
     }
   }
 
@@ -276,13 +292,53 @@ onMounted(() => {
   .stat-overdue .stat-value { color: #ef4444; }
 }
 
+.dashboard-lt {
+  flex: 1;
+  background: var(--db-bg);
+  border: 1px solid var(--db-border);
+  border-radius: 13px;
+  box-sizing: border-box;
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+
+  .dashboard-lt-header {
+    display: flex;
+  }
+
+  .dashboard-lt-content {
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+.dashboard-lt-header {
+  margin-bottom: 13px;
+}
+
 .gantt-wrapper {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--db-bg);
+  color: var(--db-text);
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+
+  // 甘特图组件主题变量（浅色默认值）
+  --gantt-surface: var(--db-bg);
+  --gantt-grid-color: var(--db-border);
+  --gantt-group-header-bg: #f8fafc;
+  --gantt-bar-bg: #3b82f6;
   --gantt-bar-height: 24px;
   --gantt-bar-radius: 4px;
-  --gantt-bar-bg: #3b82f6;
   --gantt-bar-color: #ffffff;
   --gantt-bar-font-size: 12px;
-  --gantt-progress-color: rgba(255,255,255,0.35);
+  --gantt-progress-color: rgba(255, 255, 255, 0.3);
   --gantt-progress-handle-color: #ffffff;
   --gantt-ghost-opacity: 0.55;
   --gantt-drag-label-bg: #1e293b;
@@ -296,86 +352,32 @@ onMounted(() => {
   --gantt-slack-color: #94a3b8;
   --gantt-today-color: #ef4444;
   --gantt-marker-color: #6b7280;
-  --gantt-nonworking-bg: rgb(100 116 139 / 8%);
+  --gantt-nonworking-bg: #f3f4f6;
   --gantt-summary-bar-progress-bg: #94a3b8;
   --gantt-summary-bar-height: 40%;
   --gantt-summary-bar-radius: 3px;
   --gantt-period-band-bg: rgb(99 102 241 / 4%);
-  --gantt-period-border: 1px dashed #e5e7eb;
+  --gantt-period-border: 1px dashed var(--db-border);
   --gantt-conflict-color: #ef4444;
 }
 
-.dashboard {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  overflow: hidden;
-
-  &-lt {
-    flex: 1;
-    background: #fff;
-    border-radius: 13px;
-    box-sizing: border-box;
-    padding: 13px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    .dashboard-lt-header {
-      display: flex;
-    }
-
-    .dashboard-lt-content {
-      flex: 1;
-      overflow: hidden;
-    }
-  }
-
-  &-rt {
-    width: 280px;
-    .todo-week {
-      width: 100%;
-      height: calc(50% - 12px);
-      background: #fff;
-      border-radius: 13px;
-      box-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px;
-      margin-bottom: 24px;
-    }
-
-    .todo-month {
-      width: 100%;
-      height: calc(50% - 12px);
-      border-radius: 13px;
-      box-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px;
-      background: #fff;
-    }
-  }
-}
-
-.dashboard-lt-header {
-  margin-bottom: 13px;
-}
-
-.gantt-wrapper {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #ffffff;
-  --gantt-bar-bg: #3b82f6;
-  --gantt-bar-height: 24px;
-  --gantt-bar-radius: 4px;
-  --gantt-progress-color: rgba(255,255,255,0.3);
-  --gantt-ghost-opacity: 0.55;
-  --gantt-drag-label-bg: #1e293b;
-  --gantt-drag-label-color: #ffffff;
-  --gantt-tooltip-bg: #1e293b;
-  --gantt-tooltip-color: #ffffff;
-  --gantt-tooltip-shadow: 0 4px 12px rgb(0 0 0 / 15%);
-  --gantt-today-color: #ef4444;
-  --gantt-nonworking-bg: #f3f4f6;
+// 深色主题下覆盖甘特图变量
+:global(html.dark .gantt-wrapper) {
+  --gantt-surface: #1f1f1f;
+  --gantt-grid-color: #434343;
+  --gantt-group-header-bg: #2c2c2c;
+  --gantt-bar-bg: #4b5563;
+  --gantt-bar-color: #e0e0e0;
+  --gantt-progress-color: rgba(0, 0, 0, 0.25);
+  --gantt-progress-handle-color: #e0e0e0;
+  --gantt-drag-label-bg: #2c2c2c;
+  --gantt-drag-label-color: #e0e0e0;
+  --gantt-tooltip-bg: #2c2c2c;
+  --gantt-tooltip-color: #e0e0e0;
+  --gantt-marker-color: #a0a0a0;
+  --gantt-nonworking-bg: #2c2c2c;
+  --gantt-period-band-bg: rgb(255 255 255 / 4%);
+  --gantt-period-border: 1px dashed #434343;
 }
 
 :deep(.gantt-root) {
@@ -430,7 +432,7 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     background: var(--color);
-    opacity: .2;
+    opacity: .6;
     position: absolute;
     top: 0;
     left: 0;
@@ -446,9 +448,8 @@ onMounted(() => {
   }
 }
 
-
 .bar-name {
-  color: var(--color);
+  color: #fff;
   overflow: hidden;
   text-overflow: ellipsis;
 }

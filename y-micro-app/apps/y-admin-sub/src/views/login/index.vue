@@ -40,6 +40,8 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
       userStore.login(ruleForm).then(() => {
         isLoading.value = false
         router.push('/')
+      }).catch(() => {
+        isLoading.value = false
       })
     } else {
       isLoading.value = false
@@ -112,5 +114,25 @@ const handleSubmit = async (formEl :FormInstance | undefined) => {
 .login-btn {
   width: 320px;
   height: 42px;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    // 移动端使用动态视口高度并适配底部安全区，避免登录按钮被遮挡
+    height: 100dvh;
+    padding: 0 24px;
+    padding-top: 10vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  // 移动端给表单明确宽度约束，输入框与按钮自适应填充
+  .login-container :deep(.el-form) {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .login-btn {
+    width: 100%;
+  }
 }
 </style>

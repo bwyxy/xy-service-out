@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xy.common.entity.SysCategory;
 import com.xy.common.vo.blog.CategoryVO;
+import com.xy.common.vo.blog.ToolCategoryVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +22,9 @@ public interface SysCategoryMapper extends BaseMapper<SysCategory> {
      * 查询分类文章列表
      * */
     List<CategoryVO> listCategoryWithArticles();
+
+    /**
+     * 查询分类工具列表
+     * */
+    List<ToolCategoryVO> listCategoryWithTools();
 }

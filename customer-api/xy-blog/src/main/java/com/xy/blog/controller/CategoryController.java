@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 分类
+ * */
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
@@ -39,6 +42,27 @@ public class CategoryController {
     @PostMapping("/with/articles")
     public R<?> withArticles() {
         List<CategoryVO> list = categoryService.listCategoryWithArticles();
+
+        return R.ok(list);
+    }
+
+    /**
+     * 获取相册分类
+     * */
+    @Anonymous
+    @GetMapping("/album")
+    public R<?> album() {
+        List<SysCategory> list = categoryService.listAlbumCategory();
+        return R.ok(list);
+    }
+
+    /**
+     * 获取工具分类
+     * */
+    @Anonymous
+    @GetMapping("/tool")
+    public R<?> tool() {
+        List<SysCategory> list = categoryService.listToolCategory();
 
         return R.ok(list);
     }

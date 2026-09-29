@@ -16,6 +16,7 @@
     "@wangeditor/editor-for-vue": "^5.1.12",
     "@xy/qiankun-communication": "workspace:*",
     "@xy/utils": "workspace:*",
+    "echarts": "^6.1.0",
     "element-plus": "catalog:",
     "js-cookie": "catalog:",
     "pinia": "catalog:",

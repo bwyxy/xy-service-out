@@ -1,14 +1,14 @@
-package com.xy.blog.service.impl;
+package com.xy.system.service.impl.blog;
 
-import com.xy.blog.pojo.dto.BlogVisitTrackDTO;
-import com.xy.blog.pojo.dto.VisitStatsQuery;
-import com.xy.blog.service.VisitStatsCollector;
+import com.xy.common.dto.blog.BlogVisitTrackDTO;
+import com.xy.common.dto.blog.VisitStatsQuery;
 import com.xy.common.entity.blog.BlogEventLog;
 import com.xy.common.vo.blog.VisitDailyStatsVO;
 import com.xy.common.vo.blog.VisitDeviceVO;
 import com.xy.common.vo.blog.VisitOverviewVO;
 import com.xy.common.vo.blog.VisitTopPageVO;
 import com.xy.system.mapper.blog.BlogEventLogMapper;
+import com.xy.system.service.blog.VisitStatsCollector;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.HyperLogLogOperations;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.LocalDate;

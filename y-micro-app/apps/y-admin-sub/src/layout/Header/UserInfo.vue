@@ -16,6 +16,11 @@ const handleLogout = async () => {
   ElMessage.success(t('common.logoutSuccess'))
   router.push('/login')
 }
+
+// 跳转个人资料页
+const handleProfile = () => {
+  router.push('/user/profile')
+}
 </script>
 
 <template>
@@ -30,7 +35,7 @@ const handleLogout = async () => {
     </div>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>{{ t('header.profile') }}</el-dropdown-item>
+        <el-dropdown-item @click="handleProfile">{{ t('header.profile') }}</el-dropdown-item>
         <el-dropdown-item divided @click="handleLogout">{{ t('common.logout') }}</el-dropdown-item>
       </el-dropdown-menu>
     </template>

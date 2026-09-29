@@ -27,6 +27,9 @@ public class MenuController {
     @Autowired
     private IBlogMenuConfigService blogMenuConfigService;
 
+    /**
+     * 获取菜单树
+     * */
     @Anonymous
     @GetMapping("/tree")
     public R<List<BlogMenu>> menuTree(){
@@ -35,6 +38,9 @@ public class MenuController {
         return R.ok(list);
     }
 
+    /**
+     * 查询菜单配置信息
+     * */
     @Anonymous
     @GetMapping("/{menuId}/config")
     public R<Map<String, Object>> config(@PathVariable Long menuId){

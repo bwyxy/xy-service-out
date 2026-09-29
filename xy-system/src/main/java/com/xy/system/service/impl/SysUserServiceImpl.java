@@ -257,6 +257,78 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 修改个人资料（仅允许修改昵称、性别、邮箱、手机号、头像、简介）
+     * */
+    @Override
+    public boolean updateUserProfile(SysUser sysUser) {
+        SysUser existing = getById(sysUser.getId());
+        if (existing == null) {
+            throw new BusinessException(ResultCode.DATA_NOT_FOUND, "用户不存在");
+        }
+
+        if (StringUtils.isNotEmpty(sysUser.getEmail())) {
+            String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+            if (!sysUser.getEmail().matches(emailPattern)) {
+                throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "邮箱格式不正确");
+            }
+        }
+        if (StringUtils.isNotEmpty(sysUser.getPhone())) {
+            if (!sysUser.getPhone().matches("^1[3-9]\\d{9}$")) {
+                throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "手机号格式不正确");
+            }
+        }
+
+        // 只更新资料相关字段，避免越权修改用户名、密码、状态、角色等
+        SysUser update = new SysUser();
+        update.setId(sysUser.getId());
+        update.setNickname(sysUser.getNickname());
+        update.setSex(sysUser.getSex());
+        update.setEmail(sysUser.getEmail());
+        update.setPhone(sysUser.getPhone());
+        update.setAvatar(sysUser.getAvatar());
+        update.setIntroduction(sysUser.getIntroduction());
+
+        boolean success = updateById(update);
+        if (!success) {
+            throw new BusinessException(ResultCode.OPERATION_FAILED, "修改个人资料失败");
+        }
+        return true;
+    }
+
+    /**
+     * 修改用户密码（校验旧密码）
+     * */
+    @Override
+    public boolean updateUserPwd(Long userId, String oldPassword, String newPassword) {
+        SysUser existing = getById(userId);
+        if (existing == null) {
+            throw new BusinessException(ResultCode.DATA_NOT_FOUND, "用户不存在");
+        }
+        if (!checkPassword(oldPassword, existing.getPassword())) {
+            throw new BusinessException(ResultCode.OPERATION_FAILED, "旧密码错误");
+        }
+        if (StringUtils.isEmpty(newPassword)
+                || newPassword.length() < UserConstants.PASSWORD_MIN_LENGTH
+                || newPassword.length() > UserConstants.PASSWORD_MAX_LENGTH) {
+            throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR,
+                    "新密码长度必须在" + UserConstants.PASSWORD_MIN_LENGTH + "-" + UserConstants.PASSWORD_MAX_LENGTH + "之间");
+        }
+        if (checkPassword(newPassword, existing.getPassword())) {
+            throw new BusinessException(ResultCode.PARAM_VALIDATION_ERROR, "新密码不能与旧密码相同");
+        }
+
+        SysUser update = new SysUser();
+        update.setId(userId);
+        update.setPassword(encodePassword(newPassword));
+
+        boolean success = updateById(update);
+        if (!success) {
+            throw new BusinessException(ResultCode.OPERATION_FAILED, "修改密码失败");
+        }
+        return true;
+    }
+
+    /**
      * 用户基础数据校验
      * */
     private void validateUser(SysUser sysUser) {

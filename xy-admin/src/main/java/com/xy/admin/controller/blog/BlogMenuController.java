@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 网站菜单
+ * */
 @RequestMapping("/blog/menu")
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +22,9 @@ public class BlogMenuController {
     @Autowired
     private IBlogMenuService blogMenuService;
 
+    /**
+     * 查询列表(树形结构)
+     * */
     @GetMapping("/list")
     public R<List<BlogMenu>> menuList() {
 
@@ -27,13 +33,19 @@ public class BlogMenuController {
         return R.ok(list);
     }
 
+    /**
+     * 查询菜单信息
+     * */
     @GetMapping("/{menuId}")
-    public R<BlogMenu> menuDetail(@PathVariable("menuId") Long menuId) {
+    public R<BlogMenu> menuDetail(@PathVariable Long menuId) {
         BlogMenu blogMenu = blogMenuService.selectMenuById(menuId);
 
         return R.ok(blogMenu);
     }
 
+    /**
+     * 添加
+     * */
     @PostMapping("/add")
     public R<String> addMenu(@RequestBody AddMenuDTO addMenuDTO) {
 
@@ -42,6 +54,9 @@ public class BlogMenuController {
         return R.ok("添加成功");
     }
 
+    /**
+     * 更新
+     * */
     @PutMapping("/edit")
     public R<String> editMenu(@RequestBody EditMenuDTO editMenuDTO) {
 
@@ -50,6 +65,9 @@ public class BlogMenuController {
         return R.ok("编辑成功");
     }
 
+    /**
+     * 更新
+     * */
     @DeleteMapping("/{id}")
     public R<String> deleteMenu(@PathVariable Long id) {
         blogMenuService.deleteMenu(id);

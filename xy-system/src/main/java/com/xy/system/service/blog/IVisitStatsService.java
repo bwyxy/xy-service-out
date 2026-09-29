@@ -1,7 +1,7 @@
-package com.xy.blog.service;
+package com.xy.system.service.blog;
 
-import com.xy.blog.pojo.dto.BlogVisitTrackDTO;
-import com.xy.blog.pojo.dto.VisitStatsQuery;
+import com.xy.common.dto.blog.BlogVisitTrackDTO;
+import com.xy.common.dto.blog.VisitStatsQuery;
 import com.xy.common.vo.blog.VisitDailyStatsVO;
 import com.xy.common.vo.blog.VisitDeviceVO;
 import com.xy.common.vo.blog.VisitOverviewVO;

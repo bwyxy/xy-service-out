@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 评论留言
+ * */
 @RestController
 @RequestMapping("/comment")
 @RequiredArgsConstructor

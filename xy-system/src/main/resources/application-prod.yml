@@ -2,9 +2,9 @@
 # 生产环境配置
 # ===========================================
 server:
-  port: ${SERVER_PORT:8080}
+  port: 8180
   servlet:
-    context-path: ${SERVER_CONTEXT_PATH:/}
+    context-path: /prod-api
   tomcat:
     uri-encoding: UTF-8
     accept-count: 1000
