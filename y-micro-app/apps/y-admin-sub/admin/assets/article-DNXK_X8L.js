@@ -1,0 +1,1 @@
+import{r}from"./index-cMUKZD6M.js";const a=t=>r({url:"/article/list",method:"post",data:t}),o=t=>r({url:`/article/${t}`,method:"get"}),s=t=>r({url:"/article/add",method:"post",data:t}),l=t=>r({url:"/article/update",method:"put",data:t});export{o as a,s as b,a as g,l as u};

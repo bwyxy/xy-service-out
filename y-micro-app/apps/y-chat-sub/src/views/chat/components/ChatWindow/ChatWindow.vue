@@ -131,10 +131,10 @@ onMounted(() => {
       />
       <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
       <div class="chat-window-header-rt">
-        <div v-if="!isSystemUser" class="chat-rt-icon">
+        <div v-if="!isSystemUser" title="视频/语音通话" class="chat-rt-icon">
           <img src="@/assets/images/video_audio_icon.png" alt="icon" />
         </div>
-        <div class="chat-rt-icon" @click="isShowChatInfo = !isShowChatInfo">
+        <div class="chat-rt-icon" title="更多操作" @click="isShowChatInfo = !isShowChatInfo">
           <img src="@/assets/images/more_icon.png" alt="icon" />
         </div>
       </div>

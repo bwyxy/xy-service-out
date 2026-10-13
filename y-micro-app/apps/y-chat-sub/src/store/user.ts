@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { login, register, getUserInfo } from '@/api/auth.ts'
 import { ElMessage } from 'element-plus'
 import { setToken, setCookies, removeToken } from '@/utils/auth.ts'
+import { isTauri, tauriLogout } from '@/utils/tauri.ts'
 import useChatStore from "@/store/chat.ts";
 
 /** 登录用户信息 */
@@ -37,8 +38,9 @@ const useUserStore = defineStore('user', {
     /**
      * 用户登录
      * @param params 登录参数
+     * @returns 登录成功时返回凭据信息，失败返回 null
      */
-    async userLogin(params: Record<string, unknown>): Promise<boolean> {
+    async userLogin(params: Record<string, unknown>): Promise<{ token: string; wssAddr: string; wssKey: string } | null> {
       const wssKey = import.meta.env.VITE_WSS_KEY
 
       try {
@@ -49,13 +51,13 @@ const useUserStore = defineStore('user', {
 
           setToken(token)
           setCookies(wssKey, imAddr.wss_addr)
-          return true
+          return { token, wssAddr: imAddr.wss_addr, wssKey }
         }
 
-        return false
+        return null
       } catch {
         ElMessage.error('登录失败')
-        return false
+        return null
       }
     },
 
@@ -97,6 +99,11 @@ const useUserStore = defineStore('user', {
       removeToken()
       this.userInfo = {} as UserInfo
       this.currentChannel = null
+
+      // 桌面端：通知 Rust 隐藏主窗口并重新打开登录小窗口
+      if (isTauri()) {
+        tauriLogout().catch((e) => console.error('打开登录窗口失败', e))
+      }
     },
   },
 })

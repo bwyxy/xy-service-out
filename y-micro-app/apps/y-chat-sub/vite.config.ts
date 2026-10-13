@@ -11,8 +11,11 @@ import viteBaseConfig from "../../configs/vite.base.config.ts";
 // https://vite.dev/config/
 export default ({ mode } :{mode :any}) :UserConfig => {
   const env = loadEnv(mode, process.cwd())
+  // Tauri 环境下使用相对路径，桌面应用通过 tauri:// 协议加载资源
+  const isTauri = !!process.env.TAURI_ENV_PLATFORM
 
   const config = {
+    base: isTauri ? './' : '/',
     plugins: [
         vue(),
       qiankun('chat', {

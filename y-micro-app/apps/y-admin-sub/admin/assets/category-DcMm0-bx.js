@@ -1,0 +1,1 @@
+import{r as e}from"./index-cMUKZD6M.js";const o=t=>e({url:"/category/list",method:"post",data:t}),a=t=>e({url:`/category/${t}`,method:"get"}),s=t=>e({url:"/category/add",method:"post",data:t}),d=t=>e({url:"/category/update",method:"put",data:t}),u=t=>e({url:`/category/${t}`,method:"delete"});export{a,s as b,u as d,o as g,d as u};

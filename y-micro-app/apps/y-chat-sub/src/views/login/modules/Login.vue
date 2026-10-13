@@ -44,10 +44,10 @@ const handleSubmit = async (elForm: FormInstance | undefined) => {
     account: ruleForm.account,
     password: ruleForm.password,
   }
-  const isSuccess = await userStore.userLogin(params)
+  const result = await userStore.userLogin(params)
 
   isLoading.value = false
-  if (isSuccess) {
+  if (result) {
     router.push({
       path: '/'
     })

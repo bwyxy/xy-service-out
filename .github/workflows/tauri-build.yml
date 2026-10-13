@@ -1,0 +1,79 @@
+name: Build Desktop App
+
+# 推送 v* 标签或手动触发时，在原生 runner 上分别构建 Windows / Linux 安装包。
+# Tauri 无法从 macOS 交叉编译到 Windows/Linux，必须使用对应平台的原生环境。
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux：产出 .deb / .rpm / .AppImage
+          - platform: ubuntu-22.04
+            args: ''
+          # Windows：产出 .msi / .exe(NSIS)
+          - platform: windows-latest
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: y-micro-app/apps/y-chat-sub/src-tauri -> target
+
+      # Tauri v2 在 Ubuntu 上的系统依赖
+      - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential curl wget file \
+            libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
+
+      # 安装 workspace 依赖，并先构建 @xy/utils 等被引用的内部包
+      - name: Install frontend dependencies
+        working-directory: y-micro-app
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build:packages
+
+      - name: Build desktop app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: y-micro-app/apps/y-chat-sub
+          args: ${{ matrix.args }}
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.platform }}
+          path: y-micro-app/apps/y-chat-sub/src-tauri/target/release/bundle
+          if-no-files-found: error

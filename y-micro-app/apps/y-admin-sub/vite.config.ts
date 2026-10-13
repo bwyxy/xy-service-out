@@ -13,7 +13,7 @@ export default ({ mode } :{mode :any}) :UserConfig => {
   const env = loadEnv(mode, process.cwd())
 
   const config = {
-    base: '/',
+    base: '/admin/',
     plugins: [
         vue(),
         qiankun('admin', {
@@ -71,7 +71,7 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       }
     },
     build: {
-      outDir: '',
+      outDir: 'admin',
     }
   }
 

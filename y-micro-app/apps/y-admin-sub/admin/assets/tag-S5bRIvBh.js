@@ -1,0 +1,1 @@
+import{r as e}from"./index-cMUKZD6M.js";const r=t=>e({url:"/tag/list",method:"post",data:t}),o=t=>e({url:`/tag/${t}`,method:"get"}),s=t=>e({url:"/tag/add",method:"post",data:t}),d=t=>e({url:"/tag/update",method:"put",data:t}),g=t=>e({url:`/tag/${t}`,method:"delete"});export{o as a,s as b,g as d,d as e,r as g};
