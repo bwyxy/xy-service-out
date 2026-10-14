@@ -27,3 +27,4 @@ utils/components.d.ts
 utils/auto-imports.d.ts
 
 pnpm-lock.yaml
+dist-linux

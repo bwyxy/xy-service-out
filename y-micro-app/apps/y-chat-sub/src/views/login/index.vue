@@ -2,6 +2,7 @@
 import Login from './modules/Login.vue'
 import Register from './modules/Register.vue'
 import DesktopLogin from './modules/DesktopLogin.vue'
+import WindowControls from '@/components/WindowControls/index.vue'
 import {computed, ref} from "vue";
 import { isTauriLoginWindow, tauriLoginSuccess } from '@/utils/tauri.ts'
 
@@ -30,6 +31,11 @@ const handleDesktopSuccess = (creds: { token: string; wssAddr: string; wssKey: s
 <template>
   <div :class="['login-container', isDesktop ? 'login-container--desktop' : '']">
     <template v-if="isDesktop">
+      <!-- 无系统标题栏：顶部拖拽区承载窗口拖动与自定义关闭/最小化按钮 -->
+      <div class="login-window-bar" data-tauri-drag-region>
+        <WindowControls :maximizable="false" />
+      </div>
+
       <DesktopLogin
           v-if="type === 'login'"
           @switch="handleSwitch"
@@ -67,8 +73,24 @@ const handleDesktopSuccess = (creds: { token: string; wssAddr: string; wssKey: s
 
 // 桌面登录小窗口：微信风格，内容偏上、纯白背景
 .login-container--desktop {
+  position: relative;
   justify-content: flex-start;
   padding-top: 64px;
   background: #fff;
+}
+
+// 无系统标题栏时的顶部拖拽条（同时承载窗口控制按钮）
+.login-window-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 6px 8px 0 0;
+  box-sizing: border-box;
+  z-index: 10;
 }
 </style>

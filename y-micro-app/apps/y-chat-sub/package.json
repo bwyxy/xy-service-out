@@ -10,7 +10,8 @@
     "build:tauri": "vue-tsc -b && vite build --mode tauri",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "tauri:build:linux": "tauri build --bundles deb,rpm,appimage"
   },
   "dependencies": {
     "@element-plus/icons-vue": "catalog:",

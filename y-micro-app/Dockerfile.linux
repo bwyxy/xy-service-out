@@ -1,14 +1,25 @@
 # Linux 安装包构建镜像（Tauri v2）
 #
-# 在 y-micro-app 目录执行：
+# 推荐在 y-micro-app 目录使用 pnpm 脚本（见 package.json）：
+#   pnpm desktop:linux          # 构建镜像 + 打包，产物输出到 dist-linux/
+#   pnpm desktop:linux:image    # 仅构建镜像
+#   pnpm desktop:linux:run      # 仅打包（需先构建镜像）
+#   pnpm desktop:linux:clean    # 清理镜像/缓存卷/dist-linux
+#
+# 等价的原始命令：
 #   docker build -f Dockerfile.linux -t y-chat-linux .
 #   docker run --rm \
 #     -v y-chat-cargo-target:/app/apps/y-chat-sub/src-tauri/target \
 #     -v "$PWD/dist-linux":/out \
 #     y-chat-linux sh -c \
-#     'pnpm tauri build -- --bundles deb,rpm,appimage && cp -r src-tauri/target/release/bundle/* /out/'
+#     'pnpm tauri:build:linux && cp -r src-tauri/target/release/bundle/* /out/'
+#
+# 注意：tauri build 的 --bundles 不能写成 `tauri build -- --bundles`，
+# 分隔符 `--` 会把参数透传给 cargo 导致 "unexpected argument '--bundles'"
 #
 # 产物（dist-linux/）：deb / rpm / appimage
+# 镜像内 apt / rustup / pnpm 均使用国内镜像源加速
+# 注意：本镜像产出与宿主 CPU 架构一致（Apple Silicon 上是 arm64）；amd64 包请走 CI 或原生机器
 
 FROM ubuntu:22.04
 
@@ -16,7 +27,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 # 容器内无 FUSE，AppImage 打包需启用自解压运行
 ENV APPIMAGE_EXTRACT_AND_RUN=1
 
-# Tauri v2 所需的 Linux 系统依赖
+# apt 换阿里云源（amd64 用 archive/security；arm64 用 ports）
+RUN sed -i \
+      -e 's@//.*ports.ubuntu.com/ubuntu-ports@//mirrors.aliyun.com/ubuntu-ports@g' \
+      -e 's@//.*archive.ubuntu.com@//mirrors.aliyun.com@g' \
+      -e 's@//security.ubuntu.com@//mirrors.aliyun.com@g' \
+      /etc/apt/sources.list
+
+# Tauri v2 所需的 Linux 系统依赖（xz-utils 由依赖自动带入，供解压 Node 安装包）
 RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential curl wget file git ca-certificates pkg-config \
       libwebkit2gtk-4.1-dev \
@@ -28,25 +46,48 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       rpm \
     && rm -rf /var/lib/apt/lists/*
 
-# Rust 工具链
+# Rust 工具链（ustc 镜像）
 ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo
+    CARGO_HOME=/usr/local/cargo \
+    RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static \
+    RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
       | sh -s -- -y --no-modify-path --profile minimal --default-toolchain stable
 ENV PATH="/usr/local/cargo/bin:${PATH}"
 
-# Node.js 22 + pnpm（与仓库 packageManager 保持一致）
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
-RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
+# crates.io 换 rsproxy 镜像
+RUN printf '%s\n' \
+      '[source.crates-io]' \
+      'replace-with = "rsproxy-sparse"' \
+      '[source.rsproxy-sparse]' \
+      'registry = "sparse+https://rsproxy.cn/index/"' \
+      '[net]' \
+      'git-fetch-with-cli = true' \
+      > "$CARGO_HOME/config.toml"
+
+# Node.js 22（npmmirror 官方二进制镜像，按构建架构自动选择 x64/arm64）+ pnpm
+# 不使用 nodesource：其镜像源在国内常出现 404，会误装成发行版自带的旧版 node
+ARG NODE_VERSION=22.14.0
+RUN case "$(dpkg --print-architecture)" in \
+      amd64) NODE_ARCH=x64 ;; \
+      arm64) NODE_ARCH=arm64 ;; \
+      *) echo "unsupported arch" && exit 1 ;; \
+    esac \
+ && curl -fsSL "https://registry.npmmirror.com/-/binary/node/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz" \
+      -o /tmp/node.tar.xz \
+ && tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 \
+ && rm -f /tmp/node.tar.xz \
+ && node -v
+RUN npm config set registry https://registry.npmmirror.com \
+ && npm install -g pnpm@10.33.2 \
+ && pnpm -v
 
 WORKDIR /app
 COPY . .
 
-# 安装 workspace 依赖，并先构建 @xy/utils 等被引用的内部包（其入口指向 dist/）
-RUN pnpm install --frozen-lockfile \
+# 安装 workspace 依赖（npmmirror 源），并先构建 @xy/utils 等被引用的内部包（其入口指向 dist/）
+RUN pnpm install --frozen-lockfile --registry=https://registry.npmmirror.com \
  && pnpm build:packages
 
 WORKDIR /app/apps/y-chat-sub
-CMD ["pnpm", "tauri", "build", "--", "--bundles", "deb,rpm,appimage"]
+CMD ["pnpm", "tauri:build:linux"]

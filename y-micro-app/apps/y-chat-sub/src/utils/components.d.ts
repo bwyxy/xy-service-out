@@ -44,6 +44,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     UploadAvatar: typeof import('./../components/UploadAvatar/UploadAvatar.vue')['default']
     WaterfallList: typeof import('./../components/WaterfallList/WaterfallList.vue')['default']
+    WindowControls: typeof import('./../components/WindowControls/index.vue')['default']
     YEditor: typeof import('./../components/YEditor/YEditor.vue')['default']
   }
   export interface GlobalDirectives {

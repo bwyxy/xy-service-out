@@ -9,6 +9,16 @@ export function isTauri(): boolean {
 }
 
 /**
+ * 是否运行在 macOS。
+ * macOS 保留系统原生红绿灯（含原生圆角与交互），其它平台使用自定义窗口按钮，
+ * 因此窗口按钮组件据此决定是否渲染。
+ */
+export function isMacOS(): boolean {
+    if (typeof navigator === 'undefined') return false
+    return /mac/i.test(navigator.userAgent)
+}
+
+/**
  * 获取当前 Tauri 窗口 label（同步读取，无需 IPC）
  * main = 应用主窗口，login = 登录小窗口
  */

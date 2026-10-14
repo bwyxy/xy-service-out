@@ -62,7 +62,7 @@ fn open_login_window(app: &tauri::AppHandle) -> tauri::Result<()> {
     // 通过 hash 直达登录路由并附带窗口标记：
     // 登录窗口初始即位于 /login（白名单），不依赖运行时窗口身份检测即可渲染，
     // 避免初始路径 "/" 被路由守卫取消导航而导致白屏
-    let login = WebviewWindowBuilder::new(
+    let builder = WebviewWindowBuilder::new(
         app,
         "login",
         WebviewUrl::App("index.html#/login?tauriWindow=login".into()),
@@ -72,8 +72,17 @@ fn open_login_window(app: &tauri::AppHandle) -> tauri::Result<()> {
     .resizable(false)
     .maximizable(false)
     .center()
-    .visible(true)
-    .build()?;
+    .visible(true);
+
+    // macOS：保留原生红绿灯（Overlay 叠加标题栏 + 隐藏标题），窗口维持系统圆角；
+    // 其它平台：去掉系统标题栏，由前端自定义窗口按钮接管
+    #[cfg(target_os = "macos")]
+    let login = builder
+        .title_bar_style(tauri::TitleBarStyle::Overlay)
+        .hidden_title(true)
+        .build()?;
+    #[cfg(not(target_os = "macos"))]
+    let login = builder.decorations(false).build()?;
     let _ = login.set_focus();
     Ok(())
 }
@@ -145,6 +154,14 @@ pub fn run() {
             }
 
             let handle = app.handle().clone();
+
+            // 非 macOS：主窗口去掉系统标题栏，交由前端自定义窗口按钮接管。
+            // macOS 保留原生红绿灯与系统圆角（配置中已设为 Overlay 叠加标题栏）
+            #[cfg(not(target_os = "macos"))]
+            if let Some(main) = handle.get_webview_window("main") {
+                let _ = main.set_decorations(false);
+            }
+
             if is_logged_in(&read_login_state(&handle)) {
                 // 上次退出时已登录：直接显示主窗口，凭据由前端拉取回填
                 if let Some(main) = handle.get_webview_window("main") {
