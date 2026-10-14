@@ -9,7 +9,11 @@ import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.User;
+import com.xy.common.ip.IpUtils;
+import com.xy.common.provider.JwtTokenProvider;
+import com.xy.common.utils.StringUtils;
 import com.xy.framework.web.service.VerifyService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,9 @@ public class AuthController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     /**
      * 注册
      */
@@ -49,9 +56,34 @@ public class AuthController {
      */
     @Anonymous
     @PostMapping("/chat/login")
-    public R<?> login(@RequestBody LoginDTO loginDTO) {
-        Map<String, Object> result = authService.login(loginDTO);
+    public R<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
+        Map<String, Object> result = authService.login(
+                loginDTO,
+                IpUtils.getIpAddr(request),
+                request.getHeader("User-Agent")
+        );
         return R.ok(result);
+    }
+
+    /**
+     * 登出（结束当前设备会话，token 立即失效）
+     */
+    @PostMapping("/auth/logout")
+    public R<?> logout(HttpServletRequest request) {
+        authService.logout(resolveToken(request));
+        return R.ok("已退出登录");
+    }
+
+    /**
+     * 从请求头解析会话 token
+     */
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(jwtTokenProvider.getJwtHeader());
+        String prefix = jwtTokenProvider.getJwtPrefix() + " ";
+        if (StringUtils.isNotEmpty(bearerToken) && bearerToken.startsWith(prefix)) {
+            return bearerToken.substring(prefix.length());
+        }
+        return bearerToken;
     }
 
     /**

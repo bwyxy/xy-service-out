@@ -1,9 +1,15 @@
 package com.chat.fg.service.impl;
 
+import com.chat.fg.enums.DeviceType;
+import com.chat.fg.enums.SessionStatus;
+import com.chat.fg.pojo.LoginSession;
 import com.chat.fg.pojo.dto.LoginDTO;
 import com.chat.fg.pojo.dto.RegisterDTO;
 import com.chat.fg.security.ChatUserDetails;
+import com.chat.fg.service.ForceLogoutNotifier;
 import com.chat.fg.service.IAuthService;
+import com.chat.fg.service.ILoginSessionService;
+import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.WKUserTokenRequest;
 import com.xy.common.client.vo.ResultVO;
@@ -21,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,6 +50,12 @@ public class AuthServiceImpl implements IAuthService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private ILoginSessionService loginSessionService;
+
+    @Autowired
+    private ForceLogoutNotifier forceLogoutNotifier;
 
     /**
      * 注册用户
@@ -98,7 +111,7 @@ public class AuthServiceImpl implements IAuthService {
      * 登录
      */
     @Override
-    public Map<String, Object> login(LoginDTO loginDTO) {
+    public Map<String, Object> login(LoginDTO loginDTO, String ip, String userAgent) {
         String account = loginDTO.getAccount();
 
         // 1. 根据手机号或邮箱查询聊天用户（t_user 表）
@@ -118,7 +131,11 @@ public class AuthServiceImpl implements IAuthService {
         ChatUserDetails chatUserDetails = new ChatUserDetails(user);
         String jwtToken = jwtTokenProvider.generateAccessToken(chatUserDetails);
 
-        // 4. 获取/更新悟空IM Token
+        // 4. 多端登录管控：同设备类型旧会话全部失效并推送强制下线
+        //    必须在重置 IM token 之前推送，否则旧设备可能已因 deviceLevel 抢占而断开，收不到通知
+        replaceLoginSession(uId, jwtToken, loginDTO, ip, userAgent);
+
+        // 5. 获取/更新悟空IM Token
         String uid = String.valueOf(uId);
         WKUserTokenRequest tokenRequest = new WKUserTokenRequest();
         tokenRequest.setUid(uid);
@@ -131,15 +148,72 @@ public class AuthServiceImpl implements IAuthService {
             throw new BusinessException("获取IM连接失败: " + tokenResult.getMsg());
         }
 
-        // 5. 获取用户IM 地址
+        // 6. 获取用户IM 地址
         IMAddrResponse imAddrResponse = wuKongClient.getRoute(uId);
 
-        // 6. 组装返回数据
+        // 7. 组装返回数据
         Map<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("token", jwtToken);
         result.put("nickname", user.getNickname());
         result.put("imAddr", imAddrResponse);
         return result;
+    }
+
+    /**
+     * 建立新会话并踢掉同设备类型的旧会话
+     * */
+    private void replaceLoginSession(Long uId, String jwtToken, LoginDTO loginDTO, String ip, String userAgent) {
+        Integer submitted = loginDTO.getDeviceType();
+        DeviceType deviceType = submitted != null
+                ? DeviceType.fromCode(submitted)
+                : DeviceType.resolveByUserAgent(userAgent);
+
+        long now = System.currentTimeMillis();
+        LoginSession session = new LoginSession();
+        session.setUid(uId);
+        session.setDeviceType(deviceType.getCode());
+        session.setDeviceId(StringUtils.isEmpty(loginDTO.getDeviceId()) ? "unknown" : loginDTO.getDeviceId());
+        session.setDeviceName(buildDeviceName(deviceType, userAgent));
+        session.setToken(jwtToken);
+        session.setLoginTime(now);
+        session.setLastActiveTime(now);
+        session.setStatus(SessionStatus.ACTIVE.getCode());
+        session.setIp(ip);
+
+        List<LoginSession> kicked = loginSessionService.replaceSession(
+                session, jwtTokenProvider.getRemainingExpiration(jwtToken));
+        for (LoginSession old : kicked) {
+            forceLogoutNotifier.notifyKicked(old);
+        }
+    }
+
+    /**
+     * 生成设备描述（设备类型 + User-Agent 简写）
+     * */
+    private String buildDeviceName(DeviceType deviceType, String userAgent) {
+        if (StringUtils.isEmpty(userAgent)) {
+            return deviceType.getLabel();
+        }
+        String ua = userAgent.length() > 80 ? userAgent.substring(0, 80) : userAgent;
+        return deviceType.getLabel() + " / " + ua;
+    }
+
+    /**
+     * 登出：仅允许结束当前登录用户自身的会话
+     * */
+    @Override
+    public void logout(String token) {
+        if (StringUtils.isEmpty(token)) {
+            throw new BusinessException("登录状态已失效，请重新登录");
+        }
+
+        LoginSession session = loginSessionService.getSession(token);
+        // 越权校验：会话归属必须与当前登录用户一致
+        if (session != null && !SecurityUtils.getUId().equals(session.getUid())) {
+            throw new BusinessException("无权操作该登录会话");
+        }
+
+        loginSessionService.endSession(token, SessionStatus.LOGOUT);
     }
 }

@@ -58,7 +58,11 @@ public enum MessageType {
 
     rtcSignalCandidate(208, "RTC ICE Candidate"),
 
-    rtcRecord(210, "RTC通话记录");
+    rtcRecord(210, "RTC通话记录"),
+
+    /** 登录会话管控信令（220+，多端登录强制下线） */
+
+    forceLogout(220, "强制下线通知");
 
     private final Integer code;
 

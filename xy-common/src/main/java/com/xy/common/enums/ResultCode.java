@@ -26,7 +26,11 @@ public enum ResultCode {
     PARAM_VALIDATION_ERROR(1004, "参数校验失败"),
     FILE_UPLOAD_ERROR(1005, "文件上传失败"),
     FILE_DOWNLOAD_ERROR(1006, "文件下载失败"),
-    OPERATION_FAILED(1007, "操作失败");
+    OPERATION_FAILED(1007, "操作失败"),
+
+    // ==================== 登录会话错误 ====================
+    /** 会话已失效（被同类型设备登录顶下线 / 已登出 / token 过期） */
+    SESSION_EXPIRED(4011, "登录状态已失效，请重新登录");
 
     private final Integer code;
     private final String message;

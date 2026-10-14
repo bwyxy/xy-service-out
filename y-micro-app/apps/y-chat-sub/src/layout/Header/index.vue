@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
 import useUserStore from '@/store/user.ts'
 import useNotificationStore from '@/store/notification.ts'
+import { logout } from '@/api/auth.ts'
 import UserInfo from './UserInfo/UserInfo.vue'
 import NotificationCenter from './NotificationCenter.vue'
 import WindowControls from '@/components/WindowControls/index.vue'
@@ -31,6 +32,9 @@ const onNotificationRefresh = () => {
 }
 
 const handleLogout = () => {
+  // 先通知服务端结束会话（token 立即失效），再清理本地状态；
+  // 服务端标记失败不阻断本地退出流程
+  logout().catch(() => {})
   userStore.outLogin()
   notificationStore.reset()
   // 网页端需主动跳转登录页；桌面端由 Rust 隐藏主窗口并弹出登录小窗口

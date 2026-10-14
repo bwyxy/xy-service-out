@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Slf4j
@@ -85,11 +86,22 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
+                // jti：保证每次登录生成的 token 唯一。
+                // 同一用户在同一秒内重复登录时，若不含 jti，JWT 内容完全一致，
+                // 会导致多端登录管控「按 token 精确踢下线」误伤新会话。
+                .setId(UUID.randomUUID().toString().replace("-", ""))
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    /**
+     * 获取 token 的唯一标识（jti）
+     */
+    public String getJtiFromToken(String token) {
+        return extractClaim(token, Claims::getId);
     }
 
     public String getUsernameFromToken(String token) {

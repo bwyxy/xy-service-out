@@ -1,6 +1,9 @@
 package com.xy.framework.security.filter;
 
+import com.alibaba.fastjson.JSON;
+import com.xy.common.core.domain.R;
 import com.xy.common.core.redis.RedisCache;
+import com.xy.common.enums.ResultCode;
 import com.xy.common.provider.JwtTokenProvider;
 import com.xy.common.web.service.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
@@ -51,9 +54,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt)) {
 
+                // 会话已被同类型设备顶下线 / 已登出：立即返回指定失效码并终止链路。
+                // 注意：此处必须直接 return，不能落入下方的 filterChain.doFilter，
+                // 否则请求会继续传递到控制器，失效校验形同虚设。
                 if (tokenBlacklistService.isBlacklisted(jwt)) {
-                    throw new SecurityException("Token has been logged out");
+                    log.warn("会话已失效（被顶下线或已登出），拒绝请求 uri={}", request.getRequestURI());
+                    writeSessionExpired(response);
+                    return;
                 }
+
                 String username = jwtTokenProvider.getUsernameFromToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -72,11 +81,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
+            // 解析/校验失败时不设置认证信息，由后续的 AuthenticationEntryPoint 统一返回 401
             log.error("无法设置用户认证信息：{}", e.getMessage());
-            throw new SecurityException("获取登录失败");
-        } finally {
-            filterChain.doFilter(request, response);
         }
+
+        filterChain.doFilter(request, response);
+    }
+
+    /**
+     * 返回「登录态已失效」的指定错误码
+     * */
+    private void writeSessionExpired(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(JSON.toJSONString(R.error(ResultCode.SESSION_EXPIRED)));
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

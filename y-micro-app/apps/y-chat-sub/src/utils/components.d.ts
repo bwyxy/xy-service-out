@@ -36,6 +36,7 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElUpload: typeof import('element-plus/es')['ElUpload']
+    ForceLogoutDialog: typeof import('./../components/ForceLogoutDialog/index.vue')['default']
     FriendList: typeof import('./../components/FriendList/FriendList.vue')['default']
     IncomingCallDialog: typeof import('./../components/IncomingCallDialog/index.vue')['default']
     InfoCard: typeof import('./../components/InfoCard/InfoCard.vue')['default']

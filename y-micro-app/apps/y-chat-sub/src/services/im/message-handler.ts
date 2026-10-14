@@ -22,6 +22,12 @@ export type RtcSignalHandler = (
   payload: WukongIMMessagePayload,
 ) => void
 
+/** 强制下线处理器（220：同类型设备登录导致当前设备被顶下线） */
+export type ForceLogoutHandler = (
+  message: WukongIMMessage,
+  payload: WukongIMMessagePayload,
+) => void
+
 /**
  * 消息分类处理服务
  *
@@ -35,6 +41,7 @@ export class MessageHandlerService {
   private readonly chatHandlers: ChatMessageHandler[] = []
   private readonly systemHandlers: SystemMessageHandler[] = []
   private readonly rtcHandlers: RtcSignalHandler[] = []
+  private readonly forceLogoutHandlers: ForceLogoutHandler[] = []
   private initialized = false
 
   /**
@@ -111,6 +118,23 @@ export class MessageHandlerService {
     }
   }
 
+  /**
+   * 注册强制下线处理器
+   */
+  onForceLogout(handler: ForceLogoutHandler): void {
+    this.forceLogoutHandlers.push(handler)
+  }
+
+  /**
+   * 移除强制下线处理器
+   */
+  offForceLogout(handler: ForceLogoutHandler): void {
+    const index = this.forceLogoutHandlers.indexOf(handler)
+    if (index > -1) {
+      this.forceLogoutHandlers.splice(index, 1)
+    }
+  }
+
   private handleIncomingMessage = (message: WukongIMMessage): void => {
     const payload = decodePayload(message.payload || '') as WukongIMSystemPayload
 
@@ -125,6 +149,14 @@ export class MessageHandlerService {
     // 通话记录（210）：作为聊天消息进入会话（渲染为灰色居中提示），不弹系统通知
     if (payload.type === MessageType.RTC_RECORD) {
       this.chatHandlers.forEach((handler) => handler(message, payload))
+      return
+    }
+
+    // 强制下线通知（220）：必须早于 isSystemMessageType(>=100) 分流，
+    // 否则会被当作普通系统通知弹出，且不受登录态管控处理
+    if (payload.type === MessageType.FORCE_LOGOUT) {
+      console.log('[MessageHandler] 收到强制下线通知, handlers=', this.forceLogoutHandlers.length)
+      this.forceLogoutHandlers.forEach((handler) => handler(message, payload))
       return
     }
 

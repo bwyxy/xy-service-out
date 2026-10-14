@@ -1,7 +1,7 @@
 server:
   port: 9080
   servlet:
-    context-path: /chat-api
+    context-path: /
   tomcat:
     uri-encoding: UTF-8
     accept-count: 1000

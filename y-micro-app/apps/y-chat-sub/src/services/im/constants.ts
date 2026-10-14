@@ -41,6 +41,9 @@ export enum MessageType {
   RTC_CANDIDATE = 208,
   /** RTC：通话记录（后端持久化推送，聊天窗口灰色居中提示） */
   RTC_RECORD = 210,
+
+  /** 登录会话管控：同类型设备登录导致当前设备被强制下线 */
+  FORCE_LOGOUT = 220,
 }
 
 /**

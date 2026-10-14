@@ -3,6 +3,7 @@ import { login, register, getUserInfo } from '@/api/auth.ts'
 import { ElMessage } from 'element-plus'
 import { setToken, setCookies, removeToken } from '@/utils/auth.ts'
 import { isTauri, tauriLogout } from '@/utils/tauri.ts'
+import { getDeviceInfo } from '@/utils/device.ts'
 import useChatStore from "@/store/chat.ts";
 
 /** 登录用户信息 */
@@ -44,7 +45,8 @@ const useUserStore = defineStore('user', {
       const wssKey = import.meta.env.VITE_WSS_KEY
 
       try {
-        const result = await login(params)
+        // 多端登录管控：登录时上报设备类型与设备唯一标识
+        const result = await login({ ...params, ...getDeviceInfo() })
 
         if (result.code === 200) {
           const { token, imAddr } = result.data

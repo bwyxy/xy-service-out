@@ -37,6 +37,13 @@ export const getUserInfo = () => {
 }
 
 /**
+ * 登出（结束当前设备会话，token 立即失效）
+ * */
+export const logout = () => {
+    return request.post('/auth/logout')
+}
+
+/**
  * 更新用户信息
  * */
 export const updateUserInfo = (data:any):any => {

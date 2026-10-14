@@ -8,6 +8,7 @@ import AppMain from './AppMain.vue'
 import LayoutNav from './nav/index.vue'
 import CallOverlay from '@/components/CallOverlay/index.vue'
 import IncomingCallDialog from '@/components/IncomingCallDialog/index.vue'
+import ForceLogoutDialog from '@/components/ForceLogoutDialog/index.vue'
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
@@ -32,6 +33,9 @@ onMounted(() => {
     <!-- 音视频通话：全屏浮层 + 来电弹窗（全局常驻，由 call store 状态驱动显隐） -->
     <call-overlay />
     <incoming-call-dialog />
+
+    <!-- 多端登录管控：被同类型设备顶下线时的强制退出弹窗 -->
+    <force-logout-dialog />
   </div>
 </template>
 

@@ -51,7 +51,7 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       origin: '//localhost:9001',
       proxy: {
         '/api': {
-          target: 'https://www.bwyxy.cn/chat-api/',
+          target: 'http://localhost:9080',
           changeOrigin: true,
           rewrite: (path :any) => path.replace(/^\/api/, '')
         }
