@@ -100,8 +100,11 @@ public class MessageServiceImpl implements IMessageService {
 
         // 默认持久化、显示红点
         MessageSendRequest.MessageHeader header = new MessageSendRequest.MessageHeader();
-        header.setNoPersist(0);
-        header.setRedDot(1);
+        // RTC 实时信令（offer/answer/candidate 等 200-208）：不持久化、不显示红点
+        boolean isRtcSignal = sendMsgDTO.getType() != null
+                && sendMsgDTO.getType() >= 200 && sendMsgDTO.getType() <= 208;
+        header.setNoPersist(isRtcSignal ? 1 : 0);
+        header.setRedDot(isRtcSignal ? 0 : 1);
         request.setHeader(header);
 
         log.info("发送消息到悟空 IM, fromUid={}, channelId={}, type={}",

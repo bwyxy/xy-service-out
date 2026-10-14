@@ -36,7 +36,29 @@ public enum MessageType {
 
     rtcHangup(105, "挂断"),
 
-    rtcBusy(106, "忙线");
+    rtcBusy(106, "忙线"),
+
+    /** RTC 信令 wire 类型（200+，避开前端已占用的 1-103） */
+
+    rtcSignalInvite(200, "RTC呼叫邀请"),
+
+    rtcSignalCancel(201, "RTC主叫取消"),
+
+    rtcSignalAccept(202, "RTC被叫接听"),
+
+    rtcSignalReject(203, "RTC被叫拒绝"),
+
+    rtcSignalHangup(204, "RTC挂断"),
+
+    rtcSignalBusy(205, "RTC忙线"),
+
+    rtcSignalOffer(206, "RTC Offer"),
+
+    rtcSignalAnswer(207, "RTC Answer"),
+
+    rtcSignalCandidate(208, "RTC ICE Candidate"),
+
+    rtcRecord(210, "RTC通话记录");
 
     private final Integer code;
 

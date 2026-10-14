@@ -2,7 +2,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import useUserStore from '@/store/user.ts'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
-import { wukongIMService, messageHandlerService, MessageType } from '@/services/im'
+import { wukongIMService, messageHandlerService, MessageType, isRtcSignalType } from '@/services/im'
 import { sendMessage as apiSendMessage, getMessageList } from '@/api/chat.ts'
 import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk'
 import { getToken, getCookies } from '@/utils/auth.ts'
@@ -111,6 +111,12 @@ const useChatStore = defineStore('chat', () => {
    */
   async function handleIncomingChatMessage(message: WukongIMMessage, payload: WukongIMMessagePayload): Promise<void> {
 
+    console.log('接收来的消息---->', message)
+    // 防御：RTC 实时信令（200-208）不进聊天列表（正常应在 message-handler 已拦截）
+    if (isRtcSignalType(payload.type)) {
+      return
+    }
+
     console.log('聊天消息', message, payload)
     let senderName = ''
     if (message.channelType === 1) {
@@ -135,6 +141,8 @@ const useChatStore = defineStore('chat', () => {
     const incomingMessageId = `${message.messageSeq}_${message.messageId || ''}`
 
     const msg :any = payload.content
+    // content 兼容：普通消息 content 为字符串直接使用；对象取其 content 字段
+    const content = typeof msg === 'object' && msg !== null ? (msg.content ?? '') : (msg ?? '')
 
     if (!messages.value.find(m => String(m.id) === String(message.clientMsgNo))) {
       messages.value.push({
@@ -144,14 +152,14 @@ const useChatStore = defineStore('chat', () => {
         channelId: message.channelId,
         channelType: message.channelType,
         type: payload.type,
-        content: msg.content || '',
+        content,
         timestamp: message.timestamp || Date.now(),
         isSelf,
       })
     }
 
     // 同步会话列表：更新/新增联系人、未读数、排序
-    await syncConversationFromMessage(message, msg, isSelf, !isCurrentChannel)
+    await syncConversationFromMessage(message, payload, isSelf, !isCurrentChannel)
   }
 
   /**
@@ -341,9 +349,12 @@ const useChatStore = defineStore('chat', () => {
         }
       })
 
+      // 过滤 RTC 实时信令残留（历史数据防御，no_persist 正常时不会出现）
+      const rtcFiltered = historyMessages.filter((m) => !isRtcSignalType(m.type))
+
       // 去重：相同 messageSeq 只保留一条
       const existingIds = new Set(messages.value.map((m) => m.id))
-      const newMessages = historyMessages.filter((m) => !existingIds.has(m.id))
+      const newMessages = rtcFiltered.filter((m) => !existingIds.has(m.id))
 
       messages.value.push(...newMessages)
 

@@ -18,6 +18,11 @@ create table t_user (
 
 alter table t_user auto_increment 10000003;
 
+insert into t_user (password, nickname, avatar, phone, email, status, sex, wx_open_id, is_bind_chat, create_time, update_time)
+    VALUES ('$2a$10$HVwA2Z6fkWn3ufP9Cbcl9u/AcJ0iAtC1xELB/nIa4xCuqgLTciVkS', 'test1', '', '18699999999', 'test1@qq.com', 0, 1, '', '1', now(), now()),
+           ('$2a$10$HVwA2Z6fkWn3ufP9Cbcl9u/AcJ0iAtC1xELB/nIa4xCuqgLTciVkS', 'test2', '', '17699999999', 'test2@qq.com', 0, 1, '', '1', now(), now());
+
+
 -- 群组表
 create table t_group (
     group_id bigint primary key auto_increment comment '群组Id',

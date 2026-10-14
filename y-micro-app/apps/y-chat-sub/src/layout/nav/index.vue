@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {Menu, ChatDotRound, UserFilled, Orange} from "@element-plus/icons-vue";
+import {Menu, ChatDotRound, UserFilled} from "@element-plus/icons-vue";
 import {reactive, computed} from "vue";
 import { useRoute, useRouter } from 'vue-router'
 
@@ -17,11 +17,11 @@ const navs = reactive([
     icon: UserFilled,
     name: '好友'
   },
-  {
-    path: '/forum',
-    icon: Orange,
-    name: '友圈'
-  }
+  // {
+  //   path: '/forum',
+  //   icon: Orange,
+  //   name: '友圈'
+  // }
 ])
 
 const routePath = computed(() => {

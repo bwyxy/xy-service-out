@@ -1,7 +1,7 @@
 server:
   port: 9080
   servlet:
-    context-path: ${SERVER_CONTEXT_PATH:/}
+    context-path: /chat-api
   tomcat:
     uri-encoding: UTF-8
     accept-count: 1000
@@ -60,3 +60,15 @@ forum:
   # 搜索限流：同一 IP 1 分钟最多 30 次
   search-limit-per-ip: 30
   search-limit-window-minutes: 1
+
+# 音视频通话（WebRTC）配置
+xy:
+  rtc:
+    # 呼叫超时（秒）：超时未接听自动结束并通知双方
+    call-timeout-seconds: 90
+    # ICE 服务器（STUN/TURN），生产环境建议自建 coturn 并补充 turn 配置
+    ice-servers:
+      - urls: stun:stun.l.google.com:19302
+      # - urls: turn:turn.example.com:3478
+      #   username: your-username
+      #   credential: your-credential

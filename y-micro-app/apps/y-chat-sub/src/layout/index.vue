@@ -6,6 +6,8 @@ import { wukongIMService } from '@/services/im'
 import LayoutHeader from './Header/index.vue'
 import AppMain from './AppMain.vue'
 import LayoutNav from './nav/index.vue'
+import CallOverlay from '@/components/CallOverlay/index.vue'
+import IncomingCallDialog from '@/components/IncomingCallDialog/index.vue'
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
@@ -26,6 +28,10 @@ onMounted(() => {
       <layout-nav />
       <app-main />
     </div>
+
+    <!-- 音视频通话：全屏浮层 + 来电弹窗（全局常驻，由 call store 状态驱动显隐） -->
+    <call-overlay />
+    <incoming-call-dialog />
   </div>
 </template>
 

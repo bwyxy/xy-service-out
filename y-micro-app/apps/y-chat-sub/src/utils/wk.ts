@@ -1,19 +1,34 @@
 import type { WukongIMMessagePayload } from '@/services/im'
 
+// 临时版本标记：用于确认前端是否已加载本次修复（对象 payload 兼容）。确认无误后可删除。
+console.log('[WK] 消息解码器 v2 已加载（兼容对象 payload）')
+
 /**
  * 解码悟空 IM 消息的 payload
  *
  * 悟空 IM 在不同场景下回传的 payload 格式可能不同：
+ * - easyjssdk 已解码为对象（RecvMessage.payload）
  * - 后端 HTTP 接口返回 Base64 编码的 JSON
  * - SDK 推送的消息可能直接是 JSON 字符串
  *
- * 因此本函数优先尝试直接 JSON.parse；失败后再尝试 Base64 解码。
+ * 因此本函数优先识别对象；否则尝试直接 JSON.parse；失败后再尝试 Base64 解码。
  *
- * @param payload Base64 编码的 JSON 字符串，或直接是 JSON 字符串
+ * @param payload 已解码的对象、Base64 编码的 JSON 字符串，或直接的 JSON 字符串
  * @returns 解析后的消息负载对象；解析失败时回退返回 { type: 1, content: payload }
  */
-export function decodePayload(payload: string): WukongIMMessagePayload {
+export function decodePayload(payload: unknown): WukongIMMessagePayload {
   if (!payload) {
+    return { type: 1, content: '' }
+  }
+
+  // 0. easyjssdk 在派发消息前已将 payload 解码为对象（RecvMessage.payload 为 any）。
+  //    必须直接返回，否则会误入字符串分支兜底成 { type: 1 }，导致消息类型丢失
+  //    （表现为 RTC 信令被当作普通聊天消息、通话记录 type 判定失效）。
+  if (typeof payload === 'object') {
+    return payload as WukongIMMessagePayload
+  }
+
+  if (typeof payload !== 'string') {
     return { type: 1, content: '' }
   }
 

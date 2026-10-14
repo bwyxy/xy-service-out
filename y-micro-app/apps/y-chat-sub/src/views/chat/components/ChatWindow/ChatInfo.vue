@@ -2,7 +2,7 @@
 
 import {ref} from "vue";
 import { ArrowRight } from '@element-plus/icons-vue'
-import AddGroup from "@/components/AddGroup/AddGroup.vue";
+// import AddGroup from "@/components/AddGroup/AddGroup.vue";
 
 const chatDrawerRefs = ref<HTMLElement>()
 const isShow = defineModel('modelValue', {

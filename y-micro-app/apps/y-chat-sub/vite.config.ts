@@ -15,7 +15,7 @@ export default ({ mode } :{mode :any}) :UserConfig => {
   const isTauri = !!process.env.TAURI_ENV_PLATFORM
 
   const config = {
-    base: isTauri ? './' : '/',
+    base: isTauri ? './' : '/chat',
     plugins: [
         vue(),
       qiankun('chat', {
@@ -51,7 +51,7 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       origin: '//localhost:9001',
       proxy: {
         '/api': {
-          target: 'http://localhost:9080',
+          target: 'https://www.bwyxy.cn/chat-api/',
           changeOrigin: true,
           rewrite: (path :any) => path.replace(/^\/api/, '')
         }
@@ -71,6 +71,9 @@ export default ({ mode } :{mode :any}) :UserConfig => {
            `
         }
       }
+    },
+    build: {
+      outDir: 'chat',
     }
   }
 

@@ -19,35 +19,44 @@ watch(() => item.value, () => {
 </script>
 
 <template>
-  <div :class="['message-box', {'message-box_self': item.isSelf}]">
-    <!-- 自己 -->
-    <div v-if="item.isSelf" class="me-user">
-      <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
-      <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
-    </div>
-    <!-- 对方 -->
-    <div v-if="!item.isSelf" class="me-user">
-      <img v-if="avatar" class="user-head" :src="avatar" alt="avatar" />
-      <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
-    </div>
-    <!--  消息  -->
-    <div>
-      <div v-if="item.type === MessageType.IMAGE" class="msg-image-box">
-        <el-image
-            class="message-image"
-            :src="item.content"
-            :show-progress="true"
-            :preview-src-list="[item.content]"
-        />
+  <div :class="['message-box', {'message-box_self': item.isSelf, 'message-box--tip': item.type === MessageType.RTC_RECORD}]">
+    <!-- 通话记录：灰色居中提示（微信风格） -->
+    <template v-if="item.type === MessageType.RTC_RECORD">
+      <span class="rtc-record-tip">
+        <el-icon class="rtc-record-icon"><PhoneFilled /></el-icon>
+        {{ item.content }}
+      </span>
+    </template>
+    <template v-else>
+      <!-- 自己 -->
+      <div v-if="item.isSelf" class="me-user">
+        <img v-if="userInfo.avatar" class="user-head" :src="userInfo.avatar" alt="avatar" />
+        <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
       </div>
-      <div v-else class="message-bubble">
-        <div class="message-content" v-html="item.content"></div>
+      <!-- 对方 -->
+      <div v-if="!item.isSelf" class="me-user">
+        <img v-if="avatar" class="user-head" :src="avatar" alt="avatar" />
+        <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
       </div>
-    </div>
-    <!-- 发送失败 -->
-    <div v-if="item.isError" class="error-msg">
-      <el-icon><Warning /></el-icon>
-    </div>
+      <!--  消息  -->
+      <div>
+        <div v-if="item.type === MessageType.IMAGE" class="msg-image-box">
+          <el-image
+              class="message-image"
+              :src="item.content"
+              :show-progress="true"
+              :preview-src-list="[item.content]"
+          />
+        </div>
+        <div v-else class="message-bubble">
+          <div class="message-content" v-html="item.content"></div>
+        </div>
+      </div>
+      <!-- 发送失败 -->
+      <div v-if="item.isError" class="error-msg">
+        <el-icon><Warning /></el-icon>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -55,6 +64,27 @@ watch(() => item.value, () => {
 .message-box {
   width: 100%;
   display: flex;
+
+  // 通话记录：灰色居中提示，不区分左右
+  &--tip {
+    justify-content: center;
+  }
+
+  .rtc-record-tip {
+    display: inline-flex;
+    align-items: center;
+    gap: size(4);
+    font-size: size(12);
+    color: #999;
+    background: #f2f2f2;
+    border-radius: size(4);
+    padding: size(3) size(10);
+
+    .rtc-record-icon {
+      font-size: size(13);
+    }
+  }
+
   &_self {
     flex-direction: row-reverse;
     .user-head {

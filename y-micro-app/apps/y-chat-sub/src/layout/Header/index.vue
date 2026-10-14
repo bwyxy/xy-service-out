@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import { Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
 import useUserStore from '@/store/user.ts'
 import useNotificationStore from '@/store/notification.ts'
@@ -15,6 +16,7 @@ const isMac = isTauri() && isMacOS()
 const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 const { unreadCount } = storeToRefs(notificationStore)
+const router = useRouter()
 
 const notificationVisible = ref(false)
 
@@ -31,6 +33,10 @@ const onNotificationRefresh = () => {
 const handleLogout = () => {
   userStore.outLogin()
   notificationStore.reset()
+  // 网页端需主动跳转登录页；桌面端由 Rust 隐藏主窗口并弹出登录小窗口
+  if (!isTauri()) {
+    router.push('/login')
+  }
 }
 
 onMounted(() => {

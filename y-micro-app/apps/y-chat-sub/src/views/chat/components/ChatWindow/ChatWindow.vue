@@ -2,6 +2,7 @@
 import { onMounted, ref, watch, nextTick, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import useChatStore from '@/store/chat.ts'
+import useCallStore from '@/store/call.ts'
 import { MessageType } from '@/services/im/constants'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
 import RichInput from './RichInput.vue'
@@ -9,6 +10,7 @@ import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 import MessageBox from "@/components/MessageBox/MessageBox.vue";
 
 const chatStore = useChatStore()
+const callStore = useCallStore()
 const { activeContact, messages } = storeToRefs(chatStore)
 
 const sending = ref(false)
@@ -29,6 +31,7 @@ const currentMessages = computed(() => {
 })
 /** 是否系统用户 */
 const isSystemUser = computed(() => {
+  console.log('是否是系统用户', activeContact.value)
   if (!activeContact.value || activeContact.value.channelType !== 1) return false
 
   return activeContact.value.channelType === 1 && isNaN(Number(activeContact.value.uid));
@@ -98,6 +101,26 @@ const scrollToBottom = () => {
   })
 }
 
+/** 发起语音通话 */
+const handleAudioCall = () => {
+  if (!activeContact.value) return
+  callStore.startCall({
+    uid: activeContact.value.uid,
+    nickname: channelInfo.value.nickname || activeContact.value.name || activeContact.value.uid,
+    avatar: channelInfo.value.avatar || activeContact.value.avatar || '',
+  }, 1)
+}
+
+/** 发起视频通话 */
+const handleVideoCall = () => {
+  if (!activeContact.value) return
+  callStore.startCall({
+    uid: activeContact.value.uid,
+    nickname: channelInfo.value.nickname || activeContact.value.name || activeContact.value.uid,
+    avatar: channelInfo.value.avatar || activeContact.value.avatar || '',
+  }, 2)
+}
+
 watch(
   () => activeContact.value?.uid,
   () => {
@@ -131,9 +154,17 @@ onMounted(() => {
       />
       <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
       <div class="chat-window-header-rt">
-        <div v-if="!isSystemUser" title="视频/语音通话" class="chat-rt-icon">
-          <img src="@/assets/images/video_audio_icon.png" alt="icon" />
-        </div>
+        <el-dropdown v-if="!isSystemUser">
+          <div class="chat-rt-icon" title="视频/语音">
+            <img src="@/assets/images/video_audio_icon.png" alt="icon" />
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="handleAudioCall">语音通话</el-dropdown-item>
+              <el-dropdown-item @click="handleVideoCall">视频通话</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <div class="chat-rt-icon" title="更多操作" @click="isShowChatInfo = !isShowChatInfo">
           <img src="@/assets/images/more_icon.png" alt="icon" />
         </div>

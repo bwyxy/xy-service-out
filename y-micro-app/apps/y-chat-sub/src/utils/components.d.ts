@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddGroup: typeof import('./../components/AddGroup/AddGroup.vue')['default']
+    CallOverlay: typeof import('./../components/CallOverlay/index.vue')['default']
     ChannelNull: typeof import('./../components/ChannelNull/ChannelNull.vue')['default']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -36,6 +37,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     FriendList: typeof import('./../components/FriendList/FriendList.vue')['default']
+    IncomingCallDialog: typeof import('./../components/IncomingCallDialog/index.vue')['default']
     InfoCard: typeof import('./../components/InfoCard/InfoCard.vue')['default']
     MessageBox: typeof import('./../components/MessageBox/MessageBox.vue')['default']
     PostDefault: typeof import('./../components/PostDefault/PostDefault.vue')['default']

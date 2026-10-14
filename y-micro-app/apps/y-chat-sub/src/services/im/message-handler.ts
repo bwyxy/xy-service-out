@@ -1,7 +1,7 @@
 import { ElNotification } from 'element-plus'
 import { wukongIMService } from './wukong-im'
 import { decodePayload, extractMessageContent } from '@/utils/wk'
-import { isSystemMessageType, MessageType } from './constants'
+import { isRtcSignalType, isSystemMessageType, MessageType } from './constants'
 import type { WukongIMMessage, WukongIMMessagePayload, WukongIMSystemPayload } from './types'
 
 /** 聊天消息处理器 */
@@ -16,6 +16,12 @@ export type SystemMessageHandler = (
   payload: WukongIMSystemPayload,
 ) => void
 
+/** RTC 信令处理器（200-208：呼叫邀请/接听/挂断/offer/answer/candidate 等） */
+export type RtcSignalHandler = (
+  message: WukongIMMessage,
+  payload: WukongIMMessagePayload,
+) => void
+
 /**
  * 消息分类处理服务
  *
@@ -28,6 +34,7 @@ export class MessageHandlerService {
 
   private readonly chatHandlers: ChatMessageHandler[] = []
   private readonly systemHandlers: SystemMessageHandler[] = []
+  private readonly rtcHandlers: RtcSignalHandler[] = []
   private initialized = false
 
   /**
@@ -87,8 +94,39 @@ export class MessageHandlerService {
     }
   }
 
+  /**
+   * 注册 RTC 信令处理器
+   */
+  onRtcSignal(handler: RtcSignalHandler): void {
+    this.rtcHandlers.push(handler)
+  }
+
+  /**
+   * 移除 RTC 信令处理器
+   */
+  offRtcSignal(handler: RtcSignalHandler): void {
+    const index = this.rtcHandlers.indexOf(handler)
+    if (index > -1) {
+      this.rtcHandlers.splice(index, 1)
+    }
+  }
+
   private handleIncomingMessage = (message: WukongIMMessage): void => {
     const payload = decodePayload(message.payload || '') as WukongIMSystemPayload
+
+    // RTC 实时信令（200-208）：最前置拦截，交给通话模块处理。
+    // 不弹系统通知、不进入聊天消息列表（offer/answer/candidate 等属于传输层信令）
+    if (isRtcSignalType(payload.type)) {
+      console.log('[MessageHandler] RTC 信令 type=', payload.type, 'from=', message.fromUid, 'handlers=', this.rtcHandlers.length)
+      this.rtcHandlers.forEach((handler) => handler(message, payload))
+      return
+    }
+
+    // 通话记录（210）：作为聊天消息进入会话（渲染为灰色居中提示），不弹系统通知
+    if (payload.type === MessageType.RTC_RECORD) {
+      this.chatHandlers.forEach((handler) => handler(message, payload))
+      return
+    }
 
     const content = extractMessageContent(payload)
     console.log('[MessageHandler] 收到消息, type=', payload.type, 'content=', content)

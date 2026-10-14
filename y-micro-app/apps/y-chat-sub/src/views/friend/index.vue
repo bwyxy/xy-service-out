@@ -2,10 +2,18 @@
 import { getFriendList } from '@/api/friend.ts'
 import { getUserInfo } from '@/api/user.ts'
 import {onMounted, ref} from "vue";
+import {useRouter} from 'vue-router'
 import {ChatRound, Phone, VideoCamera} from "@element-plus/icons-vue";
+import useCallStore from '@/store/call.ts'
+import useUserStore from '@/store/user.ts'
+import useChatStore from '@/store/chat.ts'
 
 const friends = ref<any[]>([])
 const friendInfo = ref<any>(null)
+const callStore = useCallStore()
+const userStore = useUserStore()
+const chatStore = useChatStore()
+const router = useRouter()
 
 /** 获取好友列表 */
 const fetchFriends = async () => {
@@ -22,6 +30,48 @@ const getInfo = async (uId: string) => {
 
   if (response.code === 200) {
     friendInfo.value = response.data
+  }
+}
+
+/** 发起语音通话 */
+const handleAudioCall = () => {
+  if (!friendInfo.value) return
+  callStore.startCall({
+    uid: String(friendInfo.value.uid ?? friendInfo.value.friendId),
+    nickname: friendInfo.value.nickname || '',
+    avatar: friendInfo.value.avatar || '',
+  }, 1)
+}
+
+/** 发起视频通话 */
+const handleVideoCall = () => {
+  if (!friendInfo.value) return
+  callStore.startCall({
+    uid: String(friendInfo.value.uid ?? friendInfo.value.friendId),
+    nickname: friendInfo.value.nickname || '',
+    avatar: friendInfo.value.avatar || '',
+  }, 2)
+}
+
+/** 向好友发送消息：选中该会话并跳转到聊天界面 */
+const handleSendMessage = () => {
+  if (!friendInfo.value) return
+
+  const uid = String(friendInfo.value.uid ?? friendInfo.value.friendId)
+  const nickname = friendInfo.value.nickname || uid
+  const avatar = friendInfo.value.avatar || ''
+
+  // 确保会话出现在左侧消息列表
+  chatStore.addContact(uid, nickname, avatar)
+
+  // 设置当前会话并跳转到聊天页（chat 页据 currentChannel 渲染 ChatWindow）
+  userStore.currentChannel = { channelId: uid, type: 1 }
+  router.push('/chat')
+
+  // 选中该会话，加载历史消息
+  const contact = chatStore.contacts.find((c) => c.uid === uid && c.channelType === 1)
+  if (contact) {
+    chatStore.selectContact(contact)
   }
 }
 
@@ -60,15 +110,15 @@ onMounted(() => {
         </div>
 
         <div class="user-chat">
-          <div class="user-chat-item">
+          <div class="user-chat-item" @click="handleSendMessage">
             <el-icon><ChatRound /></el-icon>
             <span>发消息</span>
           </div>
-          <div class="user-chat-item">
+          <div class="user-chat-item" @click="handleAudioCall">
             <el-icon><Phone /></el-icon>
-            <span>语言聊天</span>
+            <span>语音聊天</span>
           </div>
-          <div class="user-chat-item">
+          <div class="user-chat-item" @click="handleVideoCall">
             <el-icon><VideoCamera /></el-icon>
             <span>视频聊天</span>
           </div>

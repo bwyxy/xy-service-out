@@ -7,7 +7,11 @@ defineProps<{
 
 <template>
   <div class="info-card">
-    <img :src="head" alt="head" />
+    <el-image class="info-card-avatar" :src="head">
+      <template #error>
+        <img src="@/assets/images/logo.jpg" alt="head" />
+      </template>
+    </el-image>
     <span>{{ nickname }}</span>
   </div>
 </template>
@@ -18,6 +22,12 @@ defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .info-card-avatar {
+    width: size(42);
+    height: size(42);
+    border-radius: size(6);
+  }
   img {
     width: size(42);
     height: size(42);

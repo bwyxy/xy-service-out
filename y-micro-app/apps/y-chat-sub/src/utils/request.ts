@@ -22,6 +22,11 @@ const request = createAxios({
                 ElMessage.error(data.msg)
             }
 
+            if (data.code === 401) {
+                ElMessage.error('登录过期，请重新登录')
+                window.location.href = '/'
+            }
+
             return data
         }
     }

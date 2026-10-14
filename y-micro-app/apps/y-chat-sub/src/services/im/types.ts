@@ -54,8 +54,8 @@ export interface WukongIMMessage {
   channelId: string
   /** 频道类型 */
   channelType: number
-  /** Base64 编码的消息负载，或直接是 JSON 字符串 */
-  payload: string
+  /** 消息负载：后端为 Base64 字符串，easyjssdk 派发时已解码为对象 */
+  payload: any
   /** 消息时间戳 */
   timestamp: number
 }
