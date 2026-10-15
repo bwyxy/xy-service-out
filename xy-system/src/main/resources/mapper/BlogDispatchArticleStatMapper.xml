@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.system.mapper.blog.BlogDispatchArticleStatMapper">
+
+    <select id="selectStatPage" resultType="com.xy.common.entity.blog.BlogDispatchArticleStat">
+        select s.*, t.article_title as articleTitle
+        from blog_dispatch_article_stat s
+        left join blog_dispatch_task t on t.id = s.task_id
+        <where>
+            <if test="query.platformCode != null and query.platformCode != ''">
+                and s.platform_code = #{query.platformCode}
+            </if>
+            <if test="query.articleId != null">
+                and s.article_id = #{query.articleId}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                and t.article_title like concat('%', #{query.keyword}, '%')
+            </if>
+        </where>
+        order by s.stat_time desc, s.id desc
+    </select>
+
+    <select id="selectPlatformSummary" resultType="com.xy.common.vo.blog.DispatchStatSummaryVO">
+        select s.platform_code as platformCode,
+               p.platform_name as platformName,
+               count(distinct s.article_id) as articleCount,
+               coalesce(sum(s.view_count), 0) as viewCount,
+               coalesce(sum(s.like_count), 0) as likeCount,
+               coalesce(sum(s.comment_count), 0) as commentCount,
+               coalesce(sum(s.collect_count), 0) as collectCount,
+               max(s.stat_time) as lastStatTime
+        from blog_dispatch_article_stat s
+        left join blog_dispatch_platform p on p.platform_code = s.platform_code
+        <where>
+            <if test="platformCode != null and platformCode != ''">
+                and s.platform_code = #{platformCode}
+            </if>
+        </where>
+        group by s.platform_code, p.platform_name
+        order by articleCount desc
+    </select>
+</mapper>

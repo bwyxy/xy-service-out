@@ -1,10 +1,13 @@
 <script setup lang="ts">
 
-import { ChatDotRound, UserFilled} from "@element-plus/icons-vue";
-import {reactive, computed} from "vue";
+import { ChatDotRound, UserFilled, Bell} from "@element-plus/icons-vue";
+import {reactive, computed, onMounted, onUnmounted, ref} from "vue";
 import { useRoute, useRouter } from 'vue-router'
 import UserInfo from '@/layout/UserInfo/UserInfo.vue'
 import MoreMenu from "@/layout/MoreMenu/MoreMenu.vue";
+import {storeToRefs} from "pinia";
+import useNotificationStore from "@/store/notification.ts";
+import NotificationCenter from "@/layout/Header/NotificationCenter.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -19,6 +22,12 @@ const navs = reactive([
     icon: UserFilled,
     name: '好友'
   },
+  {
+    type: 'message',
+    path: '',
+    icon: Bell,
+    name: '通知'
+  },
   // {
   //   path: '/forum',
   //   icon: Orange,
@@ -26,12 +35,39 @@ const navs = reactive([
   // }
 ])
 
+const notificationStore = useNotificationStore()
+const { unreadCount } = storeToRefs(notificationStore)
+
+const notificationVisible = ref(false)
+
+let timer: ReturnType<typeof setInterval> | null = null
 const routePath = computed(() => {
   return route.path
 })
 
+const onNotificationRefresh = () => {
+  notificationStore.fetchUnreadCount()
+}
+
+onMounted(() => {
+  notificationStore.fetchUnreadCount()
+  // 每 60 秒同步一次后端未读数
+  timer = setInterval(() => {
+    notificationStore.fetchUnreadCount()
+  }, 60000)
+})
+
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer)
+  }
+})
+
 const toPage = (url: string) => {
-  if (!url) return
+  if (!url) {
+    notificationVisible.value = true
+    return
+  }
 
   router.push(url)
 }
@@ -55,10 +91,15 @@ const toPage = (url: string) => {
           <component :is="item.icon" />
         </el-icon>
         <span class="nav-item-name">{{ item.name }}</span>
+        <div v-if="item.type && item.type === 'message' && unreadCount" class="nav-item-unrend">
+          <span>{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+        </div>
       </div>
     </div>
 
     <MoreMenu />
+
+    <notification-center v-model:visible="notificationVisible" @refresh="onNotificationRefresh" />
   </div>
 </template>
 
@@ -92,11 +133,30 @@ const toPage = (url: string) => {
     border-radius: size(6);
     cursor: pointer;
     @include flexCenter;
+    position: relative;
     &__active {
       background: #fff !important;
       color: $theme-color;
       box-shadow: rgba(50, 50, 93, 0.15) 0 2px 5px -1px,
       rgba(0, 0, 0, 0.2) 0 1px 3px -1px;
+    }
+    .nav-item-unrend {
+      min-width: size(12);
+      min-height: size(12);
+      background: #f00e00;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: size(2);
+      position: absolute;
+      right: 0;
+      top: 0;
+      span {
+        font-size: size(10);
+        color: #fff;
+        line-height: 0;
+      }
     }
     &:hover {
       background: rgba(0, 0, 0, .1);

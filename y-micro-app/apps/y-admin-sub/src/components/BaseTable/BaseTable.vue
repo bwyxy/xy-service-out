@@ -10,10 +10,13 @@ const props = defineProps<{
   columns?: Array<ColumnType>,
   api?: (data :any) => Promise<any>,
   list?: Array<any>,
+  selectable?: boolean,
 }>()
 const { columns, list } = toRefs(props)
 
 const tableData = ref<Array<any>>([])
+/** 多选选中的行 */
+const selection = ref<Array<any>>([])
 /** 表单查询 */
 const ruleForm = ref<any[]>([])
 const isLoading = ref<boolean>(false)
@@ -82,7 +85,17 @@ const resetData = () => {
   getTableData()
 }
 
-defineExpose({ getTableData })
+/** 多选变化 */
+const handleSelectionChange = (rows: Array<any>) => {
+  selection.value = rows
+}
+
+/** 获取选中行 */
+const getSelection = () => {
+  return selection.value
+}
+
+defineExpose({ getTableData, getSelection })
 
 watch(() => columns.value, () => {
   formToParams()
@@ -145,7 +158,9 @@ watch(() => list.value, () => {
         v-loading="isLoading"
         :data="tableData"
         class="search-table-main"
+        @selection-change="handleSelectionChange"
     >
+      <el-table-column v-if="selectable" type="selection" width="50" align="center" />
       <el-table-column v-if="isChildren" type="expand">
         <template #default="{row}">
           <el-table :data="row.children">

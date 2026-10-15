@@ -1,87 +1,20 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
-import { Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
-import useUserStore from '@/store/user.ts'
-import useNotificationStore from '@/store/notification.ts'
-import { logout } from '@/api/auth.ts'
-import NotificationCenter from './NotificationCenter.vue'
 import WindowControls from '@/components/WindowControls/index.vue'
 import { isMacOS, isTauri } from '@/utils/tauri.ts'
 
 // macOS 使用系统原生红绿灯（叠加在窗口左上角），头部左侧需为其预留空间
 const isMac = isTauri() && isMacOS()
 
-const userStore = useUserStore()
-const notificationStore = useNotificationStore()
-const { unreadCount } = storeToRefs(notificationStore)
-const router = useRouter()
 const visible = isTauri() && !isMacOS()
-
-const notificationVisible = ref(false)
-
-let timer: ReturnType<typeof setInterval> | null = null
-
-const openNotification = () => {
-  notificationVisible.value = true
-}
-
-const onNotificationRefresh = () => {
-  notificationStore.fetchUnreadCount()
-}
-
-const handleLogout = () => {
-  // 先通知服务端结束会话（token 立即失效），再清理本地状态；
-  // 服务端标记失败不阻断本地退出流程
-  logout().catch(() => {})
-  userStore.outLogin()
-  notificationStore.reset()
-  // 网页端需主动跳转登录页；桌面端由 Rust 隐藏主窗口并弹出登录小窗口
-  if (!isTauri()) {
-    router.push('/login')
-  }
-}
-
-onMounted(() => {
-  notificationStore.fetchUnreadCount()
-  // 每 60 秒同步一次后端未读数
-  timer = setInterval(() => {
-    notificationStore.fetchUnreadCount()
-  }, 60000)
-})
-
-onUnmounted(() => {
-  if (timer) {
-    clearInterval(timer)
-  }
-})
 </script>
 
 <template>
   <div v-if="visible || isMac" class="chat-header" :class="{ 'chat-header--mac': isMac }" data-tauri-drag-region>
 
     <div class="chat-header-rt" data-tauri-drag-region>
-<!--      <div class="msg-btn" @click="openNotification">-->
-<!--        <el-badge :value="unreadCount" :hidden="unreadCount <= 0" class="notice-badge">-->
-<!--          <el-icon><Bell /></el-icon>-->
-<!--        </el-badge>-->
-<!--        <span>消息通知</span>-->
-<!--      </div>-->
-
-<!--      <div class="setting-btn">-->
-<!--        <el-icon><Setting /></el-icon>-->
-<!--      </div>-->
-
-<!--      <div class="msg-btn" @click="handleLogout">-->
-<!--        <el-icon><SwitchButton /></el-icon>-->
-<!--        <span>退出登录</span>-->
-<!--      </div>-->
 
       <window-controls />
     </div>
-
-    <notification-center v-model:visible="notificationVisible" @refresh="onNotificationRefresh" />
   </div>
 </template>
 

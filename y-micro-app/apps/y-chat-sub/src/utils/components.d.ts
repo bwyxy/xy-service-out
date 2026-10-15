@@ -14,7 +14,6 @@ declare module 'vue' {
     AddGroup: typeof import('./../components/AddGroup/AddGroup.vue')['default']
     CallOverlay: typeof import('./../components/CallOverlay/index.vue')['default']
     ChannelNull: typeof import('./../components/ChannelNull/ChannelNull.vue')['default']
-    ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElDialog: typeof import('element-plus/es')['ElDialog']

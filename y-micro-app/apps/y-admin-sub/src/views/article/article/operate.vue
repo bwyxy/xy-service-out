@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted, onBeforeUnmount } from 'vue'
+import { reactive, ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticleInfo, addArticle, updateArticle } from '@/api/blog/article'
 import { getCategorys } from '@/api/blog/category'
 import { getTagList } from '@/api/blog/tag'
+import DispatchDialog from '@/components/DispatchDialog/index.vue'
 // @ts-ignore
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { ElMessage } from 'element-plus'
+import { Promotion } from '@element-plus/icons-vue'
 import '@wangeditor/editor/dist/css/style.css'
 
 const route = useRoute()
@@ -19,6 +21,10 @@ const formRef = ref()
 const submitLoading = ref(false)
 const categoryOptions = ref<any[]>([])
 const tagOptions = ref<any[]>([])
+
+/** 分发弹窗 */
+const dispatchVisible = ref(false)
+const dispatchArticleIds = computed<number[]>(() => (form.articleId ? [Number(form.articleId)] : []))
 
 const form = reactive<any>({
   articleId: undefined,
@@ -137,6 +143,15 @@ const goBack = () => {
   router.back()
 }
 
+/** 打开发布到第三方平台的弹窗 */
+const handleDispatch = () => {
+  if (!form.articleId) {
+    ElMessage.warning('请先保存文章，再分发到第三方平台')
+    return
+  }
+  dispatchVisible.value = true
+}
+
 onMounted(() => {
   loadCategories()
   loadTags()
@@ -202,8 +217,15 @@ onMounted(() => {
       <el-form-item>
         <el-button type="primary" :loading="submitLoading" @click="submitForm">保存</el-button>
         <el-button @click="goBack">取消</el-button>
+        <el-button :icon="Promotion" plain type="success" @click="handleDispatch">分发到第三方平台</el-button>
       </el-form-item>
     </el-form>
+
+    <dispatch-dialog
+      v-model="dispatchVisible"
+      :article-ids="dispatchArticleIds"
+      @success="dispatchVisible = false"
+    />
   </div>
 </template>
 

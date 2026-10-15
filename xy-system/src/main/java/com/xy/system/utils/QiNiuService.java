@@ -31,6 +31,17 @@ public class QiNiuService {
     }
 
     public String upload(MultipartFile file) throws IOException {
+        return upload(file.getBytes(), file.getOriginalFilename(), file.getContentType(), file.getSize());
+    }
+
+    /**
+     * 按字节上传，供分发模块迁移外链图片时复用
+     * */
+    public String upload(byte[] bytes, String originalFilename, String contentType) {
+        return upload(bytes, originalFilename, contentType, bytes == null ? 0L : bytes.length);
+    }
+
+    private String upload(byte[] bytes, String originalFilename, String contentType, long fileSize) {
         Configuration cfg = new Configuration(Region.region2());
 
         UploadManager uploadManager = new UploadManager(cfg);
@@ -39,10 +50,10 @@ public class QiNiuService {
 
         String upToken = auth.uploadToken(qiNiuProperties.getBucket());
 
-        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String fileName = UUID.randomUUID() + "-" + originalFilename;
 
         try {
-            Response response = uploadManager.put(file.getBytes(), fileName, upToken);
+            Response response = uploadManager.put(bytes, fileName, upToken);
 
             DefaultPutRet putRet = Json.decode(response.bodyString(), DefaultPutRet.class);
 
@@ -52,8 +63,8 @@ public class QiNiuService {
             sysResource.setResourceName(fileName);
             sysResource.setResourceKey(putRet.key);
             sysResource.setResourceUrl(url);
-            sysResource.setFileSize(file.getSize());
-            sysResource.setFileType(file.getContentType());
+            sysResource.setFileSize(fileSize);
+            sysResource.setFileType(contentType);
             addResource(sysResource);
 
             return url;
