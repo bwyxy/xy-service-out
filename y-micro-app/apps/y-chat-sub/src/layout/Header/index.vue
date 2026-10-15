@@ -6,7 +6,6 @@ import { Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
 import useUserStore from '@/store/user.ts'
 import useNotificationStore from '@/store/notification.ts'
 import { logout } from '@/api/auth.ts'
-import UserInfo from './UserInfo/UserInfo.vue'
 import NotificationCenter from './NotificationCenter.vue'
 import WindowControls from '@/components/WindowControls/index.vue'
 import { isMacOS, isTauri } from '@/utils/tauri.ts'
@@ -18,6 +17,7 @@ const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 const { unreadCount } = storeToRefs(notificationStore)
 const router = useRouter()
+const visible = isTauri() && !isMacOS()
 
 const notificationVisible = ref(false)
 
@@ -59,25 +59,24 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="chat-header" :class="{ 'chat-header--mac': isMac }" data-tauri-drag-region>
-    <user-info />
+  <div v-if="visible || isMac" class="chat-header" :class="{ 'chat-header--mac': isMac }" data-tauri-drag-region>
 
     <div class="chat-header-rt" data-tauri-drag-region>
-      <div class="msg-btn" @click="openNotification">
-        <el-badge :value="unreadCount" :hidden="unreadCount <= 0" class="notice-badge">
-          <el-icon><Bell /></el-icon>
-        </el-badge>
-        <span>消息通知</span>
-      </div>
+<!--      <div class="msg-btn" @click="openNotification">-->
+<!--        <el-badge :value="unreadCount" :hidden="unreadCount <= 0" class="notice-badge">-->
+<!--          <el-icon><Bell /></el-icon>-->
+<!--        </el-badge>-->
+<!--        <span>消息通知</span>-->
+<!--      </div>-->
 
-      <div class="setting-btn">
-        <el-icon><Setting /></el-icon>
-      </div>
+<!--      <div class="setting-btn">-->
+<!--        <el-icon><Setting /></el-icon>-->
+<!--      </div>-->
 
-      <div class="msg-btn" @click="handleLogout">
-        <el-icon><SwitchButton /></el-icon>
-        <span>退出登录</span>
-      </div>
+<!--      <div class="msg-btn" @click="handleLogout">-->
+<!--        <el-icon><SwitchButton /></el-icon>-->
+<!--        <span>退出登录</span>-->
+<!--      </div>-->
 
       <window-controls />
     </div>
@@ -88,7 +87,8 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .chat-header {
-  height: size(52);
+  height: size(32);
+  background: #f6ffed;
   box-sizing: border-box;
   padding: 0 size(12) 0 size(24);
   display: flex;
@@ -96,7 +96,16 @@ onUnmounted(() => {
 
   // macOS：为左上角系统红绿灯预留空间
   &--mac {
+    width: 100%;
     padding-left: size(78);
+    height: size(16);
+    background: none;
+    cursor: pointer;
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+
   }
 
   &-rt {

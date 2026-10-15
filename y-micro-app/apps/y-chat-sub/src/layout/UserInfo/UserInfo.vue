@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import useUserStore from '@/store/user.ts'
-import {ArrowDown, ArrowRight, UserFilled} from "@element-plus/icons-vue";
+import { ArrowRight, UserFilled} from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -13,15 +13,13 @@ const toPage = (url: string) => {
 </script>
 
 <template>
-  <el-popover popper-class="user-popover" :teleported="false" trigger="click">
+  <el-popover popper-class="user-popover" placement="right-end" :teleported="false" trigger="click">
     <template #reference>
       <div class="user-info">
         <div class="user-info-avatar">
           <img v-if="userInfo.avatar" :src="userInfo.avatar" alt="avatar" />
           <img v-else src="@/assets/images/logo.jpg" alt="avatar" />
         </div>
-        <span>{{ userInfo.nickname || '未登录' }}</span>
-        <el-icon><ArrowDown /></el-icon>
       </div>
     </template>
     <div class="info-box">
@@ -55,6 +53,7 @@ const toPage = (url: string) => {
 <style scoped lang="scss">
 .user-info {
   display: flex;
+  flex-direction: column;
   align-items: center;
   cursor: pointer;
   span {
@@ -66,8 +65,9 @@ const toPage = (url: string) => {
 }
 
 .user-info-avatar {
-  width: size(28);
-  height: size(28);
+  width: size(48);
+  height: size(48);
+  margin: 8px 0 16px;
   img {
     width: 100%;
     height: 100%;

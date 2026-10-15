@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
-import {Menu, ChatDotRound, UserFilled} from "@element-plus/icons-vue";
+import { ChatDotRound, UserFilled} from "@element-plus/icons-vue";
 import {reactive, computed} from "vue";
 import { useRoute, useRouter } from 'vue-router'
+import UserInfo from '@/layout/UserInfo/UserInfo.vue'
+import MoreMenu from "@/layout/MoreMenu/MoreMenu.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -37,6 +39,8 @@ const toPage = (url: string) => {
 
 <template>
   <div class="layout-nav">
+    <user-info />
+
     <div class="layout-nav-content">
       <div
           v-for="(item, index) in navs"
@@ -54,11 +58,7 @@ const toPage = (url: string) => {
       </div>
     </div>
 
-    <div class="layout-nav-btm">
-      <div class="nav-item">
-        <el-icon><Menu /></el-icon>
-      </div>
-    </div>
+    <MoreMenu />
   </div>
 </template>
 
@@ -66,7 +66,7 @@ const toPage = (url: string) => {
 .layout-nav {
   width: size(84);
   height: 100%;
-  background: $theme-color;
+  background: #f6ffed;
   box-sizing: border-box;
   padding: size(24) 0;
   display: flex;
@@ -87,7 +87,7 @@ const toPage = (url: string) => {
   .nav-item {
     width: size(54);
     height: size(54);
-    color: #fff;
+    color: #8c8c8c;
     font-size: size(28);
     border-radius: size(6);
     cursor: pointer;

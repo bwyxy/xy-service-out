@@ -3,12 +3,12 @@ import { onMounted } from 'vue'
 import useUserStore from '@/store/user.ts'
 import useChatStore from "@/store/chat.ts";
 import { wukongIMService } from '@/services/im'
-import LayoutHeader from './Header/index.vue'
 import AppMain from './AppMain.vue'
 import LayoutNav from './nav/index.vue'
 import CallOverlay from '@/components/CallOverlay/index.vue'
 import IncomingCallDialog from '@/components/IncomingCallDialog/index.vue'
 import ForceLogoutDialog from '@/components/ForceLogoutDialog/index.vue'
+import LayoutHeader from '@/layout/Header/index.vue'
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
