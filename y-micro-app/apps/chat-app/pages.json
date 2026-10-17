@@ -1,0 +1,119 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/community/index",
+			"style": {
+				"navigationBarTitleText": "社区",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/community/detail",
+			"style": {
+				"navigationBarTitleText": "帖子详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/community/publish",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/contact/index",
+			"style": {
+				"navigationBarTitleText": "联系人",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/dynamic/index",
+			"style": {
+				"navigationBarTitleText": "动态",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/chat/index",
+			"style": {
+				"navigationBarTitleText": "聊天",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/user/index",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"animationType": "slide-in-left"
+				}
+			}
+		},
+		{
+			"path": "pages/notice/index",
+			"style": {
+				"navigationBarTitleText": "通知",
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"tabBar": {
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/community/index",
+				"text": "社区"
+			},
+			{
+				"pagePath": "pages/contact/index",
+				"text": "联系人"
+			},
+			{
+				"pagePath": "pages/dynamic/index",
+				"text": "动态"
+			}
+		]
+	},
+	"globalStyle": {
+		// #ifdef H5
+		"maxWidth": 750,
+		"rpxCalcMaxDeviceWidth": 750,
+		"rpxCalcBaseDeviceWidth": 560,
+		"rpxCalcIncludeWidth": 9999,
+		// #endif
+		"navigationBarBackgroundColor": "#ffffff",
+		"navigationBarTitleText": "",
+		"navigationBarTextStyle": "black",
+		"backgroundTextStyle": "dark",
+		"app-plus": {
+			"scrollIndicator": "none" //全局 在APP页面都不显示滚动条
+		}
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^wd-(.*)": "uni_modules/wot-design-uni/components/wd-$1/wd-$1.vue"
+		}
+	}
+}
