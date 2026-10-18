@@ -20,3 +20,13 @@ export const findGroupInfo = (id :string) => {
         method: 'get'
     })
 }
+
+/**
+ * 查询群成员
+ * */
+export const findGroupMembers = (id :string) => {
+    return request({
+        url: `/group/${id}/members`,
+        method: 'get'
+    })
+}

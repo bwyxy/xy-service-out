@@ -5,7 +5,7 @@ import useChatStore from '@/store/chat.ts'
 import useCallStore from '@/store/call.ts'
 import { MessageType } from '@/services/im/constants'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
-import { findGroupInfo } from '@/api/group.ts'
+import { findGroupInfo, findGroupMembers } from '@/api/group.ts'
 import RichInput from './RichInput.vue'
 import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 import MessageBox from "@/components/MessageBox/MessageBox.vue";
@@ -19,6 +19,8 @@ const isShowChatInfo = ref<boolean>(false)
 const messageListRef = ref<HTMLDivElement | null>(null)
 const channelInfo = ref<{ nickname?: string; avatar?: string, id?: string }>({})
 const richInputRef = ref<InstanceType<typeof RichInput> | null>(null)
+// 群成员
+const groupMembers = ref<GroupMember[]>([])
 
 /** 当前会话的消息列表 */
 const currentMessages = computed(() => {
@@ -64,6 +66,7 @@ const loadChannelInfo = async () => {
   } else if (activeContact.value.channelType === 2) {
     console.log('群聊ID', activeContact.value.uid)
     await getGroupInfo(activeContact.value.uid)
+    await getGroupMembers(activeContact.value.uid)
   } else {
     channelInfo.value = { nickname: activeContact.value.name }
   }
@@ -75,6 +78,15 @@ const getGroupInfo = async (channelId: string) => {
 
   if (result.code === 200) {
     channelInfo.value = result.data || {}
+  }
+}
+
+/** 查询群成员 */
+const getGroupMembers = async (channelId: string) => {
+  const result = await findGroupMembers(channelId)
+
+  if (result.code === 200) {
+    groupMembers.value = result.data
   }
 }
 
@@ -197,6 +209,7 @@ onMounted(() => {
                 :item="msg"
                 :channelId="activeContact ? activeContact.uid : ''"
                 :avatar="activeContact ? activeContact.avatar : ''"
+                :members="groupMembers"
             />
           </div>
 

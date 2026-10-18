@@ -77,3 +77,21 @@ interface PageResult<T> {
 
     list: T
 }
+
+interface GroupMember {
+    id: number
+
+    uid: number
+
+    nickname: string
+
+    avatar: string
+
+    sex: string
+
+    role: number
+
+    status: number
+
+    groupNickname: string
+}

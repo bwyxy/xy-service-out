@@ -3,6 +3,7 @@ package com.chat.fg.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chat.fg.mapper.GroupMemberMapper;
+import com.chat.fg.pojo.vo.GroupMemberVO;
 import com.chat.fg.service.IGroupMemberService;
 import com.xy.common.entity.chat.GroupMember;
 import com.xy.common.exception.ServiceException;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 群组成员 逻辑层
@@ -33,6 +36,22 @@ public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, Group
                 .eq(GroupMember::getUId, uId);
 
         return this.getOne(queryWrapper);
+    }
+
+    /**
+     * 根据群聊 ID查询成员信息
+     * */
+    @Override
+    public List<GroupMemberVO> selectGroupMemberByGroupId(String groupId) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(groupId);
+
+        if (matcher.find()) {
+            Long id = Long.valueOf(matcher.group());
+
+            return baseMapper.selectGroupMemberByGroupId(id);
+        }
+        throw new ServiceException("无效群聊 ID");
     }
 
     /**

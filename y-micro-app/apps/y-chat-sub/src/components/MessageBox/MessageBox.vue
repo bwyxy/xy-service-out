@@ -4,6 +4,7 @@ import useUserStore from "@/store/user.ts";
 import type {Message} from "@/store/chat.ts";
 import { MessageType } from '@/services/im/constants'
 import {toRefs} from "vue";
+import {Warning} from "@element-plus/icons-vue";
 
 const { userInfo } = storeToRefs(useUserStore())
 
@@ -11,8 +12,38 @@ const props = defineProps<{
   item: Message,
   avatar?: string
   channelId?: string
+  members?: GroupMember[]
 }>()
-const { item } = toRefs(props)
+const { item, avatar, members } = toRefs(props)
+
+const user = () :{name: string, avatar: string} => {
+  if (!item.value || !members.value) {
+    return {
+      name: '',
+      avatar: ''
+    }
+  }
+  if (item.value.channelType === 1) {
+    return {
+      avatar: avatar.value || '',
+      name: ''
+    }
+  }
+
+  const info = members.value.find(member => String(member.uid) === item.value.fromUid)
+
+  if (!info) {
+    return {
+      name: '',
+      avatar: ''
+    }
+  }
+
+  return {
+    name: info.groupNickname || info.nickname,
+    avatar: info.avatar
+  }
+}
 </script>
 
 <template>
@@ -37,7 +68,7 @@ const { item } = toRefs(props)
       </div>
       <!-- 对方 -->
       <div v-if="!item.isSelf" class="me-user">
-        <img v-if="avatar" class="user-head" :src="avatar" alt="avatar" />
+        <img v-if="user().avatar" class="user-head" :src="user().avatar" alt="avatar" />
         <img v-else class="user-head" src="@/assets/images/logo.jpg" alt="avatar" />
       </div>
       <!--  消息  -->
@@ -50,8 +81,11 @@ const { item } = toRefs(props)
               :preview-src-list="[item.content]"
           />
         </div>
-        <div v-else class="message-bubble">
-          <div class="message-content" v-html="item.content"></div>
+        <div v-else>
+          <div v-if="!item.isSelf" class="user-name">{{ user().name }}</div>
+          <div class="message-bubble">
+            <div class="message-content" v-html="item.content"></div>
+          </div>
         </div>
       </div>
       <!-- 发送失败 -->
@@ -103,6 +137,14 @@ const { item } = toRefs(props)
       color: #999;
       background: #f2f2f2;
     }
+  }
+
+  .user-name {
+    font-size: size(10);
+    letter-spacing: 1px;
+    color: #8c8c8c;
+    margin-bottom: size(4);
+    margin-left: size(8);
   }
 
   &_self {

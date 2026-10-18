@@ -2,11 +2,15 @@ package com.chat.fg.controller;
 
 import com.chat.fg.pojo.dto.CreateGroupDTO;
 import com.chat.fg.pojo.dto.EditGroupDTO;
+import com.chat.fg.pojo.vo.GroupMemberVO;
+import com.chat.fg.service.IGroupMemberService;
 import com.chat.fg.service.IGroupService;
 import com.xy.common.core.domain.R;
 import com.xy.common.entity.chat.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 群聊 控制层
@@ -17,6 +21,9 @@ public class GroupController {
 
     @Autowired
     private IGroupService groupService;
+
+    @Autowired
+    private IGroupMemberService groupMemberService;
 
     /**
      * 查询群聊信息
@@ -37,6 +44,16 @@ public class GroupController {
         groupService.createGroup(createGroupDTO);
 
         return R.ok("添加群聊成功");
+    }
+
+    /**
+     * 查询群成员信息
+     * */
+    @GetMapping("/{groupId}/members")
+    public R<List<GroupMemberVO>> selectGroupMemberByGroupId(@PathVariable String groupId) {
+        List<GroupMemberVO> members = groupMemberService.selectGroupMemberByGroupId(groupId);
+
+        return R.ok(members);
     }
 
     /**
