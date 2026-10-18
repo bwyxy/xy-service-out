@@ -135,18 +135,14 @@ onMounted(() => {
       @click="handleSelectChannel(item)"
     >
       <div class="avatar-wrap">
-        <img
-          v-if="item.avatar"
-          class="avatar-box"
-          :src="item.avatar"
-          alt="avatar"
-        />
-        <img
-          v-else
-          class="avatar-box"
-          src="@/assets/images/logo.jpg"
-          alt="avatar"
-        />
+        <el-image class="avatar-box" :src="item.avatar">
+          <template #error>
+            <div>
+              <img v-if="item.channelType === 1" class="avatar-box" src="@/assets/images/logo.jpg" alt="avatar" />
+              <img v-else class="avatar-box" src="@/assets/images/default_group_avatar.png" alt="avatar" />
+            </div>
+          </template>
+        </el-image>
       </div>
       <div class="msg-content">
         <div class="msg-title">

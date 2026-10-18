@@ -12,7 +12,7 @@ public interface IGroupService {
     /**
      * 查询群聊信息
      * */
-    Group findById(Long id);
+    Group findById(String id);
 
     /**
      * 创建群聊

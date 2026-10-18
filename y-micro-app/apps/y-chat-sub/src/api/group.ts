@@ -10,3 +10,13 @@ export const createGroup = (data :any) => {
         data
     })
 }
+
+/**
+ * 查询群聊信息
+ * */
+export const findGroupInfo = (id :string) => {
+    return request({
+        url: `/group/${id}`,
+        method: 'get'
+    })
+}

@@ -22,7 +22,7 @@ public class GroupController {
      * 查询群聊信息
      * */
     @GetMapping("/{id}")
-    public R<Group> selectById(@PathVariable Long id) {
+    public R<Group> selectById(@PathVariable String id) {
         Group group = groupService.findById(id);
 
         return R.ok(group);

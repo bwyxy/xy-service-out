@@ -1,6 +1,7 @@
 package com.chat.fg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xy.common.constant.Constants;
 import com.xy.common.entity.SysImUser;
 import com.xy.common.enums.OfficialAccount;
 import com.xy.system.mapper.SysImUserMapper;
@@ -16,13 +17,17 @@ import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.User;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ConversationServiceImpl implements IConversationService {
 
@@ -77,6 +82,7 @@ public class ConversationServiceImpl implements IConversationService {
         Map<Long, User> userMap = queryUsers(personalIds);
         Map<Long, Group> groupMap = queryGroups(groupIds);
         Map<String, SysImUser> systemUserMap = querySystemUsers(systemUids);
+        Pattern pattern = Pattern.compile("\\d+");
 
         List<UserConversationVO> result = new ArrayList<>();
 
@@ -123,8 +129,9 @@ public class ConversationServiceImpl implements IConversationService {
                     }
                 }
             } else if (conv.getChannelType() == 2) {
-                Long groupId = parseLongSafe(conv.getChannelId());
-                if (groupId != null) {
+                Matcher matcher = pattern.matcher(conv.getChannelId());
+                if (matcher.find()) {
+                    Long groupId = parseLongSafe(matcher.group());
                     Group group = groupMap.get(groupId);
                     if (group != null) {
                         vo.setName(group.getName());
@@ -229,7 +236,19 @@ public class ConversationServiceImpl implements IConversationService {
      * 批量查询群组
      * */
     private Map<Long, Group> queryGroups(List<String> gIds) {
-        List<Long> groupIds = parseLongUids(gIds);
+        List<String> ids = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\d+");
+
+        for (String gId : gIds) {
+            Matcher matcher = pattern.matcher(gId);
+
+            if (matcher.find()) {
+                ids.add(matcher.group());
+            }
+        }
+        log.warn("ids:{}", ids);
+
+        List<Long> groupIds = parseLongUids(ids);
 
         if (groupIds.isEmpty()) return new HashMap<>();
 

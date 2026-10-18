@@ -12,6 +12,7 @@ import com.chat.fg.wk.ChatMessage;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.Channel;
 import com.xy.common.constant.Constants;
+import com.xy.common.entity.SysImUser;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.chat.GroupMember;
 import com.xy.common.exception.ServiceException;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 群聊 逻辑层
@@ -42,15 +45,22 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
      * 查询群聊信息
      * */
     @Override
-    public Group findById(Long id) {
+    public Group findById(String id) {
         if (id == null) {
             throw new ServiceException("群聊Id不能为空");
         }
-        LambdaQueryWrapper<Group> queryWrapper = new LambdaQueryWrapper<>();
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(id);
 
-        queryWrapper.eq(Group::getGroupId, id);
+        if (matcher.find()) {
+            LambdaQueryWrapper<Group> queryWrapper = new LambdaQueryWrapper<>();
 
-        return this.getOne(queryWrapper);
+            queryWrapper.eq(Group::getGroupId, matcher.group());
+
+            return this.getOne(queryWrapper);
+        }
+
+        throw new ServiceException("无效群聊ID");
     }
 
     /**

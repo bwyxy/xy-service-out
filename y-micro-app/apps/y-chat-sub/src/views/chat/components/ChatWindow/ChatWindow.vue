@@ -5,6 +5,7 @@ import useChatStore from '@/store/chat.ts'
 import useCallStore from '@/store/call.ts'
 import { MessageType } from '@/services/im/constants'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
+import { findGroupInfo } from '@/api/group.ts'
 import RichInput from './RichInput.vue'
 import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 import MessageBox from "@/components/MessageBox/MessageBox.vue";
@@ -16,7 +17,7 @@ const { activeContact, messages } = storeToRefs(chatStore)
 const sending = ref(false)
 const isShowChatInfo = ref<boolean>(false)
 const messageListRef = ref<HTMLDivElement | null>(null)
-const channelInfo = ref<{ nickname?: string; avatar?: string }>({})
+const channelInfo = ref<{ nickname?: string; avatar?: string, id?: string }>({})
 const richInputRef = ref<InstanceType<typeof RichInput> | null>(null)
 
 /** 当前会话的消息列表 */
@@ -60,8 +61,20 @@ const loadChannelInfo = async () => {
     } else {
       channelInfo.value = { nickname: activeContact.value.name }
     }
+  } else if (activeContact.value.channelType === 2) {
+    console.log('群聊ID', activeContact.value.uid)
+    await getGroupInfo(activeContact.value.uid)
   } else {
     channelInfo.value = { nickname: activeContact.value.name }
+  }
+}
+
+/** 查询群聊信息 */
+const getGroupInfo = async (channelId: string) => {
+  const result = await findGroupInfo(channelId)
+
+  if (result.code === 200) {
+    channelInfo.value = result.data || {}
   }
 }
 
@@ -154,7 +167,7 @@ onMounted(() => {
       />
       <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
       <div class="chat-window-header-rt">
-        <el-dropdown v-if="!isSystemUser">
+        <el-dropdown v-if="!isSystemUser && (activeContact && activeContact.channelType === 1)">
           <div class="chat-rt-icon" title="视频/语音">
             <img src="@/assets/images/video_audio_icon.png" alt="icon" />
           </div>
@@ -182,6 +195,7 @@ onMounted(() => {
           >
             <message-box
                 :item="msg"
+                :channelId="activeContact ? activeContact.uid : ''"
                 :avatar="activeContact ? activeContact.avatar : ''"
             />
           </div>

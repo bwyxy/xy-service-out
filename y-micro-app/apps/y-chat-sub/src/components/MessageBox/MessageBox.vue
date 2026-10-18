@@ -3,19 +3,16 @@ import { storeToRefs } from 'pinia'
 import useUserStore from "@/store/user.ts";
 import type {Message} from "@/store/chat.ts";
 import { MessageType } from '@/services/im/constants'
-import {toRefs, watch} from "vue";
+import {toRefs} from "vue";
 
 const { userInfo } = storeToRefs(useUserStore())
 
 const props = defineProps<{
   item: Message,
   avatar?: string
+  channelId?: string
 }>()
 const { item } = toRefs(props)
-
-watch(() => item.value, () => {
-  console.log(item.value)
-}, {immediate: true})
 </script>
 
 <template>
@@ -26,6 +23,11 @@ watch(() => item.value, () => {
         <el-icon class="rtc-record-icon"><PhoneFilled /></el-icon>
         {{ item.content }}
       </span>
+    </template>
+    <template v-else-if="channelId === item.fromUid && item.channelType === 2">
+      <div class="channel-title">
+        <span>{{ item.content }}</span>
+      </div>
     </template>
     <template v-else>
       <!-- 自己 -->
@@ -82,6 +84,24 @@ watch(() => item.value, () => {
 
     .rtc-record-icon {
       font-size: size(13);
+    }
+  }
+
+  .channel-title {
+    width: 100%;
+    border-radius: size(4);
+    padding: size(3) size(10);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    span {
+      max-width: 60%;
+      display: inline-flex;
+      align-items: center;
+      gap: size(4);
+      font-size: size(12);
+      color: #999;
+      background: #f2f2f2;
     }
   }
 
