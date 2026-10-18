@@ -1,6 +1,5 @@
 package com.chat.fg.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,25 +8,20 @@ import com.chat.fg.pojo.dto.EditGroupDTO;
 import com.chat.fg.pojo.enums.GroupMemberRole;
 import com.chat.fg.service.IGroupService;
 import com.chat.fg.utils.SecurityUtils;
+import com.chat.fg.wk.ChatMessage;
 import com.xy.common.client.WuKongClient;
-import com.xy.common.client.dto.request.MessageSendRequest;
+import com.xy.common.client.dto.request.Channel;
 import com.xy.common.constant.Constants;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.chat.GroupMember;
-import com.xy.common.enums.ChannelType;
-import com.xy.common.enums.MessageType;
 import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 群聊 逻辑层
@@ -37,6 +31,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
 
     @Autowired
     private GroupMemberServiceImpl groupMemberService;
+
+    @Autowired
+    private ChatMessage chatMessage;
 
     @Autowired
     private WuKongClient wuKongClient;
@@ -82,7 +79,25 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
             // 添加群成员
             groupMemberService.batchGroupMember(groupId, createGroupDTO.getMemberIds());
 
-            sendNewMemberNotice(groupId, createGroupDTO.getRemark());
+            List<String> memberIds = new ArrayList<>();
+
+            memberIds.add(createGroupDTO.getUid().toString());
+            for (Long memberId : createGroupDTO.getMemberIds()) {
+                memberIds.add(memberId.toString());
+            }
+
+            // 添加群聊频道
+            Channel channel = new Channel();
+            channel.setChannelId(Constants.GROUP_ID_PREFIX + groupId);
+            channel.setSubscribers(memberIds);
+
+            wuKongClient.saveChannel(channel);
+            // 向频道发送消息
+            chatMessage.sendGroupMessage(
+                    groupId.toString(),
+                    memberIds,
+                    createGroupDTO.getRemark() + "加入群聊"
+            );
         } else {
             throw new ServiceException("创建群聊失败");
         }
@@ -166,33 +181,5 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         groupMember.setJoinedAt(now);
 
         groupMemberService.save(groupMember);
-    }
-
-    /**
-     * 发送新成员通知
-     * */
-    private void sendNewMemberNotice(Long groupId, String memberName) {
-        MessageSendRequest messageSendRequest = new MessageSendRequest();
-
-        messageSendRequest.setChannelId(Constants.GROUP_ID_PREFIX + groupId);
-        messageSendRequest.setChannelType(ChannelType.GROUP_CHANNEL.getCode());
-
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("type", MessageType.newMember.getCode());
-        map.put("content", memberName + "加入群聊");
-        String jsonStr = JSON.toJSONString(map);
-
-        String base64Payload = Base64.getEncoder().encodeToString(jsonStr.getBytes(StandardCharsets.UTF_8));
-
-        messageSendRequest.setPayload(base64Payload);
-
-        MessageSendRequest.MessageHeader messageHeader = new MessageSendRequest.MessageHeader();
-
-        messageHeader.setRedDot(1);
-
-        messageSendRequest.setHeader(messageHeader);
-
-        wuKongClient.sendMessage(messageSendRequest);
     }
 }

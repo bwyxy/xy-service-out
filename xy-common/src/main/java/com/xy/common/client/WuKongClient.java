@@ -82,4 +82,44 @@ public interface WuKongClient {
      * */
     @PostMapping("/user/systemuids_remove")
     ResultVO<?> removeSystemUids(@RequestBody List<String> systemUids);
+
+    /** 添加更新频道 */
+    @PostMapping("/channel")
+    ResultVO<?> saveChannel(@RequestBody Channel channel);
+
+    /** 删除频道 */
+    @PostMapping("/channel/delete")
+    ResultVO<?> deleteChannel(@RequestBody Channel channel);
+
+    /** 添加订阅者 */
+    @PostMapping("/channel/subscriber_add")
+    ResultVO<?> addSubscribers(@RequestBody AddSubscriber addSubscriber);
+
+    /** 移除订阅者 */
+    @PostMapping("/channel/subscriber_remove")
+    ResultVO<?> removeSubscribers(@RequestBody BaseChannel baseChannel);
+
+    /** 添加黑名单 */
+    @PostMapping("/channel/blacklist_add")
+    ResultVO<?> addBlackList(@RequestBody BaseChannel baseChannel);
+
+    /** 移除黑名单 */
+    @PostMapping("/channel/blacklist_remove")
+    ResultVO<?> removeBlackList(@RequestBody BaseChannel baseChannel);
+
+    /** 设置黑名单 */
+    @PostMapping("/channel/blacklist_set")
+    ResultVO<?> setBlackList(@RequestBody BaseChannel baseChannel);
+
+    /** 添加白名单 */
+    @PostMapping("/channel/whitelist_add")
+    ResultVO<?> addWhiteList(@RequestBody BaseChannel baseChannel);
+
+    /** 移除白名单 */
+    @PostMapping("/channel/whitelist_remove")
+    ResultVO<?> removeWhiteList(@RequestBody BaseChannel baseChannel);
+
+    /** 设置白名单 */
+    @PostMapping("/channel/whitelist_set")
+    ResultVO<?> setWhiteList(@RequestBody BaseChannel baseChannel);
 }
