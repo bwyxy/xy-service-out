@@ -1,6 +1,7 @@
 package com.chat.fg.controller;
 
 import com.chat.fg.pojo.dto.MsgDTO;
+import com.chat.fg.pojo.dto.RecallMessageDTO;
 import com.chat.fg.pojo.dto.SendMsgDTO;
 import com.chat.fg.service.IMessageService;
 import com.xy.common.client.vo.MessageVO;
@@ -41,5 +42,18 @@ public class MessageController {
     @PostMapping("/send")
     public R<?> sendMessage(@Valid @RequestBody SendMsgDTO sendMsgDTO) {
         return R.ok(messageService.sendMessage(sendMsgDTO));
+    }
+
+    /**
+     * 撤回消息
+     *
+     * <p>仅可撤回自己发送的消息（群聊中群主/管理员可撤回他人消息），且需在撤回窗口期内。
+     * 校验通过后由服务端向频道广播撤回信令。</p>
+     * */
+    @PostMapping("/recall")
+    public R<?> recallMessage(@Valid @RequestBody RecallMessageDTO recallMessageDTO) {
+        messageService.recallMessage(recallMessageDTO);
+
+        return R.ok();
     }
 }

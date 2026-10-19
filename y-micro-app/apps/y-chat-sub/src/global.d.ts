@@ -94,4 +94,7 @@ interface GroupMember {
     status: number
 
     groupNickname: string
+
+    /** 禁言结束时间，为空表示未被禁言 */
+    muteEndTime?: string | null
 }

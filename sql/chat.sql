@@ -179,3 +179,7 @@ insert into t_user (u_id, password, nickname, avatar, phone, email, status, sex,
 insert into t_user (u_id, password, nickname, avatar, phone, email, status, sex, wx_open_id, is_bind_chat, create_time, update_time) values
     (10000001, '$2a$10$Bqq1b4dioOjYqdaFuZH3Au/zxA8UheNcQaSnUWy0UuUX7haYobVK2', '系统管理员', '', '18637649731', '1547124996@qq.com', '0', '1', '', '0', now(), now()),
     (10000002, '$2a$10$Bqq1b4dioOjYqdaFuZH3Au/zxA8UheNcQaSnUWy0UuUX7haYobVK2', '飞鸽AI', '', '18637649731', 'email@qq.com', '0', '1', '', '0', now(), now());
+
+select u.u_id, u.nickname, u.avatar, u.sex, tgm.role, tgm.status, tgm.group_nickname from t_user u
+    left join t_group_member tgm on tgm.u_id = u.u_id
+    where tgm.group_id = 9

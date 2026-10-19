@@ -24,6 +24,8 @@ public enum MessageType {
 
     groupAnnouncement(10, "群公告"),
 
+    groupMute(11, "群禁言通知"),
+
     rtcInvite(100, "音视频邀请"),
 
     readReceipt(101, "已读回执"),

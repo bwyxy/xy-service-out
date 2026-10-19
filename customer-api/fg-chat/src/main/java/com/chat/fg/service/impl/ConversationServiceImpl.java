@@ -3,10 +3,13 @@ package com.chat.fg.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xy.common.constant.Constants;
 import com.xy.common.entity.SysImUser;
+import com.xy.common.entity.chat.ConversationSetting;
 import com.xy.common.enums.OfficialAccount;
 import com.xy.system.mapper.SysImUserMapper;
 import com.xy.system.mapper.UserMapper;
+import com.chat.fg.mapper.ConversationSettingMapper;
 import com.chat.fg.pojo.dto.ConversationDTO;
+import com.chat.fg.pojo.dto.ConversationTopDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
 import com.chat.fg.service.IConversationService;
 import com.chat.fg.utils.SecurityUtils;
@@ -43,6 +46,9 @@ public class ConversationServiceImpl implements IConversationService {
     @Autowired
     private SysImUserMapper sysImUserMapper;
 
+    @Autowired
+    private ConversationSettingMapper conversationSettingMapper;
+
     /**
      * 获取会话列表
      * */
@@ -58,6 +64,9 @@ public class ConversationServiceImpl implements IConversationService {
         if (!StringUtils.isNotEmpty(conversations)) {
             return new ArrayList<>();
         }
+
+        // 当前用户的会话个人设置（置顶等）
+        Map<String, ConversationSetting> settingMap = queryConversationSettings(conversations);
 
         List<String> personalIds = new ArrayList<>();
         List<String> groupIds = new ArrayList<>();
@@ -99,6 +108,10 @@ public class ConversationServiceImpl implements IConversationService {
             vo.setReadedToMsgSeq(conv.getReadedToMsgSeq());
             vo.setVersion(conv.getVersion());
             vo.setRecents(conv.getRecents());
+
+            // 置顶状态来自会话个人设置表，未设置过则为未置顶
+            ConversationSetting setting = settingMap.get(getChannelKey(conv.getChannelId(), conv.getChannelType()));
+            vo.setTop(setting != null ? setting.getTop() : 0);
 
             if (conv.getChannelType() == 1) {
                 String channelId = conv.getChannelId();
@@ -149,7 +162,108 @@ public class ConversationServiceImpl implements IConversationService {
             result.add(vo);
         }
 
-        return result;
+        // 置顶会话优先，其余按最后消息时间倒序（时间相同按频道 ID 稳定排序）
+        result.sort(Comparator
+                .comparing(UserConversationVO::getTop, Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(UserConversationVO::getTimestamp, Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(UserConversationVO::getChannelId));
+
+        return paginate(result, conversationDTO);
+    }
+
+    /**
+     * 设置/取消会话置顶
+     *
+     * <p>会话列表来自悟空 IM，本地只用 t_conversation_setting 记录置顶等个人设置。</p>
+     * */
+    @Override
+    public void updateTop(ConversationTopDTO conversationTopDTO) {
+        Long uId = SecurityUtils.getUId();
+        int top = conversationTopDTO.getTop() != null && conversationTopDTO.getTop() == 1 ? 1 : 0;
+
+        LambdaQueryWrapper<ConversationSetting> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(ConversationSetting::getUId, uId)
+                .eq(ConversationSetting::getChannelId, conversationTopDTO.getChannelId())
+                .eq(ConversationSetting::getChannelType, conversationTopDTO.getChannelType());
+
+        ConversationSetting setting = conversationSettingMapper.selectOne(queryWrapper);
+
+        if (setting == null) {
+            // 没有其他设置项且为取消置顶时，无需新增记录
+            if (top == 0) {
+                return;
+            }
+
+            setting = new ConversationSetting();
+            setting.setUId(uId);
+            setting.setChannelId(conversationTopDTO.getChannelId());
+            setting.setChannelType(conversationTopDTO.getChannelType());
+            setting.setTop(top);
+
+            conversationSettingMapper.insert(setting);
+
+            return;
+        }
+
+        setting.setTop(top);
+
+        conversationSettingMapper.updateById(setting);
+    }
+
+    /**
+     * 批量查询当前用户的会话个人设置
+     * */
+    private Map<String, ConversationSetting> queryConversationSettings(List<ConversationVO> conversations) {
+        List<String> channelIds = conversations.stream()
+                .map(ConversationVO::getChannelId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (channelIds.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        LambdaQueryWrapper<ConversationSetting> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(ConversationSetting::getUId, SecurityUtils.getUId())
+                .in(ConversationSetting::getChannelId, channelIds);
+
+        return conversationSettingMapper.selectList(queryWrapper).stream()
+                .collect(Collectors.toMap(
+                        setting -> getChannelKey(setting.getChannelId(), setting.getChannelType()),
+                        Function.identity(),
+                        (existing, replacement) -> existing));
+    }
+
+    /** 会话唯一标识：频道 ID + 频道类型 */
+    private String getChannelKey(String channelId, Integer channelType) {
+        return channelId + "_" + channelType;
+    }
+
+    /**
+     * 对会话列表分页
+     *
+     * <p>悟空 IM conversation/sync 本身不支持分页，这里在应用层对全量结果切片。
+     * pageSize<=0 时不分页，保持向后兼容。</p>
+     * */
+    private List<UserConversationVO> paginate(List<UserConversationVO> list, ConversationDTO conversationDTO) {
+        Integer page = conversationDTO.getPage();
+        Integer pageSize = conversationDTO.getPageSize();
+
+        if (page == null || pageSize == null || pageSize <= 0) {
+            return list;
+        }
+
+        int from = Math.max(page - 1, 0) * pageSize;
+
+        if (from >= list.size()) {
+            return new ArrayList<>();
+        }
+
+        int to = Math.min(from + pageSize, list.size());
+
+        return new ArrayList<>(list.subList(from, to));
     }
 
     /** 获取悟空 IM会话列表 */

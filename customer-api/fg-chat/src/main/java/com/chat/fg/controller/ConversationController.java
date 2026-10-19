@@ -1,12 +1,15 @@
 package com.chat.fg.controller;
 
 import com.chat.fg.pojo.dto.ConversationDTO;
+import com.chat.fg.pojo.dto.ConversationTopDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
 import com.chat.fg.service.IConversationService;
 import com.xy.common.core.domain.R;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,5 +35,16 @@ public class ConversationController {
         List<UserConversationVO> conversations = conversationService.getConversations(conversationDTO);
 
         return R.ok(conversations);
+    }
+
+    /**
+     * 设置/取消会话置顶
+     */
+    @PostMapping("/top")
+    public R<?> top(@Valid @RequestBody ConversationTopDTO conversationTopDTO) {
+
+        conversationService.updateTop(conversationTopDTO);
+
+        return R.ok();
     }
 }

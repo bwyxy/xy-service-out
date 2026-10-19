@@ -13,10 +13,11 @@
         <result property="role" column="role" />
         <result property="status" column="status" />
         <result property="groupNickname" column="group_nickname" />
+        <result property="muteEndTime" column="mute_end_time" />
     </resultMap>
 
     <select id="selectGroupMemberByGroupId" resultMap="GroupMemberResultMap">
-        select tgm.id, u.u_id, u.nickname, u.avatar, u.sex, tgm.role, tgm.status, tgm.group_nickname from t_user u
+        select tgm.id, u.u_id, u.nickname, u.avatar, u.sex, tgm.role, tgm.status, tgm.group_nickname, tgm.mute_end_time from t_user u
             left join t_group_member tgm on tgm.u_id = u.u_id
             where tgm.group_id = #{groupId}
     </select>

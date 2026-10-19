@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 发送消息请求 DTO
  */
@@ -38,4 +40,17 @@ public class SendMsgDTO {
      * 客户端消息编号，用于去重
      */
     private String clientMsgNo;
+
+    /**
+     * 引用消息快照（可选）
+     *
+     * <p>结构：{ messageId, messageSeq, fromUid, nickname, content }，
+     * 存快照而非引用原消息，避免原消息未加载/被撤回时无法展示。</p>
+     */
+    private Object quote;
+
+    /**
+     * @提醒的成员列表（可选），元素结构：{ uid, name }
+     */
+    private List<Object> mentions;
 }

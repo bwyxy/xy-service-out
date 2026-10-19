@@ -32,4 +32,14 @@ public class ConversationDTO {
      * 要排除的频道类型数组
      * */
     private List<Integer> excludeChannelTypes;
+
+    /**
+     * 页码，从 1 开始
+     * */
+    private Integer page = 1;
+
+    /**
+     * 每页条数；<=0 表示不分页（返回全部）
+     * */
+    private Integer pageSize = 0;
 }

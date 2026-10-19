@@ -15,6 +15,7 @@ import com.xy.common.constant.Constants;
 import com.xy.common.entity.SysImUser;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.chat.GroupMember;
+import com.xy.common.enums.MessageType;
 import com.xy.common.exception.ServiceException;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;
@@ -149,6 +150,16 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         updateWrapper.set(Group::getUpdateTime, now);
 
         update(updateWrapper);
+
+        // 全员禁言变更时向群频道播报（无发送者的频道系统消息）
+        if (editGroupDTO.getIsBan() != null) {
+            chatMessage.sendGroupMessage(
+                    editGroupDTO.getGroupId().toString(),
+                    null,
+                    MessageType.groupMute,
+                    editGroupDTO.getIsBan() == 1 ? "群主已开启全员禁言" : "群主已关闭全员禁言"
+            );
+        }
     }
 
     /**
@@ -176,6 +187,12 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
                 .set(Group::getUpdateTime, now);
 
         update(updateWrapper);
+        // 删除该频道
+        Channel channel = new Channel();
+        channel.setChannelId(Constants.GROUP_ID_PREFIX + groupId);
+        channel.setChannelType(2);
+
+        wuKongClient.deleteChannel(channel);
     }
 
     /**

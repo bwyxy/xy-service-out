@@ -34,7 +34,7 @@ public class ConversationSetting extends BaseEntity {
     /**
      * 频道类型
      * */
-    private String channelType;
+    private Integer channelType;
 
     /**
      * 是否免打扰

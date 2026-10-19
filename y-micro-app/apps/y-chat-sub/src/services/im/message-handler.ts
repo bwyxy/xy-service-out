@@ -152,6 +152,13 @@ export class MessageHandlerService {
       return
     }
 
+    // 消息撤回信令（102）：必须早于 isSystemMessageType(>=100) 分流，
+    // 否则会被当作系统通知弹出；实际由聊天模块消费，用于把原消息标记为已撤回
+    if (payload.type === MessageType.RECALL) {
+      this.chatHandlers.forEach((handler) => handler(message, payload))
+      return
+    }
+
     // 强制下线通知（220）：必须早于 isSystemMessageType(>=100) 分流，
     // 否则会被当作普通系统通知弹出，且不受登录态管控处理
     if (payload.type === MessageType.FORCE_LOGOUT) {

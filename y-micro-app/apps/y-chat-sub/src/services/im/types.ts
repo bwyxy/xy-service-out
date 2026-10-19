@@ -22,10 +22,18 @@ export interface WukongIMConfig {
 export interface WukongIMMessagePayload {
   /** 消息类型 */
   type: number
-  /** 消息内容（部分旧数据或第三方客户端可能使用 message 字段） */
-  content?: string
+  /**
+   * 消息内容
+   *
+   * 普通消息为字符串；撤回等信令消息为结构化对象（如 { originalMessageSeq, originalClientMsgNo }）。
+   */
+  content?: any
   /** 兼容字段：某些场景下 payload 使用 message 表示内容 */
   message?: string
+  /** 引用的消息快照 */
+  quote?: unknown
+  /** @提醒的成员列表 */
+  mentions?: unknown
 }
 
 /** 系统通知消息负载 */

@@ -1,8 +1,12 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import { ArrowRight } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import useChatStore from '@/store/chat.ts'
 // import AddGroup from "@/components/AddGroup/AddGroup.vue";
+
+const chatStore = useChatStore()
 
 const chatDrawerRefs = ref<HTMLElement>()
 const isShow = defineModel('modelValue', {
@@ -11,6 +15,24 @@ const isShow = defineModel('modelValue', {
 defineProps<{
   info: any
 }>()
+
+/** 当前会话是否置顶 */
+const isTop = computed(() => !!chatStore.activeContact?.top)
+
+/** 置顶/取消置顶当前会话 */
+const handleToggleTop = async (val: string | number | boolean) => {
+  const contact = chatStore.activeContact
+
+  if (!contact) {
+    return
+  }
+
+  const success = await chatStore.setContactTop(contact, val === true)
+
+  if (!success) {
+    ElMessage.error('操作失败，请重试')
+  }
+}
 </script>
 
 <template>
@@ -31,6 +53,12 @@ defineProps<{
     <div class="view-chat-record">
       <span>查找聊天内容</span>
       <el-icon><ArrowRight /></el-icon>
+    </div>
+
+    <!-- 置顶聊天 -->
+    <div class="chat-setting-cell">
+      <span>置顶聊天</span>
+      <el-switch :model-value="isTop" @change="handleToggleTop" />
     </div>
 
     <div class="remove-record-btn">
@@ -85,6 +113,20 @@ defineProps<{
     color: #1f1f1f;
     font-size: size(12);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    span {
+      flex: 1;
+      letter-spacing: 1px;
+    }
+  }
+
+  // 设置项：与「查找聊天内容」同款行样式，右侧放开关
+  .chat-setting-cell {
+    height: size(50);
+    border-bottom: 1px solid #f0f0f0;
+    color: #1f1f1f;
+    font-size: size(12);
     display: flex;
     align-items: center;
     span {
