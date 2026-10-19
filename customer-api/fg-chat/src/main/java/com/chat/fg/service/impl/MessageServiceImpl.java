@@ -2,7 +2,9 @@ package com.chat.fg.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chat.fg.client.AiChatClient;
+import com.chat.fg.mapper.ConversationSettingMapper;
 import com.chat.fg.config.AiApiKeyTokenProvider;
 import com.chat.fg.pojo.dto.AiChatRequest;
 import com.chat.fg.pojo.dto.AiChatResponse;
@@ -21,6 +23,7 @@ import com.xy.common.client.entity.Message;
 import com.xy.common.client.vo.MessageVO;
 import com.xy.common.constant.Constants;
 import com.xy.common.core.domain.R;
+import com.xy.common.entity.chat.ConversationSetting;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.chat.GroupMember;
 import com.xy.common.enums.ChannelType;
@@ -63,6 +66,9 @@ public class MessageServiceImpl implements IMessageService {
 
     @Autowired
     private GroupMemberServiceImpl groupMemberService;
+
+    @Autowired
+    private ConversationSettingMapper conversationSettingMapper;
 
     @Value("${ai.assistant.uid:fg_ai}")
     private String aiAssistantUid;
@@ -108,9 +114,62 @@ public class MessageServiceImpl implements IMessageService {
 
         log.warn("校验参数-{}", msgRequest);
         try {
-            return wuKongClient.messageSync(msgRequest);
+            return filterHiddenMessages(wuKongClient.messageSync(msgRequest), msgDTO);
         } catch (Exception e) {
             throw new BusinessException(e.getMessage());
+        }
+    }
+
+    /**
+     * 过滤当前用户已删除的聊天记录
+     *
+     * <p>删除聊天记录/删除会话只对本用户生效：记录删除时刻的最新消息序号，
+     * 拉取消息时把不大于该序号的消息隐藏掉，其他用户不受影响。</p>
+     * */
+    private MessageVO filterHiddenMessages(MessageVO messageVO, MsgDTO msgDTO) {
+        if (messageVO == null || messageVO.getMessages() == null || messageVO.getMessages().isEmpty()) {
+            return messageVO;
+        }
+
+        long hiddenThroughSeq = getHiddenThroughSeq(msgDTO.getChannelId(), msgDTO.getChannelType());
+
+        if (hiddenThroughSeq <= 0) {
+            return messageVO;
+        }
+
+        List<Message> messages = messageVO.getMessages().stream()
+                .filter(message -> message.getMessageSeq() == null || message.getMessageSeq() > hiddenThroughSeq)
+                .collect(Collectors.toList());
+
+        messageVO.setMessages(messages);
+
+        return messageVO;
+    }
+
+    /**
+     * 查询当前用户在该频道的删除标记（取删记录与删会话标识的较大值）
+     * */
+    private long getHiddenThroughSeq(String channelId, Integer channelType) {
+        try {
+            LambdaQueryWrapper<ConversationSetting> queryWrapper = new LambdaQueryWrapper<>();
+
+            queryWrapper.eq(ConversationSetting::getUId, SecurityUtils.getUId())
+                    .eq(ConversationSetting::getChannelId, channelId)
+                    .eq(ConversationSetting::getChannelType, channelType);
+
+            ConversationSetting setting = conversationSettingMapper.selectOne(queryWrapper);
+
+            if (setting == null) {
+                return 0L;
+            }
+
+            long clearedSeq = setting.getClearedSeq() == null ? 0L : setting.getClearedSeq();
+            long deletedSeq = setting.getDeletedSeq() == null ? 0L : setting.getDeletedSeq();
+
+            return Math.max(clearedSeq, deletedSeq);
+        } catch (Exception e) {
+            log.warn("查询会话删除标记失败, channelId={}, channelType={}", channelId, channelType, e);
+            return 0L;
         }
     }
 

@@ -44,6 +44,36 @@ export const setConversationTop = (data: ConversationTopParams) => {
 }
 
 /**
+ * 会话频道参数
+ * */
+export interface ConversationChannelParams {
+  channelId: string
+  channelType: number
+}
+
+/**
+ * 删除聊天记录（仅当前用户不可见，对方不受影响）
+ * */
+export const clearConversationMessages = (data: ConversationChannelParams) => {
+  return request({
+    url: '/conversation/clear',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 删除会话（仅当前用户不可见，对方不受影响）
+ * */
+export const deleteConversation = (data: ConversationChannelParams) => {
+  return request({
+    url: '/conversation/delete',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 聊天记录搜索结果项
  * */
 export interface SearchMessageItem {

@@ -50,4 +50,14 @@ public class ConversationSetting extends BaseEntity {
      * 草稿
      * */
     private String draft;
+
+    /**
+     * 删除聊天记录时的消息序号（仅当前用户可见范围，小于等于该序号的消息不再展示）
+     * */
+    private Long clearedSeq;
+
+    /**
+     * 删除会话时的消息序号（小于等于该序号时该会话从列表中隐藏，收到新消息后恢复）
+     * */
+    private Long deletedSeq;
 }

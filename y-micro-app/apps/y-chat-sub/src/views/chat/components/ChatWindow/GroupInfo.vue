@@ -76,6 +76,33 @@ const handleDissolveGroup = async () => {
   }
 }
 
+/** 删除聊天记录：仅本机清除，对方仍可查看 */
+const handleClearRecord = async () => {
+  const contact = chatStore.activeContact
+
+  if (!contact) {
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm(
+        '删除后，该聊天的聊天记录仅在本机清除，对方仍可查看。',
+        '删除聊天记录',
+        { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' },
+    )
+  } catch {
+    return
+  }
+
+  const success = await chatStore.clearMessages(contact)
+
+  if (success) {
+    ElMessage.success('聊天记录已删除')
+  } else {
+    ElMessage.error('删除失败，请重试')
+  }
+}
+
 /** 点击成员，打开成员管理弹窗 */
 const handleMemberClick = (item: GroupMember) => {
   selectedMember.value = item
@@ -215,7 +242,7 @@ const slotMembers = computed(() => {
       <span>置顶聊天</span>
       <el-switch :model-value="isTop" @change="handleToggleTop" />
     </div>
-    <div class="group-cell">
+    <div class="group-cell" @click="handleClearRecord">
       <span style="color: #2f54eb;text-align: center">删除聊天记录</span>
     </div>
     <div class="group-cell" style="border-top: none" @click="handleDissolveGroup">

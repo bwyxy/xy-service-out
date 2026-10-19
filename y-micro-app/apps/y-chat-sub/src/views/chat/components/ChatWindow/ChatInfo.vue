@@ -2,7 +2,7 @@
 
 import {computed, ref} from "vue";
 import { ArrowRight } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import useChatStore from '@/store/chat.ts'
 import SearchMessageDialog from '@/views/chat/components/ChatWindow/SearchMessageDialog.vue'
 import type { SearchMessageItem } from '@/api/chat.ts'
@@ -42,6 +42,33 @@ const handleToggleTop = async (val: string | number | boolean) => {
     ElMessage.error('操作失败，请重试')
   }
 }
+
+/** 删除聊天记录：仅本机清除，对方仍可查看 */
+const handleClearRecord = async () => {
+  const contact = chatStore.activeContact
+
+  if (!contact) {
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm(
+        '删除后，该聊天的聊天记录仅在本机清除，对方仍可查看。',
+        '删除聊天记录',
+        { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' },
+    )
+  } catch {
+    return
+  }
+
+  const success = await chatStore.clearMessages(contact)
+
+  if (success) {
+    ElMessage.success('聊天记录已删除')
+  } else {
+    ElMessage.error('删除失败，请重试')
+  }
+}
 </script>
 
 <template>
@@ -73,7 +100,7 @@ const handleToggleTop = async (val: string | number | boolean) => {
       <el-switch :model-value="isTop" @change="handleToggleTop" />
     </div>
 
-    <div class="remove-record-btn">
+    <div class="remove-record-btn" @click="handleClearRecord">
       <span>清空聊天记录</span>
     </div>
   </div>

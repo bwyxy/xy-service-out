@@ -8,6 +8,7 @@ import com.xy.common.enums.OfficialAccount;
 import com.xy.system.mapper.SysImUserMapper;
 import com.xy.system.mapper.UserMapper;
 import com.chat.fg.mapper.ConversationSettingMapper;
+import com.chat.fg.pojo.dto.ConversationChannelDTO;
 import com.chat.fg.pojo.dto.ConversationDTO;
 import com.chat.fg.pojo.dto.ConversationTopDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
@@ -15,7 +16,10 @@ import com.chat.fg.service.IConversationService;
 import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.ConversationRequest;
+import com.xy.common.client.dto.request.MsgRequest;
+import com.xy.common.client.entity.Message;
 import com.xy.common.client.vo.ConversationVO;
+import com.xy.common.client.vo.MessageVO;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.User;
 import com.xy.common.utils.StringUtils;
@@ -101,6 +105,13 @@ public class ConversationServiceImpl implements IConversationService {
         List<UserConversationVO> result = new ArrayList<>();
 
         for (ConversationVO conv : conversations) {
+            ConversationSetting setting = settingMap.get(getChannelKey(conv.getChannelId(), conv.getChannelType()));
+
+            // 已删除的会话在收到新消息前不再展示
+            if (isConversationDeleted(setting, conv.getLastMsgSeq())) {
+                continue;
+            }
+
             UserConversationVO vo = new UserConversationVO();
 
             vo.setChannelId(conv.getChannelId());
@@ -115,8 +126,12 @@ public class ConversationServiceImpl implements IConversationService {
             vo.setRecents(conv.getRecents());
 
             // 置顶状态来自会话个人设置表，未设置过则为未置顶
-            ConversationSetting setting = settingMap.get(getChannelKey(conv.getChannelId(), conv.getChannelType()));
             vo.setTop(setting != null ? setting.getTop() : 0);
+
+            // 已清空聊天记录的会话不再返回最后一条消息预览
+            if (isMessageCleared(setting, conv.getLastMsgSeq())) {
+                vo.setRecents(new ArrayList<>());
+            }
 
             if (conv.getChannelType() == 1) {
                 String channelId = conv.getChannelId();
@@ -215,6 +230,130 @@ public class ConversationServiceImpl implements IConversationService {
         setting.setTop(top);
 
         conversationSettingMapper.updateById(setting);
+    }
+
+    /**
+     * 删除聊天记录
+     * */
+    @Override
+    public void clearMessages(ConversationChannelDTO conversationChannelDTO) {
+        saveClearMarker(conversationChannelDTO, false);
+    }
+
+    /**
+     * 删除会话
+     * */
+    @Override
+    public void deleteConversation(ConversationChannelDTO conversationChannelDTO) {
+        saveClearMarker(conversationChannelDTO, true);
+    }
+
+    /**
+     * 保存删除标记
+     *
+     * <p>仅对本用户生效：记录删除时刻频道的最新消息序号，
+     * 之后拉取消息时隐藏不大于该序号的消息；删除会话额外在会话列表中隐藏该会话。</p>
+     * */
+    private void saveClearMarker(ConversationChannelDTO conversationChannelDTO, boolean deleteConversation) {
+        Long uId = SecurityUtils.getUId();
+        long latestSeq = getLatestMessageSeq(conversationChannelDTO.getChannelId(),
+                conversationChannelDTO.getChannelType());
+
+        ConversationSetting setting = getOrCreateSetting(uId,
+                conversationChannelDTO.getChannelId(), conversationChannelDTO.getChannelType());
+
+        if (latestSeq > 0) {
+            setting.setClearedSeq(latestSeq);
+
+            if (deleteConversation) {
+                setting.setDeletedSeq(latestSeq);
+            }
+        } else if (deleteConversation && setting.getDeletedSeq() == null) {
+            // 频道还没有消息时，标记为已删除即可
+            setting.setDeletedSeq(0L);
+        }
+
+        conversationSettingMapper.updateById(setting);
+    }
+
+    /**
+     * 查询当前用户的会话个人设置，不存在则初始化
+     * */
+    private ConversationSetting getOrCreateSetting(Long uId, String channelId, Integer channelType) {
+        LambdaQueryWrapper<ConversationSetting> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(ConversationSetting::getUId, uId)
+                .eq(ConversationSetting::getChannelId, channelId)
+                .eq(ConversationSetting::getChannelType, channelType);
+
+        ConversationSetting setting = conversationSettingMapper.selectOne(queryWrapper);
+
+        if (setting == null) {
+            setting = new ConversationSetting();
+            setting.setUId(uId);
+            setting.setChannelId(channelId);
+            setting.setChannelType(channelType);
+            setting.setClearedSeq(0L);
+            setting.setDeletedSeq(0L);
+
+            conversationSettingMapper.insert(setting);
+        }
+
+        return setting;
+    }
+
+    /**
+     * 查询频道最新的消息序号，无消息时返回 0
+     * */
+    private long getLatestMessageSeq(String channelId, Integer channelType) {
+        MsgRequest msgRequest = new MsgRequest();
+
+        msgRequest.setLoginUid(String.valueOf(SecurityUtils.getUId()));
+        msgRequest.setChannelId(channelId);
+        msgRequest.setChannelType(channelType);
+        msgRequest.setStartMessageSeq(0);
+        msgRequest.setEndMessageSeq(0);
+        msgRequest.setLimit(1);
+        msgRequest.setPullMode(0);
+
+        try {
+            MessageVO messageVO = wuKongClient.messageSync(msgRequest);
+
+            if (messageVO == null || messageVO.getMessages() == null || messageVO.getMessages().isEmpty()) {
+                return 0L;
+            }
+
+            return messageVO.getMessages().stream()
+                    .map(Message::getMessageSeq)
+                    .filter(Objects::nonNull)
+                    .max(Long::compareTo)
+                    .orElse(0L);
+        } catch (Exception e) {
+            log.warn("查询频道最新消息序号失败, channelId={}, channelType={}", channelId, channelType, e);
+            return 0L;
+        }
+    }
+
+    /**
+     * 会话是否已被删除且尚无新消息
+     * */
+    private boolean isConversationDeleted(ConversationSetting setting, Integer lastMsgSeq) {
+        if (setting == null || setting.getDeletedSeq() == null || setting.getDeletedSeq() <= 0) {
+            return false;
+        }
+
+        return (lastMsgSeq == null ? 0 : lastMsgSeq) <= setting.getDeletedSeq();
+    }
+
+    /**
+     * 会话的聊天记录是否已被清空
+     * */
+    private boolean isMessageCleared(ConversationSetting setting, Integer lastMsgSeq) {
+        if (setting == null || setting.getClearedSeq() == null || setting.getClearedSeq() <= 0) {
+            return false;
+        }
+
+        return (lastMsgSeq == null ? 0 : lastMsgSeq) <= setting.getClearedSeq();
     }
 
     /**

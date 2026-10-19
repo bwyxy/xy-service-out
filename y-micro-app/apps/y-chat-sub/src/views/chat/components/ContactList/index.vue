@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, ref, watch} from 'vue'
 import { storeToRefs } from 'pinia'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import useUserStore from '@/store/user.ts'
 import useChatStore from '@/store/chat.ts'
 import { getConversation } from '@/api/chat.ts'
@@ -75,6 +75,41 @@ const handleToggleTop = async () => {
   if (!success) {
     ElMessage.error('操作失败，请重试')
   }
+}
+
+/** 删除会话：仅自己不可见，对方仍可查看 */
+const handleDeleteContact = async () => {
+  const contact = contactMenu.value.contact
+  closeContactMenu()
+
+  if (!contact) {
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm(
+      '删除后，该聊天的聊天记录仅在本机清除，对方仍可查看。',
+      '删除聊天',
+      { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' },
+    )
+  } catch {
+    return
+  }
+
+  const isCurrent = userStore.currentChannel?.channelId === contact.uid
+
+  const success = await chatStore.deleteContact(contact)
+
+  if (!success) {
+    ElMessage.error('删除失败，请重试')
+    return
+  }
+
+  if (isCurrent) {
+    userStore.currentChannel = null
+  }
+
+  ElMessage.success('已删除该聊天')
 }
 
 /** Esc 关闭右键菜单 */
@@ -282,7 +317,7 @@ onUnmounted(() => {
     <div v-if="loadingMore" class="list-loading">加载中...</div>
   </div>
 
-  <!-- 会话右键菜单：置顶 / 取消置顶 -->
+  <!-- 会话右键菜单：置顶 / 取消置顶 / 删除聊天 -->
   <teleport to="body">
     <div
       v-if="contactMenu.visible"
@@ -291,6 +326,9 @@ onUnmounted(() => {
     >
       <div class="contact-context-menu__item" @click="handleToggleTop">
         {{ contactMenu.contact?.top ? '取消置顶' : '置顶该聊天' }}
+      </div>
+      <div class="contact-context-menu__item" @click="handleDeleteContact">
+        删除该聊天
       </div>
     </div>
   </teleport>

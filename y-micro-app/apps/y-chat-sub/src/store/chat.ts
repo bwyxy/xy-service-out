@@ -8,6 +8,8 @@ import {
   getMessageList,
   recallMessage as apiRecallMessage,
   setConversationTop as apiSetConversationTop,
+  clearConversationMessages as apiClearConversationMessages,
+  deleteConversation as apiDeleteConversation,
 } from '@/api/chat.ts'
 import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk'
 import { getToken, getCookies } from '@/utils/auth.ts'
@@ -602,6 +604,81 @@ const useChatStore = defineStore('chat', () => {
   }
 
   /**
+   * 删除聊天记录
+   *
+   * 仅清空当前用户的聊天记录，会话保留，对方仍可正常查看。
+   */
+  async function clearMessages(contact: Contact): Promise<boolean> {
+    try {
+      const response = await apiClearConversationMessages({
+        channelId: contact.uid,
+        channelType: contact.channelType,
+      })
+
+      if (response?.code !== 200) {
+        return false
+      }
+    } catch {
+      return false
+    }
+
+    // 仅在当前会话正在展示时清空消息列表
+    if (isActiveContact(contact)) {
+      messages.value = []
+    }
+
+    contact.lastMessage = ''
+
+    return true
+  }
+
+  /**
+   * 删除会话
+   *
+   * 仅当前用户不可见（聊天记录一并隐藏），收到新消息后会重新出现，对方不受影响。
+   */
+  async function deleteContact(contact: Contact): Promise<boolean> {
+    try {
+      const response = await apiDeleteConversation({
+        channelId: contact.uid,
+        channelType: contact.channelType,
+      })
+
+      if (response?.code !== 200) {
+        return false
+      }
+    } catch {
+      return false
+    }
+
+    const key = getContactKey(contact.uid, contact.channelType)
+    const index = contacts.value.findIndex((c) => getContactKey(c.uid, c.channelType) === key)
+
+    if (index > -1) {
+      contacts.value.splice(index, 1)
+    }
+
+    if (isActiveContact(contact)) {
+      activeContact.value = null
+      messages.value = []
+    }
+
+    return true
+  }
+
+  /** 是否为当前正在展示的会话 */
+  function isActiveContact(contact: Contact): boolean {
+    if (!activeContact.value) {
+      return false
+    }
+
+    return (
+      getContactKey(activeContact.value.uid, activeContact.value.channelType) ===
+      getContactKey(contact.uid, contact.channelType)
+    )
+  }
+
+  /**
    * 联系人列表排序：置顶会话优先，其余按最后消息时间倒序
    */
   function sortContacts(): void {
@@ -1032,6 +1109,8 @@ const useChatStore = defineStore('chat', () => {
     loadMoreHistory,
     loadMessagesFromSeq,
     setContactTop,
+    clearMessages,
+    deleteContact,
     sortContacts
   }
 })

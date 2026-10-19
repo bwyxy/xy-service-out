@@ -1,5 +1,6 @@
 package com.chat.fg.controller;
 
+import com.chat.fg.pojo.dto.ConversationChannelDTO;
 import com.chat.fg.pojo.dto.ConversationDTO;
 import com.chat.fg.pojo.dto.ConversationTopDTO;
 import com.chat.fg.pojo.vo.UserConversationVO;
@@ -44,6 +45,28 @@ public class ConversationController {
     public R<?> top(@Valid @RequestBody ConversationTopDTO conversationTopDTO) {
 
         conversationService.updateTop(conversationTopDTO);
+
+        return R.ok();
+    }
+
+    /**
+     * 删除聊天记录（仅当前用户不可见，对方不受影响）
+     */
+    @PostMapping("/clear")
+    public R<?> clear(@Valid @RequestBody ConversationChannelDTO conversationChannelDTO) {
+
+        conversationService.clearMessages(conversationChannelDTO);
+
+        return R.ok();
+    }
+
+    /**
+     * 删除会话（仅当前用户不可见，对方不受影响）
+     */
+    @PostMapping("/delete")
+    public R<?> delete(@Valid @RequestBody ConversationChannelDTO conversationChannelDTO) {
+
+        conversationService.deleteConversation(conversationChannelDTO);
 
         return R.ok();
     }

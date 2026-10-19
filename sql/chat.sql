@@ -138,10 +138,17 @@ CREATE TABLE t_conversation_setting (
     `mute` tinyint DEFAULT 0 COMMENT '是否免打扰',
     `top` tinyint DEFAULT 0 COMMENT '是否置顶',
     `draft` varchar(500) DEFAULT '' COMMENT '草稿',
+    `cleared_seq` bigint DEFAULT 0 COMMENT '删除聊天记录时的消息序号',
+    `deleted_seq` bigint DEFAULT 0 COMMENT '删除会话时的消息序号',
     `create_time` datetime COMMENT '创建时间',
     `update_time` datetime COMMENT '更新时间',
     UNIQUE INDEX uk_user_channel (u_id, channel_id, channel_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会话个人设置';
+
+-- 已存在的库执行以下迁移
+-- ALTER TABLE t_conversation_setting
+--     ADD COLUMN `cleared_seq` bigint DEFAULT 0 COMMENT '删除聊天记录时的消息序号',
+--     ADD COLUMN `deleted_seq` bigint DEFAULT 0 COMMENT '删除会话时的消息序号';
 
 CREATE TABLE t_rtc_room (
     `room_id` varchar(64) PRIMARY KEY COMMENT '房间ID',
