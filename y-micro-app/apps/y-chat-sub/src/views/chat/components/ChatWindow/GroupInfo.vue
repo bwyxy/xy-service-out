@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import {computed, ref, toRefs} from "vue";
 import { storeToRefs } from 'pinia'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {ArrowDown, ArrowRight, ArrowUp, Plus, Search} from "@element-plus/icons-vue";
 import useUserStore from "@/store/user.ts";
 import useChatStore from "@/store/chat.ts";
-import { editGroup } from "@/api/group.ts";
+import { editGroup, dissolveGroup } from "@/api/group.ts";
+import type { SearchMessageItem } from "@/api/chat.ts";
 import EditGroupName from "@/views/chat/components/ChatWindow/EditGroupName.vue";
 import GroupAnnouncement from "@/views/chat/components/ChatWindow/GroupAnnouncement.vue";
 import MemberActionDialog from "@/views/chat/components/ChatWindow/MemberActionDialog.vue";
+import SearchMessageDialog from "@/views/chat/components/ChatWindow/SearchMessageDialog.vue";
 
 const { userInfo } = storeToRefs(useUserStore())
 const chatStore = useChatStore()
@@ -26,11 +28,14 @@ const { members, info } = toRefs(props)
 
 const emit = defineEmits<{
   (e: 'refresh'): void
+  (e: 'locate', item: SearchMessageItem): void
+  (e: 'dissolved'): void
 }>()
 
 const isExpandMember = ref<boolean>(false)
 const isShowAnnouncement = ref<boolean>(false)
 const isShowMemberAction = ref<boolean>(false)
+const isShowSearch = ref<boolean>(false)
 const selectedMember = ref<GroupMember | null>(null)
 
 /** 当前登录用户在群内的成员信息 */
@@ -40,6 +45,36 @@ const currentMember = computed(() => {
 
 /** 当前登录用户是否为群主/管理员 */
 const isAdmin = computed(() => (currentMember.value?.role ?? 0) > 0)
+
+/** 当前登录用户是否为群主 */
+const isOwner = computed(() => currentMember.value?.role === 2)
+
+/** 解散群聊（仅群主可操作） */
+const handleDissolveGroup = async () => {
+  if (!isOwner.value) {
+    ElMessage.warning('只有群主才能解散群聊')
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm('解散后将无法恢复，确定解散该群聊吗？', '提示', {
+      type: 'warning',
+      confirmButtonText: '解散',
+      cancelButtonText: '取消',
+    })
+  } catch {
+    return
+  }
+
+  const result = await dissolveGroup(info.value.groupId)
+
+  if (result.code === 200) {
+    ElMessage.success('群聊已解散')
+    emit('dissolved')
+  } else {
+    ElMessage.error(result.msg || '解散失败')
+  }
+}
 
 /** 点击成员，打开成员管理弹窗 */
 const handleMemberClick = (item: GroupMember) => {
@@ -160,6 +195,10 @@ const slotMembers = computed(() => {
       <el-icon v-if="isExpandMember"><ArrowUp /></el-icon>
       <el-icon v-else><ArrowDown /></el-icon>
     </div>
+    <div class="group-cell" @click="isShowSearch = true">
+      <span>查找聊天内容</span>
+      <el-icon><ArrowRight /></el-icon>
+    </div>
     <div class="group-cell" @click="isShowAnnouncement = true">
       <span>群公告</span>
       <el-icon><ArrowRight /></el-icon>
@@ -179,9 +218,16 @@ const slotMembers = computed(() => {
     <div class="group-cell">
       <span style="color: #2f54eb;text-align: center">删除聊天记录</span>
     </div>
-    <div class="group-cell" style="border-top: none">
+    <div class="group-cell" style="border-top: none" @click="handleDissolveGroup">
       <span style="color: #e00f00;text-align: center">解散群聊</span>
     </div>
+
+    <!-- 查找聊天内容 -->
+    <search-message-dialog
+        v-model="isShowSearch"
+        :members="members"
+        @locate="emit('locate', $event)"
+    />
 
     <!-- 群公告 -->
     <group-announcement

@@ -778,6 +778,42 @@ const useChatStore = defineStore('chat', () => {
   }
 
   /**
+   * 加载指定消息序号及其之后的消息
+   *
+   * <p>用于「查找聊天内容」结果跳转：目标消息可能不在已加载的历史窗口内，
+   * 需以该序号为起点向更新方向拉取一段，保证目标消息进入列表。</p>
+   *
+   * @param contact 联系人
+   * @param messageSeq 目标消息序号
+   * @param limit 拉取条数
+   */
+  async function loadMessagesFromSeq(
+    contact: Contact,
+    messageSeq: number,
+    limit = 30,
+  ): Promise<void> {
+    try {
+      const res = await getMessageList({
+        channelId: contact.uid,
+        channelType: contact.channelType,
+        startMessageSeq: messageSeq,
+        endMessageSeq: 0,
+        limit,
+        pullMode: 1,
+      })
+
+      if (res.code !== 200 || !res.data) {
+        return
+      }
+
+      const { messages: parsed, recallSignals } = parseHistoryResponse(res, contact)
+      mergeHistoryMessages(parsed, recallSignals, contact)
+    } catch (error) {
+      console.error('[ChatStore] 定位消息加载失败:', error)
+    }
+  }
+
+  /**
    * 解析历史消息接口返回，转换为本地消息结构，并分离出撤回信令
    */
   function parseHistoryResponse(
@@ -994,6 +1030,7 @@ const useChatStore = defineStore('chat', () => {
     hasMoreHistory,
     loadingHistory,
     loadMoreHistory,
+    loadMessagesFromSeq,
     setContactTop,
     sortContacts
   }

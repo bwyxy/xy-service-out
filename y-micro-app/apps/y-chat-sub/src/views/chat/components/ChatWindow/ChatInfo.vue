@@ -4,6 +4,8 @@ import {computed, ref} from "vue";
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import useChatStore from '@/store/chat.ts'
+import SearchMessageDialog from '@/views/chat/components/ChatWindow/SearchMessageDialog.vue'
+import type { SearchMessageItem } from '@/api/chat.ts'
 // import AddGroup from "@/components/AddGroup/AddGroup.vue";
 
 const chatStore = useChatStore()
@@ -15,6 +17,13 @@ const isShow = defineModel('modelValue', {
 defineProps<{
   info: any
 }>()
+
+const emit = defineEmits<{
+  (e: 'locate', item: SearchMessageItem): void
+}>()
+
+/** 是否展示「查找聊天内容」弹窗 */
+const isShowSearch = ref(false)
 
 /** 当前会话是否置顶 */
 const isTop = computed(() => !!chatStore.activeContact?.top)
@@ -50,10 +59,13 @@ const handleToggleTop = async (val: string | number | boolean) => {
       <add-group />
     </div>
 
-    <div class="view-chat-record">
+    <div class="view-chat-record" @click="isShowSearch = true">
       <span>查找聊天内容</span>
       <el-icon><ArrowRight /></el-icon>
     </div>
+
+    <!-- 查找聊天内容 -->
+    <search-message-dialog v-model="isShowSearch" @locate="emit('locate', $event)" />
 
     <!-- 置顶聊天 -->
     <div class="chat-setting-cell">

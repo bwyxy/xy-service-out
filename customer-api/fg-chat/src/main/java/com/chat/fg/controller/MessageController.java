@@ -2,6 +2,7 @@ package com.chat.fg.controller;
 
 import com.chat.fg.pojo.dto.MsgDTO;
 import com.chat.fg.pojo.dto.RecallMessageDTO;
+import com.chat.fg.pojo.dto.SearchMessageDTO;
 import com.chat.fg.pojo.dto.SendMsgDTO;
 import com.chat.fg.service.IMessageService;
 import com.xy.common.client.vo.MessageVO;
@@ -55,5 +56,15 @@ public class MessageController {
         messageService.recallMessage(recallMessageDTO);
 
         return R.ok();
+    }
+
+    /**
+     * 搜索聊天记录
+     *
+     * <p>悟空 IM 未提供消息搜索接口，服务端按页回溯近期消息并在本地按关键字过滤文本消息。</p>
+     * */
+    @PostMapping("/search")
+    public R<?> searchMessages(@Valid @RequestBody SearchMessageDTO searchMessageDTO) {
+        return R.ok(messageService.searchMessages(searchMessageDTO));
     }
 }

@@ -91,7 +91,12 @@ public class ConversationServiceImpl implements IConversationService {
         Map<Long, User> userMap = queryUsers(personalIds);
         Map<Long, Group> groupMap = queryGroups(groupIds);
         Map<String, SysImUser> systemUserMap = querySystemUsers(systemUids);
-        Pattern pattern = Pattern.compile("\\d+");
+
+        // 已解散的群聊不再出现在会话列表中
+        Set<Long> disbandedGroupIds = groupMap.values().stream()
+                .filter(group -> Integer.valueOf(1).equals(group.getDisband()))
+                .map(Group::getGroupId)
+                .collect(Collectors.toSet());
 
         List<UserConversationVO> result = new ArrayList<>();
 
@@ -142,17 +147,18 @@ public class ConversationServiceImpl implements IConversationService {
                     }
                 }
             } else if (conv.getChannelType() == 2) {
-                Matcher matcher = pattern.matcher(conv.getChannelId());
-                if (matcher.find()) {
-                    Long groupId = parseLongSafe(matcher.group());
-                    Group group = groupMap.get(groupId);
-                    if (group != null) {
-                        vo.setName(group.getName());
-                        vo.setAvatar(group.getAvatar());
-                    } else {
-                        vo.setName("未更名群组");
-                        vo.setAvatar("");
-                    }
+                Long groupId = parseGroupId(conv.getChannelId());
+
+                // 群聊已解散，跳过该会话
+                if (groupId != null && disbandedGroupIds.contains(groupId)) {
+                    continue;
+                }
+
+                Group group = groupId != null ? groupMap.get(groupId) : null;
+
+                if (group != null) {
+                    vo.setName(group.getName());
+                    vo.setAvatar(group.getAvatar());
                 } else {
                     vo.setName("未更名群组");
                     vo.setAvatar("");
@@ -291,6 +297,17 @@ public class ConversationServiceImpl implements IConversationService {
         conversationRequest.setExcludeChannelTypes(conversationDTO.getExcludeChannelTypes());
 
         return conversationRequest;
+    }
+
+    /**
+     * 从频道 ID 中解析群组 ID（形如 g_123）
+     * */
+    private Long parseGroupId(String channelId) {
+        if (channelId == null) return null;
+
+        Matcher matcher = Pattern.compile("\\d+").matcher(channelId);
+
+        return matcher.find() ? parseLongSafe(matcher.group()) : null;
     }
 
     private Long parseLongSafe(String str) {

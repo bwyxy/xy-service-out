@@ -10,6 +10,7 @@ import { ElMessage } from 'element-plus'
 import { Close } from '@element-plus/icons-vue'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
 import { findGroupInfo, findGroupMembers } from '@/api/group.ts'
+import type { SearchMessageItem } from '@/api/chat.ts'
 import RichInput from './RichInput.vue'
 import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 import MessageBox from "@/components/MessageBox/MessageBox.vue";
@@ -17,8 +18,9 @@ import GroupInfo from "@/views/chat/components/ChatWindow/GroupInfo.vue";
 
 const chatStore = useChatStore()
 const callStore = useCallStore()
+const userStore = useUserStore()
 const { activeContact, messages } = storeToRefs(chatStore)
-const { userInfo } = storeToRefs(useUserStore())
+const { userInfo } = storeToRefs(userStore)
 
 const sending = ref(false)
 const isShowChatInfo = ref<boolean>(false)
@@ -33,7 +35,7 @@ const historySentinelRef = ref<HTMLDivElement | null>(null)
 let historyObserver: IntersectionObserver | null = null
 /** 是否正在上拉加载更早的消息 */
 const loadingMore = ref(false)
-const channelInfo = ref<{ nickname?: string; avatar?: string, id?: string, isBan?: number }>({})
+const channelInfo = ref<{ nickname?: string; avatar?: string, id?: string, isBan?: number, disband?: number }>({})
 const richInputRef = ref<InstanceType<typeof RichInput> | null>(null)
 // 群成员
 const groupMembers = ref<GroupMember[]>([])
@@ -146,9 +148,18 @@ const currentGroupMember = computed(() => {
 /** 当前登录用户在群内是否为群主/管理员 */
 const isGroupAdmin = computed(() => (currentGroupMember.value?.role ?? 0) > 0)
 
-/** 禁言提示文案，为空表示可正常发言 */
+/** 群聊是否已解散 */
+const isGroupDisbanded = computed(
+  () => activeContact.value?.channelType === 2 && channelInfo.value.disband === 1,
+)
+
+/** 禁言/解散提示文案，为空表示可正常发言 */
 const muteTip = computed(() => {
   if (!activeContact.value || activeContact.value.channelType !== 2) return ''
+
+  if (isGroupDisbanded.value) {
+    return '群聊已解散'
+  }
 
   const muteEndTime = currentGroupMember.value?.muteEndTime
 
@@ -385,19 +396,31 @@ const findMessageEl = (msg: Message): HTMLElement | null => {
   return list.querySelector<HTMLElement>(`[data-msg-key="${CSS.escape(msg.id)}"]`)
 }
 
-/** 定位到被引用的原消息并闪烁 */
-const handleQuoteClick = (quote: QuoteInfo) => {
+/** 按消息序号/消息 id 在当前已渲染列表中查找 DOM */
+const findMessageElBySeq = (
+  messageSeq?: number | null,
+  messageId?: number | string | null,
+): HTMLElement | null => {
   const list = messageListRef.value
-  if (!list) return
+  if (!list) return null
 
   let target: HTMLElement | null = null
 
-  if (quote.messageSeq != null) {
-    target = list.querySelector<HTMLElement>(`[data-message-seq="${quote.messageSeq}"]`)
+  if (messageSeq != null) {
+    target = list.querySelector<HTMLElement>(`[data-message-seq="${messageSeq}"]`)
   }
-  if (!target && quote.messageId != null) {
-    target = list.querySelector<HTMLElement>(`[data-message-id="${CSS.escape(String(quote.messageId))}"]`)
+  if (!target && messageId != null) {
+    target = list.querySelector<HTMLElement>(
+      `[data-message-id="${CSS.escape(String(messageId))}"]`,
+    )
   }
+
+  return target
+}
+
+/** 定位到被引用的原消息并闪烁 */
+const handleQuoteClick = (quote: QuoteInfo) => {
+  const target = findMessageElBySeq(quote.messageSeq, quote.messageId)
 
   if (!target) {
     ElMessage.info('原消息不在当前会话中')
@@ -405,6 +428,55 @@ const handleQuoteClick = (quote: QuoteInfo) => {
   }
 
   scrollToMessageEl(target)
+}
+
+/**
+ * 定位到指定聊天记录
+ *
+ * <p>目标消息可能不在已加载的历史窗口内，先按序号向更新方向补拉一段再定位。</p>
+ */
+const locateMessageBySeq = async (item: SearchMessageItem) => {
+  const contact = activeContact.value
+  const list = messageListRef.value
+  if (!contact || !list) return
+
+  // 定位期间禁止贴底纠偏，避免 ResizeObserver 把视口拽回底部
+  stickToBottom.value = false
+
+  let target = findMessageElBySeq(item.messageSeq, item.messageId)
+
+  if (!target && item.messageSeq != null) {
+    await chatStore.loadMessagesFromSeq(contact, item.messageSeq)
+    await nextTick()
+    target = findMessageElBySeq(item.messageSeq, item.messageId)
+  }
+
+  if (!target) {
+    ElMessage.info('未找到该消息')
+    return
+  }
+
+  scrollToMessageEl(target)
+}
+
+/** 群聊解散后：关闭面板、清理会话与当前频道 */
+const handleGroupDissolved = () => {
+  const contact = activeContact.value
+
+  isShowChatInfo.value = false
+
+  if (!contact) return
+
+  const index = chatStore.contacts.findIndex(
+    (item) => String(item.uid) === String(contact.uid) && item.channelType === contact.channelType,
+  )
+  if (index > -1) {
+    chatStore.contacts.splice(index, 1)
+  }
+
+  chatStore.activeContact = null
+  userStore.currentChannel = null
+  chatStore.isRefreshConversations = true
 }
 
 /** 当前会话中 @我 且尚未查看过的消息 */
@@ -745,14 +817,17 @@ onUnmounted(() => {
           v-model="isShowChatInfo"
           :info="channelInfo"
           v-if="activeContact && activeContact.channelType === 1"
+          @locate="locateMessageBySeq"
       />
 
       <group-info
           v-model="isShowChatInfo"
-          v-if="activeContact && activeContact.channelType === 2"
+          v-if="activeContact && activeContact.channelType === 2 && !isGroupDisbanded"
           :members="groupMembers"
           :info="channelInfo"
           @refresh="refreshGroup"
+          @locate="locateMessageBySeq"
+          @dissolved="handleGroupDissolved"
       />
     </div>
 

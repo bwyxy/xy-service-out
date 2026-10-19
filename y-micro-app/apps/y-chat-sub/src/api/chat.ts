@@ -44,6 +44,48 @@ export const setConversationTop = (data: ConversationTopParams) => {
 }
 
 /**
+ * 聊天记录搜索结果项
+ * */
+export interface SearchMessageItem {
+  messageSeq?: number
+  messageId?: number
+  fromUid: string
+  type: number
+  content: string
+  timestamp: number
+}
+
+/**
+ * 搜索聊天记录参数
+ * */
+export interface SearchMessageParams {
+  channelId: string
+  channelType: number
+  /** 关键字（按类型/日期浏览时可不传） */
+  keyword?: string
+  /** 消息类型过滤，为空默认仅文本 */
+  types?: number[]
+  /** 是否仅查找链接 */
+  linkOnly?: boolean
+  /** 起始时间（毫秒，含） */
+  startTime?: number
+  /** 结束时间（毫秒，含） */
+  endTime?: number
+  limit?: number
+}
+
+/**
+ * 搜索聊天记录
+ * */
+export const searchMessages = (data: SearchMessageParams) => {
+  return request({
+    url: '/message/search',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 发送消息（经服务端转发至悟空 IM）
  *
  * 统一走服务端接口，便于后续做内容安全校验、图片鉴黄等业务扩展。

@@ -95,3 +95,13 @@ export const deleteAnnouncement = (groupId :string | number, id :number) => {
         method: 'delete'
     })
 }
+
+/**
+ * 解散群聊（仅群主可操作）
+ * */
+export const dissolveGroup = (groupId :string | number) => {
+    return request({
+        url: `/group/${groupId}`,
+        method: 'delete'
+    })
+}

@@ -8,8 +8,10 @@ import com.chat.fg.pojo.dto.AiChatRequest;
 import com.chat.fg.pojo.dto.AiChatResponse;
 import com.chat.fg.pojo.dto.MsgDTO;
 import com.chat.fg.pojo.dto.RecallMessageDTO;
+import com.chat.fg.pojo.dto.SearchMessageDTO;
 import com.chat.fg.pojo.dto.SendMsgDTO;
 import com.chat.fg.pojo.enums.GroupMemberRole;
+import com.chat.fg.pojo.vo.SearchMessageVO;
 import com.chat.fg.service.IMessageService;
 import com.chat.fg.utils.SecurityUtils;
 import com.xy.common.client.WuKongClient;
@@ -33,9 +35,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -61,6 +69,21 @@ public class MessageServiceImpl implements IMessageService {
 
     /** 消息撤回时间窗口（分钟） */
     private static final long RECALL_WINDOW_MINUTES = 2;
+
+    /** 搜索聊天记录时单页回溯的条数 */
+    private static final int SEARCH_PAGE_SIZE = 50;
+
+    /** 搜索聊天记录时最多回溯的消息条数，避免全量扫描 */
+    private static final int SEARCH_MAX_SCAN = 300;
+
+    /** 按类型/日期浏览时最多回溯的消息条数（需覆盖更早的记录） */
+    private static final int SEARCH_MAX_SCAN_DEEP = 1000;
+
+    /** 搜索聊天记录返回结果条数上限 */
+    private static final int SEARCH_RESULT_LIMIT = 50;
+
+    /** 链接识别：文本中包含 http/https 地址即视为链接 */
+    private static final Pattern LINK_PATTERN = Pattern.compile("https?://", Pattern.CASE_INSENSITIVE);
 
     /**
      * 查询频道历史消息
@@ -356,13 +379,185 @@ public class MessageServiceImpl implements IMessageService {
         msgRequest.setLimit(limit);
         msgRequest.setPullMode(0);
 
-        MessageVO messageVO = wuKongClient.messageSync(msgRequest);
+        return syncMessages(msgRequest);
+    }
+
+    /**
+     * 同步消息，异常或空响应时返回空集合
+     * */
+    private List<Message> syncMessages(MsgRequest msgRequest) {
+        MessageVO messageVO;
+
+        try {
+            messageVO = wuKongClient.messageSync(msgRequest);
+        } catch (Exception e) {
+            log.error("同步消息失败, channelId={}", msgRequest.getChannelId(), e);
+            return Collections.emptyList();
+        }
 
         if (messageVO == null || messageVO.getMessages() == null) {
             return Collections.emptyList();
         }
 
         return messageVO.getMessages();
+    }
+
+    /**
+     * 搜索聊天记录
+     *
+     * <p>悟空 IM 未提供消息搜索接口，这里从最新消息开始按页向前回溯，
+     * 解析 payload 后按「消息类型 / 关键字 / 链接 / 时间区间」过滤，
+     * 回溯条数达到上限或无更多消息时结束。</p>
+     * */
+    @Override
+    public List<SearchMessageVO> searchMessages(SearchMessageDTO searchMessageDTO) {
+        String keyword = searchMessageDTO.getKeyword() == null ? "" : searchMessageDTO.getKeyword().trim();
+        String lowerKeyword = keyword.toLowerCase();
+
+        boolean linkOnly = Boolean.TRUE.equals(searchMessageDTO.getLinkOnly());
+
+        Set<Integer> types = searchMessageDTO.getTypes() == null || searchMessageDTO.getTypes().isEmpty()
+                ? new HashSet<>(Collections.singletonList(MessageType.text.getCode()))
+                : new HashSet<>(searchMessageDTO.getTypes());
+
+        // 关键字搜索只回溯近期消息；按类型/日期浏览需要覆盖更早的记录
+        int maxScan = keyword.isEmpty() || linkOnly ? SEARCH_MAX_SCAN_DEEP : SEARCH_MAX_SCAN;
+
+        int limit = searchMessageDTO.getLimit() != null && searchMessageDTO.getLimit() > 0
+                ? Math.min(searchMessageDTO.getLimit(), SEARCH_RESULT_LIMIT)
+                : SEARCH_RESULT_LIMIT;
+
+        Long startTime = searchMessageDTO.getStartTime();
+        Long endTime = searchMessageDTO.getEndTime();
+
+        String loginUid = String.valueOf(SecurityUtils.getUId());
+
+        List<SearchMessageVO> result = new ArrayList<>();
+        int startSeq = 0;
+        int scanned = 0;
+        // 已回溯到时间窗口起点之前的消息，可提前结束
+        boolean reachedStart = false;
+
+        while (result.size() < limit && scanned < maxScan && !reachedStart) {
+            MsgRequest msgRequest = new MsgRequest();
+            msgRequest.setLoginUid(loginUid);
+            msgRequest.setChannelId(searchMessageDTO.getChannelId());
+            msgRequest.setChannelType(searchMessageDTO.getChannelType());
+            msgRequest.setStartMessageSeq(startSeq);
+            msgRequest.setEndMessageSeq(0);
+            msgRequest.setLimit(SEARCH_PAGE_SIZE);
+            msgRequest.setPullMode(0);
+
+            List<Message> page = syncMessages(msgRequest);
+
+            if (page.isEmpty()) {
+                break;
+            }
+
+            for (Message message : page) {
+                scanned++;
+
+                long timestamp = toMillis(message.getTimestamp());
+
+                // 比时间窗口更新的消息直接跳过
+                if (endTime != null && timestamp > endTime) {
+                    continue;
+                }
+
+                // 已早于时间窗口起点，本页处理完后即可结束
+                if (startTime != null && timestamp < startTime) {
+                    reachedStart = true;
+                    continue;
+                }
+
+                SearchMessageVO vo = matchMessage(message, types, linkOnly, lowerKeyword);
+
+                if (vo != null) {
+                    result.add(vo);
+                }
+            }
+
+            // 以本页最小序号为界继续向更早的方向回溯
+            int minSeq = page.stream()
+                    .map(Message::getMessageSeq)
+                    .filter(Objects::nonNull)
+                    .mapToInt(Long::intValue)
+                    .min()
+                    .orElse(0);
+
+            if (minSeq <= 1) {
+                break;
+            }
+
+            startSeq = minSeq - 1;
+        }
+
+        // 按消息序号倒序返回最近的匹配结果
+        result.sort(Comparator.comparing(SearchMessageVO::getMessageSeq,
+                Comparator.nullsLast(Comparator.reverseOrder())));
+
+        return result.stream().limit(limit).collect(Collectors.toList());
+    }
+
+    /**
+     * 解析消息 payload 并判断是否命中过滤条件
+     *
+     * @param types 允许的消息类型
+     * @param linkOnly 是否仅匹配链接文本
+     * @param lowerKeyword 关键字（小写），为空表示不做内容过滤
+     * @return 命中时返回搜索结果，未命中返回 null
+     * */
+    private SearchMessageVO matchMessage(Message message, Set<Integer> types,
+                                         boolean linkOnly, String lowerKeyword) {
+        String payload = message.getPayload();
+
+        if (payload == null || payload.isEmpty()) {
+            return null;
+        }
+
+        JSONObject content;
+
+        try {
+            content = JSON.parseObject(new String(Base64.getDecoder().decode(payload)));
+        } catch (Exception e) {
+            log.warn("搜索聊天记录-解析 payload 失败, messageSeq={}", message.getMessageSeq());
+            return null;
+        }
+
+        if (content == null) {
+            return null;
+        }
+
+        Integer type = content.getInteger("type");
+        String text = content.getString("content");
+
+        if (type == null || !types.contains(type)) {
+            return null;
+        }
+
+        boolean isText = MessageType.text.getCode().equals(type);
+
+        if (linkOnly) {
+            // 链接只在文本消息里，且需包含 http/https 地址
+            if (!isText || text == null || !LINK_PATTERN.matcher(text).find()) {
+                return null;
+            }
+        } else if (!lowerKeyword.isEmpty()) {
+            // 关键字仅对文本消息生效（图片/文件存的是 URL）
+            if (!isText || text == null || !text.toLowerCase().contains(lowerKeyword)) {
+                return null;
+            }
+        }
+
+        SearchMessageVO vo = new SearchMessageVO();
+        vo.setMessageSeq(message.getMessageSeq());
+        vo.setMessageId(message.getMessageId());
+        vo.setFromUid(message.getFromUid());
+        vo.setType(type);
+        vo.setContent(text);
+        vo.setTimestamp(toMillis(message.getTimestamp()));
+
+        return vo;
     }
 
     /**
