@@ -724,14 +724,21 @@ const useChatStore = defineStore('chat', () => {
   /**
    * 添加好友为联系人
    */
-  function addContact(contactUid: string, contactName: string, avatar?: string) {
-    const isExist = contacts.value.find((c) => c.uid === contactUid && c.channelType === 1)
+  function addContact(
+    contactUid: string,
+    contactName: string,
+    avatar?: string,
+    channelType: 1 | 2 = 1,
+  ) {
+    const isExist = contacts.value.find(
+      (c) => c.uid === contactUid && c.channelType === channelType,
+    )
     if (!isExist) {
       contacts.value.push({
         uid: contactUid,
         name: contactName,
-        type: 'person',
-        channelType: 1,
+        type: channelType === 2 ? 'group' : 'person',
+        channelType,
         unreadCount: 0,
         avatar,
       })

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chat.fg.pojo.dto.CreateGroupDTO;
 import com.chat.fg.pojo.dto.EditGroupDTO;
 import com.chat.fg.pojo.enums.GroupMemberRole;
+import com.chat.fg.pojo.vo.GroupVO;
 import com.chat.fg.service.IGroupService;
 import com.chat.fg.utils.SecurityUtils;
 import com.chat.fg.wk.ChatMessage;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 群聊 逻辑层
@@ -193,6 +195,61 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         channel.setChannelType(2);
 
         wuKongClient.deleteChannel(channel);
+    }
+
+    /**
+     * 查询当前用户加入的群聊列表
+     * */
+    @Override
+    public List<GroupVO> listMyGroups() {
+        Long uId = SecurityUtils.getUId();
+
+        List<GroupMember> myMembers = groupMemberService.list(
+                new LambdaQueryWrapper<GroupMember>().eq(GroupMember::getUId, uId));
+
+        if (myMembers.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Map<Long, Integer> roleMap = new HashMap<>(myMembers.size());
+        for (GroupMember member : myMembers) {
+            roleMap.putIfAbsent(member.getGroupId(), member.getRole());
+        }
+
+        // 排除已解散的群聊
+        List<Group> groups = this.list(new LambdaQueryWrapper<Group>()
+                .in(Group::getGroupId, roleMap.keySet())
+                .ne(Group::getDisband, 1));
+
+        if (groups.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> groupIds = groups.stream().map(Group::getGroupId).collect(Collectors.toList());
+
+        Map<Long, Long> memberCountMap = groupMemberService.list(
+                        new LambdaQueryWrapper<GroupMember>().in(GroupMember::getGroupId, groupIds))
+                .stream()
+                .collect(Collectors.groupingBy(GroupMember::getGroupId, Collectors.counting()));
+
+        List<GroupVO> groupList = new ArrayList<>(groups.size());
+
+        for (Group group : groups) {
+            GroupVO groupVO = new GroupVO();
+
+            groupVO.setGroupId(group.getGroupId());
+            groupVO.setName(group.getName());
+            groupVO.setAvatar(group.getAvatar());
+            groupVO.setRole(roleMap.get(group.getGroupId()));
+            groupVO.setMemberCount(memberCountMap.getOrDefault(group.getGroupId(), 0L).intValue());
+
+            groupList.add(groupVO);
+        }
+
+        // 新建的群聊排在前面
+        groupList.sort(Comparator.comparing(GroupVO::getGroupId).reversed());
+
+        return groupList;
     }
 
     /**

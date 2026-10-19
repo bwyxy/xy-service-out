@@ -12,6 +12,16 @@ export const createGroup = (data :any) => {
 }
 
 /**
+ * 查询当前用户加入的群聊列表（不含已解散的群）
+ * */
+export const getMyGroups = () => {
+    return request({
+        url: '/group/my',
+        method: 'get'
+    })
+}
+
+/**
  * 查询群聊信息
  * */
 export const findGroupInfo = (id :string) => {

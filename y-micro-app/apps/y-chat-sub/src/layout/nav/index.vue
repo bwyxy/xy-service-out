@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ChatDotRound, UserFilled, Bell} from "@element-plus/icons-vue";
+import { ChatDotRound, UserFilled, Bell, ChatLineSquare } from "@element-plus/icons-vue";
 import {reactive, computed, onMounted, onUnmounted, ref} from "vue";
 import { useRoute, useRouter } from 'vue-router'
 import UserInfo from '@/layout/UserInfo/UserInfo.vue'
@@ -21,6 +21,11 @@ const navs = reactive([
     path: '/friend',
     icon: UserFilled,
     name: '好友'
+  },
+  {
+    path: '/group',
+    icon: ChatLineSquare,
+    name: '群聊'
   },
   {
     type: 'message',

@@ -6,6 +6,7 @@ import com.chat.fg.pojo.dto.GroupNicknameDTO;
 import com.chat.fg.pojo.dto.MuteMemberDTO;
 import com.chat.fg.pojo.dto.PublishAnnouncementDTO;
 import com.chat.fg.pojo.vo.GroupMemberVO;
+import com.chat.fg.pojo.vo.GroupVO;
 import com.chat.fg.service.IGroupAnnouncementService;
 import com.chat.fg.service.IGroupMemberService;
 import com.chat.fg.service.IGroupService;
@@ -33,6 +34,15 @@ public class GroupController {
 
     @Autowired
     private IGroupAnnouncementService groupAnnouncementService;
+
+    /**
+     * 查询当前用户加入的群聊列表
+     * */
+    @GetMapping("/my")
+    public R<List<GroupVO>> listMyGroups() {
+
+        return R.ok(groupService.listMyGroups());
+    }
 
     /**
      * 查询群聊信息
