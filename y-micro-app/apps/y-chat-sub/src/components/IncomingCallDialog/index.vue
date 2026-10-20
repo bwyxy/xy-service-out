@@ -7,12 +7,12 @@ import useCallStore from '@/store/call.ts'
 /**
  * 来电弹窗（incoming 状态显示）
  *
- * 对端头像 + 昵称 + 媒体类型，接听 / 拒绝两个操作。
+ * 对端头像 + 昵称 + 媒体类型（群聊显示群名与「邀请你加入…通话」），接听 / 拒绝两个操作。
  * 铃声由 store/call.ts 的 ringtoneEngine 负责。
  * */
 
 const callStore = useCallStore()
-const { status, peer, mediaType } = storeToRefs(callStore)
+const { status, peer, mediaType, statusText } = storeToRefs(callStore)
 
 const visible = computed(() => status.value === 'incoming')
 </script>
@@ -33,7 +33,7 @@ const visible = computed(() => status.value === 'incoming')
       <div v-else class="caller-avatar caller-avatar--text">{{ (peer?.nickname || '?').slice(0, 1) }}</div>
 
       <span class="caller-name">{{ peer?.nickname }}</span>
-      <span class="caller-hint">{{ mediaType === 2 ? '邀请你视频通话' : '邀请你语音通话' }}</span>
+      <span class="caller-hint">{{ statusText }}</span>
 
       <div class="incoming-actions">
         <div class="action-btn action-btn--reject" title="拒绝" @click="callStore.rejectCall()">

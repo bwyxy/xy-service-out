@@ -61,14 +61,26 @@ forum:
   search-limit-per-ip: 30
   search-limit-window-minutes: 1
 
-# 音视频通话（WebRTC）配置
+# 音视频通话配置（媒体面走 LiveKit SFU，呼叫控制信令走悟空 IM 个人频道）
 xy:
   rtc:
     # 呼叫超时（秒）：超时未接听自动结束并通知双方
     call-timeout-seconds: 90
-    # ICE 服务器（STUN/TURN），生产环境建议自建 coturn 并补充 turn 配置
-    ice-servers:
-      - urls: stun:stun.l.google.com:19302
-      # - urls: turn:turn.example.com:3478
-      #   username: your-username
-      #   credential: your-credential
+    # 通话人数上限（1v1 固定 2 人，群聊取该值）
+    max-participants: 9
+    # 单次通话最长时长（分钟），超时由定时任务兜底结束
+    max-call-minutes: 180
+    # LiveKit SFU
+    livekit:
+      # 下发给前端的地址（生产使用 wss:// 并由 Nginx 反代）
+      url: ${LIVEKIT_URL:ws://127.0.0.1:7880}
+      # 服务端 RoomService 调用地址（通常为内网）
+      api-url: ${LIVEKIT_API_URL:http://127.0.0.1:7880}
+      api-key: ${LIVEKIT_API_KEY:devkey}
+      api-secret: ${LIVEKIT_API_SECRET:secret}
+      # 接入 token 有效期（秒）
+      token-ttl-seconds: 14400
+      # 房间空置自动关闭（秒）
+      empty-timeout-seconds: 300
+      # 参与者掉线宽限（秒）
+      departure-timeout-seconds: 20

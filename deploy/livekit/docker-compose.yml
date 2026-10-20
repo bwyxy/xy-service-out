@@ -1,0 +1,56 @@
+# ============================================================================
+# LiveKit + Caddy 单机生产部署
+#
+# 端口清单（云安全组 + 本机防火墙都要放行）：
+#   80/tcp            仅用于 ACME 证书校验与跳转
+#   443/tcp           wss 信令入口（Caddy 终结 TLS，自动申请与续期）
+#   7881/tcp          WebRTC over TCP 回退（UDP 被墙时使用）
+#   50000-50100/udp   媒体端口段
+#   5349/tcp, 443/udp 仅当启用 TURN 时需要，见 livekit.yaml
+#   7880/tcp          仅监听本机，由 Caddy 反代，勿对公网暴露
+#   6789/tcp          Prometheus 指标，仅内网
+#
+# 注意：两个服务都用 host 网络，因为它们都需要直接占用宿主机端口与 UDP 段；
+# 因此容器间通过 127.0.0.1 互访（Caddy -> LiveKit:7880）。
+#
+# 部署步骤见 docs/rtc/deployment.md 第 3 节
+# ============================================================================
+
+services:
+  livekit:
+    # 生产建议固定具体版本号（如 v1.9.x）并随发布流程升级
+    image: livekit/livekit-server:latest
+    container_name: livekit
+    restart: unless-stopped
+    # WebRTC 需要大段 UDP 端口且要正确感知本机公网 IP，必须使用 host 网络
+    network_mode: host
+    command: --config /etc/livekit.yaml
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+      # 启用 TURN/TLS 时解开（证书由 livekit.yaml 的 turn 段指定）
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: "5"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: livekit-caddy
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # 证书与 ACME 账号数据必须持久化，否则每次重启都会重新签发触发限流
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "3"

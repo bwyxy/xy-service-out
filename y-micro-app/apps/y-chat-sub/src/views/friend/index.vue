@@ -37,9 +37,12 @@ const getInfo = async (uId: string) => {
 const handleAudioCall = () => {
   if (!friendInfo.value) return
   callStore.startCall({
-    uid: String(friendInfo.value.uid ?? friendInfo.value.friendId),
-    nickname: friendInfo.value.nickname || '',
-    avatar: friendInfo.value.avatar || '',
+    mode: 'p2p',
+    peer: {
+      uid: String(friendInfo.value.uid ?? friendInfo.value.friendId),
+      nickname: friendInfo.value.nickname || '',
+      avatar: friendInfo.value.avatar || '',
+    },
   }, 1)
 }
 
@@ -47,9 +50,12 @@ const handleAudioCall = () => {
 const handleVideoCall = () => {
   if (!friendInfo.value) return
   callStore.startCall({
-    uid: String(friendInfo.value.uid ?? friendInfo.value.friendId),
-    nickname: friendInfo.value.nickname || '',
-    avatar: friendInfo.value.avatar || '',
+    mode: 'p2p',
+    peer: {
+      uid: String(friendInfo.value.uid ?? friendInfo.value.friendId),
+      nickname: friendInfo.value.nickname || '',
+      avatar: friendInfo.value.avatar || '',
+    },
   }, 2)
 }
 

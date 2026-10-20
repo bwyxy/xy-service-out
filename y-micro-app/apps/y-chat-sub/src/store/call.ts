@@ -1,24 +1,27 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { ElMessage } from 'element-plus'
+import { DisconnectReason } from 'livekit-client'
 import {
-  rtcCall, rtcAccept, rtcReject, rtcHangup, rtcCancel, getIceServers,
-  type IceServer,
+  rtcCall, rtcAccept, rtcReject, rtcHangup, rtcCancel, rtcInvite, rtcEnd,
+  type CallSession, type RtcMember,
 } from '@/api/rtc.ts'
 import { rtcSignalingService, type RtcSignalData } from '@/services/rtc/signaling.ts'
-import { RtcConnection, type NetworkLevel, type NetworkStats } from '@/services/rtc/webrtc.ts'
+import { LivekitSession, type LivekitConnState, type ParticipantState, type ParticipantQuality } from '@/services/rtc/livekit.ts'
 import { ringtoneEngine } from '@/services/rtc/ringtone.ts'
-import { MessageType } from '@/services/im/constants'
+import { MessageType, isCallControlType } from '@/services/im/constants'
 import useUserStore from '@/store/user.ts'
 
 /**
  * 通话状态机
  *
- * idle → outgoing（主叫发起，回铃中）
+ * idle → outgoing（主叫发起：1v1 回铃中 / 群聊等待成员加入）
  * idle → incoming（被叫收到邀请，响铃中）
- * outgoing/incoming → connecting（双方都在，WebRTC 建连中）
- * connecting → active（媒体通道建立，计时中）
+ * outgoing/incoming → connecting（正在接入 LiveKit 房间）
+ * connecting → active（房间内在场人数 ≥ 2，计时中）
  * outgoing/incoming/connecting/active → ended（任一方结束/异常）→ 3s 后回 idle
+ *
+ * 媒体面全部由 LiveKit SFU 承载；呼叫控制（200-205）经悟空 IM 个人频道接收。
  * */
 
 export type CallStatus =
@@ -29,7 +32,7 @@ export type CallStatus =
   | 'active'
   | 'ended'
 
-/** 通话对端信息 */
+/** 通话对端信息（1v1 展示用；群聊用群名） */
 export interface CallPeer {
   uid: string
   nickname: string
@@ -45,7 +48,14 @@ export type CallEndReason =
   | 'timeout'
   | 'failed'
   | 'remote'
+  | 'hostEnded'
+  | 'noOneJoined'
   | null
+
+/** 发起通话目标 */
+export type CallTarget =
+  | { mode: 'p2p'; peer: CallPeer }
+  | { mode: 'group'; channelId: string; groupName: string; inviteeUids: Array<string | number> }
 
 const END_REASON_TEXT: Record<Exclude<CallEndReason, null>, string> = {
   completed: '通话已结束',
@@ -55,36 +65,98 @@ const END_REASON_TEXT: Record<Exclude<CallEndReason, null>, string> = {
   timeout: '无人接听',
   failed: '连接失败',
   remote: '对方已挂断',
+  hostEnded: '通话已被结束',
+  noOneJoined: '无人加入通话',
 }
 
 /** 呼叫等待超时（秒），与后端 xy.rtc.call-timeout-seconds 对齐 */
 const CALL_TIMEOUT_SECONDS = 90
+/** ended 提示保留时长 */
+const ENDED_RESET_MS = 3000
+/** 计时触发下限：房间内在场人数 */
+const ACTIVE_MIN_PRESENT = 2
+
+/** 接口业务错误（请求层已提示，调用方无需重复弹窗） */
+class RtcBusinessError extends Error {}
+
+interface ApiResult<T> {
+  code: number
+  msg?: string
+  data: T
+}
+
+/** 解包后端统一响应体；业务失败抛出 RtcBusinessError */
+function unwrap<T>(res: unknown): T {
+  const result = res as ApiResult<T>
+  if (!result || result.code !== 200) {
+    throw new RtcBusinessError(result?.msg || '请求失败')
+  }
+  return result.data
+}
 
 export const useCallStore = defineStore('call', () => {
   // ---- 状态 ----
   const status = ref<CallStatus>('idle')
   const roomId = ref('')
+  /** 频道类型 1-单聊 2-群聊 */
+  const channelType = ref<1 | 2>(1)
+  /** 单聊：对端 uid；群聊：g_{groupId} */
+  const channelId = ref('')
+  const groupName = ref('')
+  /** 主持人 uid（群聊=发起人） */
+  const hostUid = ref('')
+  const maxParticipants = ref(2)
   const peer = ref<CallPeer | null>(null)
   /** 媒体类型 1-语音 2-视频 */
   const mediaType = ref<1 | 2>(1)
-  const localStream = ref<MediaStream | null>(null)
-  const remoteStream = ref<MediaStream | null>(null)
+  /** 媒体面参与者（含受邀未接入者，invited=true） */
+  const participants = ref<ParticipantState[]>([])
+  /** 后端视角的房间成员（用于补齐受邀未接入者的昵称/头像） */
+  const roomMembers = ref<RtcMember[]>([])
   const audioMuted = ref(false)
   const videoMuted = ref(false)
-  const remoteVideoMuted = ref(false)
+  /** 浏览器自动播放策略阻断远端音频 */
+  const audioBlocked = ref(false)
+  const connState = ref<LivekitConnState>('connecting')
   const duration = ref(0)
-  const networkLevel = ref<NetworkLevel>('good')
-  /** 弱网自动降级（视频转语音） */
-  const degraded = ref(false)
   const endReason = ref<CallEndReason>(null)
+  /** 观看者是否为该群管理员/群主（用于「结束通话」按钮显隐） */
+  const viewerGroupAdmin = ref(false)
+
+  const isGroupCall = computed(() => channelType.value === 2)
+  /** 是否忙（任何进行中的通话状态） */
+  const isBusy = computed(() => status.value !== 'idle' && status.value !== 'ended')
+  /** 房间内在场人数（不含受邀未接入） */
+  const presentCount = computed(() => participants.value.filter((p) => !p.invited).length)
+  /** 本地成员 */
+  const localParticipant = computed(() => participants.value.find((p) => p.isLocal) ?? null)
+  /** 远端成员（含受邀未接入） */
+  const remoteParticipants = computed(() => participants.value.filter((p) => !p.isLocal))
+  /** 是否为主持人 */
+  const isHost = computed(() => {
+    const selfUid = String(useUserStore().userInfo?.uid ?? '')
+    return !!selfUid && !!hostUid.value && selfUid === hostUid.value
+  })
+  /** 是否有管理权（主持人或群主/管理员） */
+  const isRoomAdmin = computed(() => isHost.value || viewerGroupAdmin.value)
+  /** 是否有权结束整场通话（群聊：主持人或群管理员） */
+  const canEndRoom = computed(() => isGroupCall.value && isRoomAdmin.value)
+  /** 本地网络质量 */
+  const networkLevel = computed<ParticipantQuality>(() => localParticipant.value?.quality ?? 'unknown')
+
   const statusText = computed(() => {
     switch (status.value) {
       case 'outgoing':
-        return degraded.value ? '网络不佳，已转为语音' : '正在等待对方接受...'
+        if (isGroupCall.value) {
+          return presentCount.value < ACTIVE_MIN_PRESENT ? '等待成员加入…' : ''
+        }
+        return '正在等待对方接受...'
       case 'incoming':
-        return mediaType.value === 2 ? '邀请你视频通话' : '邀请你语音通话'
+        return isGroupCall.value
+          ? `${groupName.value || peer.value?.nickname || ''} 邀请你加入${mediaType.value === 2 ? '视频' : '语音'}通话`
+          : `邀请你${mediaType.value === 2 ? '视频' : '语音'}通话`
       case 'connecting':
-        return '连接中...'
+        return connState.value === 'reconnecting' ? '网络不稳定，重连中…' : '连接中...'
       case 'active':
         return ''
       case 'ended':
@@ -95,21 +167,16 @@ export const useCallStore = defineStore('call', () => {
   })
 
   // ---- 内部（非响应式） ----
-  let connection: RtcConnection | null = null
-  let iceServers: RTCIceServer[] = []
-  /** 对端 candidate 早于 remoteDescription 到达时的缓存 */
-  let pendingCandidates: RTCIceCandidateInit[] = []
-  /** 通话计时器 */
+  let session: LivekitSession | null = null
+  /** 是否已进入结束流程（防止重复清理 / 误判远端断开） */
+  let ending = false
   let durationTimer: ReturnType<typeof setInterval> | null = null
-  /** 呼叫等待超时计时器 */
   let callTimeoutTimer: ReturnType<typeof setTimeout> | null = null
-  /** ended → idle 复位计时器 */
   let resetTimer: ReturnType<typeof setTimeout> | null = null
-  /** ended 提示保留时长 */
   let signalListener: ((fromUid: string, type: number, data: RtcSignalData) => void) | null = null
-
-  /** 是否忙（任何进行中的通话状态） */
-  const isBusy = computed(() => status.value !== 'idle' && status.value !== 'ended')
+  /** 本次会话的 LiveKit 接入信息（仅当前会话有效，不入响应式状态） */
+  let pendingUrl = ''
+  let pendingToken = ''
 
   // ---- 信令监听初始化（幂等） ----
   function ensureSignalListener(): void {
@@ -126,42 +193,42 @@ export const useCallStore = defineStore('call', () => {
   /**
    * 发起通话（主叫）
    * */
-  async function startCall(peerInfo: CallPeer, type: 1 | 2): Promise<void> {
+  async function startCall(target: CallTarget, type: 1 | 2): Promise<void> {
     if (isBusy.value) {
       ElMessage.warning('正处于通话中')
       return
     }
     ensureSignalListener()
 
+    const group = target.mode === 'group'
+    channelType.value = group ? 2 : 1
+    channelId.value = group ? target.channelId : String(target.peer.uid)
+    groupName.value = group ? target.groupName : ''
+    peer.value = group ? null : target.peer
+    mediaType.value = type
+    endReason.value = null
+    duration.value = 0
+    roomMembers.value = []
+    participants.value = []
+
     try {
-      // 拉取 ICE 配置（失败用默认公共 STUN）
-      try {
-        const res = await getIceServers() as { data: IceServer[] }
-        if (res.data?.length) {
-          iceServers = res.data.map((s) => ({
-            urls: s.urls,
-            username: s.username,
-            credential: s.credential,
-          }))
-        }
-      } catch {
-        iceServers = [{ urls: 'stun:stun.l.google.com:19302' }]
-      }
-
-      const res = await rtcCall(peerInfo.uid, type) as { data: { roomId: string; mediaType: number } }
-      roomId.value = res.data.roomId
-      peer.value = peerInfo
-      mediaType.value = type
+      const payload = group
+        ? { channelId: target.channelId, channelType: 2, inviteeUids: target.inviteeUids, mediaType: type }
+        : { calleeUid: target.peer.uid, channelType: 1, mediaType: type }
+      const data = unwrap<CallSession>(await rtcCall(payload))
+      applySession(data)
       status.value = 'outgoing'
-      endReason.value = null
-      duration.value = 0
-
-      // 回铃音
-      ringtoneEngine.start('outgoing')
-      // 主叫等待超时兜底（后端定时任务也会处理）
+      if (!group) {
+        // 群聊无回铃音，仅 1v1 播放
+        ringtoneEngine.start('outgoing')
+      }
       armCallTimeout()
+      await joinRoom()
     } catch (e) {
-      console.error('[CallStore] 发起通话失败', e)
+      if (!(e instanceof RtcBusinessError)) {
+        ElMessage.error('发起通话失败，请稍后重试')
+      }
+      resetToIdle()
     }
   }
 
@@ -174,24 +241,16 @@ export const useCallStore = defineStore('call', () => {
     }
     ringtoneEngine.stop()
     clearCallTimeout()
-
+    status.value = 'connecting'
     try {
-      await rtcAccept(roomId.value)
-      status.value = 'connecting'
-
-      // 被叫为 offer 方：采集媒体 → 创建连接 → 发送 offer
-      // （localStream 由连接回调 onLocalStream 更新）
-      connection = createConnection()
-      await connection.initLocalMedia(mediaType.value)
-      const offer = await connection.createOffer()
-      await rtcSignalingService.send(peer.value!.uid, MessageType.RTC_OFFER, {
-        roomId: roomId.value,
-        sdp: offer.sdp,
-      })
+      const data = unwrap<CallSession>(await rtcAccept(roomId.value))
+      applySession(data)
+      await joinRoom()
     } catch (e) {
-      console.error('[CallStore] 接听失败', e)
-      ElMessage.error('接听失败，请重试')
-      endCallInternal('failed', false)
+      if (!(e instanceof RtcBusinessError)) {
+        ElMessage.error('接听失败，请重试')
+      }
+      endCallInternal('failed')
     }
   }
 
@@ -202,70 +261,259 @@ export const useCallStore = defineStore('call', () => {
     if (status.value !== 'incoming' || !roomId.value) {
       return
     }
-    ringtoneEngine.stop()
-    clearCallTimeout()
+    const target = roomId.value
+    endCallInternal('canceled')
     try {
-      await rtcReject(roomId.value)
+      await rtcReject(target)
     } catch (e) {
       console.warn('[CallStore] 拒绝接口失败', e)
     }
-    endCallInternal('canceled', false)
   }
 
   /**
-   * 挂断（通话中任一方）
+   * 离开通话：群聊仅本人离开，1v1 结束整房
    * */
-  async function hangupCall(): Promise<void> {
+  async function leaveRoom(): Promise<void> {
     if (!roomId.value || status.value === 'idle' || status.value === 'ended') {
       return
     }
+    const target = roomId.value
     const current = status.value
-    ringtoneEngine.stop()
-    clearCallTimeout()
+    endCallInternal(current === 'active' ? 'completed' : 'canceled')
     try {
       if (current === 'outgoing') {
-        // 呼出中挂断 = 取消
-        await rtcCancel(roomId.value)
+        await rtcCancel(target)
       } else {
-        await rtcHangup(roomId.value)
+        await rtcHangup(target)
       }
     } catch (e) {
-      console.warn('[CallStore] 挂断接口失败', e)
+      console.warn('[CallStore] 离开通话接口失败', e)
     }
-    endCallInternal(current === 'active' ? 'completed' : 'canceled', false)
+  }
+
+  /**
+   * 异常收尾：媒体面建连失败或异常断开时补一次后端挂断
+   * 不上报的话房间会停留在 CALLING/ACTIVE，阻塞双方后续通话，只能等后端超时兜底
+   * */
+  function notifyServerHangup(): void {
+    const target = roomId.value
+    if (!target) {
+      return
+    }
+    rtcHangup(target).catch((e: unknown) => {
+      console.warn('[CallStore] 异常挂断上报失败', e)
+    })
+  }
+
+  /**
+   * 结束整场通话（群聊主持人 / 群主、管理员）
+   * */
+  async function endRoom(): Promise<void> {
+    if (!isGroupCall.value || !roomId.value) {
+      return
+    }
+    const target = roomId.value
+    endCallInternal('completed')
+    try {
+      await rtcEnd(target)
+    } catch (e) {
+      console.warn('[CallStore] 结束通话接口失败', e)
+    }
+  }
+
+  /**
+   * 群通话中追加邀请成员
+   * */
+  async function inviteMembers(uids: Array<string | number>): Promise<void> {
+    if (!isGroupCall.value || !roomId.value || !uids.length) {
+      return
+    }
+    try {
+      const data = unwrap<{ roomId: string; maxParticipants: number; participants: RtcMember[] }>(
+        await rtcInvite(roomId.value, uids),
+      )
+      roomMembers.value = data.participants || []
+      refreshParticipants(session?.snapshot() ?? [])
+      ElMessage.success('邀请已发送')
+    } catch (e) {
+      if (!(e instanceof RtcBusinessError)) {
+        ElMessage.error('邀请失败，请稍后重试')
+      }
+    }
   }
 
   /**
    * 通话中开关麦克风
    * */
-  function toggleAudio(): void {
-    audioMuted.value = !audioMuted.value
-    connection?.toggleAudio(audioMuted.value)
+  async function toggleAudio(): Promise<void> {
+    const next = !audioMuted.value
+    audioMuted.value = next
+    await session?.setMicEnabled(!next)
   }
 
   /**
    * 通话中开关摄像头
    * */
-  function toggleVideo(): void {
+  async function toggleVideo(): Promise<void> {
     if (mediaType.value !== 2) {
       return
     }
-    videoMuted.value = !videoMuted.value
-    connection?.toggleVideo(videoMuted.value)
+    const next = !videoMuted.value
+    videoMuted.value = next
+    await session?.setCamEnabled(!next)
   }
 
   /**
-   * 弱网恢复后手动重开视频
+   * 用户手势后恢复远端音频播放
    * */
-  function restoreVideo(): void {
-    if (connection?.restoreVideo()) {
-      degraded.value = false
+  async function resumeAudio(): Promise<void> {
+    await session?.resumeAudio()
+    audioBlocked.value = false
+  }
+
+  /** 把某成员视频轨挂到目标 <video> */
+  function attachVideo(uid: string, el: HTMLVideoElement | null): void {
+    session?.attachVideo(uid, el)
+  }
+
+  /** 把某成员音频轨挂到目标 <audio>（远端音频必须挂真实 DOM） */
+  function attachAudio(uid: string, el: HTMLAudioElement | null): void {
+    session?.attachAudio(uid, el)
+  }
+
+  /** 更新观看者的群管理员身份（驱动「结束通话」按钮显隐） */
+  function setViewerGroupAdmin(value: boolean): void {
+    viewerGroupAdmin.value = value
+  }
+
+  // ---- 房间接入 ----
+
+  /** 记录后端返回的房间会话信息 */
+  function applySession(data: CallSession): void {
+    roomId.value = data.roomId
+    mediaType.value = data.mediaType === 2 ? 2 : 1
+    channelType.value = data.channelType === 2 ? 2 : 1
+    channelId.value = data.channelId || channelId.value
+    maxParticipants.value = data.maxParticipants || (data.channelType === 2 ? 9 : 2)
+    roomMembers.value = data.participants || []
+    pendingUrl = data.livekitUrl
+    pendingToken = data.token
+    if (data.channelType === 2 && !hostUid.value) {
+      hostUid.value = String(useUserStore().userInfo?.uid ?? '')
     }
+  }
+
+  /** 接入 LiveKit 房间并发布本地媒体 */
+  async function joinRoom(): Promise<void> {
+    ending = false
+    connState.value = 'connecting'
+    session = new LivekitSession(pendingUrl, pendingToken, {
+      onParticipantsChanged: (list) => refreshParticipants(list),
+      onConnectionState: (state) => {
+        connState.value = state
+      },
+      onDisconnected: (reason) => handleDisconnected(reason),
+      onAudioBlocked: () => {
+        audioBlocked.value = true
+      },
+      onError: (err) => {
+        console.error('[CallStore] LiveKit 错误', err)
+      },
+    })
+    try {
+      await session.connect({ audio: true, video: mediaType.value === 2 })
+    } catch (e) {
+      console.error('[CallStore] 加入通话失败', e)
+      ElMessage.error('无法加入通话，请检查麦克风/摄像头权限')
+      notifyServerHangup()
+      endCallInternal('failed')
+    }
+  }
+
+  // ---- 参与者状态聚合 ----
+
+  /**
+   * 合并媒体面在线成员与后端受邀成员
+   * */
+  function refreshParticipants(liveList: ParticipantState[]): void {
+    const present = new Set(liveList.map((p) => p.uid))
+    const merged: ParticipantState[] = [...liveList]
+
+    // 仅群聊展示「受邀未接入」占位（1v1 用对端头像占位表达等待）
+    if (isGroupCall.value) {
+      roomMembers.value.forEach((m) => {
+        const uid = String(m.uid)
+        if (present.has(uid) || m.status !== 0) {
+          return
+        }
+        merged.push({
+          uid,
+          name: m.groupNickname || m.nickname || uid,
+          avatar: m.avatar || '',
+          isLocal: false,
+          audioMuted: true,
+          videoMuted: true,
+          hasVideo: false,
+          speaking: false,
+          quality: 'unknown',
+          invited: true,
+        })
+      })
+    }
+    participants.value = merged
+    syncSelfMuteState(liveList)
+
+    // 在场人数达标即进入通话中（计时启动）
+    if (liveList.length >= ACTIVE_MIN_PRESENT && (status.value === 'outgoing' || status.value === 'connecting')) {
+      ringtoneEngine.stop()
+      clearCallTimeout()
+      status.value = 'active'
+      startDuration()
+    }
+    // 通话中掉到 1 人：1v1 视为对端已离开（远端 204 信令会兜底清理）
+    if (liveList.length < ACTIVE_MIN_PRESENT && status.value === 'active' && !isGroupCall.value) {
+      stopDuration()
+    }
+  }
+
+  /** 用媒体面真实状态回写本地静音开关（避免开关与实际发布状态不一致） */
+  function syncSelfMuteState(liveList: ParticipantState[]): void {
+    const self = liveList.find((p) => p.isLocal)
+    if (!self) {
+      return
+    }
+    audioMuted.value = self.audioMuted
+    if (mediaType.value === 2) {
+      videoMuted.value = self.videoMuted
+    }
+  }
+
+  /** LiveKit 侧断开连接 */
+  function handleDisconnected(reason: DisconnectReason): void {
+    if (ending) {
+      return
+    }
+    if (reason === DisconnectReason.DUPLICATE_IDENTITY) {
+      ElMessage.warning('该账号已在其他设备加入通话')
+      endCallInternal('failed')
+      return
+    }
+    if (reason === DisconnectReason.ROOM_DELETED || reason === DisconnectReason.PARTICIPANT_REMOVED) {
+      endCallInternal(isGroupCall.value ? 'hostEnded' : 'remote')
+      return
+    }
+    // 断网、媒体建连失败、连接超时等异常断开：后端房间不会自行结束，必须补上报
+    notifyServerHangup()
+    endCallInternal('failed')
   }
 
   // ---- 信令处理 ----
 
-  async function onSignal(fromUid: string, type: number, data: RtcSignalData): Promise<void> {
+  function onSignal(fromUid: string, type: number, data: RtcSignalData): void {
+    // 只处理呼叫控制信令；媒体面遗留信令（206-208）一律忽略
+    if (!isCallControlType(type)) {
+      return
+    }
     // 忽略多端同步的"自己发出的信令"回显（悟空 IM 会把发送者的消息同步回其所有设备）
     let selfUid = ''
     try {
@@ -280,43 +528,44 @@ export const useCallStore = defineStore('call', () => {
 
     switch (type) {
       case MessageType.RTC_INVITE: {
-        // 来电邀请
+        // 来电邀请（1v1 或被拉入群通话）
         if (isBusy.value) {
-          // 忙线：后端 /rtc/call 已拦，双保险
           return
         }
         ensureSignalListener()
+        const invitedGroup = data.channelType === 2
         roomId.value = data.roomId || ''
-        mediaType.value = (data.mediaType === 2 ? 2 : 1)
+        mediaType.value = data.mediaType === 2 ? 2 : 1
+        channelType.value = invitedGroup ? 2 : 1
+        channelId.value = data.channelId || fromUid
+        groupName.value = data.groupName || ''
+        hostUid.value = String(data.hostUid ?? fromUid)
+        maxParticipants.value = data.maxParticipants || (invitedGroup ? 9 : 2)
         peer.value = {
           uid: String(data.caller?.uid ?? fromUid),
-          nickname: data.caller?.nickname || fromUid,
+          nickname: invitedGroup
+            ? (data.groupName || data.caller?.nickname || fromUid)
+            : (data.caller?.nickname || fromUid),
           avatar: data.caller?.avatar || '',
         }
-        status.value = 'incoming'
+        roomMembers.value = []
+        participants.value = []
         endReason.value = null
         duration.value = 0
+        status.value = 'incoming'
         ringtoneEngine.start('incoming')
         armCallTimeout()
         break
       }
 
       case MessageType.RTC_ACCEPT: {
-        // 被叫已接听（主叫侧）：进入连接阶段，等待对方 offer
+        // 1v1：被叫已接听，停止回铃（计时改由「在场人数≥2」驱动）
         if (status.value !== 'outgoing' || data.roomId !== roomId.value) {
           return
         }
-        ringtoneEngine.stop()
-        clearCallTimeout()
-        status.value = 'connecting'
-        // 主叫预取媒体（并行于等待 offer，localStream 由回调更新）
-        try {
-          connection = connection || createConnection()
-          await connection.initLocalMedia(mediaType.value)
-        } catch (e) {
-          console.error('[CallStore] 主叫媒体采集失败', e)
-          ElMessage.error('无法访问麦克风/摄像头')
-          await hangupCall()
+        if (!isGroupCall.value) {
+          ringtoneEngine.stop()
+          clearCallTimeout()
         }
         break
       }
@@ -325,20 +574,25 @@ export const useCallStore = defineStore('call', () => {
         if (data.roomId !== roomId.value) {
           return
         }
-        ringtoneEngine.stop()
-        clearCallTimeout()
-        endCallInternal('rejected', false)
+        if (!isGroupCall.value) {
+          ringtoneEngine.stop()
+          clearCallTimeout()
+          endCallInternal('rejected')
+          return
+        }
+        // 群聊：某成员拒绝邀请，仅更新其状态
+        markMemberStatus(fromUid, 3)
+        ElMessage.info(`${memberName(fromUid)} 已拒绝邀请`)
         break
       }
 
       case MessageType.RTC_CANCEL: {
-        // 主叫取消/超时
         if (data.roomId !== roomId.value) {
           return
         }
         ringtoneEngine.stop()
         clearCallTimeout()
-        endCallInternal(status.value === 'incoming' ? 'canceled' : 'timeout', false)
+        endCallInternal('canceled')
         break
       }
 
@@ -346,9 +600,21 @@ export const useCallStore = defineStore('call', () => {
         if (data.roomId !== roomId.value) {
           return
         }
-        ringtoneEngine.stop()
-        clearCallTimeout()
-        endCallInternal('remote', false)
+        if (!isGroupCall.value) {
+          ringtoneEngine.stop()
+          clearCallTimeout()
+          endCallInternal('remote')
+          return
+        }
+        // 群聊：主持人离开/结束整场 -> 本地一并结束；否则仅该成员离开
+        if (fromUid === hostUid.value) {
+          endCallInternal('hostEnded')
+          return
+        }
+        const name = memberName(fromUid)
+        markMemberStatus(fromUid, 2)
+        participants.value = participants.value.filter((p) => !(p.uid === fromUid && p.invited))
+        ElMessage.info(`${name} 已离开通话`)
         break
       }
 
@@ -358,138 +624,23 @@ export const useCallStore = defineStore('call', () => {
         }
         ringtoneEngine.stop()
         clearCallTimeout()
-        endCallInternal('busy', false)
-        break
-      }
-
-      case MessageType.RTC_OFFER: {
-        if (!connection || data.roomId !== roomId.value) {
-          return
-        }
-        try {
-          const answer = await connection.handleOffer(data.sdp || '')
-          flushPendingCandidates()
-          await rtcSignalingService.send(fromUid, MessageType.RTC_ANSWER, {
-            roomId: roomId.value,
-            sdp: answer.sdp,
-          })
-        } catch (e) {
-          console.error('[CallStore] 处理 offer 失败', e)
-        }
-        break
-      }
-
-      case MessageType.RTC_ANSWER: {
-        if (!connection || data.roomId !== roomId.value) {
-          return
-        }
-        try {
-          await connection.handleAnswer(data.sdp || '')
-          flushPendingCandidates()
-        } catch (e) {
-          console.error('[CallStore] 处理 answer 失败', e)
-        }
-        break
-      }
-
-      case MessageType.RTC_CANDIDATE: {
-        if (!connection || data.roomId !== roomId.value || !data.candidate) {
-          return
-        }
-        if (connection.hasRemoteDescription()) {
-          connection.addCandidate(data.candidate).catch((e) => {
-            console.warn('[CallStore] 添加 candidate 失败', e)
-          })
-        } else {
-          pendingCandidates.push(data.candidate)
-        }
+        endCallInternal('busy')
         break
       }
     }
   }
 
-  /** remoteDescription 就绪后回放缓存的 candidate */
-  function flushPendingCandidates(): void {
-    if (!connection) {
-      return
-    }
-    const candidates = pendingCandidates
-    pendingCandidates = []
-    candidates.forEach((c) => {
-      connection!.addCandidate(c).catch((e) => {
-        console.warn('[CallStore] 回放 candidate 失败', e)
-      })
-    })
+  /** 覆盖某个后端成员的状态（触发受邀占位消失） */
+  function markMemberStatus(uid: string, memberStatus: number): void {
+    roomMembers.value = roomMembers.value.map((m) =>
+      String(m.uid) === uid ? { ...m, status: memberStatus } : m,
+    )
   }
 
-  // ---- WebRTC 连接工厂 ----
-
-  function createConnection(): RtcConnection {
-    if (!iceServers.length) {
-      iceServers = [{ urls: 'stun:stun.l.google.com:19302' }]
-    }
-    return new RtcConnection(iceServers, {
-      onLocalStream: (stream) => {
-        localStream.value = stream
-      },
-      onRemoteStream: (stream) => {
-        remoteStream.value = stream
-        if (status.value === 'connecting') {
-          status.value = 'active'
-          startDuration()
-          connection?.startStatsMonitor()
-        }
-      },
-      onIceCandidate: (candidate) => {
-        if (peer.value && roomId.value) {
-          rtcSignalingService
-              .send(peer.value.uid, MessageType.RTC_CANDIDATE, {
-                roomId: roomId.value,
-                candidate,
-              })
-              .catch((e) => console.warn('[CallStore] 发送 candidate 失败', e))
-        }
-      },
-      onRenegotiationOffer: (offer) => {
-        // ICE 重启产生的重协商 offer：经信令通道发给对端
-        if (peer.value && roomId.value) {
-          rtcSignalingService
-              .send(peer.value.uid, MessageType.RTC_OFFER, {
-                roomId: roomId.value,
-                sdp: offer.sdp,
-              })
-              .catch((e) => console.warn('[CallStore] 发送重协商 offer 失败', e))
-        }
-      },
-      onConnected: () => {
-        if (status.value === 'connecting') {
-          status.value = 'active'
-          startDuration()
-          connection?.startStatsMonitor()
-        }
-      },
-      onFailed: async () => {
-        console.error('[CallStore] WebRTC 连接失败（ICE 重启后仍失败）')
-        if (status.value === 'active' || status.value === 'connecting') {
-          await hangupCall()
-        }
-      },
-      onRemoteVideoMuted: (muted) => {
-        remoteVideoMuted.value = muted
-      },
-      onStats: (stats: NetworkStats) => {
-        networkLevel.value = stats.level
-        // 弱网自动降级：视频通话关视频转纯语音
-        if (stats.level === 'poor' && mediaType.value === 2 && !degraded.value
-            && (status.value === 'active' || status.value === 'connecting')) {
-          connection?.degradeVideo()
-        }
-      },
-      onVideoDegraded: () => {
-        degraded.value = true
-        ElMessage.warning('当前网络不佳，已暂时关闭视频画面')
-      },
-    })
+  function memberName(uid: string): string {
+    const member = roomMembers.value.find((m) => String(m.uid) === uid)
+    const live = participants.value.find((p) => p.uid === uid)
+    return live?.name || member?.groupNickname || member?.nickname || uid
   }
 
   // ---- 辅助 ----
@@ -504,17 +655,22 @@ export const useCallStore = defineStore('call', () => {
     }, 1000)
   }
 
+  function stopDuration(): void {
+    if (durationTimer) {
+      clearInterval(durationTimer)
+      durationTimer = null
+    }
+  }
+
   function armCallTimeout(): void {
     clearCallTimeout()
     callTimeoutTimer = setTimeout(() => {
-      if (status.value === 'outgoing' || status.value === 'incoming') {
-        if (status.value === 'outgoing') {
-          hangupCall()
-        } else {
-          // 被叫侧超时：等待后端 cancel 信令；本地直接清理避免卡铃
-          ringtoneEngine.stop()
-          endCallInternal('timeout', false)
-        }
+      if (status.value === 'outgoing') {
+        // 呼叫中无人接听：主叫取消（群聊由后端超时任务兜底）
+        void leaveRoom()
+      } else if (status.value === 'incoming') {
+        ringtoneEngine.stop()
+        endCallInternal('timeout')
       }
     }, CALL_TIMEOUT_SECONDS * 1000)
   }
@@ -526,43 +682,58 @@ export const useCallStore = defineStore('call', () => {
     }
   }
 
-  /**
-   * 结束通话并清理（notifyRemote=false 时不重复通知对端）
-   * */
-  function endCallInternal(reason: Exclude<CallEndReason, null>, _notifyRemote: boolean): void {
-    ringtoneEngine.stop()
-    clearCallTimeout()
-    if (durationTimer) {
-      clearInterval(durationTimer)
-      durationTimer = null
-    }
-    connection?.close()
-    connection = null
-    pendingCandidates = []
-    // 本地流引用随连接释放，UI 停止渲染
-    localStream.value = null
-    remoteStream.value = null
-    audioMuted.value = false
-    videoMuted.value = false
-    remoteVideoMuted.value = false
-    degraded.value = false
-    networkLevel.value = 'good'
-    endReason.value = reason
-    status.value = 'ended'
-
+  function scheduleReset(): void {
     if (resetTimer) {
       clearTimeout(resetTimer)
     }
     resetTimer = setTimeout(() => {
-      // 仅当仍处于 ended（未被新呼叫覆盖）时复位
       if (status.value === 'ended') {
-        status.value = 'idle'
-        roomId.value = ''
-        peer.value = null
-        endReason.value = null
-        duration.value = 0
+        resetToIdle()
       }
-    }, 3000)
+    }, ENDED_RESET_MS)
+  }
+
+  /** 复位到 idle（保留结束原因供 UI 展示，故仅在 3s 后调用） */
+  function resetToIdle(): void {
+    status.value = 'idle'
+    roomId.value = ''
+    channelId.value = ''
+    groupName.value = ''
+    hostUid.value = ''
+    maxParticipants.value = 2
+    peer.value = null
+    roomMembers.value = []
+    participants.value = []
+    audioMuted.value = false
+    videoMuted.value = false
+    audioBlocked.value = false
+    connState.value = 'connecting'
+    endReason.value = null
+    duration.value = 0
+    viewerGroupAdmin.value = false
+  }
+
+  /**
+   * 结束通话并清理
+   * */
+  function endCallInternal(reason: Exclude<CallEndReason, null>): void {
+    if (ending) {
+      return
+    }
+    ending = true
+    ringtoneEngine.stop()
+    clearCallTimeout()
+    stopDuration()
+    const current = session
+    session = null
+    current?.disconnect()
+    participants.value = []
+    audioMuted.value = false
+    videoMuted.value = false
+    audioBlocked.value = false
+    endReason.value = reason
+    status.value = 'ended'
+    scheduleReset()
   }
 
   // 全局信令监听：store 被使用（layout 已挂载 CallOverlay/IncomingCallDialog）即注册，
@@ -573,27 +744,46 @@ export const useCallStore = defineStore('call', () => {
     // 状态
     status,
     roomId,
+    channelType,
+    channelId,
+    groupName,
+    hostUid,
+    maxParticipants,
     peer,
     mediaType,
-    localStream,
-    remoteStream,
+    participants,
+    roomMembers,
     audioMuted,
     videoMuted,
-    remoteVideoMuted,
+    audioBlocked,
+    connState,
     duration,
-    networkLevel,
-    degraded,
     endReason,
-    statusText,
+    // 计算属性
+    isGroupCall,
     isBusy,
+    presentCount,
+    localParticipant,
+    remoteParticipants,
+    isHost,
+    isRoomAdmin,
+    canEndRoom,
+    viewerGroupAdmin,
+    networkLevel,
+    statusText,
     // 动作
     startCall,
     acceptCall,
     rejectCall,
-    hangupCall,
+    leaveRoom,
+    endRoom,
+    inviteMembers,
     toggleAudio,
     toggleVideo,
-    restoreVideo,
+    resumeAudio,
+    attachVideo,
+    attachAudio,
+    setViewerGroupAdmin,
   }
 })
 

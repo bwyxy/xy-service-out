@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "飞鸽即时通讯",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "identifier": "com.xy.chat.desktop",
   "build": {
     "frontendDist": "../dist",

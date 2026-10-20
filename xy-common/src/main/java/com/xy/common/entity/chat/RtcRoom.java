@@ -37,6 +37,11 @@ public class RtcRoom {
     private String channelId;
 
     /**
+     * 频道类型 1-单聊 2-群聊
+     * */
+    private Integer channelType;
+
+    /**
      * 最大人数
      * */
     private int maxParticipants;

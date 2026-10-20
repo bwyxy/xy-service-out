@@ -13,12 +13,14 @@
 #
 # 可选环境变量：
 #   BASE_URL   后端地址，默认 http://localhost:9080
+#   GROUP_ID   测试群 ID（纯数字，如 9），设置后启用群通话用例
+#   INVITE_UID 群内另一位成员 uid（可选），设置后在群通话用例中追加 invite
 #   MYSQL_CMD  完整的 mysql 连接命令（含库名），设置后启用数据库状态断言，
 #              例：MYSQL_CMD="mysql -h127.0.0.1 -uroot -p123456 xy_chat"
 #
 # 测试覆盖：
-#   登录 / ICE 配置 / 呼叫自己 / 接听挂断 / 幂等重挂 / 拒绝 / 取消 /
-#   忙线 / 重复呼叫 / 结束后重建房间 / 数据库状态流转（可选）
+#   登录 / LiveKit 健康检查 / 呼叫自己 / 接听挂断 / 幂等重挂 / 拒绝 / 取消 /
+#   忙线 / 重复呼叫 / 结束后重建房间 / 群通话（可选）/ 数据库状态流转（可选）
 # ============================================================================
 set -u
 
@@ -136,13 +138,13 @@ fi
 echo "  UID_A=$UID_A  UID_B=$UID_B"
 
 # ---------------------------------------------------------------------------
-# 1. ICE 服务器配置
+# 1. 通话服务健康检查（媒体面 LiveKit 连通性）
 # ---------------------------------------------------------------------------
-section "用例1：获取 ICE 服务器配置"
+section "用例1：通话服务健康检查"
 
-RESP="$(api GET /rtc/ice-servers "$TOKEN_A")"
-check "GET /rtc/ice-servers 返回 200" "200" "$(json_get "$RESP" code)"
-check "ICE 配置列表非空" "yes" "$([ "$(json_len "$(json_get "$RESP" data)")" -gt 0 ] && echo yes || echo no)"
+RESP="$(api GET /rtc/health "$TOKEN_A")"
+check "GET /rtc/health 返回 200" "200" "$(json_get "$RESP" code)"
+check "LiveKit 连通性为 up" "up" "$(json_get "$RESP" data.livekit)"
 
 # ---------------------------------------------------------------------------
 # 2. 参数与状态校验：呼叫自己
@@ -162,6 +164,8 @@ RESP="$(api POST /rtc/call "$TOKEN_A" "{\"calleeUid\": $UID_B, \"mediaType\": 2}
 check "A 呼叫 B（视频）成功" "200" "$(json_get "$RESP" code)"
 ROOM1="$(json_get "$RESP" data.roomId)"
 check "返回 roomId 非空" "yes" "$([ -n "$ROOM1" ] && [ "$ROOM1" != "None" ] && echo yes || echo no)"
+check "返回 livekitUrl 非空" "yes" "$([ -n "$(json_get "$RESP" data.livekitUrl)" ] && echo yes || echo no)"
+check "返回接入 token 非空" "yes" "$([ -n "$(json_get "$RESP" data.token)" ] && echo yes || echo no)"
 echo "  roomId=$ROOM1"
 
 RESP="$(api POST /rtc/accept "$TOKEN_B" "{\"roomId\": \"$ROOM1\"}")"
@@ -255,13 +259,43 @@ RESP="$(api POST /rtc/hangup "$TOKEN_B" "{\"roomId\": \"$ROOM6\"}")"
 check "B 挂断（清理现场）" "200" "$(json_get "$RESP" code)"
 
 # ---------------------------------------------------------------------------
-# 9. 数据库状态断言（可选，设置 MYSQL_CMD 时启用）
+# 9. 群通话流程（可选，设置 GROUP_ID 时启用；A 须为群成员）
+# ---------------------------------------------------------------------------
+GROUP_ROOM=""
+if [ -n "${GROUP_ID:-}" ]; then
+  section "用例9：群通话流程"
+
+  RESP="$(api POST /rtc/call "$TOKEN_A" "{\"channelId\": \"g_$GROUP_ID\", \"channelType\": 2, \"inviteeUids\": [$UID_B], \"mediaType\": 1}")"
+  check "A 发起群通话成功" "200" "$(json_get "$RESP" code)"
+  check "返回 channelType=2" "2" "$(json_get "$RESP" data.channelType)"
+  check "群通话 token 非空" "yes" "$([ -n "$(json_get "$RESP" data.token)" ] && echo yes || echo no)"
+  GROUP_ROOM="$(json_get "$RESP" data.roomId)"
+  echo "  roomId=$GROUP_ROOM"
+
+  if [ -n "${INVITE_UID:-}" ]; then
+    RESP="$(api POST /rtc/invite "$TOKEN_A" "{\"roomId\": \"$GROUP_ROOM\", \"inviteeUids\": [$INVITE_UID]}")"
+    check "群通话追加邀请成员成功" "200" "$(json_get "$RESP" code)"
+  fi
+
+  RESP="$(api POST /rtc/end "$TOKEN_B" "{\"roomId\": \"$GROUP_ROOM\"}")"
+  check_not_200 "非主持人/管理员结束整场通话应失败" "$RESP"
+
+  RESP="$(api POST /rtc/end "$TOKEN_A" "{\"roomId\": \"$GROUP_ROOM\"}")"
+  check "主持人结束群通话成功" "200" "$(json_get "$RESP" code)"
+else
+  echo ""
+  echo "提示：设置 GROUP_ID 环境变量可启用群通话用例，例如："
+  echo "  GROUP_ID=9 INVITE_UID=<群内其他成员uid> ./scripts/rtc-api-test.sh"
+fi
+
+# ---------------------------------------------------------------------------
+# 10. 数据库状态断言（可选，设置 MYSQL_CMD 时启用）
 # ---------------------------------------------------------------------------
 if [ -n "${MYSQL_CMD:-}" ]; then
-  section "用例9：数据库状态流转断言"
+  section "用例10：数据库状态流转断言"
 
-  echo "  最近房间记录（status: 0-呼叫中 1-通话中 2-已结束）："
-  $MYSQL_CMD -e "SELECT room_id, host_uid, status,
+  echo "  最近房间记录（status: 0-呼叫中 1-通话中 2-已结束；channel_type: 1-单聊 2-群聊）："
+  $MYSQL_CMD -e "SELECT room_id, host_uid, channel_type, status,
     IFNULL(DATE_FORMAT(start_time, '%H:%i:%s'), '-') AS start_time,
     IFNULL(DATE_FORMAT(end_time, '%H:%i:%s'), '-') AS end_time
     FROM t_rtc_room ORDER BY create_time DESC LIMIT 8;"
@@ -274,6 +308,11 @@ if [ -n "${MYSQL_CMD:-}" ]; then
 
   ENDED_COUNT="$($MYSQL_CMD -N -e "SELECT COUNT(*) FROM t_rtc_room WHERE room_id IN ('$ROOM1','$ROOM2','$ROOM3','$ROOM6') AND status = 2;")"
   check "上述测试房间均已置为已结束(status=2)" "4" "$ENDED_COUNT"
+
+  if [ -n "$GROUP_ROOM" ]; then
+    GROUP_ENDED="$($MYSQL_CMD -N -e "SELECT COUNT(*) FROM t_rtc_room WHERE room_id = '$GROUP_ROOM' AND status = 2 AND channel_type = 2;")"
+    check "群通话房间已结束且 channel_type=2" "1" "$GROUP_ENDED"
+  fi
 else
   echo ""
   echo "提示：设置 MYSQL_CMD 环境变量可启用数据库状态断言，例如："

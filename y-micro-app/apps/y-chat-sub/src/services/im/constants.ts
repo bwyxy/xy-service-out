@@ -71,6 +71,14 @@ export function isRtcSignalType(type: number): boolean {
 }
 
 /**
+ * 判断是否为 RTC 呼叫控制信令（200-205）。
+ * 媒体面（206-208）已迁移至 LiveKit，前端仅消费呼叫控制。
+ */
+export function isCallControlType(type: number): boolean {
+  return type >= MessageType.RTC_INVITE && type <= MessageType.RTC_BUSY
+}
+
+/**
  * 判断是否为系统/业务通知类型
  */
 export function isSystemMessageType(type: number): boolean {

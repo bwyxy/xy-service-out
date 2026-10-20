@@ -15,6 +15,7 @@ import RichInput from './RichInput.vue'
 import ChatInfo from "@/views/chat/components/ChatWindow/ChatInfo.vue";
 import MessageBox from "@/components/MessageBox/MessageBox.vue";
 import GroupInfo from "@/views/chat/components/ChatWindow/GroupInfo.vue";
+import GroupCallMemberPicker from "./GroupCallMemberPicker.vue";
 
 const chatStore = useChatStore()
 const callStore = useCallStore()
@@ -585,24 +586,53 @@ const handleMessageScroll = async () => {
   }
 }
 
-/** 发起语音通话 */
-const handleAudioCall = () => {
-  if (!activeContact.value) return
+/** 群通话成员选择弹窗显隐 */
+const showGroupCallPicker = ref(false)
+/** 群通话待发起的媒体类型（选人确认后使用） */
+const pendingCallType = ref<1 | 2>(1)
+
+/**
+ * 发起通话
+ *
+ * 单聊直接呼叫对方；群聊先弹出成员选择器，确认后再发起。
+ */
+const startCall = (type: 1 | 2) => {
+  const contact = activeContact.value
+  if (!contact) return
+
+  if (contact.channelType === 2) {
+    pendingCallType.value = type
+    showGroupCallPicker.value = true
+    return
+  }
+
   callStore.startCall({
-    uid: activeContact.value.uid,
-    nickname: channelInfo.value.nickname || activeContact.value.name || activeContact.value.uid,
-    avatar: channelInfo.value.avatar || activeContact.value.avatar || '',
-  }, 1)
+    mode: 'p2p',
+    peer: {
+      uid: contact.uid,
+      nickname: channelInfo.value.nickname || contact.name || contact.uid,
+      avatar: channelInfo.value.avatar || contact.avatar || '',
+    },
+  }, type)
 }
 
+/** 发起语音通话 */
+const handleAudioCall = () => startCall(1)
+
 /** 发起视频通话 */
-const handleVideoCall = () => {
-  if (!activeContact.value) return
+const handleVideoCall = () => startCall(2)
+
+/** 群通话成员选择确认后发起呼叫 */
+const handleGroupCallConfirm = (uids: Array<string | number>) => {
+  const contact = activeContact.value
+  if (!contact) return
+
   callStore.startCall({
-    uid: activeContact.value.uid,
-    nickname: channelInfo.value.nickname || activeContact.value.name || activeContact.value.uid,
-    avatar: channelInfo.value.avatar || activeContact.value.avatar || '',
-  }, 2)
+    mode: 'group',
+    channelId: contact.uid,
+    groupName: channelInfo.value.nickname || contact.name || contact.uid,
+    inviteeUids: uids,
+  }, pendingCallType.value)
 }
 
 /** 顶部哨兵进入视口即触发加载，兼容滚动发生在祖先容器的场景 */
@@ -680,6 +710,11 @@ watch(
   },
 )
 
+/** 群通话中同步「当前用户在群内是否为管理员」，用于放开结束整场通话权限 */
+watch(isGroupAdmin, (value) => {
+  callStore.setViewerGroupAdmin(value)
+})
+
 onMounted(() => {
   // loadChannelInfo 已由 activeContact 的 immediate watcher 触发，此处不再重复调用
   scrollToBottom()
@@ -716,7 +751,9 @@ onUnmounted(() => {
       />
       <span class="channel-name">{{ channelInfo.nickname || activeContact?.name || '未知' }}</span>
       <div class="chat-window-header-rt">
-        <el-dropdown v-if="!isSystemUser && (activeContact && activeContact.channelType === 1)">
+        <el-dropdown
+            v-if="!isSystemUser && activeContact && (activeContact.channelType === 1 || (activeContact.channelType === 2 && !isGroupDisbanded))"
+        >
           <div class="chat-rt-icon" title="视频/语音">
             <img src="@/assets/images/video_audio_icon.png" alt="icon" />
           </div>
@@ -828,6 +865,16 @@ onUnmounted(() => {
           @refresh="refreshGroup"
           @locate="locateMessageBySeq"
           @dissolved="handleGroupDissolved"
+      />
+
+      <!-- 发起群通话前的成员选择 -->
+      <group-call-member-picker
+          v-if="activeContact && activeContact.channelType === 2"
+          v-model="showGroupCallPicker"
+          :group-id="activeContact.uid"
+          :members="groupMembers"
+          :exclude-uids="[String(userInfo?.uid)]"
+          @confirm="handleGroupCallConfirm"
       />
     </div>
 

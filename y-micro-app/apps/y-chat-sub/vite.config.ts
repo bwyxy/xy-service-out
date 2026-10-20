@@ -73,7 +73,9 @@ export default ({ mode } :{mode :any}) :UserConfig => {
       }
     },
     build: {
-      outDir: 'chat',
+      // Tauri 打包读取的是 src-tauri/tauri.conf.json 的 frontendDist(=../dist)，
+      // 必须与这里保持一致，否则会出现「构建产物是新的、装进桌面端的是旧的」
+      outDir: isTauri ? 'dist' : 'chat',
     }
   }
 

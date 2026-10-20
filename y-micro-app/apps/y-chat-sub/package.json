@@ -25,6 +25,7 @@
     "easyjssdk": "^2.0.1",
     "element-plus": "catalog:",
     "js-cookie": "catalog:",
+    "livekit-client": "catalog:",
     "pinia": "catalog:",
     "sass": "catalog:",
     "v3-waterfall": "^2.0.1",

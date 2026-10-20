@@ -146,15 +146,13 @@ CREATE TABLE t_conversation_setting (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会话个人设置';
 
 -- 已存在的库执行以下迁移
--- ALTER TABLE t_conversation_setting
---     ADD COLUMN `cleared_seq` bigint DEFAULT 0 COMMENT '删除聊天记录时的消息序号',
---     ADD COLUMN `deleted_seq` bigint DEFAULT 0 COMMENT '删除会话时的消息序号';
 
 CREATE TABLE t_rtc_room (
     `room_id` varchar(64) PRIMARY KEY COMMENT '房间ID',
     `room_type` tinyint NOT NULL COMMENT '房间类型 1-语音 2-视频 3-会议',
     `host_uid` bigint NOT NULL COMMENT '房主/主持人',
-    `channel_id` varchar(64) COMMENT '关联悟空IM频道',
+    `channel_id` varchar(64) COMMENT '关联悟空IM频道（单聊=对端uid，群聊=g_{groupId}）',
+    `channel_type` tinyint NOT NULL DEFAULT 1 COMMENT '频道类型 1-单聊 2-群聊',
     `max_participants` int DEFAULT 2 COMMENT '最大人数',
     `status` tinyint DEFAULT 0 COMMENT '状态 0-呼叫中 1-通话中 2-已结束',
     `start_time` datetime COMMENT '开始时间',
@@ -162,7 +160,8 @@ CREATE TABLE t_rtc_room (
     `sfu_node` varchar(255) COMMENT '分配的SFU节点',
     `create_time` datetime COMMENT '创建时间',
     INDEX idx_status (status),
-    INDEX idx_host_uid (host_uid)
+    INDEX idx_host_uid (host_uid),
+    INDEX idx_channel (channel_id, channel_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='RTC房间';
 
 CREATE TABLE t_rtc_participant (

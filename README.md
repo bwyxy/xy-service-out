@@ -8,6 +8,7 @@
 
 - **用户中心**：注册、登录、用户信息管理、头像上传。
 - **即时通讯（飞鸽聊天）**：单聊、群聊、好友关系、会话列表、历史消息、富文本输入（文本/表情/图片）。
+- **音视频通话**：基于自建 LiveKit SFU 的单聊/群聊通话（单房间最多 9 人），呼叫控制信令复用悟空 IM。
 - **消息通知**：好友请求、好友同意、系统通知的实时推送与通知中心。
 - **内容管理（博客/CMS）**：文章、分类、标签、评论、菜单、配置。
 - **任务协作（Todo）**：任务、标签、协作者、微信登录。
@@ -67,7 +68,27 @@ y-micro-app (pnpm workspace)
 - 发送消息时统一调用后端 `/message/send` HTTP 接口，由后端转发至悟空 IM，便于后续做内容校验。
 - 会话列表与历史消息通过后端 `/conversation/list`、`/message/list` 同步并补充本地用户/群组元数据。
 
-### 2.4 AI 模块架构
+### 2.4 音视频通话架构
+
+```
+┌─────────────┐  200-205 呼叫信令（悟空 IM 个人频道）  ┌──────────────┐
+│  前端子应用  │ ────────────────────────────────▶  │  fg-chat     │
+│ y-chat-sub  │   /rtc/* 房间管理、Token 签发          │  (端口 9080)  │
+└──────┬──────┘ ◀────────────────────────────────  └──────┬───────┘
+       │ wss 接入信令 + WebRTC 媒体流                       │ RoomService / AccessToken
+       ▼                                                  ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    LiveKit SFU（自建，媒体转发）                    │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+- 呼叫控制（邀请/接听/拒绝/挂断/取消/结束）复用悟空 IM 个人频道的 `200-205` 消息类型传输，不新增长连接。
+- 媒体面由自建 LiveKit SFU 转发，单聊与群聊共用同一套媒体层，单房间人数上限 9。
+- 接入凭证由后端签发 LiveKit `AccessToken`（含房间与发布/订阅授权），前端使用 `livekit-client` 加入房间。
+- 房间与参与者状态落 `t_rtc_room` / `t_rtc_participant`，定时任务负责超时呼叫、超长通话与异常残留房间的兜底回收。
+- 部署要求见 [音视频通话部署文档](./docs/rtc/deployment.md)，架构说明见 [音视频通话设计文档](./docs/rtc/design.md)。
+
+### 2.5 AI 模块架构
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -150,6 +171,16 @@ y-micro-app (pnpm workspace)
 - 针对发送好友请求、处理好友请求等关键操作使用 Redis 分布式锁。
 - 数据库唯一索引兜底，防止重复请求与重复好友关系。
 
+### 3.7 音视频通话
+
+| 功能   | 说明                                                          |
+| ---- | ----------------------------------------------------------- |
+| 单聊通话 | 1v1 语音/视频，被叫振铃，呼叫超时（默认 90 秒）自动取消并通知双方                       |
+| 群聊通话 | 通过群成员选择器邀请入会，单房间最多 9 人，宫格布局展示                               |
+| 通话浮层 | 支持最小化悬浮窗、静音、开关摄像头、挂断，通话中可查看成员状态                             |
+| 通话记录 | 通话结束写入聊天记录（群聊记录带「N 人」标识），可在会话内回看                            |
+| 状态兜底 | 定时任务回收超时呼叫、超长通话（默认 180 分钟）与异常残留房间；前端异常退出时也会补发挂断上报，避免房间卡在通话中 |
+
 ***
 
 ## 4. 技术栈
@@ -168,6 +199,7 @@ y-micro-app (pnpm workspace)
 | 限流     | Bucket4j                                 | 8.0.1         |
 | 文档     | Swagger / Knife4j                        | -             |
 | 即时通讯   | 悟空 IM（WukongIM）                          | -             |
+| 音视频媒体  | LiveKit Server（自建 SFU）                    | 1.13.x        |
 | AI 框架  | Spring AI                                | 1.1.0         |
 | 向量检索   | SimpleVectorStore（可扩展 Milvus / pgvector） | -             |
 | 构建工具   | Maven                                    | -             |
@@ -186,6 +218,7 @@ y-micro-app (pnpm workspace)
 | UI 组件库  | Element Plus                  | -               |
 | CSS 预处理 | Sass / SCSS                   | -               |
 | IM SDK  | easyjssdk                     | 悟空 IM 官方 SDK    |
+| 音视频 SDK | livekit-client                | WebRTC 客户端       |
 | 包管理     | pnpm workspace                | catalog 统一版本    |
 
 ***
@@ -216,6 +249,7 @@ y-micro-app (pnpm workspace)
 
 - **七牛云**：用于图片/头像上传，需在配置中填写 `AccessKey`、`SecretKey`、`Bucket`、`Domain`。
 - **悟空 IM**：用于实时消息收发，需配置 `appId`、`appKey`、`apiUrl`、`wsUrl`。
+- **LiveKit SFU**：用于音视频媒体转发，需自建部署并配置 `LIVEKIT_URL`、`LIVEKIT_API_URL`、`LIVEKIT_API_KEY`、`LIVEKIT_API_SECRET`；`api-key`/`api-secret` 必须与 LiveKit 服务端 `keys` 一致，部署与端口放行要求见 [音视频通话部署文档](./docs/rtc/deployment.md)。
 - **邮箱服务**：用于发送注册验证码，需配置 SMTP 信息。
 - **AI 模型服务**：需在 `ai_model_provider` 表中配置 endpoint、api\_key、default\_model 等，支持 OpenAI 兼容接口与阿里云百炼。
 
@@ -312,12 +346,15 @@ pnpm run build
 | `t_notification`   | 通知表   |
 | `t_group`          | 群组表   |
 | `t_group_member`   | 群组成员表 |
+| `t_rtc_room`       | 音视频通话房间表 |
+| `t_rtc_participant` | 音视频通话参与者表 |
 
 ### 7.2 关键约束
 
 - `t_friend`：`unique index uk_user_friend (u_id, friend_id)`
 - `t_friend_request`：`unique index uk_from_to (from_uid, to_uid)`
 - `t_notification`：`index idx_user_read (u_id, is_read)`
+- `t_rtc_participant`：`unique index uk_room_user (room_id, u_id)`
 
 ***
 
@@ -343,6 +380,16 @@ pnpm run build
 | `/message/list`              | POST | 历史消息     |
 | `/message/send`              | POST | 发送消息     |
 | `/upload/image`              | POST | 上传图片     |
+| `/rtc/call`                  | POST | 发起通话（单聊/群聊） |
+| `/rtc/accept`                | POST | 接听通话     |
+| `/rtc/reject`                | POST | 拒绝通话     |
+| `/rtc/cancel`                | POST | 取消呼叫     |
+| `/rtc/hangup`                | POST | 挂断通话     |
+| `/rtc/invite`                | POST | 群聊邀请成员入会 |
+| `/rtc/end`                   | POST | 主持人结束房间  |
+| `/rtc/token`                 | POST | 获取 LiveKit 接入 Token |
+| `/rtc/room/{roomId}`         | GET  | 查询房间详情   |
+| `/rtc/health`                | GET  | LiveKit 健康检查 |
 
 ### 8.2 AI 模块（xy-ai，端口 9070）
 
@@ -474,6 +521,10 @@ pnpm run build
 | 图片超过 2MB         | 未压缩或压缩后仍超限                                        | `utils/image.ts` 已做 canvas 压缩与大小校验                                                                   |
 | AI 返回 400（模型不支持） | 传入空 model 或模型名与 endpoint 不匹配                      | 确认 `ai_model_provider.default_model` 已配置，DeepSeek 官方/阿里百炼需使用 `deepseek-v4-pro` 或 `deepseek-v4-flash` |
 | API Key 认证失败     | Key 被禁用/过期或 Secret 错误                             | 在 xy-admin 管理页面检查密钥状态，确认 Secret 明文仅生成时返回一次                                                           |
+| 通话报 `LiveKit 房间创建失败，code=401` | 后端 `LIVEKIT_API_KEY`/`API_SECRET` 与 LiveKit 服务端 `keys` 不一致 | 对齐两处密钥（`livekit.yaml` 的 `keys` 与后端 `.env`），`RoomServiceClient` 为懒加载单例，改完必须完整重启 JVM |
+| 通话报 `could not establish pc connection` | 媒体端口未放行，或 LiveKit 广播的 ICE 候选是内网 IP | 放行 `7881/tcp` 与 `udp_port`（示例 `7882/udp`）；云主机 EIP 通常不支持回环，STUN 校验会失败并回退内网 IP，需在 `livekit.yaml` 显式配置 `node_ip` 并关闭 `use_external_ip` |
+| 通话能接通但无画面/无声 | 浏览器未授权摄像头/麦克风，或非 HTTPS 环境 | 检查浏览器权限；非 localhost 的 http 页面禁止采集媒体，需走 https 或桌面端 |
+| 通话异常中断后房间长期显示通话中 | 前端异常退出未上报挂断 | 前端异常路径已补发 `/rtc/hangup`，后端定时任务亦会回收 LiveKit 中已无人在场的残留房间 |
 
 ***
 
@@ -496,6 +547,7 @@ todo-service/
 │   ├── apps/y-chat-sub       # 聊天子应用
 │   ├── apps/y-admin-sub      # 管理后台子应用（含 AI API Key 管理页面）
 │   └── packages/             # 公共包
+├── deploy/livekit/           # LiveKit SFU 部署配置（docker-compose + livekit.yaml）
 ├── sql/                      # 数据库脚本
 ├── docs/                     # 项目文档
 └── README.md                 # 项目根说明
@@ -511,6 +563,9 @@ todo-service/
 - [AI 模块使用指南](./common-api/xy-ai/docs/guide.md)
 - [AI 模块 API Key 管理技术文档](./common-api/xy-ai/docs/api-key-management.md)
 - [AI 模块接口文档](./common-api/xy-ai/docs/api.md)
+- [音视频通话设计文档](./docs/rtc/design.md)
+- [音视频通话部署文档](./docs/rtc/deployment.md)
+- [音视频通话测试报告](./docs/rtc/test-report.md)
 
 ### 12.3 联系方式
 

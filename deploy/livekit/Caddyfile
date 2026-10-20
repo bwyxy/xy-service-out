@@ -1,0 +1,36 @@
+# ============================================================================
+# Caddy：为 LiveKit 提供 wss 入口（自动申请 / 续期 Let's Encrypt 证书）
+#
+# 使用前替换：
+#   - you@example.com       -> 你的邮箱（证书到期提醒）
+#   - livekit.example.com   -> 你的域名（A 记录需已指向本机公网 IP）
+# ============================================================================
+
+{
+	# 证书到期提醒邮箱
+	email you@example.com
+
+	# 关闭管理 API，减少攻击面（证书自动续期不依赖它）
+	admin off
+}
+
+# SDK 连接入口：wss://livekit.example.com
+# Caddy 的 reverse_proxy 自动识别并透传 WebSocket Upgrade，无需额外配置
+livekit.example.com {
+	encode zstd gzip
+
+	reverse_proxy 127.0.0.1:7880
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 50MiB
+			roll_keep 5
+			roll_keep_for 720h
+		}
+	}
+}

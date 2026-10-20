@@ -1,0 +1,89 @@
+# ============================================================================
+# LiveKit SFU 生产配置（单机）
+#
+# 使用前必须替换：
+#   1. keys 段                -> openssl rand -hex 32
+#   2. rtc.node_ip            -> 多网卡 / NAT 下 STUN 探测不准时显式指定
+#   3. turn 段                -> 仅当需要穿透严格企业防火墙时启用（默认关闭）
+#
+# 安全：本文件含 API Secret，落盘后执行 chmod 600 livekit.yaml
+# 参考：https://docs.livekit.io/oss/deployment/
+# ============================================================================
+
+# 信令与 RoomService API 端口。对外只暴露 Caddy 的 443(wss)，
+# 本端口由 Caddy 反代到 127.0.0.1，不要直接对公网开放
+port: 7880
+
+logging:
+  level: info        # debug | info | warn | error，排障时临时调 debug
+  json: false        # 接日志采集系统时改 true
+  pion_level: error  # WebRTC 底层日志，保持 error 避免刷屏
+
+rtc:
+  # UDP 被封时的 WebRTC over TCP 回退通道
+  tcp_port: 7881
+
+  # 媒体 UDP 端口段，必须在云安全组 + 本机防火墙放行
+  port_range_start: 50000
+  port_range_end: 50100
+
+  # 云主机 / NAT 环境必须为 true：通过 STUN 探测真实公网 IP 并下发给客户端
+  # 设为 false 的典型症状是"信令秒连上，但一直没有画面和声音"
+  use_external_ip: true
+
+  # 多网卡、或 STUN 探测到错误 IP 时用它显式覆盖探测结果
+  # node_ip: 1.2.3.4
+
+  # 核数少、并发高时可用单端口复用模式减少监听 fd（与 port_range 互斥）
+  # udp_port: 7882
+
+room:
+  # 与后端 xy.rtc.max-participants 对齐；后端建房时也会显式传入该值
+  max_participants: 9
+  # 最后一人离开后房间保留时长（秒）
+  empty_timeout: 300
+  # 参与者掉线宽限（秒）：短暂网络抖动不会立刻踢出
+  departure_timeout: 20
+
+# ---------------------------------------------------------------------------
+# TURN：内置 TURN，无需单独部署 coturn
+#
+# 默认关闭，因为启用 TURN/TLS 必须提供证书，而 443 已被 Caddy 占用。
+# 仅在目标用户大量处于"屏蔽 UDP 且屏蔽非 443 TCP"的企业内网时才需要开启。
+#
+# 启用步骤：
+#   1) 签发证书（TURN 域名需与证书域名一致，可与信令不同子域）
+#      docker run --rm -p 80:80 -v /etc/letsencrypt:/etc/letsencrypt \
+#        certbot/certbot certonly --standalone -d turn.example.com \
+#        --email you@example.com --agree-tos --no-eff-email
+#   2) docker-compose.yml 中解开 /etc/letsencrypt 的挂载
+#   3) 把下面整段取消注释，tls_port 用 5349（443 归 Caddy）
+#   4) 放行 5349/tcp 与 443/udp
+#
+# turn:
+#   enabled: true
+#   domain: turn.example.com
+#   tls_port: 5349
+#   cert_file: /etc/letsencrypt/live/turn.example.com/fullchain.pem
+#   key_file: /etc/letsencrypt/live/turn.example.com/privkey.pem
+#   # TURN over UDP 443：绕过只放行 UDP 443 的防火墙（UDP，不与 Caddy 的 TCP 443 冲突）
+#   udp_port: 443
+# ---------------------------------------------------------------------------
+
+# Prometheus 指标端点，仅内网暴露，勿对公网开放
+prometheus_port: 6789
+
+# 多节点集群必须用 Redis 同步房间状态；单机部署不需要
+# redis:
+#   address: 127.0.0.1:6379
+#   password: ""
+
+keys:
+  # ----------------------------------------------------------------
+  # TODO 必须替换。生成方式：
+  #   echo "LIVEKIT_API_KEY=$(openssl rand -hex 12)"
+  #   echo "LIVEKIT_API_SECRET=$(openssl rand -hex 32)"
+  # 这两个值必须与后端环境变量 LIVEKIT_API_KEY / LIVEKIT_API_SECRET 完全一致。
+  # 注意：留空或沿用示例值等于任何人都能签发进房令牌。
+  # ----------------------------------------------------------------
+  REPLACE_WITH_API_KEY: REPLACE_WITH_API_SECRET
