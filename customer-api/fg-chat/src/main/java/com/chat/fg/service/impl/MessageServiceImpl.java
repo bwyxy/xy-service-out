@@ -27,6 +27,7 @@ import com.xy.common.entity.chat.ConversationSetting;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.chat.GroupMember;
 import com.xy.common.enums.ChannelType;
+import com.xy.system.service.IUserBlacklistService;
 import com.xy.common.enums.MessageType;
 import com.xy.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,9 @@ public class MessageServiceImpl implements IMessageService {
 
     @Autowired
     private ConversationSettingMapper conversationSettingMapper;
+
+    @Autowired
+    private IUserBlacklistService userBlacklistService;
 
     @Value("${ai.assistant.uid:fg_ai}")
     private String aiAssistantUid;
@@ -187,6 +191,11 @@ public class MessageServiceImpl implements IMessageService {
             checkGroupSpeakPermission(uId, sendMsgDTO.getChannelId());
         }
 
+        // 单聊消息：接收方已拉黑发送方时拒绝投递
+        if (ChannelType.PERSONAL_CHANNEL.getCode().equals(sendMsgDTO.getChannelType())) {
+            checkP2pBlacklist(uId, sendMsgDTO.getChannelId());
+        }
+
         // 1. 构造 payload：{ type, content, quote?, mentions? }
         JSONObject payload = new JSONObject();
         payload.put("type", sendMsgDTO.getType());
@@ -236,6 +245,38 @@ public class MessageServiceImpl implements IMessageService {
         } catch (Exception e) {
             log.error("发送消息到悟空 IM 失败", e);
             throw new BusinessException("发送消息失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 单聊黑名单校验
+     *
+     * <p>单聊时 channelId 即接收方 UID。接收方拉黑发送方后拒绝投递，
+     * 话术保持模糊，不直接暴露「被拉黑」。</p>
+     * */
+    private void checkP2pBlacklist(Long uId, String channelId) {
+        Long receiverUid = parseUid(channelId);
+        if (receiverUid == null) {
+            return;
+        }
+        if (userBlacklistService.isBlocked(receiverUid, uId)) {
+            throw new BusinessException("消息发送失败，对方已拒收");
+        }
+    }
+
+    /**
+     * 解析频道 ID 为 UID
+     *
+     * <p>群聊频道（g_ 前缀）、AI 助手（fg_ai）等非数字频道不参与单聊黑名单校验。</p>
+     * */
+    private Long parseUid(String channelId) {
+        if (channelId == null || channelId.isEmpty()) {
+            return null;
+        }
+        try {
+            return Long.valueOf(channelId);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 

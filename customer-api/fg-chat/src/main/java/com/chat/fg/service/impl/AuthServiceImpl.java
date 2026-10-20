@@ -1,5 +1,7 @@
 package com.chat.fg.service.impl;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.chat.fg.enums.DeviceType;
 import com.chat.fg.enums.SessionStatus;
 import com.chat.fg.pojo.LoginSession;
@@ -15,12 +17,15 @@ import com.xy.common.client.dto.request.WKUserTokenRequest;
 import com.xy.common.client.vo.ResultVO;
 import com.xy.common.client.dto.response.IMAddrResponse;
 import com.xy.common.entity.User;
+import com.xy.common.entity.chat.LoginLog;
 import com.xy.common.exception.BusinessException;
 import com.xy.common.utils.EncryptionUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.common.provider.JwtTokenProvider;
 import com.xy.framework.web.service.VerifyService;
+import com.xy.system.service.IUserLoginLogService;
 import com.xy.system.service.wk.WKClientService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -30,8 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class AuthServiceImpl implements IAuthService {
+
+    /** 用户状态：禁用 */
+    private static final String STATUS_DISABLED = "1";
 
     @Autowired
     private VerifyService verifyService;
@@ -56,6 +65,9 @@ public class AuthServiceImpl implements IAuthService {
 
     @Autowired
     private ForceLogoutNotifier forceLogoutNotifier;
+
+    @Autowired
+    private IUserLoginLogService userLoginLogService;
 
     /**
      * 注册用户
@@ -114,28 +126,44 @@ public class AuthServiceImpl implements IAuthService {
     public Map<String, Object> login(LoginDTO loginDTO, String ip, String userAgent) {
         String account = loginDTO.getAccount();
 
-        // 1. 根据手机号或邮箱查询聊天用户（t_user 表）
-        User user = userServiceImpl.getByPhoneOrEmail(account, account);
-        if (user == null) {
-            throw new BusinessException("账号不存在");
-        }
+        // 设备信息仅解析一次，登录日志与登录会话共用，避免重复计算
+        DeviceType deviceType = resolveDeviceType(loginDTO, userAgent);
+        String deviceName = buildDeviceName(deviceType, userAgent);
 
-        // 2. 校验密码
-        if (!encryptionUtils.matches(loginDTO.getPassword(), user.getPassword())) {
-            throw new BusinessException("密码错误");
+        User user;
+        try {
+            // 1. 根据手机号或邮箱查询聊天用户（t_user 表）
+            user = userServiceImpl.getByPhoneOrEmail(account, account);
+            if (user == null) {
+                throw new BusinessException("账号不存在");
+            }
+
+            // 2. 校验密码
+            if (!encryptionUtils.matches(loginDTO.getPassword(), user.getPassword())) {
+                throw new BusinessException("密码错误");
+            }
+
+            // 3. 校验账号状态
+            if (STATUS_DISABLED.equals(user.getStatus())) {
+                throw new BusinessException("账号已被禁用，请联系管理员");
+            }
+        } catch (RuntimeException e) {
+            recordLoginLog(null, account, ip, deviceType, loginDTO.getDeviceId(), deviceName, userAgent,
+                    "1", StringUtils.isEmpty(e.getMessage()) ? "登录失败" : e.getMessage());
+            throw e;
         }
 
         Long uId = user.getUId();
 
-        // 3. 生成 JWT
+        // 4. 生成 JWT
         ChatUserDetails chatUserDetails = new ChatUserDetails(user);
         String jwtToken = jwtTokenProvider.generateAccessToken(chatUserDetails);
 
-        // 4. 多端登录管控：同设备类型旧会话全部失效并推送强制下线
+        // 5. 多端登录管控：同设备类型旧会话全部失效并推送强制下线
         //    必须在重置 IM token 之前推送，否则旧设备可能已因 deviceLevel 抢占而断开，收不到通知
-        replaceLoginSession(uId, jwtToken, loginDTO, ip, userAgent);
+        replaceLoginSession(uId, jwtToken, loginDTO, ip, deviceType, deviceName);
 
-        // 5. 获取/更新悟空IM Token
+        // 6. 获取/更新悟空IM Token
         String uid = String.valueOf(uId);
         WKUserTokenRequest tokenRequest = new WKUserTokenRequest();
         tokenRequest.setUid(uid);
@@ -145,36 +173,37 @@ public class AuthServiceImpl implements IAuthService {
 
         ResultVO tokenResult = wuKongClient.resetUserToken(tokenRequest);
         if (tokenResult.getStatus() != 200) {
+            recordLoginLog(uId, account, ip, deviceType, loginDTO.getDeviceId(), deviceName, userAgent,
+                    "1", "获取IM连接失败: " + tokenResult.getMsg());
             throw new BusinessException("获取IM连接失败: " + tokenResult.getMsg());
         }
 
-        // 6. 获取用户IM 地址
+        // 7. 获取用户IM 地址
         IMAddrResponse imAddrResponse = wuKongClient.getRoute(uId);
 
-        // 7. 组装返回数据
+        // 8. 组装返回数据
         Map<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("token", jwtToken);
         result.put("nickname", user.getNickname());
         result.put("imAddr", imAddrResponse);
+
+        recordLoginLog(uId, account, ip, deviceType, loginDTO.getDeviceId(), deviceName, userAgent,
+                "0", "登录成功");
         return result;
     }
 
     /**
      * 建立新会话并踢掉同设备类型的旧会话
      * */
-    private void replaceLoginSession(Long uId, String jwtToken, LoginDTO loginDTO, String ip, String userAgent) {
-        Integer submitted = loginDTO.getDeviceType();
-        DeviceType deviceType = submitted != null
-                ? DeviceType.fromCode(submitted)
-                : DeviceType.resolveByUserAgent(userAgent);
-
+    private void replaceLoginSession(Long uId, String jwtToken, LoginDTO loginDTO, String ip,
+                                     DeviceType deviceType, String deviceName) {
         long now = System.currentTimeMillis();
         LoginSession session = new LoginSession();
         session.setUid(uId);
         session.setDeviceType(deviceType.getCode());
         session.setDeviceId(StringUtils.isEmpty(loginDTO.getDeviceId()) ? "unknown" : loginDTO.getDeviceId());
-        session.setDeviceName(buildDeviceName(deviceType, userAgent));
+        session.setDeviceName(deviceName);
         session.setToken(jwtToken);
         session.setLoginTime(now);
         session.setLastActiveTime(now);
@@ -189,6 +218,14 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     /**
+     * 解析设备类型：客户端上报优先，缺失时按 User-Agent 兜底
+     * */
+    private DeviceType resolveDeviceType(LoginDTO loginDTO, String userAgent) {
+        Integer submitted = loginDTO.getDeviceType();
+        return submitted != null ? DeviceType.fromCode(submitted) : DeviceType.resolveByUserAgent(userAgent);
+    }
+
+    /**
      * 生成设备描述（设备类型 + User-Agent 简写）
      * */
     private String buildDeviceName(DeviceType deviceType, String userAgent) {
@@ -197,6 +234,39 @@ public class AuthServiceImpl implements IAuthService {
         }
         String ua = userAgent.length() > 80 ? userAgent.substring(0, 80) : userAgent;
         return deviceType.getLabel() + " / " + ua;
+    }
+
+    /**
+     * 记录客户端登录日志
+     *
+     * <p>登录日志属于旁路能力，写日志异常不能掩盖真实的登录结果，因此单独兜底。</p>
+     * */
+    private void recordLoginLog(Long uId, String account, String ip, DeviceType deviceType, String deviceId,
+                                String deviceName, String userAgent, String status, String msg) {
+        try {
+            LoginLog loginLog = new LoginLog();
+            loginLog.setUId(uId);
+            loginLog.setAccount(account);
+            loginLog.setIp(ip);
+            loginLog.setDeviceType(deviceType.getCode());
+            loginLog.setDeviceId(StringUtils.isEmpty(deviceId) ? "unknown" : deviceId);
+            loginLog.setDeviceName(deviceName);
+            loginLog.setStatus(status);
+            loginLog.setMsg(msg);
+            loginLog.setLoginTime(LocalDateTime.now());
+
+            if (StringUtils.isNotEmpty(userAgent)) {
+                UserAgent ua = UserAgentUtil.parse(userAgent);
+                if (ua != null) {
+                    loginLog.setBrowser(ua.getBrowser().getName());
+                    loginLog.setOs(ua.getOs().getName());
+                }
+            }
+
+            userLoginLogService.record(loginLog);
+        } catch (Exception e) {
+            log.warn("记录客户端登录日志失败, account={}, status={}", account, status, e);
+        }
     }
 
     /**

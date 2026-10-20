@@ -145,8 +145,6 @@ CREATE TABLE t_conversation_setting (
     UNIQUE INDEX uk_user_channel (u_id, channel_id, channel_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会话个人设置';
 
--- 已存在的库执行以下迁移
-
 CREATE TABLE t_rtc_room (
     `room_id` varchar(64) PRIMARY KEY COMMENT '房间ID',
     `room_type` tinyint NOT NULL COMMENT '房间类型 1-语音 2-视频 3-会议',
@@ -188,4 +186,81 @@ insert into t_user (u_id, password, nickname, avatar, phone, email, status, sex,
 
 select u.u_id, u.nickname, u.avatar, u.sex, tgm.role, tgm.status, tgm.group_nickname from t_user u
     left join t_group_member tgm on tgm.u_id = u.u_id
-    where tgm.group_id = 9
+    where tgm.group_id = 9;
+
+-- ==========================================================================
+-- 客户端用户运营能力：登录日志 + 用户黑名单
+-- ==========================================================================
+-- 登录日志：客户端登录（成功与失败）均记录，供后台审计与排查
+create table if not exists t_login_log (
+    id bigint primary key auto_increment comment '主键',
+    u_id bigint default null comment '用户UID（登录失败时可能为空）',
+    account varchar(64) default '' comment '登录账号（手机号/邮箱）',
+    ip varchar(64) default '' comment '登录IP',
+    login_location varchar(255) default '' comment '登录地点',
+    device_type tinyint default 0 comment '设备类型 1-PC 2-平板 3-手机',
+    device_id varchar(128) default '' comment '设备唯一标识',
+    device_name varchar(255) default '' comment '设备描述（设备类型 / User-Agent）',
+    browser varchar(64) default '' comment '浏览器',
+    os varchar(64) default '' comment '操作系统',
+    status char(1) default '0' comment '登录状态 0-成功 1-失败',
+    msg varchar(255) default '' comment '提示信息',
+    login_time datetime comment '登录时间',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '更新时间',
+    index idx_login_log_uid (u_id),
+    index idx_login_log_time (login_time)
+) engine = InnoDB default charset = utf8mb4 comment '客户端用户登录日志';
+
+-- 用户黑名单：拉黑关系为用户对用户（单向），后台可代管
+create table if not exists t_user_blacklist (
+    id bigint primary key auto_increment comment '主键',
+    u_id bigint not null comment '拉黑发起方UID',
+    target_uid bigint not null comment '被拉黑用户UID',
+    remark varchar(255) default '' comment '备注',
+    operator varchar(64) default '' comment '操作人（后台代管时记录管理员账号）',
+    create_time datetime comment '创建时间',
+    update_time datetime comment '更新时间',
+    unique index uk_blacklist_user_target (u_id, target_uid),
+    index idx_blacklist_target (target_uid)
+) engine = InnoDB default charset = utf8mb4 comment '用户黑名单（用户对用户）';
+
+-- ==========================================================================
+-- 后台菜单与权限
+-- 说明：menu_id = 2 的「用户管理」原 component = 'system/user/index'，
+--       但 views 下不存在该目录（实际页面为 views/user/admin/index.vue），
+--       会导致菜单点开空白，这里一并修正。
+-- ==========================================================================
+update sys_menu set component = 'user/admin/index', update_time = sysdate() where menu_id = 2;
+
+insert into sys_menu
+(menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache,
+ menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, deleted, remark)
+values
+(2100, '客户端用户', 1, 5, 'chatUser', 'user/customer/index', '', '', 1, 0,
+ 'C', '0', '0', 'system:chatuser:list', 'user', 'admin', sysdate(), '', sysdate(), 0, '客户端用户管理'),
+(2101, '登录日志', 1, 6, 'loginLog', 'user/loginlog/index', '', '', 1, 0,
+ 'C', '0', '0', 'system:loginlog:list', 'log', 'admin', sysdate(), '', sysdate(), 0, '客户端用户登录日志');
+
+insert into sys_menu
+(menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache,
+ menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, deleted, remark)
+values
+(2102, '用户查询', 2100, 1, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:chatuser:query', '#', 'admin', sysdate(), '', sysdate(), 0, ''),
+(2103, '用户编辑', 2100, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:chatuser:edit', '#', 'admin', sysdate(), '', sysdate(), 0, ''),
+(2104, '强制下线', 2100, 3, 'force', '', '', '', 1, 0, 'F', '0', '0', 'system:chatuser:force', '#', 'admin', sysdate(), '', sysdate(), 0, ''),
+(2105, '黑名单管理', 2100, 4, 'blacklist', '', '', '', 1, 0, 'F', '0', '0', 'system:chatuser:blacklist', '#', 'admin', sysdate(), '', sysdate(), 0, ''),
+(2106, '日志删除', 2101, 1, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:loginlog:remove', '#', 'admin', sysdate(), '', sysdate(), 0, '');
+
+-- 授予超级管理员角色（role_key = admin），普通角色按需在「角色管理」中勾选
+insert into sys_role_menu (role_id, menu_id)
+select r.id, m.menu_id
+from sys_role r
+         join sys_menu m on m.menu_id between 2100 and 2106
+where r.role_key = 'admin';
+
+-- 回滚脚本（默认注释，谨慎执行）
+-- delete from sys_role_menu where menu_id between 2100 and 2106;
+-- delete from sys_menu where menu_id between 2100 and 2106;
+-- drop table if exists t_user_blacklist;
+-- drop table if exists t_login_log;
