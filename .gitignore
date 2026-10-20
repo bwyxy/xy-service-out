@@ -39,3 +39,14 @@ utils/components.d.ts
 utils/auto-imports.d.ts
 ui
 logs
+
+### 构建产物 ###
+*.tsbuildinfo
+
+### 系统文件 ###
+.DS_Store
+
+### 环境配置 ###
+# 各环境接口地址不同且含线上地址，不入库，由各环境自行维护
+.env.*
+!.env.example
