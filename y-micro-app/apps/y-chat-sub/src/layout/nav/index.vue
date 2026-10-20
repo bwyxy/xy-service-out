@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ChatDotRound, UserFilled, Bell, ChatLineSquare } from "@element-plus/icons-vue";
+import { ChatDotRound, UserFilled, Bell, ChatLineSquare, Reading } from "@element-plus/icons-vue";
 import {reactive, computed, onMounted, onUnmounted, ref} from "vue";
 import { useRoute, useRouter } from 'vue-router'
 import UserInfo from '@/layout/UserInfo/UserInfo.vue'
@@ -8,6 +8,7 @@ import MoreMenu from "@/layout/MoreMenu/MoreMenu.vue";
 import {storeToRefs} from "pinia";
 import useNotificationStore from "@/store/notification.ts";
 import NotificationCenter from "@/layout/Header/NotificationCenter.vue";
+import {isHttpUrl} from "@xy/utils";
 
 const route = useRoute()
 const router = useRouter()
@@ -38,6 +39,11 @@ const navs = reactive([
   //   icon: Orange,
   //   name: '友圈'
   // }
+  {
+    path: 'https://xiaee.cn',
+    icon: Reading,
+    name: '我的博客'
+  }
 ])
 
 const notificationStore = useNotificationStore()
@@ -72,6 +78,11 @@ const toPage = (url: string) => {
   if (!url) {
     notificationVisible.value = true
     return
+  }
+
+  if (isHttpUrl(url)) {
+    window.open(url, '_blank')
+    return;
   }
 
   router.push(url)

@@ -9,14 +9,15 @@ const router = createRouter({
     routes
 })
 
-const whiteList = ["/login"];
+// 免登录可访问：登录页 + 用户协议/隐私政策
+const whiteList = ["/login", "/agreement"];
 router.beforeEach(async (to, _from, next) => {
 
     const userStore = useUserStore()
 
-    // 桌面登录小窗口：仅承载登录/注册页，不参与鉴权
+    // 桌面登录小窗口：仅承载登录/注册/协议页，不参与鉴权
     if (isTauriLoginWindow()) {
-        to.path === "/login" ? next() : next("/login")
+        whiteList.indexOf(to.path) !== -1 ? next() : next("/login")
         return
     }
 

@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { Lock, User } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
+import { useRouter } from 'vue-router'
 import useUserStore from '@/store/user.ts'
 
 const emit = defineEmits(['switch', 'success'])
+const router = useRouter()
 const userStore = useUserStore()
 
 interface RuleForm {
   account: string
   password: string
+  agreed: boolean
 }
 
 const isLoading = ref(false)
@@ -19,6 +23,7 @@ const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   account: '',
   password: '',
+  agreed: false,
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -26,8 +31,18 @@ const rules = reactive<FormRules<RuleForm>>({
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 })
 
+/** 打开用户协议 / 隐私政策独立页（登录小窗口内直接渲染） */
+const openAgreement = (type: 'user' | 'privacy') => {
+  router.push({ path: '/agreement', query: { type } })
+}
+
 const handleSubmit = async (elForm: FormInstance | undefined) => {
   if (!elForm || isLoading.value) return
+
+  if (!ruleForm.agreed) {
+    ElMessage.warning('请先阅读并同意《用户协议》和《隐私政策》')
+    return
+  }
 
   const valid = await elForm.validate().catch(() => false)
   if (!valid) return
@@ -102,6 +117,13 @@ const handleSubmit = async (elForm: FormInstance | undefined) => {
       >
         登 录
       </el-button>
+
+      <div class="agreement-box">
+        <el-checkbox v-model="ruleForm.agreed" class="agreement-checkbox">我已阅读并同意</el-checkbox>
+        <span class="agreement-link" @click="openAgreement('user')">《用户协议》</span>
+        <span class="agreement-text">和</span>
+        <span class="agreement-link" @click="openAgreement('privacy')">《隐私政策》</span>
+      </div>
 
       <div class="register-row">
         <span class="register-link" @click="emit('switch')">注册新账号</span>
@@ -206,10 +228,46 @@ const handleSubmit = async (elForm: FormInstance | undefined) => {
     }
   }
 
+  .agreement-box {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.6;
+
+    :deep(.el-checkbox) {
+      height: auto;
+      margin-right: 0;
+    }
+
+    :deep(.el-checkbox__label) {
+      font-size: 12px;
+      color: #999;
+      padding-left: 6px;
+    }
+
+    .agreement-text {
+      margin: 0 2px;
+      color: #999;
+    }
+
+    .agreement-link {
+      color: #576b95;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   .register-row {
     width: 100%;
     text-align: center;
-    margin-top: 18px;
+    margin-top: 14px;
 
     .register-link {
       font-size: 13px;

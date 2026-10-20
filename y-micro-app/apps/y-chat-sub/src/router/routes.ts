@@ -57,6 +57,13 @@ const routes = [
         name: 'Login',
         component: () => import('@/views/login/index.vue'),
         meta: { title: '登录' }
+    },
+    {
+        // 用户协议 / 隐私政策：免登录可访问，?type=user|privacy 直达指定文档
+        path: '/agreement',
+        name: 'Agreement',
+        component: () => import('@/views/agreement/index.vue'),
+        meta: { title: '协议' }
     }
 ]
 
