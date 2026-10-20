@@ -2,22 +2,27 @@
 import { onMounted } from 'vue'
 import useUserStore from '@/store/user.ts'
 import useChatStore from "@/store/chat.ts";
+import useAppVersionStore from '@/store/appVersion.ts'
 import { wukongIMService } from '@/services/im'
 import AppMain from './AppMain.vue'
 import LayoutNav from './nav/index.vue'
 import CallOverlay from '@/components/CallOverlay/index.vue'
 import IncomingCallDialog from '@/components/IncomingCallDialog/index.vue'
 import ForceLogoutDialog from '@/components/ForceLogoutDialog/index.vue'
+import CheckUpdateDialog from '@/components/CheckUpdateDialog/index.vue'
 import LayoutHeader from '@/layout/Header/index.vue'
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
+const appVersionStore = useAppVersionStore()
 
 onMounted(() => {
   // 若 IM 尚未初始化，且已获取到用户信息，则触发连接
   if (!wukongIMService.isInitialized() && userStore.userInfo?.uid) {
     chatStore.initWKIM()
   }
+  // 启动静默检查一次版本更新（失败不打扰用户）
+  appVersionStore.checkUpdate(true)
 })
 </script>
 
@@ -36,6 +41,9 @@ onMounted(() => {
 
     <!-- 多端登录管控：被同类型设备顶下线时的强制退出弹窗 -->
     <force-logout-dialog />
+
+    <!-- 应用版本更新弹窗：启动静默检查或手动「检查更新」时弹出 -->
+    <check-update-dialog />
   </div>
 </template>
 

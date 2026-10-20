@@ -1,15 +1,26 @@
 <script setup lang="ts">
 
 import {Menu} from "@element-plus/icons-vue";
+import {ElMessage} from "element-plus";
 import {logout} from "@/api/auth.ts";
 import {isTauri} from "@/utils/tauri.ts";
 import useUserStore from "@/store/user.ts";
 import useNotificationStore from "@/store/notification.ts";
+import useAppVersionStore from "@/store/appVersion.ts";
 import {useRouter} from "vue-router";
 
 const userStore = useUserStore()
 const notificationStore = useNotificationStore()
+const appVersionStore = useAppVersionStore()
 const router = useRouter()
+
+/** 手动检查更新：无新版本时给出明确反馈 */
+const handleCheckUpdate = async () => {
+  const info = await appVersionStore.checkUpdate(false)
+  if (!info) {
+    ElMessage.success('当前已是最新版本')
+  }
+}
 
 const handleLogout = () => {
   // 先通知服务端结束会话（token 立即失效），再清理本地状态；
@@ -40,6 +51,9 @@ const handleLogout = () => {
       </div>
     </template>
     <div class="more-menu-box">
+      <div class="more-menu-btm" @click="handleCheckUpdate">
+        <span>检查更新</span>
+      </div>
       <div class="more-menu-btm" @click="handleLogout">
         <span>退出登录</span>
       </div>

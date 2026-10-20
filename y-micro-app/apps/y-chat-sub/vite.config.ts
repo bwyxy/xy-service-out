@@ -1,5 +1,6 @@
 import { mergeConfig, type UserConfig, loadEnv } from 'vite'
 import {fileURLToPath, URL} from 'node:url'
+import { readFileSync } from 'node:fs'
 import vue from '@vitejs/plugin-vue'
 import qiankun from 'vite-plugin-qiankun'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -7,6 +8,12 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 // @ts-ignore
 import viteBaseConfig from "../../configs/vite.base.config.ts";
+
+/** 前端版本号唯一来源：package.json（发版时与 src-tauri/tauri.conf.json 手工保持一致） */
+const pkg = JSON.parse(readFileSync(fileURLToPath(new URL('./package.json', import.meta.url)), 'utf-8'))
+const [majorVersion = 0, minorVersion = 0, patchVersion = 0] = String(pkg.version)
+    .split('.')
+    .map((item: string) => parseInt(item, 10) || 0)
 
 // https://vite.dev/config/
 export default ({ mode } :{mode :any}) :UserConfig => {
@@ -16,6 +23,11 @@ export default ({ mode } :{mode :any}) :UserConfig => {
 
   const config = {
     base: isTauri ? './' : '/chat',
+    define: {
+      // 客户端检查更新时上报的版本信息
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __APP_VERSION_CODE__: String(majorVersion * 10000 + minorVersion * 100 + patchVersion),
+    },
     plugins: [
         vue(),
       qiankun('chat', {
