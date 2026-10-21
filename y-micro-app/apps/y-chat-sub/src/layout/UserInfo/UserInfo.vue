@@ -1,11 +1,22 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import useUserStore from '@/store/user.ts'
-import { ArrowRight, UserFilled} from "@element-plus/icons-vue";
+import { ArrowRight, Check, UserFilled} from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
+import { themePresets, getTheme, setTheme } from '@/utils/theme.ts'
 
 const router = useRouter();
 const { userInfo } = storeToRefs(useUserStore())
+
+/** 当前主题色，仅用于选中态展示 */
+const currentTheme = ref(getTheme())
+
+/** 切换主题色：立即生效并持久化到本地 */
+const handleSelectTheme = (key: string) => {
+  currentTheme.value = key
+  setTheme(key)
+}
 
 const toPage = (url: string) => {
   router.push(url)
@@ -45,6 +56,22 @@ const toPage = (url: string) => {
       <div class="info-box-btm" @click="toPage('/user')">
         <span>编辑资料</span>
         <el-icon><ArrowRight /></el-icon>
+      </div>
+
+      <div class="info-box-theme">
+        <span>主题色</span>
+        <div class="theme-list">
+          <div
+              v-for="item in themePresets"
+              :key="item.key"
+              class="theme-dot"
+              :style="{ background: item.color }"
+              :title="item.name"
+              @click="handleSelectTheme(item.key)"
+          >
+            <el-icon v-if="currentTheme === item.key" color="#fff"><Check /></el-icon>
+          </div>
+        </div>
       </div>
     </div>
   </el-popover>
@@ -93,6 +120,36 @@ const toPage = (url: string) => {
       flex: 1;
       letter-spacing: 1px;
       color: #1f1f1f;
+    }
+  }
+  &-theme {
+    padding: size(16) 0 size(8);
+    display: flex;
+    align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, .06);
+    > span {
+      flex: 1;
+      font-size: size(16);
+      letter-spacing: 1px;
+      color: #1f1f1f;
+    }
+  }
+  .theme-list {
+    display: flex;
+    align-items: center;
+    gap: size(10);
+  }
+  .theme-dot {
+    width: size(20);
+    height: size(20);
+    font-size: size(12);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform .15s;
+    @include flexCenter;
+    &:hover {
+      transform: scale(1.15);
     }
   }
   .info-name {

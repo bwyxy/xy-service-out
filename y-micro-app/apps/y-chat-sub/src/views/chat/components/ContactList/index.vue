@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import useUserStore from '@/store/user.ts'
@@ -7,7 +7,8 @@ import useChatStore from '@/store/chat.ts'
 import { getConversation } from '@/api/chat.ts'
 import { decodeBase64FromJava, extractMessageContent } from '@/utils/wk.ts'
 import { MessageType } from '@/services/im'
-import type { Contact } from '@/store/chat.ts'
+import type { Contact } from '@/types/chat.ts'
+import { useContextMenu } from '@/composables/useContextMenu.ts'
 import {isImageUrl} from "@/utils/utils.ts";
 
 const userStore = useUserStore()
@@ -37,33 +38,24 @@ interface ApiConversationItem {
   top?: number
 }
 
-/** 会话右键菜单 */
-const contactMenu = ref<{
-  visible: boolean
-  x: number
-  y: number
-  contact: Contact | null
-}>({ visible: false, x: 0, y: 0, contact: null })
+/** 会话右键菜单（定位与关闭时机由 composable 统一处理） */
+const contactMenu = useContextMenu<Contact>()
+const {
+  visible: contactMenuVisible,
+  target: contactMenuTarget,
+  menuRef: contactMenuRef,
+  style: contactMenuStyle,
+  close: closeContactMenu,
+} = contactMenu
 
 /** 打开会话右键菜单 */
 const openContactMenu = (event: MouseEvent, contact: Contact) => {
-  contactMenu.value = {
-    visible: true,
-    x: event.clientX,
-    y: event.clientY,
-    contact,
-  }
-}
-
-/** 关闭会话右键菜单 */
-const closeContactMenu = () => {
-  contactMenu.value.visible = false
-  contactMenu.value.contact = null
+  contactMenu.open(event, contact)
 }
 
 /** 置顶/取消置顶会话 */
 const handleToggleTop = async () => {
-  const contact = contactMenu.value.contact
+  const contact = contactMenuTarget.value
   closeContactMenu()
 
   if (!contact) {
@@ -79,7 +71,7 @@ const handleToggleTop = async () => {
 
 /** 删除会话：仅自己不可见，对方仍可查看 */
 const handleDeleteContact = async () => {
-  const contact = contactMenu.value.contact
+  const contact = contactMenuTarget.value
   closeContactMenu()
 
   if (!contact) {
@@ -110,13 +102,6 @@ const handleDeleteContact = async () => {
   }
 
   ElMessage.success('已删除该聊天')
-}
-
-/** Esc 关闭右键菜单 */
-const onMenuKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    closeContactMenu()
-  }
 }
 
 watch(() => isRefreshConversations.value, () => {
@@ -268,16 +253,6 @@ const showMessage = (message: string) => {
 
 onMounted(() => {
   fetchConversations(true)
-  // 点击空白处 / 滚动 / Esc 关闭右键菜单
-  document.addEventListener('click', closeContactMenu)
-  document.addEventListener('scroll', closeContactMenu, true)
-  window.addEventListener('keydown', onMenuKeydown)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', closeContactMenu)
-  document.removeEventListener('scroll', closeContactMenu, true)
-  window.removeEventListener('keydown', onMenuKeydown)
 })
 </script>
 
@@ -320,12 +295,13 @@ onUnmounted(() => {
   <!-- 会话右键菜单：置顶 / 取消置顶 / 删除聊天 -->
   <teleport to="body">
     <div
-      v-if="contactMenu.visible"
+      v-if="contactMenuVisible"
+      ref="contactMenuRef"
       class="contact-context-menu"
-      :style="{ left: `${contactMenu.x}px`, top: `${contactMenu.y}px` }"
+      :style="contactMenuStyle"
     >
       <div class="contact-context-menu__item" @click="handleToggleTop">
-        {{ contactMenu.contact?.top ? '取消置顶' : '置顶该聊天' }}
+        {{ contactMenuTarget?.top ? '取消置顶' : '置顶该聊天' }}
       </div>
       <div class="contact-context-menu__item" @click="handleDeleteContact">
         删除该聊天

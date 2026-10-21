@@ -30,8 +30,10 @@ import com.xy.common.enums.ChannelType;
 import com.xy.system.service.IUserBlacklistService;
 import com.xy.common.enums.MessageType;
 import com.xy.common.exception.BusinessException;
+import com.xy.common.utils.ChannelIdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -74,8 +77,23 @@ public class MessageServiceImpl implements IMessageService {
     @Autowired
     private IUserBlacklistService userBlacklistService;
 
+    @Autowired
+    @Qualifier("chatAsyncExecutor")
+    private Executor chatAsyncExecutor;
+
     @Value("${ai.assistant.uid:fg_ai}")
     private String aiAssistantUid;
+
+    /** AI 助手默认使用的知识库 ID，可通过配置覆盖 */
+    @Value("${ai.assistant.knowledge-base-id:1}")
+    private Long aiKnowledgeBaseId;
+
+    /** AI 助手默认使用的模型，可通过配置覆盖 */
+    @Value("${ai.assistant.model:deepseek-v4-pro}")
+    private String aiModel;
+
+    /** 单条消息内容长度上限，防止超长内容拖垮转发与渲染 */
+    private static final int MAX_MESSAGE_LENGTH = 5000;
 
     /** 消息撤回时间窗口（分钟） */
     private static final long RECALL_WINDOW_MINUTES = 2;
@@ -116,11 +134,17 @@ public class MessageServiceImpl implements IMessageService {
         msgRequest.setStartMessageSeq(msgDTO.getStartMessageSeq());
         msgRequest.setEndMessageSeq(msgDTO.getEndMessageSeq());
 
-        log.warn("校验参数-{}", msgRequest);
+        log.debug("拉取频道历史消息, uId={}, channelId={}, startSeq={}, endSeq={}, limit={}",
+                uId, msgDTO.getChannelId(), msgDTO.getStartMessageSeq(), msgDTO.getEndMessageSeq(),
+                msgRequest.getLimit());
         try {
             return filterHiddenMessages(wuKongClient.messageSync(msgRequest), msgDTO);
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            log.error("拉取频道历史消息失败, channelId={}, channelType={}",
+                    msgDTO.getChannelId(), msgDTO.getChannelType(), e);
+            throw new BusinessException("加载聊天记录失败，请稍后重试");
         }
     }
 
@@ -152,29 +176,28 @@ public class MessageServiceImpl implements IMessageService {
 
     /**
      * 查询当前用户在该频道的删除标记（取删记录与删会话标识的较大值）
+     *
+     * <p>刻意不做异常吞掉：删除标记决定「用户已删除的历史消息是否可见」，
+     * 查询失败时若返回 0 会把已删除消息重新暴露出来，因此这里让异常向上抛出，
+     * 由调用方转为「加载失败」提示，属于 fail-closed 处理。</p>
      * */
     private long getHiddenThroughSeq(String channelId, Integer channelType) {
-        try {
-            LambdaQueryWrapper<ConversationSetting> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<ConversationSetting> queryWrapper = new LambdaQueryWrapper<>();
 
-            queryWrapper.eq(ConversationSetting::getUId, SecurityUtils.getUId())
-                    .eq(ConversationSetting::getChannelId, channelId)
-                    .eq(ConversationSetting::getChannelType, channelType);
+        queryWrapper.eq(ConversationSetting::getUId, SecurityUtils.getUId())
+                .eq(ConversationSetting::getChannelId, channelId)
+                .eq(ConversationSetting::getChannelType, channelType);
 
-            ConversationSetting setting = conversationSettingMapper.selectOne(queryWrapper);
+        ConversationSetting setting = conversationSettingMapper.selectOne(queryWrapper);
 
-            if (setting == null) {
-                return 0L;
-            }
-
-            long clearedSeq = setting.getClearedSeq() == null ? 0L : setting.getClearedSeq();
-            long deletedSeq = setting.getDeletedSeq() == null ? 0L : setting.getDeletedSeq();
-
-            return Math.max(clearedSeq, deletedSeq);
-        } catch (Exception e) {
-            log.warn("查询会话删除标记失败, channelId={}, channelType={}", channelId, channelType, e);
+        if (setting == null) {
             return 0L;
         }
+
+        long clearedSeq = setting.getClearedSeq() == null ? 0L : setting.getClearedSeq();
+        long deletedSeq = setting.getDeletedSeq() == null ? 0L : setting.getDeletedSeq();
+
+        return Math.max(clearedSeq, deletedSeq);
     }
 
     /**
@@ -185,6 +208,14 @@ public class MessageServiceImpl implements IMessageService {
      * */
     public Object sendMessage(SendMsgDTO sendMsgDTO) {
         Long uId = SecurityUtils.getUId();
+
+        // 内容基础校验：空内容与超长内容直接拒绝，避免脏数据与渲染压力
+        if (sendMsgDTO.getContent() == null || sendMsgDTO.getContent().trim().isEmpty()) {
+            throw new BusinessException("消息内容不能为空");
+        }
+        if (sendMsgDTO.getContent().length() > MAX_MESSAGE_LENGTH) {
+            throw new BusinessException("消息内容过长，最多 " + MAX_MESSAGE_LENGTH + " 个字符");
+        }
 
         // 群聊消息：校验全员禁言与成员禁言
         if (ChannelType.GROUP_CHANNEL.getCode().equals(sendMsgDTO.getChannelType())) {
@@ -238,13 +269,13 @@ public class MessageServiceImpl implements IMessageService {
             if (aiAssistantUid.equals(sendMsgDTO.getChannelId())) {
                 String token = aiApiKeyTokenProvider.getToken();
                 log.info("AI 助手请求, userId={}, tokenExists={}", uId, token != null && !token.isEmpty());
-                CompletableFuture.runAsync(() -> sendAiReply(uId, sendMsgDTO, token));
+                CompletableFuture.runAsync(() -> sendAiReply(uId, sendMsgDTO, token), chatAsyncExecutor);
             }
 
             return result;
         } catch (Exception e) {
-            log.error("发送消息到悟空 IM 失败", e);
-            throw new BusinessException("发送消息失败：" + e.getMessage());
+            log.error("发送消息到悟空 IM 失败, uId={}, channelId={}", uId, sendMsgDTO.getChannelId(), e);
+            throw new BusinessException("发送消息失败，请稍后重试");
         }
     }
 
@@ -281,17 +312,30 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     /**
+     * 把消息序号安全转换为 int
+     *
+     * <p>悟空 IM 的消息序号是 long，直接用 (int) 强转存在溢出风险（大序号会变成负数），
+     * 这里统一做上下界钳制。</p>
+     * */
+    private static int toIntSeq(long seq) {
+        if (seq <= 0) {
+            return 0;
+        }
+        return seq > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) seq;
+    }
+
+    /**
      * 群聊发言权限校验
      *
      * <p>1. 群已解散时禁止发送；2. 成员处于禁言期时禁止发送；
      * 3. 群主开启全员禁言时仅群主/管理员可发送。</p>
      * */
     private void checkGroupSpeakPermission(Long uId, String channelId) {
-        if (channelId == null || !channelId.startsWith(Constants.GROUP_ID_PREFIX)) {
-            return;
-        }
+        Long groupId = ChannelIdUtils.parseGroupId(channelId);
 
-        Long groupId = Long.valueOf(channelId.substring(Constants.GROUP_ID_PREFIX.length()));
+        if (groupId == null) {
+            throw new BusinessException("无效的群聊频道");
+        }
 
         Group group = groupService.getById(groupId);
 
@@ -301,12 +345,17 @@ public class MessageServiceImpl implements IMessageService {
 
         GroupMember member = groupMemberService.getGroupMemberByUid(uId, groupId);
 
-        if (member != null && member.getMuteEndTime() != null
+        // 已被移出群聊的成员不允许再向该群发送消息
+        if (member == null) {
+            throw new BusinessException("你已被移出群聊，无法发送消息");
+        }
+
+        if (member.getMuteEndTime() != null
                 && member.getMuteEndTime().isAfter(LocalDateTime.now())) {
             throw new BusinessException("您已被禁言，暂时无法发送消息");
         }
 
-        boolean isAdmin = member != null && member.getRole() != GroupMemberRole.regular.getCode();
+        boolean isAdmin = member.getRole() != GroupMemberRole.regular.getCode();
 
         if (Integer.valueOf(1).equals(group.getIsBan()) && !isAdmin) {
             throw new BusinessException("群主已开启全员禁言，仅群主/管理员可发言");
@@ -319,14 +368,14 @@ public class MessageServiceImpl implements IMessageService {
     private void sendAiReply(Long userId, SendMsgDTO sendMsgDTO, String token) {
         try {
             List<Long> knowledgeBaseIds = new ArrayList<>();
-            knowledgeBaseIds.add(1L);
+            knowledgeBaseIds.add(aiKnowledgeBaseId);
 
             AiChatRequest aiRequest = new AiChatRequest();
             aiRequest.setUserId(userId);
             aiRequest.setConversationId(userId);
             aiRequest.setUserType("CLIENT");
             aiRequest.setKnowledgeBaseIds(knowledgeBaseIds);
-            aiRequest.setModel("deepseek-v4-pro");
+            aiRequest.setModel(aiModel);
             aiRequest.setMessage(sendMsgDTO.getContent());
             aiRequest.setEnableTools(false);
 
@@ -439,7 +488,7 @@ public class MessageServiceImpl implements IMessageService {
         Long messageSeq = recallMessageDTO.getMessageSeq();
 
         Message origin = syncChannelMessages(
-                recallMessageDTO, (int) Math.max(messageSeq - 1, 0), (int) (messageSeq + 1), 2)
+                recallMessageDTO, toIntSeq(messageSeq - 1), toIntSeq(messageSeq + 1), 2)
                 .stream()
                 .filter(msg -> messageSeq.equals(msg.getMessageSeq()))
                 .findFirst()
@@ -578,12 +627,14 @@ public class MessageServiceImpl implements IMessageService {
             }
 
             // 以本页最小序号为界继续向更早的方向回溯
-            int minSeq = page.stream()
+            long minSeqValue = page.stream()
                     .map(Message::getMessageSeq)
                     .filter(Objects::nonNull)
-                    .mapToInt(Long::intValue)
+                    .mapToLong(Long::longValue)
                     .min()
-                    .orElse(0);
+                    .orElse(0L);
+
+            int minSeq = toIntSeq(minSeqValue);
 
             if (minSeq <= 1) {
                 break;

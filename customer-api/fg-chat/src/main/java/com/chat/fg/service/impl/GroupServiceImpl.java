@@ -18,15 +18,15 @@ import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.chat.GroupMember;
 import com.xy.common.enums.MessageType;
 import com.xy.common.exception.ServiceException;
+import com.xy.common.utils.ChannelIdUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -49,27 +49,23 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
      * */
     @Override
     public Group findById(String id) {
-        if (id == null) {
-            throw new ServiceException("群聊Id不能为空");
-        }
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher matcher = pattern.matcher(id);
+        Long groupId = ChannelIdUtils.parseGroupId(id);
 
-        if (matcher.find()) {
-            LambdaQueryWrapper<Group> queryWrapper = new LambdaQueryWrapper<>();
-
-            queryWrapper.eq(Group::getGroupId, matcher.group());
-
-            return this.getOne(queryWrapper);
+        if (groupId == null) {
+            throw new ServiceException("无效群聊ID");
         }
 
-        throw new ServiceException("无效群聊ID");
+        return this.getOne(new LambdaQueryWrapper<Group>().eq(Group::getGroupId, groupId));
     }
 
     /**
      * 创建群聊
+     *
+     * <p>说明：群记录、群主、群成员三处写库需要原子提交，因此加事务；
+     * IM 频道创建与系统消息放在同一事务内，失败时回滚，避免出现「有群无频道」的脏数据。</p>
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createGroup(CreateGroupDTO createGroupDTO) {
 
         Long uId = SecurityUtils.getUId();
@@ -77,49 +73,59 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
 
         Group group = new Group();
         group.setName(createGroupDTO.getGroupName());
-        group.setOwnerUid(createGroupDTO.getUid());
+        // 群主固定取当前登录用户，不允许通过请求参数把他人设成群主
+        group.setOwnerUid(uId);
         group.setCreateTime(now);
         group.setUpdateTime(now);
         group.setCreateBy(uId);
         group.setUpdateBy(uId);
 
-        boolean success = save(group);
-
-        if (success) {
-            Long groupId = group.getGroupId();
-            // 添加群主 Id
-            addGroupOwner(groupId, createGroupDTO.getUid());
-            // 添加群成员
-            groupMemberService.batchGroupMember(groupId, createGroupDTO.getMemberIds());
-
-            List<String> memberIds = new ArrayList<>();
-
-            memberIds.add(createGroupDTO.getUid().toString());
-            for (Long memberId : createGroupDTO.getMemberIds()) {
-                memberIds.add(memberId.toString());
-            }
-
-            // 添加群聊频道
-            Channel channel = new Channel();
-            channel.setChannelId(Constants.GROUP_ID_PREFIX + groupId);
-            channel.setSubscribers(memberIds);
-
-            wuKongClient.saveChannel(channel);
-            // 向频道发送消息
-            chatMessage.sendGroupMessage(
-                    groupId.toString(),
-                    memberIds,
-                    createGroupDTO.getRemark() + "加入群聊"
-            );
-        } else {
+        if (!save(group)) {
             throw new ServiceException("创建群聊失败");
         }
+
+        Long groupId = group.getGroupId();
+
+        // 初始成员需剔除群主并去重，否则会与群主记录重复插入同一条成员
+        List<Long> memberIds = createGroupDTO.getMemberIds() == null
+                ? new ArrayList<>()
+                : createGroupDTO.getMemberIds().stream()
+                        .filter(memberId -> memberId != null && !memberId.equals(uId))
+                        .distinct()
+                        .collect(Collectors.toList());
+
+        // 添加群主 Id
+        addGroupOwner(groupId, uId);
+
+        // 添加群成员
+        if (!memberIds.isEmpty()) {
+            groupMemberService.batchGroupMember(groupId, memberIds);
+        }
+
+        List<String> subscribers = new ArrayList<>(memberIds.size() + 1);
+
+        subscribers.add(uId.toString());
+        for (Long memberId : memberIds) {
+            subscribers.add(memberId.toString());
+        }
+
+        // 添加群聊频道
+        Channel channel = new Channel();
+        channel.setChannelId(Constants.GROUP_ID_PREFIX + groupId);
+        channel.setSubscribers(subscribers);
+
+        wuKongClient.saveChannel(channel);
+        // 向频道发送消息
+        String remark = StringUtils.isEmpty(createGroupDTO.getRemark()) ? "" : createGroupDTO.getRemark();
+
+        chatMessage.sendGroupMessage(groupId.toString(), remark + "加入群聊");
     }
 
     /**
      * 编辑群资料
      * */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void editGroup(EditGroupDTO editGroupDTO) {
         Long uId = SecurityUtils.getUId();
         LocalDateTime now = LocalDateTime.now();
@@ -157,7 +163,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         if (editGroupDTO.getIsBan() != null) {
             chatMessage.sendGroupMessage(
                     editGroupDTO.getGroupId().toString(),
-                    null,
                     MessageType.groupMute,
                     editGroupDTO.getIsBan() == 1 ? "群主已开启全员禁言" : "群主已关闭全员禁言"
             );
@@ -168,6 +173,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
      * 解散群聊
      * */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void dissolveGroup(Long groupId) {
 
         if (groupId == null) {
@@ -179,6 +185,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
 
         GroupMember groupMember = groupMemberService.getGroupMemberByUid(uId, groupId);
 
+        if (groupMember == null) {
+            throw new ServiceException("您不在该群聊中");
+        }
         if (groupMember.getRole() != GroupMemberRole.owner.getCode()) {
             throw new ServiceException("只有群主才能解散群聊");
         }

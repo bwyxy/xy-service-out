@@ -1,7 +1,7 @@
 import { ElNotification } from 'element-plus'
 import { wukongIMService } from './wukong-im'
 import { decodePayload, extractMessageContent } from '@/utils/wk'
-import { isRtcSignalType, isSystemMessageType, MessageType } from './constants'
+import { isRtcSignalType, isSystemMessageType, MessageType, NotificationType } from './constants'
 import type { WukongIMMessage, WukongIMMessagePayload, WukongIMSystemPayload } from './types'
 
 /** 聊天消息处理器 */
@@ -187,40 +187,43 @@ export class MessageHandlerService {
     ElNotification({
       title,
       message: extractMessageContent(payload),
-      type: this.resolveNotifyType(payload.type),
+      type: this.resolveNotifyType(payload.notificationType),
       duration: 4500,
     })
 
     this.systemHandlers.forEach((handler) => handler(message, payload))
   }
 
+  /**
+   * 解析通知标题
+   *
+   * 优先使用后端下发的 title（如「群聊通知」），缺失时按通知业务类型兜底。
+   * 注意不能按 IM 消息类型（payload.type）判断：消息类型只表达传输形态，
+   * 好友通知等业务语义由 notificationType（NotificationType）承载。
+   */
   private resolveSystemTitle(payload: WukongIMSystemPayload): string {
     if (payload.title) {
       return payload.title
     }
 
-    switch (payload.type) {
-      case MessageType.FRIEND_REQUEST:
+    switch (payload.notificationType) {
+      case NotificationType.FRIEND_REQUEST:
         return '好友请求'
-      case MessageType.FRIEND_ACCEPTED:
+      case NotificationType.FRIEND_ACCEPTED:
         return '好友请求已同意'
-      case MessageType.FRIEND_REJECTED:
-        return '好友请求被拒绝'
-      case MessageType.SYSTEM:
+      case NotificationType.SYSTEM:
       default:
         return '系统通知'
     }
   }
 
-  private resolveNotifyType(type: number): 'success' | 'warning' | 'info' | 'error' {
-    switch (type) {
-      case MessageType.FRIEND_ACCEPTED:
+  private resolveNotifyType(notificationType?: number): 'success' | 'warning' | 'info' | 'error' {
+    switch (notificationType) {
+      case NotificationType.FRIEND_ACCEPTED:
         return 'success'
-      case MessageType.FRIEND_REJECTED:
-        return 'warning'
-      case MessageType.FRIEND_REQUEST:
+      case NotificationType.FRIEND_REQUEST:
         return 'info'
-      case MessageType.SYSTEM:
+      case NotificationType.SYSTEM:
       default:
         return 'info'
     }

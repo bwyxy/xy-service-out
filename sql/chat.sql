@@ -54,7 +54,8 @@ create table t_group_member (
     exit_time datetime default null comment '退出时间',
     mute_end_time datetime default null comment '禁言结束时间',
     group_nickname varchar(50) default '' comment '群内昵称',
-    last_ack_seq bigint default 0 comment '已读到的最大消息seq'
+    last_ack_seq bigint default 0 comment '已读到的最大消息seq',
+    unique index uk_group_member_user (group_id, u_id)
 ) engine = InnoDB default CHARSET=utf8mb4  comment '群组成员表';
 
 create table t_group_announcement (
@@ -259,7 +260,19 @@ from sys_role r
          join sys_menu m on m.menu_id between 2100 and 2106
 where r.role_key = 'admin';
 
+-- ==========================================================================
+-- 增量变更（已存在的库需要单独执行）
+-- ==========================================================================
+-- 群成员唯一约束：并发邀请入群时由唯一索引兜底，避免同一用户重复写入群成员表。
+-- 执行前请先清理历史重复数据：
+--   delete t1 from t_group_member t1 join t_group_member t2
+--     on t1.group_id = t2.group_id and t1.u_id = t2.u_id and t1.id > t2.id;
+alter table t_group_member add unique index uk_group_member_user (group_id, u_id);
+
+-- ==========================================================================
 -- 回滚脚本（默认注释，谨慎执行）
+-- ==========================================================================
+-- alter table t_group_member drop index uk_group_member_user;
 -- delete from sys_role_menu where menu_id between 2100 and 2106;
 -- delete from sys_menu where menu_id between 2100 and 2106;
 -- drop table if exists t_user_blacklist;

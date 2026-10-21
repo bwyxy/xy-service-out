@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch, nextTick, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import useChatStore, { canRecallMessage, canReeditMessage, canCopyMessage, canQuoteMessage, buildQuoteInfo } from '@/store/chat.ts'
-import type { Message, MentionInfo, QuoteInfo } from '@/store/chat.ts'
+import useChatStore from '@/store/chat.ts'
+import {
+  canRecallMessage,
+  canReeditMessage,
+  canCopyMessage,
+  canQuoteMessage,
+  buildQuoteInfo,
+  resolveMemberName,
+} from '@/utils/chat.ts'
+import type { Message, MentionInfo, QuoteInfo } from '@/types/chat.ts'
+import { formatMessageTime } from '@/utils/date.ts'
+import { useContextMenu } from '@/composables/useContextMenu.ts'
 import useCallStore from '@/store/call.ts'
 import useUserStore from '@/store/user.ts'
 import { MessageType } from '@/services/im/constants'
+import { messageHandlerService } from '@/services/im'
+import type { SystemMessageHandler } from '@/services/im/message-handler'
 import { ElMessage } from 'element-plus'
 import { Close } from '@element-plus/icons-vue'
 import { getUserInfo, getSystemUserInfo } from '@/api/user.ts'
@@ -63,7 +75,7 @@ const quotePreviewName = computed(() => {
 
   const member = groupMembers.value.find((m) => String(m.uid) === String(quote.fromUid))
   if (member) {
-    return member.groupNickname || member.nickname || quote.fromUid
+    return resolveMemberName(member, quote.fromUid)
   }
 
   // 单聊中对方即引用消息的发送者；引用自己的消息时快照已写入本人昵称
@@ -105,31 +117,6 @@ const shouldShowTimeDivider = (index: number): boolean => {
   return current.timestamp - previous.timestamp > TIME_DIVIDER_GAP
 }
 
-/** 消息时间展示：今天显示 HH:mm，昨天带「昨天」，更早显示具体日期 */
-const formatMessageTime = (timestamp: number): string => {
-  if (!timestamp) return ''
-
-  const date = new Date(timestamp)
-  const now = new Date()
-  const pad = (value: number) => String(value).padStart(2, '0')
-  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`
-
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-  const startOfThatDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
-  const DAY = 24 * 60 * 60 * 1000
-
-  if (startOfThatDay === startOfToday) {
-    return time
-  }
-  if (startOfToday - startOfThatDay === DAY) {
-    return `昨天 ${time}`
-  }
-  if (date.getFullYear() === now.getFullYear()) {
-    return `${date.getMonth() + 1}月${date.getDate()}日 ${time}`
-  }
-
-  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${time}`
-}
 /** 是否系统用户 */
 const isSystemUser = computed(() => {
   console.log('是否是系统用户', activeContact.value)
@@ -154,12 +141,57 @@ const isGroupDisbanded = computed(
   () => activeContact.value?.channelType === 2 && channelInfo.value.disband === 1,
 )
 
+/** 收到「被移出群聊」通知的群 Id */
+const removedGroupIds = ref<string[]>([])
+
+/** 是否已被移出群聊：收到实时通知，或群成员已加载且不含自己 */
+const isGroupRemoved = computed(() =>
+  activeContact.value?.channelType === 2
+    && (removedGroupIds.value.includes(activeContact.value.uid)
+      || (groupMembers.value.length > 0 && !currentGroupMember.value)),
+)
+
+/** 发现自己被移出群聊时提醒一次 */
+watch(isGroupRemoved, (removed) => {
+  if (removed) {
+    ElMessage.warning('你已被移出群聊，无法发送消息')
+  }
+})
+
+/** 收到被移出群聊通知：记录该群并清空成员，实时禁用发送 */
+const handleGroupRemovedNotice: SystemMessageHandler = (_message, payload) => {
+  if (payload.type !== MessageType.GROUP_MEMBER_REMOVED) return
+
+  const groupId = String(payload.extra?.groupId ?? '')
+
+  if (!groupId) return
+
+  if (!removedGroupIds.value.includes(groupId)) {
+    removedGroupIds.value.push(groupId)
+  }
+  if (activeContact.value?.uid === groupId) {
+    groupMembers.value = []
+  }
+}
+
+onMounted(() => {
+  messageHandlerService.onSystemMessage(handleGroupRemovedNotice)
+})
+
+onUnmounted(() => {
+  messageHandlerService.offSystemMessage(handleGroupRemovedNotice)
+})
+
 /** 禁言/解散提示文案，为空表示可正常发言 */
 const muteTip = computed(() => {
   if (!activeContact.value || activeContact.value.channelType !== 2) return ''
 
   if (isGroupDisbanded.value) {
     return '群聊已解散'
+  }
+
+  if (isGroupRemoved.value) {
+    return '你已被移出群聊，无法发送消息'
   }
 
   const muteEndTime = currentGroupMember.value?.muteEndTime
@@ -291,54 +323,29 @@ const handleReedit = (msg: Message) => {
   richInputRef.value?.setContent(msg.content)
 }
 
-/** 右键菜单状态 */
-const contextMenu = ref<{
-  visible: boolean
-  msg: Message | null
-  canCopy: boolean
-  canQuote: boolean
-  canRecall: boolean
-  canReedit: boolean
-}>({ visible: false, msg: null, canCopy: false, canQuote: false, canRecall: false, canReedit: false })
-const contextMenuRef = ref<HTMLDivElement | null>(null)
-const contextMenuStyle = ref<{ left: string; top: string }>({ left: '0px', top: '0px' })
+/** 消息右键菜单（定位与关闭时机由 composable 统一处理） */
+const messageMenu = useContextMenu<Message>()
+const { visible: contextMenuVisible, target: contextMenuMsg, menuRef: contextMenuRef, style: contextMenuStyle, close: closeContextMenu } = messageMenu
+
+/** 当前右键菜单对消息的可用操作 */
+const canCopy = computed(() => !!contextMenuMsg.value && canCopyMessage(contextMenuMsg.value))
+const canQuote = computed(() => !!contextMenuMsg.value && canQuoteMessage(contextMenuMsg.value))
+const canRecall = computed(() => !!contextMenuMsg.value && canRecallMessage(contextMenuMsg.value))
+const canReedit = computed(() => !!contextMenuMsg.value && canReeditMessage(contextMenuMsg.value))
 
 /** 打开消息右键菜单（仅当存在可用操作时） */
-const openContextMenu = async (e: MouseEvent, msg: Message) => {
-  const canCopy = canCopyMessage(msg)
-  const canQuote = canQuoteMessage(msg)
-  const canRecall = canRecallMessage(msg)
-  const canReedit = canReeditMessage(msg)
-
-  if (!canCopy && !canQuote && !canRecall && !canReedit) {
+const openContextMenu = (e: MouseEvent, msg: Message) => {
+  if (!canCopyMessage(msg) && !canQuoteMessage(msg) && !canRecallMessage(msg) && !canReeditMessage(msg)) {
     closeContextMenu()
     return
   }
 
-  contextMenu.value = { visible: true, msg, canCopy, canQuote, canRecall, canReedit }
-  await nextTick()
-
-  // 视口边缘收敛，避免菜单溢出屏幕
-  const menuW = contextMenuRef.value?.offsetWidth ?? 96
-  const menuH = contextMenuRef.value?.offsetHeight ?? 40
-  const maxX = window.innerWidth - menuW - 8
-  const maxY = window.innerHeight - menuH - 8
-
-  contextMenuStyle.value = {
-    left: `${Math.min(e.clientX, maxX)}px`,
-    top: `${Math.min(e.clientY, maxY)}px`,
-  }
-}
-
-/** 关闭消息右键菜单 */
-const closeContextMenu = () => {
-  contextMenu.value.visible = false
-  contextMenu.value.msg = null
+  messageMenu.open(e, msg)
 }
 
 /** 右键菜单：复制 */
 const onMenuCopy = async () => {
-  const msg = contextMenu.value.msg
+  const msg = contextMenuMsg.value
   closeContextMenu()
   if (!msg) return
 
@@ -353,7 +360,7 @@ const onMenuCopy = async () => {
 
 /** 右键菜单：引用 */
 const onMenuQuote = () => {
-  const msg = contextMenu.value.msg
+  const msg = contextMenuMsg.value
   closeContextMenu()
   if (!msg) return
 
@@ -363,17 +370,20 @@ const onMenuQuote = () => {
 
 /** 右键菜单：撤回 */
 const onMenuRecall = async () => {
-  const msg = contextMenu.value.msg
+  const msg = contextMenuMsg.value
   closeContextMenu()
   if (msg) await handleRecall(msg)
 }
 
 /** 右键菜单：重新编辑 */
 const onMenuReedit = () => {
-  const msg = contextMenu.value.msg
+  const msg = contextMenuMsg.value
   closeContextMenu()
   if (msg) handleReedit(msg)
 }
+
+/** 消息定位闪烁定时器（卸载时需清理，避免回调操作已销毁的 DOM） */
+let flashTimer: ReturnType<typeof setTimeout> | null = null
 
 /** 让目标消息整片区域闪烁几下（仿微信 @/引用 定位效果） */
 const flashMessageEl = (el: HTMLElement) => {
@@ -381,7 +391,13 @@ const flashMessageEl = (el: HTMLElement) => {
   el.classList.remove('msg-flash')
   void el.offsetWidth
   el.classList.add('msg-flash')
-  window.setTimeout(() => el.classList.remove('msg-flash'), 1800)
+  if (flashTimer) {
+    clearTimeout(flashTimer)
+  }
+  flashTimer = setTimeout(() => {
+    el.classList.remove('msg-flash')
+    flashTimer = null
+  }, 1800)
 }
 
 /** 滚动到目标消息并闪烁 */
@@ -524,11 +540,6 @@ const markVisibleMentionsAcked = () => {
       msg.mentionAck = true
     }
   })
-}
-
-/** Esc 关闭右键菜单 */
-const onContextMenuKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') closeContextMenu()
 }
 
 /** 滚动到底部 */
@@ -682,6 +693,8 @@ watch(
   () => {
     // 切换会话时清空待引用消息，避免引用到其他会话的消息
     quoteTarget.value = null
+    // 清空群成员，避免用上一个群的成员数据判断当前用户身份
+    groupMembers.value = []
     loadChannelInfo()
     scrollToBottom()
   },
@@ -718,10 +731,6 @@ watch(isGroupAdmin, (value) => {
 onMounted(() => {
   // loadChannelInfo 已由 activeContact 的 immediate watcher 触发，此处不再重复调用
   scrollToBottom()
-  document.addEventListener('click', closeContextMenu)
-  document.addEventListener('scroll', closeContextMenu, true)
-  window.addEventListener('resize', closeContextMenu)
-  window.addEventListener('keydown', onContextMenuKeydown)
   // 兜底：哨兵元素进入视口即触发上拉加载，兼容「滚动发生在祖先容器」的场景
   setupHistoryObserver()
   // 内容高度变化时保持贴底
@@ -729,14 +738,14 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', closeContextMenu)
-  document.removeEventListener('scroll', closeContextMenu, true)
-  window.removeEventListener('resize', closeContextMenu)
-  window.removeEventListener('keydown', onContextMenuKeydown)
   historyObserver?.disconnect()
   historyObserver = null
   contentObserver?.disconnect()
   contentObserver = null
+  if (flashTimer) {
+    clearTimeout(flashTimer)
+    flashTimer = null
+  }
 })
 </script>
 
@@ -881,29 +890,29 @@ onUnmounted(() => {
     <!-- 消息右键菜单（仿微信）：复制 / 撤回 / 重新编辑 -->
     <teleport to="body">
       <div
-          v-if="contextMenu.visible"
+          v-if="contextMenuVisible"
           ref="contextMenuRef"
           class="msg-context-menu"
           :style="contextMenuStyle"
           @click.stop
       >
         <div
-            v-if="contextMenu.canCopy"
+            v-if="canCopy"
             class="msg-context-menu__item"
             @click="onMenuCopy"
         >复制</div>
         <div
-            v-if="contextMenu.canQuote"
+            v-if="canQuote"
             class="msg-context-menu__item"
             @click="onMenuQuote"
         >引用</div>
         <div
-            v-if="contextMenu.canRecall"
+            v-if="canRecall"
             class="msg-context-menu__item"
             @click="onMenuRecall"
         >撤回</div>
         <div
-            v-if="contextMenu.canReedit"
+            v-if="canReedit"
             class="msg-context-menu__item"
             @click="onMenuReedit"
         >重新编辑</div>

@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "devDependencies": {
+    "concurrently": "catalog:",
+    "cross-env": "catalog:",
+    "dotenv-flow": "catalog:",
+    "typescript": "catalog:"
+  },
   "scripts": {
-    "dev": "pnpm run --parallel --filter './apps/*' dev",
-    "build:apps": "pnpm run --parallel --filter './apps/*' build",
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/dev.js --mode production",
+    "clean": "node scripts/clean.js",
+    "install:packages": "pnpm --filter './packages/*' install",
     "build:packages": "pnpm run --parallel --filter './packages/*' build",
     "desktop:dev": "pnpm --filter y-chat-sub tauri:dev",
     "desktop:build:mac": "pnpm --filter y-chat-sub tauri:build",
@@ -14,11 +22,20 @@
     "desktop:linux": "pnpm desktop:linux:image && pnpm desktop:linux:run",
     "desktop:linux:clean": "docker rmi -f y-chat-linux || true; docker volume rm y-chat-cargo-target || true; rm -rf dist-linux"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.19.0",
+    "pnpm": ">=10.0.0"
+  },
   "packageManager": "pnpm@10.33.2",
+  "preinstall": "npx only-allow pnpm",
   "dependencies": {
-    "pinia": "^4.1.0"
+    "@types/node": "catalog:",
+    "@module-federation/vite": "catalog:",
+    "child_process": "catalog:",
+    "glob": "catalog:",
+    "path": "catalog:",
+    "vite": "catalog:"
   }
 }

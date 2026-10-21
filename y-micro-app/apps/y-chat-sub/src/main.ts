@@ -10,6 +10,7 @@ import { registerGlobalListeners, microComm } from '@/qiankun/index.ts'
 import { setupStore } from '@/store/index.ts'
 import { isTauriMainWindow } from '@/utils/tauri.ts'
 import { setToken, setCookies } from '@/utils/auth.ts'
+import { initTheme } from '@/utils/theme.ts'
 
 let app :App | null = null
 
@@ -50,6 +51,9 @@ const setupDesktopLoginBridge = () => {
 const render = (props: any) => {
     // @ts-ignore
     const { container } = props;
+
+    // 应用本地保存的主题色（微前端场景下每次挂载都重新同步到宿主根节点）
+    initTheme()
 
     const mountRoot = container ? container.querySelector('#app') : document.getElementById('app');
     app = createApp(AppDom);

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import useUserStore from "@/store/user.ts";
-import type {Message, QuoteInfo} from "@/store/chat.ts";
+import type {Message, QuoteInfo} from "@/types/chat.ts";
 import { MessageType } from '@/services/im/constants'
+import { escapeHtml } from '@/utils/html.ts'
+import { resolveMemberName } from '@/utils/chat.ts'
 import {computed, toRefs} from "vue";
 import { PhoneFilled, Warning } from "@element-plus/icons-vue";
 
@@ -30,18 +32,6 @@ const onQuoteClick = () => {
   }
 }
 
-/** HTML 转义，避免消息内容里的特殊字符破坏结构 */
-const escapeHtml = (text: string): string =>
-  text.replace(/[&<>"']/g, (c) => {
-    switch (c) {
-      case '&': return '&amp;'
-      case '<': return '&lt;'
-      case '>': return '&gt;'
-      case '"': return '&quot;'
-      default: return '&#39;'
-    }
-  })
-
 /**
  * 消息正文 HTML
  *
@@ -68,7 +58,9 @@ const contentHtml = computed(() => {
 
 /** 是否为居中提示类消息（不区分左右、不展示头像昵称） */
 const isTipMessage = computed(() =>
-  item.value?.type === MessageType.RTC_RECORD || item.value?.type === MessageType.GROUP_MUTE,
+  item.value?.type === MessageType.RTC_RECORD
+    || item.value?.type === MessageType.GROUP_MUTE
+    || item.value?.type === MessageType.GROUP_MEMBER_CHANGE,
 )
 
 const user = () :{name: string, avatar: string} => {
@@ -95,7 +87,7 @@ const user = () :{name: string, avatar: string} => {
   }
 
   return {
-    name: info.groupNickname || info.nickname,
+    name: resolveMemberName(info, ''),
     avatar: info.avatar
   }
 }
@@ -114,7 +106,7 @@ const quoteSenderName = computed(() => {
 
   const member = members.value?.find((m) => String(m.uid) === String(quote.fromUid))
   if (member) {
-    return member.groupNickname || member.nickname || quote.fromUid
+    return resolveMemberName(member, quote.fromUid)
   }
 
   // 单聊中对方即引用消息的发送者；引用自己的消息时快照已写入本人昵称
@@ -153,6 +145,12 @@ const revokedTip = computed(() => {
     </template>
     <!-- 群禁言通知：灰色居中提示 -->
     <template v-else-if="item.type === MessageType.GROUP_MUTE">
+      <div class="channel-title">
+        <span>{{ item.content }}</span>
+      </div>
+    </template>
+    <!-- 群成员变更通知（入群 / 被移出）：灰色居中提示 -->
+    <template v-else-if="item.type === MessageType.GROUP_MEMBER_CHANGE">
       <div class="channel-title">
         <span>{{ item.content }}</span>
       </div>

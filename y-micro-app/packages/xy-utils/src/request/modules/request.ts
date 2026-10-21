@@ -42,7 +42,6 @@ export function createAxios(options: CreateAxiosOptions = {}): AxiosInstance {
         },
     };
 
-    console.log('finalConfig=====', finalConfig)
     const instance = axios.create(finalConfig);
 
     // 公共请求拦截器

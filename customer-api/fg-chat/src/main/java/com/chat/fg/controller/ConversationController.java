@@ -29,6 +29,9 @@ public class ConversationController {
 
     /**
      * 获取会话列表
+     *
+     * <p>参数统一通过 query 参数传入（前端 request 封装已对齐），
+     * 避免 POST + JSON body 与表单绑定混用导致的参数静默丢失。</p>
      */
     @PostMapping("/list")
     public R<?> list(ConversationDTO conversationDTO) {

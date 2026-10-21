@@ -20,18 +20,21 @@ import com.xy.common.client.dto.request.MsgRequest;
 import com.xy.common.client.entity.Message;
 import com.xy.common.client.vo.ConversationVO;
 import com.xy.common.client.vo.MessageVO;
+import com.xy.common.core.redis.RedisCache;
 import com.xy.common.entity.chat.Group;
 import com.xy.common.entity.User;
+import com.xy.common.utils.ChannelIdUtils;
 import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.GroupMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,6 +56,15 @@ public class ConversationServiceImpl implements IConversationService {
     @Autowired
     private ConversationSettingMapper conversationSettingMapper;
 
+    @Autowired
+    private RedisCache redisCache;
+
+    /** 系统账号 UID 缓存 Key：变更极少，缓存后避免每次拉会话列表都穿透到悟空 IM */
+    private static final String SYSTEM_UIDS_CACHE_KEY = "chat:system:uids";
+
+    /** 系统账号 UID 缓存时长（分钟） */
+    private static final long SYSTEM_UIDS_CACHE_MINUTES = 5;
+
     /**
      * 获取会话列表
      * */
@@ -61,7 +73,7 @@ public class ConversationServiceImpl implements IConversationService {
 
         ConversationRequest conversationRequest = getConversationRequest(conversationDTO);
         // 获取系统用户
-        List<String> systemUids = wuKongClient.getSystemUids();
+        List<String> systemUids = getSystemUids();
         // 获取会话列表
         List<ConversationVO> conversations = getWKConversations(conversationRequest);
 
@@ -198,6 +210,7 @@ public class ConversationServiceImpl implements IConversationService {
      * <p>会话列表来自悟空 IM，本地只用 t_conversation_setting 记录置顶等个人设置。</p>
      * */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateTop(ConversationTopDTO conversationTopDTO) {
         Long uId = SecurityUtils.getUId();
         int top = conversationTopDTO.getTop() != null && conversationTopDTO.getTop() == 1 ? 1 : 0;
@@ -222,7 +235,14 @@ public class ConversationServiceImpl implements IConversationService {
             setting.setChannelType(conversationTopDTO.getChannelType());
             setting.setTop(top);
 
-            conversationSettingMapper.insert(setting);
+            try {
+                conversationSettingMapper.insert(setting);
+            } catch (DuplicateKeyException e) {
+                // 并发首次置顶同一会话时，唯一索引兜底后回查再更新
+                setting = conversationSettingMapper.selectOne(queryWrapper);
+                setting.setTop(top);
+                conversationSettingMapper.updateById(setting);
+            }
 
             return;
         }
@@ -236,6 +256,7 @@ public class ConversationServiceImpl implements IConversationService {
      * 删除聊天记录
      * */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void clearMessages(ConversationChannelDTO conversationChannelDTO) {
         saveClearMarker(conversationChannelDTO, false);
     }
@@ -244,6 +265,7 @@ public class ConversationServiceImpl implements IConversationService {
      * 删除会话
      * */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteConversation(ConversationChannelDTO conversationChannelDTO) {
         saveClearMarker(conversationChannelDTO, true);
     }
@@ -296,7 +318,12 @@ public class ConversationServiceImpl implements IConversationService {
             setting.setClearedSeq(0L);
             setting.setDeletedSeq(0L);
 
-            conversationSettingMapper.insert(setting);
+            try {
+                conversationSettingMapper.insert(setting);
+            } catch (DuplicateKeyException e) {
+                // 并发首次操作同一会话时会同时插入，靠 (u_id, channel_id, channel_type) 唯一索引兜底后回查
+                setting = conversationSettingMapper.selectOne(queryWrapper);
+            }
         }
 
         return setting;
@@ -411,6 +438,32 @@ public class ConversationServiceImpl implements IConversationService {
         return new ArrayList<>(list.subList(from, to));
     }
 
+    /**
+     * 获取系统账号 UID 列表（带短 TTL 缓存）
+     *
+     * <p>系统账号由悟空 IM 维护且变更极少，会话列表接口高频调用，
+     * 缓存后避免每次请求都多一次 IM HTTP 调用。</p>
+     * */
+    private List<String> getSystemUids() {
+        List<String> cached = redisCache.getCacheList(SYSTEM_UIDS_CACHE_KEY);
+
+        if (cached != null && !cached.isEmpty()) {
+            return cached;
+        }
+
+        List<String> systemUids = wuKongClient.getSystemUids();
+
+        if (systemUids == null || systemUids.isEmpty()) {
+            // 空结果不写缓存，避免 IM 异常时把空列表固化下来
+            return new ArrayList<>();
+        }
+
+        redisCache.setCacheList(SYSTEM_UIDS_CACHE_KEY, systemUids);
+        redisCache.expire(SYSTEM_UIDS_CACHE_KEY, SYSTEM_UIDS_CACHE_MINUTES, TimeUnit.MINUTES);
+
+        return systemUids;
+    }
+
     /** 获取悟空 IM会话列表 */
     private List<ConversationVO> getWKConversations(ConversationRequest request) {
         // 获取会话列表
@@ -442,11 +495,7 @@ public class ConversationServiceImpl implements IConversationService {
      * 从频道 ID 中解析群组 ID（形如 g_123）
      * */
     private Long parseGroupId(String channelId) {
-        if (channelId == null) return null;
-
-        Matcher matcher = Pattern.compile("\\d+").matcher(channelId);
-
-        return matcher.find() ? parseLongSafe(matcher.group()) : null;
+        return ChannelIdUtils.parseGroupId(channelId);
     }
 
     private Long parseLongSafe(String str) {
@@ -506,19 +555,11 @@ public class ConversationServiceImpl implements IConversationService {
      * 批量查询群组
      * */
     private Map<Long, Group> queryGroups(List<String> gIds) {
-        List<String> ids = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\d+");
-
-        for (String gId : gIds) {
-            Matcher matcher = pattern.matcher(gId);
-
-            if (matcher.find()) {
-                ids.add(matcher.group());
-            }
-        }
-        log.warn("ids:{}", ids);
-
-        List<Long> groupIds = parseLongUids(ids);
+        List<Long> groupIds = gIds.stream()
+                .map(ChannelIdUtils::parseGroupId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
 
         if (groupIds.isEmpty()) return new HashMap<>();
 

@@ -10,12 +10,15 @@ import com.xy.common.utils.StringUtils;
 import com.xy.system.mapper.LoginLogMapper;
 import com.xy.system.service.IUserLoginLogService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * 客户端用户登录日志服务实现
@@ -25,6 +28,11 @@ import java.util.concurrent.CompletableFuture;
 public class UserLoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> implements IUserLoginLogService {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /** 登录日志异步写入线程池，避免占用公共池 */
+    @Autowired
+    @Qualifier("loginLogExecutor")
+    private Executor loginLogExecutor;
 
     @Override
     public void record(LoginLog loginLog) {
@@ -48,7 +56,7 @@ public class UserLoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLo
                 return;
             }
             fillLoginLocation(loginLog);
-        });
+        }, loginLogExecutor);
     }
 
     @Override

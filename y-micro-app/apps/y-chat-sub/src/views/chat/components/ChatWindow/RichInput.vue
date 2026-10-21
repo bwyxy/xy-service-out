@@ -6,8 +6,8 @@ import { ElMessage } from 'element-plus'
 import { uploadImage } from '@/api/upload'
 import { compressImage, isOversize } from '@/utils/image'
 import useUserStore from '@/store/user.ts'
-import { MENTION_ALL_UID } from '@/store/chat.ts'
-import type { MentionInfo } from '@/store/chat.ts'
+import { MENTION_ALL_UID, resolveMemberName } from '@/utils/chat.ts'
+import type { MentionInfo } from '@/types/chat.ts'
 
 /** @成员选择器候选项 */
 interface MentionCandidate {
@@ -40,6 +40,14 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const emojiVisible = ref(false)
 const emojiRef = ref<HTMLDivElement | null>(null)
 
+/**
+ * 是否处于输入法组词状态
+ *
+ * 部分浏览器（如 Safari）在组词确认的那次 keydown 上 isComposing 为 false，
+ * 因此必须同时依赖 compositionend 事件维护该状态，不能只判断 e.isComposing。
+ */
+const composing = ref(false)
+
 /** 本次消息 @ 到的成员 */
 const mentions = ref<MentionInfo[]>([])
 /** @成员选择器是否可见 */
@@ -63,12 +71,12 @@ const mentionCandidates = computed<MentionCandidate[]>(() => {
     .filter((m) => String(m.uid) !== selfUid)
     .filter((m) => {
       if (!keyword) return true
-      const displayName = (m.groupNickname || m.nickname || '').toLowerCase()
+      const displayName = resolveMemberName(m, '').toLowerCase()
       return displayName.includes(keyword) || String(m.uid).includes(keyword)
     })
     .map((m) => ({
       uid: String(m.uid),
-      name: m.groupNickname || m.nickname,
+      name: resolveMemberName(m, ''),
       avatar: m.avatar,
     }))
 
@@ -257,8 +265,13 @@ const handleImageFile = async (file: File) => {
     }
 
     const res = await uploadImage(compressed)
-    if (res.code !== 200 || !res.data) {
-      ElMessage.error(res.msg || '图片上传失败')
+    if (res.code !== 200) {
+      // 业务失败的提示已由请求层统一弹出，此处不再重复提示
+      return
+    }
+
+    if (!res.data) {
+      ElMessage.error('图片上传失败')
       return
     }
 
@@ -356,6 +369,12 @@ const onSendText = () => {
 
 /** 输入框键盘事件 */
 const onKeydown = (e: KeyboardEvent) => {
+  // 输入法组词中：回车、方向键属于输入法候选操作，
+  // 若继续往下走会导致中文输入时按回车误发送消息
+  if (composing.value || e.isComposing) {
+    return
+  }
+
   // @成员选择器打开时，方向键切换、回车选中、Esc 关闭
   if (mentionVisible.value) {
     const candidates = mentionCandidates.value
@@ -488,6 +507,8 @@ defineExpose({
         :contenteditable="!disabled"
         placeholder="请输入消息，回车发送，Shift+Enter 换行"
         @keydown="onKeydown"
+        @compositionstart="composing = true"
+        @compositionend="composing = false"
         @input="handleInput"
         @paste="onPaste"
       />

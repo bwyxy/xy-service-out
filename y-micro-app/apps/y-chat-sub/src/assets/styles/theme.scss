@@ -1,0 +1,50 @@
+/**
+ * 主题色变量：通过根节点 data-theme 属性切换（见 src/utils/theme.ts）
+ * 每套预设提供主色 + 5 档浅色梯度，浅色梯度沿用 antd 色板 5~1 阶
+ * 新增预设时需同步维护 src/utils/theme.ts 中的 themePresets
+ */
+:root,
+:root[data-theme="green"] {
+  --theme-color: #52c41a;
+  --theme-color-light-3: #73d13d;
+  --theme-color-light-5: #95de64;
+  --theme-color-light-7: #b7eb8f;
+  --theme-color-light-8: #d9f7be;
+  --theme-color-light-9: #f6ffed;
+}
+
+:root[data-theme="blue"] {
+  --theme-color: #2f54eb;
+  --theme-color-light-3: #597ef7;
+  --theme-color-light-5: #85a5ff;
+  --theme-color-light-7: #adc6ff;
+  --theme-color-light-8: #d6e4ff;
+  --theme-color-light-9: #f0f5ff;
+}
+
+:root[data-theme="purple"] {
+  --theme-color: #722ed1;
+  --theme-color-light-3: #9254de;
+  --theme-color-light-5: #b37feb;
+  --theme-color-light-7: #d3adf7;
+  --theme-color-light-8: #efdbff;
+  --theme-color-light-9: #f9f0ff;
+}
+
+:root[data-theme="orange"] {
+  --theme-color: #fa8c16;
+  --theme-color-light-3: #ffa940;
+  --theme-color-light-5: #ffc069;
+  --theme-color-light-7: #ffd591;
+  --theme-color-light-8: #ffe7ba;
+  --theme-color-light-9: #fff7e6;
+}
+
+:root[data-theme="magenta"] {
+  --theme-color: #eb2f96;
+  --theme-color-light-3: #f759ab;
+  --theme-color-light-5: #ff85c0;
+  --theme-color-light-7: #ffadd2;
+  --theme-color-light-8: #ffd6e7;
+  --theme-color-light-9: #fff0f6;
+}

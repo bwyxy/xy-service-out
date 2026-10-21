@@ -217,10 +217,10 @@ onMounted(() => {
       margin-right: 0;
     }
     &:hover {
-      background: rgba(82, 196, 26, 0.1);
-      border-color: rgba(82, 196, 26, 0.8);
+      background: var(--theme-color-light-9);
+      border-color: var(--theme-color-light-5);
       span {
-        color: #52c41a;
+        color: var(--theme-color);
       }
     }
   }

@@ -22,6 +22,9 @@ public enum MessageType {
 
     newMember(7, "新成员通知"),
 
+    /** 群成员变更通知（入群 / 被移出群聊） */
+    groupMemberChange(12, "群成员变更通知"),
+
     groupAnnouncement(10, "群公告"),
 
     groupMute(11, "群禁言通知"),
@@ -61,6 +64,9 @@ public enum MessageType {
     rtcSignalCandidate(208, "RTC ICE Candidate"),
 
     rtcRecord(210, "RTC通话记录"),
+
+    /** 群成员被移出群聊通知（推送给被移出的用户本人） */
+    groupMemberRemoved(121, "群成员移出通知"),
 
     /** 登录会话管控信令（220+，多端登录强制下线） */
 

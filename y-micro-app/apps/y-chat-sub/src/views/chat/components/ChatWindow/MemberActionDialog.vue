@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch, toRefs } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import useUserStore from '@/store/user.ts'
-import { muteMember, updateGroupNickname } from '@/api/group.ts'
+import { muteMember, removeGroupMember, updateGroupNickname } from '@/api/group.ts'
+import { resolveMemberName } from '@/utils/chat.ts'
 
 const isShow = defineModel('modelValue', { type: Boolean })
 
@@ -11,8 +12,10 @@ const props = defineProps<{
   groupId: string | number
   member: GroupMember | null
   isAdmin: boolean
+  /** 是否可移出该成员（群主/管理员可操作，群主不可被移出） */
+  canRemove: boolean
 }>()
-const { groupId, member, isAdmin } = toRefs(props)
+const { groupId, member, isAdmin, canRemove } = toRefs(props)
 
 const emit = defineEmits<{
   (e: 'success'): void
@@ -84,13 +87,42 @@ const handleMute = async (minutes: number) => {
     submitting.value = false
   }
 }
+
+/** 移出群聊 */
+const handleRemove = async () => {
+  const name = resolveMemberName(member.value, '该成员')
+
+  try {
+    await ElMessageBox.confirm(`确定将「${name}」移出群聊吗？`, '提示', {
+      type: 'warning',
+      confirmButtonText: '移出',
+      cancelButtonText: '取消',
+    })
+  } catch {
+    return
+  }
+
+  submitting.value = true
+  try {
+    const result = await removeGroupMember(groupId.value, member.value?.uid ?? '')
+
+    // 业务失败的错误提示已由请求层统一弹出，此处只处理成功分支
+    if (result.code === 200) {
+      ElMessage.success('已移出群聊')
+      isShow.value = false
+      emit('success')
+    }
+  } finally {
+    submitting.value = false
+  }
+}
 </script>
 
 <template>
   <el-dialog v-model="isShow" :align-center="true" width="360px" title="成员管理">
     <div class="member-action-box">
       <div class="member-action-name">
-        <span>{{ member?.groupNickname || member?.nickname }}</span>
+        <span>{{ resolveMemberName(member, '') }}</span>
       </div>
 
       <!-- 修改我的群昵称 -->
@@ -122,6 +154,19 @@ const handleMute = async (minutes: number) => {
           <el-button type="danger" :loading="submitting" @click="handleMute(muteMinutes)">禁言</el-button>
           <el-button :loading="submitting" @click="handleMute(0)">解除禁言</el-button>
         </div>
+      </div>
+
+      <!-- 群主/管理员移除成员 -->
+      <div v-if="canRemove" class="member-action-section">
+        <el-button
+            type="danger"
+            plain
+            style="width: 100%"
+            :loading="submitting"
+            @click="handleRemove"
+        >
+          移出群聊
+        </el-button>
       </div>
     </div>
 

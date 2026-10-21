@@ -2,7 +2,8 @@
 $vw: calc(100vw / 1920);
 
 $body-bg-color: #fafafa;
-$theme-color: #52c41a;
+// 主色改为运行时 CSS 变量，支持主题切换（见 assets/styles/theme.scss）
+$theme-color: var(--theme-color);
 $theme-color-1: #fff;
 $nav-bg-color: #fff1b8;
 $border-radius: 13px;

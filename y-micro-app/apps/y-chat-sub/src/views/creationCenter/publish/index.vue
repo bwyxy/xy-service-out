@@ -28,11 +28,10 @@ const beforeCoverUpload = async (file: File) => {
   })
   try {
     const response = await uploadImage(file)
+    // 业务失败的错误提示已由请求层统一弹出，此处只处理成功分支
     if (response.code === 200) {
       params.coverImage = response.data
       ElMessage.success('封面上传成功')
-    } else {
-      ElMessage.error(response.msg || '上传失败')
     }
   } catch (error) {
     ElMessage.error('封面上传失败')
@@ -65,6 +64,7 @@ const handleSubmit = async () => {
       visibility: params.visibility
     })
 
+    // 业务失败的错误提示已由请求层统一弹出，此处只处理成功分支
     if (response.code === 200) {
       params.title = ''
       params.content = ''
@@ -72,8 +72,6 @@ const handleSubmit = async () => {
       params.visibility = 1
       emit('switchTab', 'me')
       ElMessage.success('提交成功')
-    } else {
-      ElMessage.error(response.msg || '发布失败')
     }
   } catch (error) {
     ElMessage.error('发布失败')
@@ -191,7 +189,7 @@ const handleSubmit = async () => {
       padding-right: 6px;
     }
     .el-icon {
-      color: #52c41a !important;
+      color: var(--theme-color) !important;
       font-size: 24px;
     }
   }

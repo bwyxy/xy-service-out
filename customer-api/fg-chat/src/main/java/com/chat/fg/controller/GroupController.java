@@ -1,5 +1,6 @@
 package com.chat.fg.controller;
 
+import com.chat.fg.pojo.dto.AddGroupMemberDTO;
 import com.chat.fg.pojo.dto.CreateGroupDTO;
 import com.chat.fg.pojo.dto.EditGroupDTO;
 import com.chat.fg.pojo.dto.GroupNicknameDTO;
@@ -93,6 +94,26 @@ public class GroupController {
         groupMemberService.updateGroupNickname(groupNicknameDTO);
 
         return R.ok("修改成功");
+    }
+
+    /**
+     * 添加群成员
+     * */
+    @PostMapping("/member/add")
+    public R<String> addGroupMembers(@Valid @RequestBody AddGroupMemberDTO addGroupMemberDTO) {
+        groupMemberService.addGroupMembers(addGroupMemberDTO);
+
+        return R.ok("添加成功");
+    }
+
+    /**
+     * 移除群成员
+     * */
+    @DeleteMapping("/{groupId}/member/{uid}")
+    public R<String> removeGroupMember(@PathVariable Long groupId, @PathVariable Long uid) {
+        groupMemberService.removeGroupMember(groupId, uid);
+
+        return R.ok("已移出群聊");
     }
 
     /**

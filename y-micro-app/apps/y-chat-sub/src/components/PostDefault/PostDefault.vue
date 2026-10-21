@@ -3,7 +3,6 @@ import {Plus, Edit} from '@element-plus/icons-vue'
 import {ref, watch} from "vue";
 import { formatRelativeTime } from '@/utils/utils.ts'
 import { getPostDetail, setPostLike } from '@/api/forum.ts'
-import { ElMessage } from 'element-plus'
 
 const props = defineProps<{
   post?: ForumPost
@@ -20,10 +19,9 @@ const likeLoading = ref(false)
 const loadDetail = async () => {
   if (!props.post?.postId) return
   const response = await getPostDetail(props.post.postId)
+  // 业务失败的错误提示已由请求层统一弹出，此处只处理成功分支
   if (response.code === 200) {
     postInfo.value = response.data
-  } else {
-    ElMessage.error(response.msg || '获取帖子详情失败')
   }
 }
 
@@ -36,6 +34,7 @@ const handleLike = async () => {
   likeLoading.value = true
   try {
     const response = await setPostLike(postInfo.value.postId)
+    // 业务失败的错误提示已由请求层统一弹出，此处只处理成功分支
     if (response.code === 200) {
       postInfo.value.liked = response.data
       let count = postInfo.value.likeCount || 0
@@ -45,8 +44,6 @@ const handleLike = async () => {
         count--
       }
       postInfo.value.likeCount = count
-    } else {
-      ElMessage.error(response.msg || '操作失败')
     }
   } finally {
     likeLoading.value = false

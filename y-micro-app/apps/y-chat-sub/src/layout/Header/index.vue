@@ -21,7 +21,7 @@ const visible = isTauri() && !isMacOS()
 <style scoped lang="scss">
 .chat-header {
   height: size(32);
-  background: #f6ffed;
+  background: var(--theme-color-light-9);
   box-sizing: border-box;
   padding: 0 size(12) 0 size(24);
   display: flex;

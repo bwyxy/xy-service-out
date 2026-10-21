@@ -2,12 +2,14 @@ import request from '@/utils/request'
 
 /**
  * 获取会话列表
+ *
+ * 后端 /conversation/list 从 query 参数绑定（与 Web 端保持一致），故用 params 传递。
  * */
-export function getConversation(data) {
+export function getConversation(params) {
   return request({
     url: '/conversation/list',
     method: 'post',
-    data,
+    params,
   })
 }
 

@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.xy.common.client.WuKongClient;
 import com.xy.common.client.dto.request.WKUserTokenRequest;
 import com.xy.common.client.vo.ResultVO;
+import com.xy.common.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,13 +25,9 @@ public class WukongIMService {
 
     private final WukongIMConfig.WukongIMProperties props;
     private final OkHttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    private final WuKongClient wkKongClient;
 
-    @Autowired
-    @Qualifier("wukongObjectMapper")
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private WuKongClient wkKongClient;
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     /** 更新 token */
@@ -54,9 +49,8 @@ public class WukongIMService {
         JsonNode result = post("/user", body);
         ObjectNode response = objectMapper.createObjectNode();
 
-        // log.info("response:{}", response);
         response.put("uid", uid);
-        response.put("token", result.get("token").asText());
+        response.put("token", extractToken(result, "创建用户"));
         response.put("wsUrl", props.getWsUrl());
         return response;
     }
@@ -67,8 +61,23 @@ public class WukongIMService {
         body.put("uid", uid);
         body.put("device_flag", 1); // 与 JS SDK 默认 device_flag=1 保持一致
 
-        JsonNode result = post("/user/token", body);
-        return result.has("token") ? result.get("token").asText() : null;
+        return extractToken(post("/user/token", body), "获取用户Token");
+    }
+
+    /**
+     * 从悟空响应中安全提取 token
+     *
+     * <p>悟空接口异常时不会返回 token 字段，直接 asText() 会抛 NPE 掩盖真实原因，
+     * 这里统一转为可读的 IOException。</p>
+     * */
+    private String extractToken(JsonNode result, String action) throws IOException {
+        JsonNode tokenNode = result == null ? null : result.get("token");
+
+        if (tokenNode == null || tokenNode.isNull() || StringUtils.isEmpty(tokenNode.asText())) {
+            throw new IOException("悟空IM " + action + "失败，响应未包含 token：" + result);
+        }
+
+        return tokenNode.asText();
     }
 
     /** 创建频道 */
@@ -108,6 +117,10 @@ public class WukongIMService {
     }
 
     private JsonNode post(String path, ObjectNode body) throws IOException {
+        if (StringUtils.isEmpty(props.getApiUrl())) {
+            throw new IllegalStateException("悟空IM API 地址 (xy.wk-api-url) 未配置，无法调用 " + path);
+        }
+
         String url = props.getApiUrl() + path;
         String json = objectMapper.writeValueAsString(body);
 
@@ -115,7 +128,7 @@ public class WukongIMService {
                 .url(url)
                 .post(RequestBody.create(json, JSON));
 
-        if (props.getManagerToken() != null && !props.getManagerToken().isEmpty()) {
+        if (!StringUtils.isEmpty(props.getManagerToken())) {
             builder.header("token", props.getManagerToken());
         }
 
@@ -123,7 +136,17 @@ public class WukongIMService {
         log.debug("WukongIM API: POST {} body={}", url, json);
 
         try (Response response = httpClient.newCall(request).execute()) {
-            String respBody = response.body() != null ? response.body().string() : "{}";
+            String respBody = response.body() != null ? response.body().string() : "";
+
+            if (!response.isSuccessful()) {
+                log.error("WukongIM API 调用失败: POST {} status={} body={}", url, response.code(), respBody);
+                throw new IOException("悟空IM接口调用失败, HTTP " + response.code());
+            }
+
+            if (StringUtils.isEmpty(respBody)) {
+                throw new IOException("悟空IM接口返回空响应: POST " + path);
+            }
+
             log.debug("WukongIM API response: {}", respBody);
             return objectMapper.readTree(respBody);
         }

@@ -2,15 +2,16 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { ElMessage } from 'element-plus'
 import { DisconnectReason } from 'livekit-client'
-import {
-  rtcCall, rtcAccept, rtcReject, rtcHangup, rtcCancel, rtcInvite, rtcEnd,
+import { rtcCall, rtcAccept, rtcReject, rtcHangup, rtcCancel, rtcInvite, rtcEnd,
   type CallSession, type RtcMember,
 } from '@/api/rtc.ts'
+import { unwrapData, ApiBusinessError } from '@/utils/request.ts'
 import { rtcSignalingService, type RtcSignalData } from '@/services/rtc/signaling.ts'
 import { LivekitSession, type LivekitConnState, type ParticipantState, type ParticipantQuality } from '@/services/rtc/livekit.ts'
 import { ringtoneEngine } from '@/services/rtc/ringtone.ts'
 import { MessageType, isCallControlType } from '@/services/im/constants'
 import useUserStore from '@/store/user.ts'
+import { resolveMemberName } from '@/utils/chat.ts'
 
 /**
  * 通话状态机
@@ -75,24 +76,6 @@ const CALL_TIMEOUT_SECONDS = 90
 const ENDED_RESET_MS = 3000
 /** 计时触发下限：房间内在场人数 */
 const ACTIVE_MIN_PRESENT = 2
-
-/** 接口业务错误（请求层已提示，调用方无需重复弹窗） */
-class RtcBusinessError extends Error {}
-
-interface ApiResult<T> {
-  code: number
-  msg?: string
-  data: T
-}
-
-/** 解包后端统一响应体；业务失败抛出 RtcBusinessError */
-function unwrap<T>(res: unknown): T {
-  const result = res as ApiResult<T>
-  if (!result || result.code !== 200) {
-    throw new RtcBusinessError(result?.msg || '请求失败')
-  }
-  return result.data
-}
 
 export const useCallStore = defineStore('call', () => {
   // ---- 状态 ----
@@ -215,7 +198,7 @@ export const useCallStore = defineStore('call', () => {
       const payload = group
         ? { channelId: target.channelId, channelType: 2, inviteeUids: target.inviteeUids, mediaType: type }
         : { calleeUid: target.peer.uid, channelType: 1, mediaType: type }
-      const data = unwrap<CallSession>(await rtcCall(payload))
+      const data = unwrapData<CallSession>(await rtcCall(payload))
       applySession(data)
       status.value = 'outgoing'
       if (!group) {
@@ -225,7 +208,7 @@ export const useCallStore = defineStore('call', () => {
       armCallTimeout()
       await joinRoom()
     } catch (e) {
-      if (!(e instanceof RtcBusinessError)) {
+      if (!(e instanceof ApiBusinessError)) {
         ElMessage.error('发起通话失败，请稍后重试')
       }
       resetToIdle()
@@ -243,11 +226,11 @@ export const useCallStore = defineStore('call', () => {
     clearCallTimeout()
     status.value = 'connecting'
     try {
-      const data = unwrap<CallSession>(await rtcAccept(roomId.value))
+      const data = unwrapData<CallSession>(await rtcAccept(roomId.value))
       applySession(data)
       await joinRoom()
     } catch (e) {
-      if (!(e instanceof RtcBusinessError)) {
+      if (!(e instanceof ApiBusinessError)) {
         ElMessage.error('接听失败，请重试')
       }
       endCallInternal('failed')
@@ -329,14 +312,14 @@ export const useCallStore = defineStore('call', () => {
       return
     }
     try {
-      const data = unwrap<{ roomId: string; maxParticipants: number; participants: RtcMember[] }>(
+      const data = unwrapData<{ roomId: string; maxParticipants: number; participants: RtcMember[] }>(
         await rtcInvite(roomId.value, uids),
       )
       roomMembers.value = data.participants || []
       refreshParticipants(session?.snapshot() ?? [])
       ElMessage.success('邀请已发送')
     } catch (e) {
-      if (!(e instanceof RtcBusinessError)) {
+      if (!(e instanceof ApiBusinessError)) {
         ElMessage.error('邀请失败，请稍后重试')
       }
     }
@@ -448,7 +431,7 @@ export const useCallStore = defineStore('call', () => {
         }
         merged.push({
           uid,
-          name: m.groupNickname || m.nickname || uid,
+          name: resolveMemberName(m, uid),
           avatar: m.avatar || '',
           isLocal: false,
           audioMuted: true,
@@ -490,7 +473,8 @@ export const useCallStore = defineStore('call', () => {
 
   /** LiveKit 侧断开连接 */
   function handleDisconnected(reason: DisconnectReason): void {
-    if (ending) {
+    // 已进入结束流程或已复位到 idle/ended 时，忽略滞后的断开回调，避免重复上报挂断
+    if (ending || status.value === 'idle' || status.value === 'ended') {
       return
     }
     if (reason === DisconnectReason.DUPLICATE_IDENTITY) {
@@ -640,7 +624,7 @@ export const useCallStore = defineStore('call', () => {
   function memberName(uid: string): string {
     const member = roomMembers.value.find((m) => String(m.uid) === uid)
     const live = participants.value.find((p) => p.uid === uid)
-    return live?.name || member?.groupNickname || member?.nickname || uid
+    return live?.name || resolveMemberName(member, uid)
   }
 
   // ---- 辅助 ----
@@ -695,6 +679,9 @@ export const useCallStore = defineStore('call', () => {
 
   /** 复位到 idle（保留结束原因供 UI 展示，故仅在 3s 后调用） */
   function resetToIdle(): void {
+    // 必须复位结束守卫：被叫「拒绝/超时」路径从不进入 joinRoom，
+    // 若不复位会让下通来电的 RTC_CANCEL / RTC_HANGUP 被 endCallInternal 吞掉，界面卡在响铃中
+    ending = false
     status.value = 'idle'
     roomId.value = ''
     channelId.value = ''

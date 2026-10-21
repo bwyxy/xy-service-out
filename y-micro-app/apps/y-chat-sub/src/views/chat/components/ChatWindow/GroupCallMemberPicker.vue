@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { Check } from '@element-plus/icons-vue'
 import { findGroupMembers } from '@/api/group.ts'
+import { resolveMemberName } from '@/utils/chat.ts'
 
 /**
  * 群通话成员选择器
@@ -60,7 +61,7 @@ const visible = computed({
 })
 
 function displayName(member: GroupMember): string {
-  return member.groupNickname || member.nickname || String(member.uid)
+  return resolveMemberName(member, String(member.uid))
 }
 
 function isSelected(uid: number): boolean {

@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -73,6 +74,7 @@ public class AuthServiceImpl implements IAuthService {
      * 注册用户
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long registerUser(RegisterDTO registerDTO) {
 
         if (!registerDTO.isPasswordConfirmPassword()) {
@@ -84,6 +86,9 @@ public class AuthServiceImpl implements IAuthService {
         if (!verifyService.verifyCode(email, emailCode)) {
             throw new SecurityException("邮箱验证码不正确，请确认您的验证码");
         }
+
+        // 前置查重：正常情况下重复注册在写库前就被拦截，不必依赖数据库异常文案判定
+        assertAccountNotRegistered(registerDTO.getPhone(), email);
 
         String password = encryptionUtils.encode(registerDTO.getPassword());
         LocalDateTime now = LocalDateTime.now();
@@ -110,13 +115,39 @@ public class AuthServiceImpl implements IAuthService {
             wkClientService.sendSystemMessage(uId, content);
             return uId;
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("uk_phone")) {
-                throw new BusinessException("手机号已被注册");
-            } else if (e.getMessage().contains("uk_email")) {
-                throw new BusinessException("邮箱已被注册");
-            }
-            throw e;
+            // 并发兜底：两个请求同时通过前置查重时，仍由唯一索引拦截
+            throw translateDuplicateAccount(e);
         }
+    }
+
+    /**
+     * 注册前置查重
+     * */
+    private void assertAccountNotRegistered(String phone, String email) {
+        if (StringUtils.isNotEmpty(phone)
+                && userServiceImpl.lambdaQuery().eq(User::getPhone, phone).count() > 0) {
+            throw new BusinessException("手机号已被注册");
+        }
+        if (StringUtils.isNotEmpty(email)
+                && userServiceImpl.lambdaQuery().eq(User::getEmail, email).count() > 0) {
+            throw new BusinessException("邮箱已被注册");
+        }
+    }
+
+    /**
+     * 把唯一索引冲突翻译成可展示的业务提示
+     * */
+    private RuntimeException translateDuplicateAccount(DataIntegrityViolationException e) {
+        Throwable cause = e.getMostSpecificCause();
+        String causeMessage = cause == null ? null : cause.getMessage();
+
+        if (causeMessage != null && causeMessage.contains("uk_phone")) {
+            return new BusinessException("手机号已被注册");
+        }
+        if (causeMessage != null && causeMessage.contains("uk_email")) {
+            return new BusinessException("邮箱已被注册");
+        }
+        return e;
     }
 
     /**

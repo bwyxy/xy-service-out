@@ -128,7 +128,7 @@ const toPage = (url: string) => {
 .layout-nav {
   width: size(84);
   height: 100%;
-  background: #f6ffed;
+  background: var(--theme-color-light-9);
   box-sizing: border-box;
   padding: size(24) 0;
   display: flex;

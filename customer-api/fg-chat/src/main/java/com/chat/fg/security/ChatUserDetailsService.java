@@ -27,6 +27,10 @@ public class ChatUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (username == null || username.isEmpty()) {
+            throw new UsernameNotFoundException("用户名不能为空");
+        }
+
         // 聊天客户端用户：username 格式为 chat_{uId}
         if (username.startsWith("chat_")) {
             try {

@@ -1,10 +1,8 @@
 package com.chat.fg.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,17 +15,18 @@ import java.util.concurrent.TimeUnit;
 public class WukongIMConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "wukongim")
     public WukongIMProperties wukongIMProperties(
             @Value("${xy.wk-api-url}") String wkApiUrl,
-            @Value("${xy.wk-wss-url}") String wkWSSUrl
+            @Value("${xy.wk-wss-url}") String wkWSSUrl,
+            @Value("${xy.wk-manager-token:}") String wkManagerToken
     ) {
 
         WukongIMProperties properties = new WukongIMProperties();
         properties.setApiUrl(wkApiUrl);
         properties.setWsUrl(wkWSSUrl);
+        properties.setManagerToken(wkManagerToken);
 
-        return new WukongIMProperties();
+        return properties;
     }
 
     @Bean
@@ -37,11 +36,6 @@ public class WukongIMConfig {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
-    }
-
-    @Bean
-    public ObjectMapper wukongObjectMapper() {
-        return new ObjectMapper();
     }
 
     @Data

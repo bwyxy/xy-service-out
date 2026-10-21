@@ -28,3 +28,6 @@ utils/auto-imports.d.ts
 
 pnpm-lock.yaml
 dist-linux
+
+# y-chat-sub 非 Tauri 构建产物目录（vite outDir=chat）
+apps/y-chat-sub/chat/

@@ -1,5 +1,6 @@
 package com.chat.fg.service;
 
+import com.chat.fg.pojo.dto.AddGroupMemberDTO;
 import com.chat.fg.pojo.dto.GroupNicknameDTO;
 import com.chat.fg.pojo.dto.MuteMemberDTO;
 import com.chat.fg.pojo.vo.GroupMemberVO;
@@ -16,6 +17,16 @@ public interface IGroupMemberService {
      * 批量添加成员
      * */
     void batchGroupMember(Long groupId, List<Long> memberIds);
+
+    /**
+     * 添加群成员（邀请好友入群）
+     * */
+    void addGroupMembers(AddGroupMemberDTO addGroupMemberDTO);
+
+    /**
+     * 移除群成员（移出群聊）
+     * */
+    void removeGroupMember(Long groupId, Long uid);
 
     /**
      * 根据id查询群成员在群里的拓展信息

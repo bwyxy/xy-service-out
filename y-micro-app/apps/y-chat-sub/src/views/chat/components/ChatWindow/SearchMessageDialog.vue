@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue'
+import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
 import useChatStore from '@/store/chat.ts'
@@ -7,6 +7,9 @@ import useUserStore from '@/store/user.ts'
 import { MessageType } from '@/services/im'
 import { searchMessages } from '@/api/chat.ts'
 import type { SearchMessageItem, SearchMessageParams } from '@/api/chat.ts'
+import { formatMessageTime } from '@/utils/date.ts'
+import { escapeHtml, escapeRegExp } from '@/utils/html.ts'
+import { resolveMemberName } from '@/utils/chat.ts'
 
 const isShow = defineModel('modelValue', { type: Boolean })
 
@@ -63,23 +66,11 @@ const resolveSenderName = (fromUid: string): string => {
 
   const member = members?.value?.find((m) => String(m.uid) === String(fromUid))
   if (member) {
-    return member.groupNickname || member.nickname || fromUid
+    return resolveMemberName(member, fromUid)
   }
 
   return activeContact.value?.name || fromUid
 }
-
-/** HTML 转义，避免消息内容中的标签被解析 */
-const escapeHtml = (text: string): string =>
-  text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-
-/** 正则元字符转义 */
-const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /** 关键字高亮后的 HTML */
 const highlight = (content: string, kw: string): string => {
@@ -107,36 +98,9 @@ const fileLabel = (content: string): string => {
   return name || content
 }
 
-/** 格式化消息时间 */
-const formatTime = (timestamp: number): string => {
-  if (!timestamp) return ''
-  const d = new Date(timestamp)
-  const now = new Date()
-  const pad = (n: number) => String(n).padStart(2, '0')
-  const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`
-  const sameYear = d.getFullYear() === now.getFullYear()
-  const sameDay =
-    sameYear && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()
-
-  if (sameDay) {
-    return hm
-  }
-
-  const yesterday = new Date(now)
-  yesterday.setDate(now.getDate() - 1)
-  const isYesterday =
-    sameYear && d.getMonth() === yesterday.getMonth() && d.getDate() === yesterday.getDate()
-
-  if (isYesterday) {
-    return `昨天 ${hm}`
-  }
-
-  if (sameYear) {
-    return `${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${hm}`
-  }
-
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${hm}`
-}
+/** 格式化消息时间（搜索结果用数字日期） */
+const formatTime = (timestamp: number): string =>
+  formatMessageTime(timestamp, { numericDate: true })
 
 /** 当天的起止毫秒时间戳 */
 const dayRange = (value: string): { startTime: number; endTime: number } | null => {
@@ -283,6 +247,14 @@ watch(isShow, (val) => {
     searched.value = false
     loading.value = false
     pendingToken = ''
+  }
+})
+
+// 卸载时清理防抖定时器，避免组件销毁后回调仍触发搜索
+onUnmounted(() => {
+  if (searchTimer) {
+    clearTimeout(searchTimer)
+    searchTimer = null
   }
 })
 </script>

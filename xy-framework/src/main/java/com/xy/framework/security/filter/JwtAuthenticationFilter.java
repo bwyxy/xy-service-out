@@ -98,7 +98,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        log.info("请求头: {}", jwtTokenProvider.getJwtHeader());
         String bearerToken = request.getHeader(jwtTokenProvider.getJwtHeader());
         String prefix = jwtTokenProvider.getJwtPrefix() + " ";
 

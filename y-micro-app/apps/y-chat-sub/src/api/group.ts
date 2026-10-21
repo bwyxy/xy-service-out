@@ -64,6 +64,27 @@ export const updateGroupNickname = (data :any) => {
 }
 
 /**
+ * 添加群成员
+ * */
+export const addGroupMembers = (data :{ groupId :string | number, memberIds :Array<string | number> }) => {
+    return request({
+        url: '/group/member/add',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * 移除群成员（移出群聊）
+ * */
+export const removeGroupMember = (groupId :string | number, uid :string | number) => {
+    return request({
+        url: `/group/${groupId}/member/${uid}`,
+        method: 'delete'
+    })
+}
+
+/**
  * 群成员禁言/解禁
  * muteMinutes 为空或小于等于 0 表示解除禁言
  * */

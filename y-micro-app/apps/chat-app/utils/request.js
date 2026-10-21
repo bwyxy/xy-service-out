@@ -47,11 +47,11 @@ function resolveUrl(url) {
 }
 
 export function request(options) {
-  const { url, method = 'POST', data, header, timeout } = options
+  const { url, method = 'POST', data, params, header, timeout } = options
 
   return new Promise((resolve, reject) => {
     uni.request({
-      url: resolveUrl(url),
+      url: resolveUrl(buildQuery(url, params)),
       method: String(method).toUpperCase(),
       data,
       timeout: timeout || REQUEST_TIMEOUT,

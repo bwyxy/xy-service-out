@@ -5,9 +5,11 @@ import {Check} from "@element-plus/icons-vue";
 
 const props = defineProps<{
   isSelected?: boolean;
+  /** 需要排除的用户 Id（如已在群内的成员），按好友用户 Id 匹配 */
+  excludeUids?: Array<string | number>;
 }>()
 
-const { isSelected } = toRefs(props)
+const { isSelected, excludeUids } = toRefs(props)
 
 const emit = defineEmits<{
   (e :'select-friend', row :any) :void
@@ -22,7 +24,11 @@ const fetchFriends = async () => {
   const response = await getFriendList()
 
   if (response.code === 200) {
-    friends.value = response.data
+    const excludeSet = new Set((excludeUids.value || []).map((uid) => String(uid)))
+
+    friends.value = (response.data || []).filter(
+        (item :any) => !excludeSet.has(String(item.friendId))
+    )
   }
 }
 

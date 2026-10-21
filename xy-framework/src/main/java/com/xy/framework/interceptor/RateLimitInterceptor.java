@@ -11,11 +11,18 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.function.Supplier;
 
 @Component
 public class RateLimitInterceptor implements org.springframework.web.servlet.HandlerInterceptor {
+
+    /** 无需限流的路径前缀：接口文档与静态资源不承载业务流量 */
+    private static final String[] EXCLUDED_PATH_PREFIXES = {
+            "/doc.html", "/swagger-ui", "/swagger-resources", "/v3/api-docs", "/webjars/", "/favicon.ico", "/error"
+    };
 
     private final LettuceBasedProxyManager proxyManager;
 
@@ -25,8 +32,13 @@ public class RateLimitInterceptor implements org.springframework.web.servlet.Han
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String ip = extractIp(request);
         String uri = request.getRequestURI();
+
+        if (isExcluded(uri)) {
+            return true;
+        }
+
+        String ip = extractIp(request);
         String key = ip + ":" + uri;
 
         // 根据 URI 设置不同的限流规则
@@ -43,7 +55,8 @@ public class RateLimitInterceptor implements org.springframework.web.servlet.Han
                     .build();
         }
 
-        Bucket bucket = proxyManager.builder().build(key.getBytes(), configSupplier);
+        // 限流 key 会进入 Redis，显式指定 UTF-8 避免依赖平台默认字符集
+        Bucket bucket = proxyManager.builder().build(key.getBytes(StandardCharsets.UTF_8), configSupplier);
 
         if (!bucket.tryConsume(1)) {
             // 限流触发
@@ -59,12 +72,56 @@ public class RateLimitInterceptor implements org.springframework.web.servlet.Han
         return true;
     }
 
-    private String extractIp(HttpServletRequest request) {
-        String xf = request.getHeader("X-Forwarded-For");
-        if (xf != null && !xf.isEmpty()) {
-            return xf.split(",")[0].trim();
+    private boolean isExcluded(String uri) {
+        for (String prefix : EXCLUDED_PATH_PREFIXES) {
+            if (uri.startsWith(prefix)) {
+                return true;
+            }
         }
-        String ip = request.getRemoteAddr();
-        return ip == null ? "unknown" : ip;
+        return false;
+    }
+
+    /**
+     * 解析客户端 IP
+     *
+     * <p>X-Forwarded-For 由客户端可伪造，只有在直连来源是可信代理（本机反向代理）时才采信，
+     * 否则一律使用 TCP 层来源地址，避免攻击者伪造 IP 绕过或污染限流计数。</p>
+     * */
+    private String extractIp(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+
+        if (isTrustedProxy(remoteAddr)) {
+            String xf = request.getHeader("X-Forwarded-For");
+            if (xf != null && !xf.isEmpty()) {
+                String first = xf.split(",")[0].trim();
+                if (!first.isEmpty()) {
+                    return first;
+                }
+            }
+        }
+
+        return remoteAddr == null ? "unknown" : remoteAddr;
+    }
+
+    /**
+     * 是否为可信代理来源
+     *
+     * <p>只信任来自内网/回环地址的直接请求：这类请求只可能由我们自己的反向代理
+     * （Nginx、网关）或容器网络发出。公网直连请求的 X-Forwarded-For 可被任意伪造，
+     * 一律不采信。</p>
+     * */
+    private boolean isTrustedProxy(String remoteAddr) {
+        if (remoteAddr == null) {
+            return false;
+        }
+        if ("::1".equals(remoteAddr) || "0:0:0:0:0:0:0:1".equals(remoteAddr)) {
+            return true;
+        }
+        try {
+            InetAddress address = InetAddress.getByName(remoteAddr);
+            return address.isLoopbackAddress() || address.isSiteLocalAddress();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

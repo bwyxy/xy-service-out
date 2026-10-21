@@ -32,6 +32,7 @@ import com.xy.common.entity.chat.RtcRoom;
 import com.xy.common.enums.ChannelType;
 import com.xy.common.enums.MessageType;
 import com.xy.common.exception.BusinessException;
+import com.xy.common.utils.ChannelIdUtils;
 import com.xy.common.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -948,11 +949,7 @@ public class RtcServiceImpl implements IRtcService {
     }
 
     private Long parseGroupId(String channelId) {
-        if (StringUtils.isEmpty(channelId)) {
-            return null;
-        }
-        Matcher matcher = Pattern.compile("\\d+").matcher(channelId);
-        return matcher.find() ? Long.parseLong(matcher.group()) : null;
+        return ChannelIdUtils.parseGroupId(channelId);
     }
 
     /**
@@ -1105,7 +1102,7 @@ public class RtcServiceImpl implements IRtcService {
             return;
         }
         try {
-            chatMessage.sendGroupMessage(String.valueOf(groupId), null,
+            chatMessage.sendGroupMessage(String.valueOf(groupId),
                     MessageType.rtcRecord, buildRecordText(record, true));
         } catch (Exception e) {
             log.error("推送群通话记录失败, roomId={}", room.getRoomId(), e);

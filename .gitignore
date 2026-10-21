@@ -58,3 +58,5 @@ cfg
 wukongim/wukongim_data/
 # SSL 证书私钥
 wukongim/cfg/
+
+terminal-chat

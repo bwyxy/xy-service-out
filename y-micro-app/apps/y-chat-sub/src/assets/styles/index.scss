@@ -1,3 +1,4 @@
+@use "theme" as *;
 @use "variables" as *;
 @use "mixins" as *;
 @use "element-plus" as *;
@@ -33,7 +34,7 @@
 #app {
   //min-width: 1200px;
   //max-width: 100%;
-  background: linear-gradient(160deg, #d9f7be,#f6ffed, #fafafa , #fff);
+  background: linear-gradient(160deg, var(--theme-color-light-8), var(--theme-color-light-9), #fafafa, #fff);
 }
 
 .user-popover {
@@ -83,7 +84,7 @@
     height: size(100);
     border-radius: 48px;
     box-sizing: border-box;
-    border: 2px solid #d9f7be;
+    border: 2px solid var(--theme-color-light-8);
     margin: size(60) 0 size(4);
     padding: 2px;
     img {

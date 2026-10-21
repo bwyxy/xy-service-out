@@ -6,10 +6,12 @@ import {ArrowDown, ArrowRight, ArrowUp, Plus, Search} from "@element-plus/icons-
 import useUserStore from "@/store/user.ts";
 import useChatStore from "@/store/chat.ts";
 import { editGroup, dissolveGroup } from "@/api/group.ts";
+import { resolveMemberName } from "@/utils/chat.ts";
 import type { SearchMessageItem } from "@/api/chat.ts";
 import EditGroupName from "@/views/chat/components/ChatWindow/EditGroupName.vue";
 import GroupAnnouncement from "@/views/chat/components/ChatWindow/GroupAnnouncement.vue";
 import MemberActionDialog from "@/views/chat/components/ChatWindow/MemberActionDialog.vue";
+import AddGroupMemberDialog from "@/views/chat/components/ChatWindow/AddGroupMemberDialog.vue";
 import SearchMessageDialog from "@/views/chat/components/ChatWindow/SearchMessageDialog.vue";
 
 const { userInfo } = storeToRefs(useUserStore())
@@ -35,6 +37,7 @@ const emit = defineEmits<{
 const isExpandMember = ref<boolean>(false)
 const isShowAnnouncement = ref<boolean>(false)
 const isShowMemberAction = ref<boolean>(false)
+const isShowAddMember = ref<boolean>(false)
 const isShowSearch = ref<boolean>(false)
 const selectedMember = ref<GroupMember | null>(null)
 
@@ -68,11 +71,10 @@ const handleDissolveGroup = async () => {
 
   const result = await dissolveGroup(info.value.groupId)
 
+  // 业务失败的错误提示已由请求层统一弹出，此处只处理成功分支
   if (result.code === 200) {
     ElMessage.success('群聊已解散')
     emit('dissolved')
-  } else {
-    ElMessage.error(result.msg || '解散失败')
   }
 }
 
@@ -108,6 +110,25 @@ const handleMemberClick = (item: GroupMember) => {
   selectedMember.value = item
   isShowMemberAction.value = true
 }
+
+/** 打开添加群成员弹窗 */
+const handleAddMember = () => {
+  isShowAddMember.value = true
+}
+
+/** 是否可移出成员：群主/管理员可操作，群主与自己不可被移出，管理员之间不能互相移出 */
+const canRemoveMember = computed(() => {
+  const target = selectedMember.value
+
+  if (!target || !isAdmin.value) {
+    return false
+  }
+  if (String(target.uid) === String(userInfo.value.uid) || target.role === 2) {
+    return false
+  }
+  // 管理员只能移出普通成员
+  return isOwner.value || target.role === 0
+})
 
 /** 打开「我的群昵称」弹窗 */
 const handleEditMyNickname = () => {
@@ -208,10 +229,10 @@ const slotMembers = computed(() => {
           </el-image>
         </div>
         <div class="member-name">
-          <span>{{ item.groupNickname || item.nickname }}</span>
+          <span>{{ resolveMemberName(item, '') }}</span>
         </div>
       </div>
-      <div v-if="slotMembers.length < info.maxMember" class="add-member">
+      <div v-if="slotMembers.length < info.maxMember" class="add-member" @click="handleAddMember">
         <div class="add-member-content">
           <el-icon><Plus /></el-icon>
         </div>
@@ -263,12 +284,21 @@ const slotMembers = computed(() => {
         :is-admin="isAdmin"
     />
 
-    <!-- 成员管理：群昵称 / 禁言 -->
+    <!-- 添加群成员 -->
+    <add-group-member-dialog
+        v-model="isShowAddMember"
+        :group-id="info.groupId"
+        :members="members"
+        @success="handleRefresh"
+    />
+
+    <!-- 成员管理：群昵称 / 禁言 / 移出群聊 -->
     <member-action-dialog
         v-model="isShowMemberAction"
         :group-id="info.groupId"
         :member="selectedMember"
         :is-admin="isAdmin"
+        :can-remove="canRemoveMember"
         @success="handleRefresh"
     />
   </div>

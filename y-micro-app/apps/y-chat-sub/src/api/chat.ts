@@ -1,5 +1,5 @@
 import request from '@/utils/request.ts'
-import type { MentionInfo, QuoteInfo } from '@/store/chat.ts'
+import type { MentionInfo, QuoteInfo } from '@/types/chat.ts'
 
 /**
  * 获取会话列表
