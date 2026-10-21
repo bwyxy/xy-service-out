@@ -1,0 +1,17 @@
+mode: "release"
+managerUID: "10000000"
+external:
+  # 服务器外网 IP，按实际环境填写；Docker 部署时由环境变量 WK_EXTERNAL_IP 覆盖
+  ip: "your.server.ip"
+# 最近会话配置
+conversation:
+  on: true  # 是否开启最近会话
+  cacheExpire: "1d" # 最近会话缓存过期时间，默认为1天（注意：这里指清除内存里的最近会话缓存，并不表示清除最近会话）
+  syncInterval: "5m" # 最近会话保存间隔，每隔指定的时间进行保存一次，默认为5分钟
+  syncOnce: 100 # 最近会话同步保存一次的数量，超过指定未保存的数量将进行保存，默认为100
+  userMaxCount: 30 # 用户最近会话最大数量，超过此数量的最近会话后最旧的那条将被覆盖掉，默认为1000
+# 日志配置
+logger:
+  level: 0 # 日志级别：0(未配置,将根据mode属性判断), 1(debug), 2(info), 3(warn), 4(error)
+  dir: "./logs" # 日志目录
+  lineNum: false # 是否打印行号
