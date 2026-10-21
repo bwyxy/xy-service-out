@@ -44,12 +44,13 @@ const formToParams = () => {
   }
 }
 
-const getColumns = () => {
+/** 表格展示列（排除展开列） */
+const visibleColumns = computed(() => {
   if (!columns.value) {
     return []
   }
   return columns.value.filter(item => item.key !== 'expand')
-}
+})
 
 const isChildren = computed(() => {
   if (!columns.value) {
@@ -60,14 +61,24 @@ const isChildren = computed(() => {
 /** 获取数据 */
 const getTableData = async () => {
   if (!props.api) return;
-  isLoading.value = true
-  ruleForm.value.forEach(item => {
-    queryParams[item.key] = item.value
-  })
-  const response = await props.api(queryParams)
 
-  isLoading.value = false
-  if (response.code === 200) {
+  isLoading.value = true
+
+  // 仅提交分页与查询条件，避免把 total 等本地字段一起发给后端
+  const params: any = {
+    pageNum: queryParams.pageNum,
+    pageSize: queryParams.pageSize
+  }
+  ruleForm.value.forEach(item => {
+    params[item.key] = item.value
+  })
+
+  try {
+    const response = await props.api(params)
+
+    if (response?.code !== 200) {
+      return
+    }
 
     if (!response.data.list) {
       tableData.value = response.data
@@ -77,11 +88,15 @@ const getTableData = async () => {
     const { list, total } = response.data
     tableData.value = list
     queryParams.total = total
+  } finally {
+    // 接口异常时也必须复位 loading，否则表格会一直转圈
+    isLoading.value = false
   }
 }
 /** 重置数据 */
 const resetData = () => {
   ruleForm.value.map(item => item.value = '')
+  queryParams.pageNum = 1
   getTableData()
 }
 
@@ -165,10 +180,10 @@ watch(() => list.value, () => {
         <template #default="{row}">
           <el-table :data="row.children">
             <table-column
-                v-for="(item, index) in getColumns()"
+                v-for="(item, index) in visibleColumns"
                 :key="index"
                 :column="item"
-                :columns="getColumns()"
+                :columns="visibleColumns"
             />
             <el-table-column fixed="right" min-width="180" :label="t('common.operate')" align="center">
               <template #default="{ row }">
@@ -185,10 +200,10 @@ watch(() => list.value, () => {
         </template>
       </el-table-column>
       <table-column
-          v-for="(item, index) in getColumns()"
+          v-for="(item, index) in visibleColumns"
           :key="index"
           :column="item"
-          :columns="getColumns()"
+          :columns="visibleColumns"
       />
       <el-table-column fixed="right" min-width="180" :label="t('common.operate')" align="center">
         <template #default="{ row }">

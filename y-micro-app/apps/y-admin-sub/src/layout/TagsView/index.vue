@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, computed } from 'vue'
+import { ref, watch, nextTick, computed, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Close, ArrowDown } from '@element-plus/icons-vue'
@@ -109,6 +109,10 @@ watch(contextMenuVisible, (visible) => {
   } else {
     document.body.removeEventListener('click', closeContextMenu)
   }
+})
+
+onUnmounted(() => {
+  document.body.removeEventListener('click', closeContextMenu)
 })
 </script>
 

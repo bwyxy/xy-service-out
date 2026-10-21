@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { FullScreen, Crop } from '@element-plus/icons-vue'
 
 const isFullscreen = ref(false)
+
+const handleFullscreenChange = () => {
+  isFullscreen.value = !!document.fullscreenElement
+}
 
 const toggleFullscreen = () => {
   if (!document.fullscreenElement) {
@@ -18,8 +22,12 @@ const toggleFullscreen = () => {
   }
 }
 
-document.addEventListener('fullscreenchange', () => {
-  isFullscreen.value = !!document.fullscreenElement
+onMounted(() => {
+  document.addEventListener('fullscreenchange', handleFullscreenChange)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
 })
 </script>
 

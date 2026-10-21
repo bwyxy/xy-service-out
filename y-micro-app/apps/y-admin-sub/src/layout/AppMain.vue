@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, markRaw, type Component } from 'vue'
 import { useRoute } from 'vue-router'
 import useTagsViewStore from '@/store/modules/tagsView'
 
@@ -7,6 +7,29 @@ const route = useRoute()
 const tagsViewStore = useTagsViewStore()
 
 const cachedViews = computed(() => tagsViewStore.cachedViews)
+
+/**
+ * keep-alive 的 include 按「组件 name」匹配，而页面组件文件名大多为 index.vue，
+ * 推断出的组件名不唯一，导致缓存完全失效。这里按路由名给组件补一个稳定的 name，
+ * 使 cachedViews（存路由名）能够正确命中对应页面。
+ */
+const namedComponents = new Map<string, Component>()
+
+const withRouteName = (component: unknown, name: unknown) => {
+  if (!component || typeof component !== 'object' || typeof name !== 'string') {
+    return component
+  }
+
+  const cached = namedComponents.get(name)
+  if (cached) {
+    return cached
+  }
+
+  const named = markRaw({ ...(component as Component), name })
+  namedComponents.set(name, named)
+
+  return named
+}
 </script>
 
 <template>
@@ -14,7 +37,7 @@ const cachedViews = computed(() => tagsViewStore.cachedViews)
     <router-view v-slot="{ Component }">
       <transition name="fade-transform" mode="out-in">
         <keep-alive :include="cachedViews">
-          <component :is="Component" :key="route.path" />
+          <component :is="withRouteName(Component, route.name)" :key="route.path" />
         </keep-alive>
       </transition>
     </router-view>

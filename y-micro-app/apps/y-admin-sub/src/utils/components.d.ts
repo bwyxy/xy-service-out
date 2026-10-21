@@ -65,7 +65,6 @@ declare module 'vue' {
     ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     FullScreen: typeof import('./../components/FullScreen/index.vue')['default']
-    HelloWorld: typeof import('./../components/HelloWorld.vue')['default']
     IconSelect: typeof import('./../components/IconSelect/index.vue')['default']
     ImageUpload: typeof import('./../components/ImageUpload/ImageUpload.vue')['default']
     LangSelect: typeof import('./../components/LangSelect/index.vue')['default']

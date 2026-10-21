@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Search } from '@element-plus/icons-vue'
@@ -118,12 +118,13 @@ const handleGlobalKeydown = (e: KeyboardEvent) => {
   }
 }
 
-watch(visible, (val) => {
-  if (val) {
-    document.addEventListener('keydown', handleGlobalKeydown)
-  } else {
-    document.removeEventListener('keydown', handleGlobalKeydown)
-  }
+// 全局快捷键常驻监听：仅在弹窗可见时注册会导致关闭状态下 Ctrl+K 无法唤起
+onMounted(() => {
+  document.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleGlobalKeydown)
 })
 
 defineExpose({ handleOpen })

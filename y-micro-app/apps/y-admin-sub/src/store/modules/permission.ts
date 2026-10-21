@@ -33,32 +33,34 @@ const usePermissionStore = defineStore("permission", {
         setSidebarRouters(routes: any) {
             this.sidebarRouters = routes;
         },
-        generateRoutes(_roles?: string[]) {
-            return new Promise((resolve: any) => {
-                // 向后端请求路由数据
-                getRouters().then((res: any) => {
-                    if (res.code === 200) {
-                        const data = res.data;
-                        const sdata = JSON.parse(JSON.stringify(data));
-                        const rdata = JSON.parse(JSON.stringify(data));
-                        const defaultData = JSON.parse(JSON.stringify(data));
-                        const sidebarRoutes = filterAsyncRouter(sdata);
-                        const rewriteRoutes = filterAsyncRouter(rdata, false, true);
-                        const defaultRoutes = filterAsyncRouter(defaultData);
-                        const asyncRoutes = filterDynamicRoutes(dynamicRoutes);
-                        asyncRoutes.forEach((route) => {
-                            router.addRoute(route);
-                        });
-                        this.setRoutes(rewriteRoutes);
-                        this.setSidebarRouters(
-                            constantRoutes.concat(sidebarRoutes)
-                        );
-                        this.setDefaultRoutes(sidebarRoutes);
-                        this.setTopbarRoutes(defaultRoutes);
-                        resolve(rewriteRoutes);
-                    }
-                });
+        async generateRoutes(_roles?: string[]) {
+            // 向后端请求路由数据
+            const res: any = await getRouters();
+
+            // 任何失败都必须抛出：否则路由守卫 await 会永久挂起，页面白屏且无任何提示
+            if (!res || res.code !== 200) {
+                throw new Error(res?.msg || '获取路由失败');
+            }
+
+            const data = res.data || [];
+            const sdata = JSON.parse(JSON.stringify(data));
+            const rdata = JSON.parse(JSON.stringify(data));
+            const defaultData = JSON.parse(JSON.stringify(data));
+            const sidebarRoutes = filterAsyncRouter(sdata);
+            const rewriteRoutes = filterAsyncRouter(rdata, false, true);
+            const defaultRoutes = filterAsyncRouter(defaultData);
+            const asyncRoutes = filterDynamicRoutes(dynamicRoutes);
+            asyncRoutes.forEach((route) => {
+                router.addRoute(route);
             });
+            this.setRoutes(rewriteRoutes);
+            this.setSidebarRouters(
+                constantRoutes.concat(sidebarRoutes)
+            );
+            this.setDefaultRoutes(sidebarRoutes);
+            this.setTopbarRoutes(defaultRoutes);
+
+            return rewriteRoutes;
         },
     },
 });
@@ -147,6 +149,10 @@ export const loadView = (view: any) => {
         if (dir === normalizedView) {
             res = () => modules[path]();
         }
+    }
+    // 后端菜单 component 配置错误时兜底到 404 页，避免点击菜单后白屏
+    if (!res) {
+        res = () => import("@/views/error/404.vue");
     }
     return res;
 };
