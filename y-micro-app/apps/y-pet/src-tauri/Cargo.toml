@@ -1,0 +1,26 @@
+[package]
+name = "y-pet"
+version = "0.1.0"
+description = "飞鸽桌宠"
+authors = ["you"]
+license = ""
+repository = ""
+edition = "2024"
+rust-version = "1.90"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "y_pet_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7.2", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+# macos-private-api：透明窗口在 macOS 上的必需 feature（配合 tauri.conf.json 的 app.macOSPrivateApi）
+tauri = { version = "2.12.3", features = ["macos-private-api"] }
+tauri-plugin-log = "2"

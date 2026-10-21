@@ -16,6 +16,7 @@
     "install:packages": "pnpm --filter './packages/*' install",
     "build:packages": "pnpm run --parallel --filter './packages/*' build",
     "desktop:dev": "pnpm --filter y-chat-sub tauri:dev",
+    "desktop:pet:dev": "pnpm --filter y-pet tauri:dev",
     "desktop:build:mac": "pnpm --filter y-chat-sub tauri:build",
     "desktop:linux:image": "docker build -f Dockerfile.linux -t y-chat-linux .",
     "desktop:linux:run": "mkdir -p dist-linux && docker run --rm -v y-chat-cargo-target:/app/apps/y-chat-sub/src-tauri/target -v \"$PWD/dist-linux\":/out y-chat-linux sh -c 'pnpm tauri:build:linux && cp -r src-tauri/target/release/bundle/* /out/'",

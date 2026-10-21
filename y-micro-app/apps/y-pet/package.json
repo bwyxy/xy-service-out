@@ -1,0 +1,30 @@
+{
+  "name": "y-pet",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "gen:spine": "node scripts/gen-demo-spine.mjs",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@esotericsoftware/spine-pixi-v8": "catalog:",
+    "@tauri-apps/api": "^2.12.3",
+    "pixi.js": "catalog:",
+    "vue": "catalog:vue3"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.2",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vue/tsconfig": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

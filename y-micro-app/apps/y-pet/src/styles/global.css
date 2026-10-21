@@ -1,0 +1,16 @@
+/* 桌宠窗口必须整体透明：任何不透明底色都会破坏「悬浮在桌面」的效果 */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+
+body {
+  overflow: hidden;
+  /* 桌宠是浮层，禁止选中/长按菜单，避免拖拽时出现文本选择 */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}

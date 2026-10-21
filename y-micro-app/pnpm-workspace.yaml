@@ -21,6 +21,8 @@ catalog:
   livekit-client: ^2.21.0
   path: ^0.12.7
   pinia: ^4.0.3
+  pixi.js: ^8.22.0
+  "@esotericsoftware/spine-pixi-v8": ^4.3.13
   qiankun: ^2.10.16
   sass: ^1.101.6
   typescript: ~5.7.2
