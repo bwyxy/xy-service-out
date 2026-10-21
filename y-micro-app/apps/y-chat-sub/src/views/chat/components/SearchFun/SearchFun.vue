@@ -2,11 +2,9 @@
 import {Plus, Search} from '@element-plus/icons-vue'
 import {ref} from "vue";
 import SearchUserDialog from './SearchUserDialog.vue'
-import FriendRequestDialog from './FriendRequestDialog.vue'
 
 const searchVal = ref<string>('')
 const searchDialogVisible = ref(false)
-const requestDialogVisible = ref(false)
 const searchBoxRefs = ref<HTMLElement>()
 
 const openSearchDialog = () => {
@@ -52,7 +50,6 @@ const openSearchDialog = () => {
     </div>
 
     <search-user-dialog v-model:visible="searchDialogVisible" />
-    <friend-request-dialog v-model:visible="requestDialogVisible" />
   </div>
 </template>
 

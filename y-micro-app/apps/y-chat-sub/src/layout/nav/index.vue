@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ChatDotRound, UserFilled, Bell, ChatLineSquare, Reading } from "@element-plus/icons-vue";
+import { ChatDotRound, UserFilled, Bell, ChatLineSquare, Reading, Memo } from "@element-plus/icons-vue";
 import {reactive, computed, onMounted, onUnmounted, ref} from "vue";
 import { useRoute, useRouter } from 'vue-router'
 import UserInfo from '@/layout/UserInfo/UserInfo.vue'
@@ -43,6 +43,11 @@ const navs = reactive([
     path: 'https://xiaee.cn',
     icon: Reading,
     name: '我的博客'
+  },
+  {
+    path: 'https://gitee.com/bwyxy/xy-service-out',
+    icon: Memo,
+    name: 'Gitee'
   }
 ])
 

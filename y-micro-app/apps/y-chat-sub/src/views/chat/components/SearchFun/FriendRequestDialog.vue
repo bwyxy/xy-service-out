@@ -62,7 +62,7 @@ const handleClose = () => {
 <template>
   <el-dialog
     v-model="props.visible"
-    title="好友请求"
+    title="新的朋友"
     width="520px"
     :close-on-click-modal="false"
     @close="handleClose"
