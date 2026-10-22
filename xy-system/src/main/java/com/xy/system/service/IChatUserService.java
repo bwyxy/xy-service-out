@@ -1,6 +1,7 @@
 package com.xy.system.service;
 
 import com.xy.common.core.domain.PageResult;
+import com.xy.common.entity.User;
 import com.xy.common.vo.chat.ChatUserQuery;
 import com.xy.common.vo.chat.ChatUserVO;
 
@@ -45,4 +46,34 @@ public interface IChatUserService {
      * @return 用户列表
      */
     List<ChatUserVO> searchChatUsers(String keyword, Integer limit);
+
+    /**
+     * 按 UID 查询客户端用户实体
+     *
+     * <p>供各客户端应用解析登录态使用（如待办小程序的 todo_{uId}）。</p>
+     *
+     * @param uId 用户 UID
+     * @return 用户实体，不存在返回 null
+     */
+    User getByUId(Long uId);
+
+    /**
+     * 按微信 openid 查询客户端用户
+     *
+     * @param openId 微信 openid
+     * @return 用户实体，不存在返回 null
+     */
+    User getByOpenId(String openId);
+
+    /**
+     * 按 openid 注册客户端用户
+     *
+     * <p>微信小程序用户没有手机号与密码，建号时 password 写空串占位（列为 NOT NULL），
+     * phone/email 留 null（列上有唯一索引且默认空串，多个空串会互相冲突），
+     * is_bind_chat 置为未绑定。</p>
+     *
+     * @param openId 微信 openid
+     * @return 新建或并发场景下已存在的用户
+     */
+    User registerByOpenId(String openId);
 }

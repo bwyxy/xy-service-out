@@ -1,0 +1,210 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "今日"
+			}
+		},
+		{
+			"path": "pages/list/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "清单"
+			}
+		},
+		{
+			"path": "pages/tool/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "工具"
+			}
+		},
+		{
+			"path": "pages/me/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "我的"
+			}
+		}
+	],
+	// 子界面按需加载：主包只保留四个 tab 页，其余子页按分组下沉到分包，进入对应页面时才下载
+	"subPackages": [
+		{
+			"root": "subpages/common",
+			"pages": [
+				{
+					"path": "search/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "搜索"
+					}
+				},
+				{
+					"path": "create/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "新建任务"
+					}
+				}
+			]
+		},
+		{
+			"root": "subpages/tool",
+			"pages": [
+				{
+					"path": "focus/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "番茄专注"
+					}
+				},
+				{
+					"path": "calendar/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "日历视图"
+					}
+				},
+				{
+					"path": "matrix/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "四象限"
+					}
+				},
+				{
+					"path": "habit/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "习惯打卡"
+					}
+				},
+				{
+					"path": "stats/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "待办统计"
+					}
+				},
+				{
+					"path": "template/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "清单模板"
+					}
+				}
+			]
+		},
+		{
+			"root": "subpages/me",
+			"pages": [
+				{
+					"path": "profile/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "个人资料"
+					}
+				},
+				{
+					"path": "reminder/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "提醒设置"
+					}
+				},
+				{
+					"path": "appearance/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "外观与显示"
+					}
+				},
+				{
+					"path": "sync/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "数据同步与备份"
+					}
+				},
+				{
+					"path": "archive/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "已完成与归档"
+					}
+				},
+				{
+					"path": "help/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "帮助与反馈"
+					}
+				},
+				{
+					"path": "about/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "关于忆"
+					}
+				}
+			]
+		}
+	],
+	"tabBar": {
+		"color": "#a9a9a0",
+		"selectedColor": "#4a6b3e",
+		"backgroundColor": "#f7f7f2",
+		"borderStyle": "white",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "今日",
+				"iconPath": "static/tabbar/home.png",
+				"selectedIconPath": "static/tabbar/home_active.png"
+			},
+			{
+				"pagePath": "pages/list/index",
+				"text": "清单",
+				"iconPath": "static/tabbar/list.png",
+				"selectedIconPath": "static/tabbar/list_active.png"
+			},
+			{
+				"pagePath": "pages/tool/index",
+				"text": "工具",
+				"iconPath": "static/tabbar/tool.png",
+				"selectedIconPath": "static/tabbar/tool_active.png"
+			},
+			{
+				"pagePath": "pages/me/index",
+				"text": "我的",
+				"iconPath": "static/tabbar/me.png",
+				"selectedIconPath": "static/tabbar/me_active.png"
+			}
+		]
+	},
+	"globalStyle": {
+		// #ifdef H5
+		"maxWidth": 750,
+		"rpxCalcMaxDeviceWidth": 750,
+		"rpxCalcBaseDeviceWidth": 560,
+		"rpxCalcIncludeWidth": 9999,
+		// #endif
+		"navigationBarBackgroundColor": "#ffffff",
+		"navigationBarTitleText": "",
+		"navigationBarTextStyle": "black",
+		"backgroundColor": "#f7f7f2",
+		"backgroundTextStyle": "dark",
+		"app-plus": {
+			"scrollIndicator": "none" //全局 在APP页面都不显示滚动条
+		}
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^wd-(.*)": "uni_modules/wot-design-uni/components/wd-$1/wd-$1.vue"
+		}
+	}
+}

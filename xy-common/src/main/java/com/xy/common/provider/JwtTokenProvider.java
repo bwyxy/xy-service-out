@@ -60,8 +60,13 @@ public class JwtTokenProvider {
         return createToken(new HashMap<>(), userDetails.getUsername(), jwtExpiration);
     }
 
-    public String createWeChatToken(String openId) {
-        return createToken(new HashMap<>(), openId, jwtExpiration);
+    /**
+     * 创建客户端小程序登录 token
+     *
+     * @param subject 主题，格式为「客户端前缀 + 用户主键」，如待办的 todo_10000001、聊天的 chat_10000001
+     */
+    public String createWeChatToken(String subject) {
+        return createToken(new HashMap<>(), subject, jwtExpiration);
     }
 
     /**

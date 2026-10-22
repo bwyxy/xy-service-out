@@ -1,6 +1,6 @@
 package com.xy.app.controller;
 
-import com.xy.app.service.ITodoTaskService;
+import com.xy.app.service.ITaskService;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.core.domain.R;
 import com.xy.common.dto.ToDoTaskDTO;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class TodoTaskController {
 
     @Autowired
-    private ITodoTaskService todoTaskService;
+    private ITaskService todoTaskService;
 
     /**
      * 根据传入时间查询当天任务

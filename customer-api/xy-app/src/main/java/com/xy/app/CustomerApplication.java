@@ -3,6 +3,7 @@ package com.xy.app;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 })
 @EnableScheduling
 @MapperScan({"com.xy.*.mapper"})
+@EnableFeignClients(basePackages = {"com.xy.common.client"})
 public class CustomerApplication {
 
     public static void main(String[] args) {

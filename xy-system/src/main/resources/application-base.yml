@@ -63,24 +63,3 @@ qiniu:
   bucket: ${QINIU_BUCKET}
   domain: ${QINIU_DOMAIN}
   region: ${QINIU_REGION:huanan}
-
-# 博客多平台分发
-dispatch:
-  # 定时任务总开关
-  scheduler:
-    enabled: true
-  # 平台凭证加密密钥，未单独配置时复用项目统一的 AES_KEY
-  credential:
-    key: ${DISPATCH_AES_KEY:${AES_KEY:}}
-  # 自己博客的站点地址前缀，用于回传原文地址（留空则不下发原文链接）
-  article-url-prefix: https://xiaee.cn
-  # 待分发任务兜底扫描
-  scan:
-    interval-ms: 30000
-    batch-size: 50
-  # 瞬时异常失败任务的自动重试
-  retry:
-    interval-ms: 60000
-  # 平台运营数据采集时间
-  stat:
-    cron: 0 0 2 * * ?

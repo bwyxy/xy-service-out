@@ -3,12 +3,12 @@ package com.xy.app.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xy.app.mapper.TodoTagMapper;
+import com.xy.system.mapper.todo.TodoTagMapper;
+import com.xy.app.security.TodoUserDetails;
 import com.xy.app.service.ITodoTagService;
 import com.xy.common.core.domain.PageResult;
 import com.xy.common.entity.TodoTag;
 import com.xy.common.utils.ContentCheckUtils;
-import com.xy.common.utils.SecurityUtils;
 import com.xy.common.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class TodoTagServiceImpl extends ServiceImpl<TodoTagMapper, TodoTag> impl
         if (todoTag.getPageNum() == 0) todoTag.setPageNum(1);
         if (todoTag.getPageSize() == 0) todoTag.setPageSize(10);
 
-        Long userId = SecurityUtils.getUserId();
+        Long userId = TodoUserDetails.getCurrentUId();
 
         LambdaQueryWrapper<TodoTag> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -58,7 +58,7 @@ public class TodoTagServiceImpl extends ServiceImpl<TodoTagMapper, TodoTag> impl
     public void addTodoTag(TodoTag todoTag) {
         ContentCheckUtils.check(todoTag.getTagName(), 2, 4);
 
-        Long userId = SecurityUtils.getUserId();
+        Long userId = TodoUserDetails.getCurrentUId();
 
         todoTag.setUserId(userId);
         todoTag.setCreateTime(LocalDateTime.now());

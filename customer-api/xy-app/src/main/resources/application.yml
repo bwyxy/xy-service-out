@@ -1,8 +1,41 @@
 server:
   port: 9100
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 1000
+    threads:
+      max: 800
+      min-spare: 100
+
 spring:
   profiles:
-    group:
-      prod: base,prod,cp
-      dev: base,dev,cp
-      ct: base,ct,cp
+    default: base,cp
+
+logging:
+  level:
+    org.springframework: warn
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation: DEBUG
+
+# JWT 配置
+jwt:
+  header: token
+  secret: ${TOKEN_SECRET}
+  expiration: 86400000
+  refresh-expiration: 604800000
+  prefix:
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 微信小程序配置
+wechat:
+  appid: ${WECHAT_APPID}
+  secret: ${WECHAT_SECRET}
+
+# Swagger 配置
+swagger:
+  enabled: false

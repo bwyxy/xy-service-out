@@ -13,6 +13,7 @@ import com.xy.system.service.IChatSessionService;
 import com.xy.system.service.IChatUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +36,15 @@ public class ChatUserServiceImpl implements IChatUserService {
 
     /** 用户状态：禁用 */
     private static final String STATUS_DISABLED = "1";
+
+    /** 用户状态：正常 */
+    private static final String STATUS_NORMAL = "0";
+
+    /** 未绑定聊天应用 */
+    private static final String UNBIND_CHAT = "0";
+
+    /** 微信用户默认昵称前缀 */
+    private static final String DEFAULT_NICKNAME_PREFIX = "微信用户";
 
     private final UserMapper userMapper;
     private final IChatSessionService chatSessionService;
@@ -111,6 +121,60 @@ public class ChatUserServiceImpl implements IChatUserService {
 
         List<User> records = userMapper.selectPage(new Page<>(1, size), wrapper).getRecords();
         return toVOList(records);
+    }
+
+    // ==================== 客户端应用登录支撑 ====================
+
+    @Override
+    public User getByUId(Long uId) {
+        if (uId == null) {
+            return null;
+        }
+
+        return userMapper.selectById(uId);
+    }
+
+    @Override
+    public User getByOpenId(String openId) {
+        if (StringUtils.isEmpty(openId)) {
+            return null;
+        }
+
+        // 历史数据未对 wx_open_id 建唯一索引，理论上可能重复，这里限制 1 条避免 TooManyResultsException
+        return userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getWxOpenId, openId)
+                .last("limit 1"));
+    }
+
+    @Override
+    public User registerByOpenId(String openId) {
+        User user = new User();
+
+        user.setWxOpenId(openId);
+        user.setNickname(DEFAULT_NICKNAME_PREFIX + StringUtils.maskOpenId(openId));
+        // password 列 NOT NULL 且无默认值，微信用户无密码，写空串占位
+        user.setPassword("");
+        // phone / email 列上有唯一索引且默认空串，多个空串会互相冲突，必须留 null
+        user.setPhone(null);
+        user.setEmail(null);
+        user.setSex("0");
+        user.setStatus(STATUS_NORMAL);
+        // 小程序用户默认未绑定聊天应用
+        user.setIsBindChat(UNBIND_CHAT);
+
+        try {
+            userMapper.insert(user);
+        } catch (DuplicateKeyException e) {
+            // 并发首登：另一个请求已建号，回查后直接复用
+            User exist = getByOpenId(openId);
+            if (exist == null) {
+                log.error("注册客户端用户失败，openId={}", StringUtils.maskOpenId(openId), e);
+                throw new BusinessException("注册用户失败");
+            }
+            return exist;
+        }
+
+        return user;
     }
 
     // ==================== 内部方法 ====================

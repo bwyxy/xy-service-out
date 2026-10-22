@@ -17,7 +17,7 @@ import java.util.List;
  * */
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "dispatch.scheduler.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "dispatch.scheduler.enabled", havingValue = "true")
 public class DispatchScheduler {
 
     private final IBlogDispatchTaskService taskService;

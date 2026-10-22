@@ -1,443 +1,259 @@
--- 用户表
-create table if not exists sys_user (
-    id bigint auto_increment not null comment '用户Id',
-    username varchar(30) default '' comment '用户名',
-    password varchar(255) default '' comment '密码',
-    nickname varchar(30) default '' comment '昵称',
-    email varchar(50) default '' comment '邮箱',
-    phone varchar(11) default '' comment '手机号',
-    sex char(1) default '0' comment '性别 (0 未知 1 男 2 女)',
-    avatar varchar(100) default '' comment '头像路径',
-    status char(1) default '0' comment '帐号状态 (0 正常 1 停用)',
-    wx_open_id varchar(255) default '' comment '微信openid',
-    create_time datetime default null comment '创建时间',
-    update_time datetime default null comment '更新时间',
-    create_by varchar(64) default '' comment '创建者',
-    update_by varchar(64) default '' comment '更新者',
-    deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)',
-    remark varchar(500) default null comment '备注',
-    primary key (id),
-    unique key uk_username(username)
-) engine = InnoDB default CHARSET=utf8mb4 COMMENT='用户表';
+-- 待办小程序
+set foreign_key_checks = 0;
 
-create table if not exists sys_role (
-  id bigint unsigned auto_increment primary key comment '角色Id',
-  role_name varchar(50) not null unique comment '角色名',
-  role_key varchar(100) not null comment '角色权限字符串',
-    role_sort int not null comment '显示顺序',
-    data_scope char(1) not null comment '数据范围 (1 全部 2 自定义)',
-  status tinyint default 1 comment '状态: 0-禁用 1正常',
-  create_time datetime default current_timestamp,
-  update_time datetime default current_timestamp on update current_timestamp,
-  create_by varchar(64) default '' comment '创建者',
-  update_by varchar(64) default '' comment '更新者',
-  deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)',
-  remark varchar(500) default null comment '备注',
-  index idx_code(role_key),
-  index idx_status(status),
-    unique key uk_role_key(role_key)
-) engine=InnoDB comment '角色表';
+-- --------------------------------------------------------------------------
+-- 客户端用户表
+-- u_id 是待办侧唯一的用户主键
+-- --------------------------------------------------------------------------
+create table t_user (
+    u_id         bigint       primary key auto_increment comment '客户端用户Id（独立号段，从 1 开始）',
+    wx_open_id   varchar(255) default null comment '微信 openid，未绑微信为 NULL',
+    nickname     varchar(50)  not null default '' comment '昵称',
+    avatar       varchar(255) default '' comment '头像 URL',
+    sex          char(1)      default '0' comment '性别 0-未知 1-男 2-女',
+    phone        varchar(11)  default null comment '手机号',
+    email        varchar(50)  default null comment '邮箱',
+    password     varchar(500) not null default '' comment '密码，微信用户为空串',
+    status       char(1)      default '0' comment '用户状态 0-正常 1-禁用',
+    is_bind_chat char(1)      default '1' comment '是否绑定聊天应用 0-未绑定 1-已绑定',
+    create_time  datetime     default current_timestamp comment '创建时间',
+    update_time  datetime     default current_timestamp on update current_timestamp comment '更新时间',
+    unique key uk_wx_open_id (wx_open_id),
+    unique key uk_phone (phone),
+    unique key uk_email (email)
+) engine = InnoDB default charset = utf8mb4 comment = '客户端用户表';
 
--- 菜单表
-create table sys_menu (
-  menu_id bigint(20) not null auto_increment comment '菜单ID',
-  menu_name varchar(50) not null comment '菜单名称',
-  parent_id bigint(20) default 0 comment '父菜单ID',
-  order_num int(4) default 0 comment '显示顺序',
-  path varchar(200) default '' comment '路由地址',
-  component varchar(255) default null comment '组件路径',
-  query varchar(255) default null comment '路由参数',
-  route_name varchar(50) default '' comment '路由名称',
-  is_frame int(1) default 1 comment '是否为外链（0是 1否）',
-  is_cache int(1) default 0 comment '是否缓存（0缓存 1不缓存）',
-  menu_type char(1) default '' comment '菜单类型（M目录 C菜单 F按钮）',
-  visible char(1) default 0 comment '菜单状态（0显示 1隐藏）',
-  status char(1) default 0 comment '菜单状态（0正常 1停用）',
-  perms varchar(100) default null comment '权限标识',
-  icon varchar(100) default '#' comment '菜单图标',
-  create_by varchar(64) default '' comment '创建者',
-  create_time datetime comment '创建时间',
-  update_by varchar(64) default '' comment '更新者',
-  update_time datetime comment '更新时间',
-  deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)',
-  remark varchar(500) default '' comment '备注',
-  primary key (menu_id)
-) engine=innodb auto_increment=2000 comment = '菜单权限表';
+-- --------------------------------------------------------------------------
+-- 待办任务
+-- --------------------------------------------------------------------------
+create table t_todo_task (
+    task_id         bigint       primary key auto_increment comment '任务Id',
+    user_id         bigint       not null comment '所属用户 t_user.u_id',
+    parent_id       bigint       default null comment '父任务Id，子任务用',
+    task_title      varchar(255) not null comment '任务标题',
+    description     text comment '任务描述',
+    completed       bigint       default 0 comment '是否完成 0-未完成 1-已完成',
+    completion_time datetime     default null comment '完成时间（统计用）',
+    urgency_level   int          default 1 comment '紧急程度 1~4，四象限页用',
+    start_time      datetime     default null comment '开始时间',
+    due_date        datetime     default null comment '截止时间',
+    tag_id          bigint       default null comment '清单Id todo_tag.tag_id',
+    priority        tinyint      default 0 comment '优先级 0-无 1-普通 2-重要（列表页小旗子）',
+    repeat_rule     varchar(64)  default '' comment '重复规则 DAILY/WEEKLY:1,3/FREQ=WEEKLY;BYDAY=MO',
+    remind_before   int          default 0 comment '提前提醒分钟数，0-不提醒',
+    remind_at       datetime     default null comment '下次提醒时间（服务端算好，便于索引扫描）',
+    archived        tinyint      default 0 comment '是否归档 0-否 1-是',
+    client_id       varchar(64)  default null comment '客户端幂等Id',
+    seq             bigint       default 0 comment '用户维度同步序号',
+    create_by       varchar(64)  default '' comment '创建者（t_user.u_id 字符串形式）',
+    update_by       varchar(64)  default '' comment '更新者',
+    deleted         tinyint      default 0 comment '逻辑删除 0-正常 1-已删除',
+    create_time     datetime     default current_timestamp comment '创建时间',
+    update_time     datetime     default current_timestamp on update current_timestamp comment '更新时间',
+    index idx_user_deleted (user_id, deleted),
+    index idx_user_due (user_id, due_date),
+    index idx_parent (parent_id),
+    index idx_user_urgency (user_id, urgency_level),
+    index idx_user_completed_time (user_id, completion_time),
+    index idx_user_tag (user_id, tag_id),
+    index idx_user_archived (user_id, archived, completed),
+    index idx_user_remind (remind_at, deleted),
+    index idx_user_seq (user_id, seq),
+    unique key uk_user_client (user_id, client_id),
+    constraint fk_task_user foreign key (user_id) references t_user (u_id) on delete cascade
+) engine = InnoDB default charset = utf8mb4 comment = '待办任务';
 
-alter table sys_menu modify column is_frame tinyint default '1' comment '是否为外链（0是 1否）';
-alter table sys_menu modify column is_cache tinyint default '0' comment '是否缓存（0缓存 1不缓存）';
+-- --------------------------------------------------------------------------
+-- 清单（前端叫「清单」，就是 todo_tag）
+-- --------------------------------------------------------------------------
+create table t_todo_tag (
+    tag_id      bigint      primary key auto_increment comment '清单Id',
+    user_id     bigint      not null comment '所属用户 t_user.u_id',
+    tag_name    varchar(24) not null comment '清单名称',
+    icon        varchar(32) default '' comment '图标名（对应前端 y-icon 的 name）',
+    color       varchar(16) default '' comment '主题色',
+    sort_no     int         default 0 comment '排序',
+    is_default  tinyint     default 0 comment '是否默认清单',
+    archived    tinyint     default 0 comment '是否归档',
+    create_by   varchar(64) default '' comment '创建者（TodoTagMapper 的 admin 查询已引用此列）',
+    update_by   varchar(64) default '' comment '更新者（同上）',
+    create_time datetime    default current_timestamp comment '创建时间',
+    update_time datetime    default current_timestamp on update current_timestamp comment '更新时间',
+    index idx_user (user_id),
+    index idx_name (tag_name),
+    constraint fk_tag_user foreign key (user_id) references t_user (u_id) on delete cascade
+) engine = InnoDB default charset = utf8mb4 comment = '待办清单';
 
--- 用户和角色关联表
-drop table if exists sys_user_role;
-create table sys_user_role (
-   user_id   bigint(20) not null comment '用户ID',
-   role_id   bigint(20) not null comment '角色ID',
-   primary key(user_id, role_id)
-) engine=innodb comment = '用户和角色关联表';
-
--- 角色和菜单关联表
-drop table if exists sys_role_menu;
-create table sys_role_menu (
-   role_id   bigint(20) not null comment '角色ID',
-   menu_id   bigint(20) not null comment '菜单ID',
-   primary key(role_id, menu_id)
-) engine=innodb comment = '角色和菜单关联表';
-
--- 内容配置表
-create table sys_config (
-    config_id bigint primary key auto_increment comment '配置ID',
-    parent_id bigint default 0 comment '父配置ID',
-    config_name varchar(255) not null comment '配置名称',
-    config_value varchar(500) default '' comment '配置值',
-    config_link varchar(255) default '' comment '配置链接',
-    config_type varchar(100) default '' comment '配置类型',
-    status tinyint default 1 comment '0-隐藏 1-显示',
-    create_by varchar(64) default '' comment '创建者',
-    create_time datetime comment '创建时间',
-    update_by varchar(64) default '' comment '更新者',
-    update_time datetime comment '更新时间',
-    deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)'
-) engine=innodb comment = '内容配置表';
-
-create index idx_config_type on sys_config(config_type);
-create index idx_status on sys_config(status);
-
--- 待办任务表
-create table xy_task (
-    task_id bigint primary key auto_increment comment '任务Id',
-    user_id bigint comment '用户Id',
-    task_title varchar(255) default '' comment '待办标题',
-    description text comment '描述',
-    completed tinyint default 0 comment '是否完成 0-未完成 1-已完成',
-    urgency_level int default 1 comment '紧急程度: 1-不重要不紧急 2-紧急不重要 3-重要不紧急 4-重要且紧急',
-    due_date datetime comment '截止时间',
-    create_by varchar(64) default '' comment '创建者',
-    create_time datetime comment '创建时间',
-    update_by varchar(64) default '' comment '更新者',
-    update_time datetime comment '更新时间',
-    deleted tinyint default '0' comment '删除标志 (0 存在 1 删除)',
-    index idx_user_id (user_id),
-    index idx_completed (completed),
-    index idx_task_title (task_title),
-    index idx_urgency_level (urgency_level),
-    index idx_due_date (due_date),
-    constraint fk_sys_user foreign key (user_id) references sys_user(id) on delete cascade
-) engine=innodb comment = '待办任务表';
-
--- 任务协作成员表
-create table xy_task_collaborator (
-    task_id bigint not null comment '关联任务Id',
-    user_id bigint not null comment '用户Id',
-    is_admin varchar(1) default '0' comment '是否任务管理员',
-    joined_at datetime default current_timestamp comment '加入时间',
-    create_by varchar(64) default '' comment '创建者',
-    create_time datetime comment '创建时间',
-    update_by varchar(64) default '' comment '更新者',
-    update_time datetime comment '更新时间',
-    primary key (task_id, user_id),
-    foreign key (task_id) references xy_task(task_id) on delete cascade,
-    foreign key (user_id) references sys_user(id) on delete cascade
-) engine=innodb comment = '任务协作成员表';
-
--- 待办标签表
-create table xy_tag (
-    tag_id bigint primary key auto_increment comment '标签Id',
-    user_id bigint comment '用户Id',
-    tag_name varchar(24) not null comment '标签名称',
-    create_by varchar(64) default '' comment '创建者',
-    create_time datetime comment '创建时间',
-    update_by varchar(64) default '' comment '更新者',
-    update_time datetime comment '更新时间',
-    foreign key (user_id) references sys_user(id) on delete cascade
-) engine=innodb comment = '待办标签表';
-
--- 系统英汉词典数据
-create table sys_dictionary (
-    id bigint primary key auto_increment comment '词典Id',
-    word varchar(100) not null comment '单词',
-    phonetic varchar(100) default null comment '音标',
-    definition text comment '英文释义',
-    translation text comment '中文释义',
-    pos varchar(20) default null comment '词性',
-    collins tinyint default null comment '柯林斯星级 1-5',
-    oxford tinyint default 0 comment '牛津核心词标记',
-    tag varchar(50) default null comment '标签 (cet4,cet6,ielts)',
-    bnc int default null comment 'BNC词频排名',
-    frq int default null comment '当代语料库词频排名',
-    exchange varchar(255) default null comment '词形变化',
-    detail JSON default null comment '额外信息(例句等)',
-    create_time datetime default current_timestamp comment '创建时间',
-    update_time datetime default current_timestamp on update current_timestamp comment '更新时间',
-    index idx_tag (tag),
-    index idx_collins (collins)
-) engine=innodb comment '系统英汉词典数据';
-
-insert into xy_tag values
-    (1, 10000000,'工作', 'admin', now(), 'admin', now()),
-    (2, 10000000,'学习', 'admin', now(), 'admin', now()),
-    (3, 10000000,'生活', 'admin', now(), 'admin', now()),
-    (4, 10000000,'旅行', 'admin', now(), 'admin', now()),
-    (5, 10000000,'健康', 'admin', now(), 'admin', now()),
-    (6, 10000000,'购物', 'admin', now(), 'admin', now());
-
--- 待办任务标签关联表
-create table xy_task_tag (
+-- --------------------------------------------------------------------------
+-- 任务-清单关联（前端目前是单选清单，保留结构暂不启用）
+-- --------------------------------------------------------------------------
+create table t_todo_task_tag (
     task_id bigint not null comment '任务Id',
-    tag_id bigint not null comment '标签Id',
-    primary key (task_id, tag_id),
-    index idx_task_id (task_id),
-    index idx_tag_id (tag_id),
-    constraint fk_task_id foreign key (task_id) references xy_task(task_id),
-    constraint fk_tag_id foreign key (tag_id) references xy_tag(tag_id) on delete cascade
-) engine=innodb comment = '待办任务标签关联表';
+    tag_id  bigint not null comment '清单Id',
+    unique key uk_task_tag (task_id, tag_id),
+    index idx_tag (tag_id),
+    constraint fk_tt_task foreign key (task_id) references t_todo_task (task_id) on delete cascade,
+    constraint fk_tt_tag foreign key (tag_id) references t_todo_tag (tag_id) on delete cascade
+) engine = InnoDB default charset = utf8mb4 comment = '任务清单关联';
 
-insert into sys_user values
-    (10000000, 'admin', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '超级管理员', 'xy@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
-insert into sys_user values
-    (10000001, 'xiaoyi', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '小忆', 'xy@qq.com', '13888888888', '1', '', '0', '', sysdate(), sysdate(), '', '', 0, '');
+-- ==========================================================================
+-- 以下为设计文档（docs/todo-backend-design.md 第 4.2 节）新增的配套表，
+-- user_id 一律指向 t_user.u_id，不指向 sys_user.id。
+-- ==========================================================================
 
-update sys_user set password = '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', nickname = '超级管理员', email = 'xy@qq.com', phone = '13888888888', sex = '1', avatar = '', status = '0', wx_open_id = '', create_time = sysdate(), update_time = sysdate(), create_by = '', update_by = '', deleted = 0, remark = '' where id = 10000000;
-update sys_user set password = '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', nickname = '小忆', email = 'xy@qq.com', phone = '13888888888', sex = '1', avatar = '', status = '0', wx_open_id = '', create_time = sysdate(), update_time = sysdate(), create_by = '', update_by = '', deleted = 0, remark = '' where id = 10000001;
+-- 用户偏好（提醒设置 / 外观与显示 / 同步）
+create table if not exists t_todo_user_setting (
+    user_id           bigint primary key comment '用户Id t_user.u_id',
+    theme             varchar(16) default 'system' comment 'system/light/dark',
+    font_size         varchar(16) default 'standard' comment 'small/standard/large',
+    week_start        tinyint     default 1  comment '周起始 0-周日 1-周一',
+    task_remind_on    tinyint     default 1  comment '任务提醒开关',
+    daily_remind_on   tinyint     default 0  comment '每日提醒开关',
+    daily_remind_time varchar(8)  default '08:00' comment '每日提醒时间',
+    focus_remind_on   tinyint     default 1  comment '番茄提醒开关',
+    quiet_start       varchar(8)  default '22:00' comment '免打扰开始',
+    quiet_end         varchar(8)  default '07:00' comment '免打扰结束',
+    auto_sync         tinyint     default 1  comment '自动同步/备份开关',
+    last_sync_time    datetime    default null comment '上次同步时间',
+    create_time       datetime    default current_timestamp,
+    update_time       datetime    default current_timestamp on update current_timestamp
+) engine = innodb default charset = utf8mb4 comment = '用户偏好设置';
 
+-- 用户资料扩展
+# create table if not exists xy_user_profile (
+#     user_id     bigint       primary key comment '用户Id t_user.u_id',
+#     signature   varchar(100) default '' comment '个性签名',
+#     birthday    varchar(10)  default '' comment '生日 yyyy-MM-dd',
+#     city        varchar(64)  default '' comment '所在地',
+#     update_time datetime     default current_timestamp on update current_timestamp
+# ) engine = innodb default charset = utf8mb4 comment = '用户资料扩展';
 
-insert into sys_role values
-    (1, '超级管理员', 'admin', 1, '1', '1', sysdate(), sysdate(), '', '', 0, '');
-insert into sys_role values
-    (2, '普通用户', 'user', 2, '2', '1', sysdate(), sysdate(), '', '', 0, '');
+-- 提醒（一个任务可有多个提醒点）
+create table if not exists t_todo_task_reminder (
+    reminder_id bigint       primary key auto_increment,
+    task_id     bigint       not null comment '任务Id',
+    user_id     bigint       not null comment '用户Id t_user.u_id',
+    remind_at   datetime     not null comment '提醒时间',
+    template_id varchar(64)  default '' comment '订阅消息模板Id',
+    status      varchar(16)  default 'pending' comment 'pending/sending/sent/failed/canceled',
+    retry_count int          default 0 comment '已重试次数',
+    send_time   datetime     default null comment '实际下发时间',
+    fail_reason varchar(255) default '' comment '失败原因（errcode+errmsg）',
+    create_time datetime     default current_timestamp,
+    update_time datetime     default current_timestamp on update current_timestamp,
+    index idx_status_remind (status, remind_at),
+    index idx_task (task_id),
+    index idx_user (user_id, remind_at)
+) engine = innodb default charset = utf8mb4 comment = '任务提醒';
 
+-- 一次性订阅授权额度池（一次授权 = 一条消息）
+create table if not exists t_todo_subscribe_quota (
+    user_id     bigint      not null comment '用户Id t_user.u_id',
+    template_id varchar(64) not null comment '模板Id',
+    remain      int         not null default 0 comment '剩余可下发条数',
+    total       int         not null default 0 comment '累计获得授权次数',
+    update_time datetime    default current_timestamp on update current_timestamp,
+    primary key (user_id, template_id)
+) engine = innodb default charset = utf8mb4 comment = '订阅消息授权额度';
 
-insert into sys_user_role values (10000000, 1);
-insert into sys_user_role values (10000001, 2);
+-- 下发日志（排查「用户说没收到提醒」的唯一凭据）
+create table if not exists t_todo_notify_log (
+    id          bigint       primary key auto_increment,
+    user_id     bigint       not null comment '用户Id t_user.u_id',
+    task_id     bigint       default null,
+    reminder_id bigint       default null,
+    template_id varchar(64)  default '',
+    page        varchar(128) default '' comment '点击跳转页',
+    errcode     int          default 0,
+    errmsg      varchar(255) default '',
+    send_time   datetime     default current_timestamp,
+    index idx_user_time (user_id, send_time)
+) engine = innodb default charset = utf8mb4 comment = '订阅消息下发日志';
 
-insert into sys_menu values(1, '系统管理', '0', 1, 'system',null, '', '', 1, 1, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, 0,'系统管理目录');
-insert into sys_menu values(2,  '用户管理', 1,   1, 'user','system/user/index', '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, 0,'用户管理菜单');
-insert into sys_menu values(4,  '角色管理', 1,   2, 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, 0, '角色管理菜单');
-insert into sys_menu values(5,  '菜单管理', 1,   3, 'menu',       'system/menu/index',        '', '', 1, 0, 'C', '0', '0', 'system:menu:list',        'tree-table',    'admin', sysdate(), '', null, 0,'菜单管理菜单');
-insert into sys_menu values(19, '操作日志', 1,   4, 'operlog',    'system/operlog/index',     '', '', 1, 0, 'C', '0', '0', 'system:operlog:list',   'log',           'admin', sysdate(), '', null, 0, '操作日志菜单');
+-- 习惯 / 打卡
+create table if not exists t_todo_habit (
+    habit_id    bigint      primary key auto_increment,
+    user_id     bigint      not null comment '用户Id t_user.u_id',
+    name        varchar(64) not null comment '习惯名称',
+    icon        varchar(32) default '' comment '图标名',
+    color       varchar(16) default '' comment '主题色',
+    freq_type   varchar(16) default 'daily' comment 'daily/weekly',
+    freq_days   varchar(32) default '' comment 'weekly 时的星期集合 如 1,3,5',
+    target_days int         default 0 comment '目标天数（0 不限）',
+    sort_no     int         default 0,
+    status      tinyint     default 1 comment '1-进行中 0-已结束',
+    deleted     tinyint     default 0,
+    create_time datetime    default current_timestamp,
+    index idx_user (user_id, status)
+) engine = innodb default charset = utf8mb4 comment = '习惯';
 
--- 用户管理按钮权限
-insert into sys_menu values(20, '用户新增', 2, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:user:add', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(21, '用户编辑', 2, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:user:edit', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(22, '用户删除', 2, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:user:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(23, '用户查询', 2, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:user:query', '', 'admin', sysdate(), '', null, 0, '');
+create table if not exists t_todo_habit_log (
+    id          bigint   primary key auto_increment,
+    habit_id    bigint   not null,
+    user_id     bigint   not null comment '用户Id t_user.u_id',
+    log_date    date     not null comment '打卡日期',
+    status      tinyint  default 1 comment '1-已打卡',
+    create_time datetime default current_timestamp,
+    unique key uk_habit_date (habit_id, log_date),
+    index idx_user_date (user_id, log_date)
+) engine = innodb default charset = utf8mb4 comment = '习惯打卡记录';
 
--- 角色管理按钮权限
-insert into sys_menu values(24, '角色新增', 4, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:role:add', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(25, '角色编辑', 4, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:role:edit', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(26, '角色删除', 4, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:role:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(27, '角色查询', 4, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:role:query', '', 'admin', sysdate(), '', null, 0, '');
+-- 番茄专注
+create table if not exists t_todo_focus_session (
+    session_id       bigint      primary key auto_increment,
+    user_id          bigint      not null comment '用户Id t_user.u_id',
+    task_id          bigint      default null comment '可关联任务',
+    mode             varchar(16) default 'focus' comment 'focus/short/long',
+    planned_seconds  int         default 1500 comment '计划秒数',
+    actual_seconds   int         default 0 comment '实际专注秒数',
+    start_time       datetime    default null,
+    end_time         datetime    default null,
+    status           varchar(16) default 'running' comment 'running/finished/aborted',
+    client_id        varchar(64) default null comment '幂等Id（必须为 NULL 而不是空串，否则唯一键冲突）',
+    create_time      datetime    default current_timestamp,
+    unique key uk_user_client (user_id, client_id),
+    index idx_user_start (user_id, start_time)
+) engine = innodb default charset = utf8mb4 comment = '番茄专注记录';
 
--- 操作日志按钮权限
-insert into sys_menu values(28, '日志删除', 19, 1, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(29, '日志清空', 19, 2, 'clean', '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:clean', '', 'admin', sysdate(), '', null, 0, '');
+-- 清单模板
+create table if not exists t_todo_task_template (
+    template_id bigint       primary key auto_increment,
+    code        varchar(32)  not null unique comment '模板编码',
+    name        varchar(64)  not null,
+    icon        varchar(32)  default '',
+    description varchar(255) default '',
+    items       json         default null comment '预置任务数组 [{title,priority}]',
+    sort_no     int          default 0,
+    status      tinyint      default 1,
+    create_time datetime     default current_timestamp
+) engine = innodb default charset = utf8mb4 comment = '清单模板';
 
--- 操作日志表
- create table if not exists sys_oper_log (
-    id bigint auto_increment not null comment '日志主键',
-    title varchar(50) default '' comment '模块标题',
-    business_type int(2) default 0 comment '业务类型（0其它 1新增 2修改 3删除）',
-    method varchar(200) default '' comment '方法名称',
-    request_method varchar(10) default '' comment '请求方式',
-    operator_type int(1) default 0 comment '操作类别（0其它 1后台用户 2手机端用户）',
-    oper_name varchar(50) default '' comment '操作人员',
-    dept_name varchar(50) default '' comment '部门名称',
-    oper_url varchar(255) default '' comment '请求URL',
-    oper_ip varchar(128) default '' comment '主机地址',
-    oper_location varchar(255) default '' comment '操作地点',
-    oper_param text comment '请求参数',
-    json_result text comment '返回参数',
-    status int(1) default 0 comment '操作状态（0正常 1异常）',
-    error_msg varchar(2000) default '' comment '错误消息',
-    oper_time datetime comment '操作时间',
-    cost_time bigint default 0 comment '消耗时间',
-    create_time datetime default now() comment '创建时间',
-    update_time datetime default now() on update now() comment '更新时间',
-    primary key (id),
-    index idx_title (title),
-    index idx_business_type (business_type),
-    index idx_oper_name (oper_name),
-    index idx_status (status),
-    index idx_oper_time (oper_time)
-) engine=InnoDB default charset=utf8mb4 comment='操作日志记录表';
-insert into sys_menu values (3,'仪表盘', 0,1,'/', 'dashboard/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '仪表盘');
-insert into sys_menu values
-    (6,'我的博客', 0,2,'/blog', 'blog/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '我的博客');
+-- 反馈工单（替代客服消息）
+create table if not exists t_todo_feedback (
+    id          bigint        primary key auto_increment,
+    user_id     bigint        not null comment '用户Id t_user.u_id',
+    content     varchar(1000) not null,
+    images      varchar(1000) default '' comment '图片URL逗号分隔',
+    contact     varchar(100)  default '' comment '用户自愿填写的联系方式',
+    status      tinyint       default 0 comment '0-待处理 1-已回复',
+    reply       varchar(1000) default '',
+    create_time datetime      default current_timestamp,
+    index idx_user (user_id, create_time)
+) engine = innodb default charset = utf8mb4 comment = '用户反馈';
 
-insert into sys_menu values
-    (7,'文章管理', 0,3,'article', null, '','',1,1,'M','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '文章管理'),
-    (8,'文章中心', 0,1,'article', '/article/article/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '文章管理'),
-    (9,'标签管理', 0,2,'tag', '/article/tag/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '标签管理'),
-    (10,'分类管理', 0,3,'category', '/article/category/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '分类管理');
+-- 增量同步游标（一用户一设备一游标）
+create table if not exists t_todo_sync_cursor (
+    user_id        bigint      not null comment '用户Id t_user.u_id',
+    device_id      varchar(64) not null,
+    last_seq       bigint      default 0 comment '已同步到的服务端序号',
+    last_sync_time datetime    default null,
+    primary key (user_id, device_id)
+) engine = innodb default charset = utf8mb4 comment = '同步游标';
 
-insert into sys_menu values
-    (14,'内容配置', 0,2,'config', null, '','',1,1,'M','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '内容配置');
+-- 用户维度序号发号器
+create table if not exists t_todo_user_seq (
+    user_id bigint primary key comment '用户Id t_user.u_id',
+    seq     bigint not null default 0
+) engine = innodb default charset = utf8mb4 comment = '用户同步序号发号器';
 
-insert into sys_menu values
-    (15,'菜单配置', 14,1,'menu', 'config/menu/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '菜单配置'),
-    (16,'工具配置', 14,2,'utils', 'config/utils/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '工具配置'),
-    (17,'底部栏', 14,3,'tabbar', 'config/tabbar/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '底部栏');
-insert into sys_menu values
-    (18,'轮播图', 14,4,'swiper', 'config/swiper/index', '','',1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '轮播图');
-
-insert into sys_menu values
-    (11,'添加文章', 7,4,'add', '/article/article/operate', '',1,1,0,'C','1','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '添加文章'),
-    (12,'编辑文章', 7,4,'edit', '/article/article/operate', '',1,1,0,'C','1','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '编辑文章');
-
-insert into sys_menu values
-    (13,'内容配置', 0,4,'/contentItem/index', 'contentItem/index', '',1,1,0,'C','0','0', '','dashboard' ,'admin',sysdate(),'', sysdate(),0, '通用内容配置');
-
-# 2005,仪表盘,0,1,/,dashboard/index,,"",1,1,C,0,0,,dashboard,hzy,2025-12-24 13:16:11,"",,""
-
-select distinct m.menu_id, m.menu_name, m.parent_id, m.order_num, m.path, m.component, m.query, m.route_name, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_by, m.create_time, m.update_by, m.update_time, m.deleted, m.remark from sys_menu m;
-
-delete from sys_user where id = 2046084966175932418;
-
-delete from sys_user where id = 10000002;
-
-alter table sys_user auto_increment = 10000002;
-
--- 字典类型表
- create table if not exists sys_dict_type (
-    dict_id bigint auto_increment not null comment '字典主键',
-    dict_name varchar(100) default '' comment '字典名称',
-    dict_type varchar(100) default '' comment '字典类型',
-    status char(1) default '0' comment '状态（0正常 1停用）',
-    create_by varchar(64) default '' comment '创建者',
-    create_time datetime default null comment '创建时间',
-    update_by varchar(64) default '' comment '更新者',
-    update_time datetime default null comment '更新时间',
-    remark varchar(500) default null comment '备注',
-    primary key (dict_id),
-    unique key uk_dict_type (dict_type)
-) engine=InnoDB default charset=utf8mb4 comment='字典类型表';
-
--- 字典数据表
- create table if not exists sys_dict_data (
-    dict_code bigint auto_increment not null comment '字典编码',
-    dict_sort int(4) default 0 comment '字典排序',
-    dict_label varchar(100) default '' comment '字典标签',
-    dict_value varchar(100) default '' comment '字典键值',
-    dict_type varchar(100) default '' comment '字典类型',
-    css_class varchar(100) default null comment '样式属性（其他样式扩展）',
-    list_class varchar(100) default null comment '表格回显样式',
-    is_default char(1) default 'N' comment '是否默认（Y是 N否）',
-    status char(1) default '0' comment '状态（0正常 1停用）',
-    create_by varchar(64) default '' comment '创建者',
-    create_time datetime default null comment '创建时间',
-    update_by varchar(64) default '' comment '更新者',
-    update_time datetime default null comment '更新时间',
-    remark varchar(500) default null comment '备注',
-    primary key (dict_code),
-    index idx_dict_type (dict_type)
-) engine=InnoDB default charset=utf8mb4 comment='字典数据表';
-
--- 登录日志表
- create table if not exists sys_logininfor (
-    info_id bigint(20) not null auto_increment comment '访问ID',
-    user_name varchar(50) default '' comment '用户账号',
-    ipaddr varchar(128) default '' comment '登录IP地址',
-    login_location varchar(255) default '' comment '登录地点',
-    browser varchar(50) default '' comment '浏览器类型',
-    os varchar(50) default '' comment '操作系统',
-    status char(1) default '0' comment '登录状态（0成功 1失败）',
-    msg varchar(255) default '' comment '提示消息',
-    login_time datetime comment '访问时间',
-    create_time datetime default now() comment '创建时间',
-    update_time datetime default now() comment '更新时间',
-    primary key (info_id),
-    index idx_user_name (user_name),
-    index idx_ipaddr (ipaddr),
-    index idx_status (status),
-    index idx_login_time (login_time)
-) engine=InnoDB default charset=utf8mb4 comment='系统访问记录';
-
--- 新增系统管理子菜单
-insert into sys_menu values(30, '字典管理', 1, 5, 'dict', 'system/dict/index', '', '', 1, 0, 'C', '0', '0', 'system:dict:list', 'dict', 'admin', sysdate(), '', null, 0, '字典管理菜单');
-insert into sys_menu values(31, '登录日志', 1, 6, 'logininfor', 'system/logininfor/index', '', '', 1, 0, 'C', '0', '0', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', null, 0, '登录日志菜单');
-insert into sys_menu values(32, '在线用户', 1, 7, 'online', 'system/online/index', '', '', 1, 0, 'C', '0', '0', 'system:online:list', 'online', 'admin', sysdate(), '', null, 0, '在线用户菜单');
-
--- 字典管理按钮权限
-insert into sys_menu values(33, '字典类型新增', 30, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:add', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(34, '字典类型编辑', 30, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:edit', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(35, '字典类型删除', 30, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(36, '字典类型查询', 30, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:query', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(37, '字典数据新增', 30, 5, 'add', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:add', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(38, '字典数据编辑', 30, 6, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:edit', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(39, '字典数据删除', 30, 7, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(40, '字典数据查询', 30, 8, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:query', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(41, '字典数据导出', 30, 9, 'export', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:export', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(42, '字典数据导入', 30, 10, 'import', '', '', '', 1, 0, 'F', '0', '0', 'system:dict:data:import', '', 'admin', sysdate(), '', null, 0, '');
-
--- 登录日志按钮权限
-insert into sys_menu values(43, '登录日志删除', 31, 1, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'system:logininfor:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(44, '登录日志清空', 31, 2, 'clean', '', '', '', 1, 0, 'F', '0', '0', 'system:logininfor:clean', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(45, '登录日志导出', 31, 3, 'export', '', '', '', 1, 0, 'F', '0', '0', 'system:logininfor:export', '', 'admin', sysdate(), '', null, 0, '');
-
--- 在线用户按钮权限
-insert into sys_menu values(46, '在线用户查询', 32, 1, 'query', '', '', '', 1, 0, 'F', '0', '0', 'system:online:query', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(47, '在线用户强退', 32, 2, 'force', '', '', '', 1, 0, 'F', '0', '0', 'system:online:force', '', 'admin', sysdate(), '', null, 0, '');
-
--- 操作日志导出按钮
-insert into sys_menu values(48, '操作日志导出', 19, 3, 'export', '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:export', '', 'admin', sysdate(), '', null, 0, '');
-
--- 默认字典数据
-insert into sys_dict_type values(1, '用户性别', 'sys_user_sex', '0', 'admin', sysdate(), '', null, '用户性别列表');
-insert into sys_dict_type values(2, '菜单状态', 'sys_show_hide', '0', 'admin', sysdate(), '', null, '菜单状态列表');
-insert into sys_dict_type values(3, '系统状态', 'sys_normal_disable', '0', 'admin', sysdate(), '', null, '系统状态列表');
-
-insert into sys_dict_data values(1, 1, '男', '1', 'sys_user_sex', '', '', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(2, 2, '女', '2', 'sys_user_sex', '', '', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(3, 3, '未知', '0', 'sys_user_sex', '', '', 'Y', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(4, 1, '显示', '0', 'sys_show_hide', '', 'primary', 'Y', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(5, 2, '隐藏', '1', 'sys_show_hide', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(6, 1, '正常', '0', 'sys_normal_disable', '', 'success', 'Y', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(7, 2, '停用', '1', 'sys_normal_disable', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
-
-select distinct m.menu_id, m.menu_name, m.parent_id, m.order_num, m.path, m.component, m.query, m.route_name, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_by, m.create_time, m.update_by, m.update_time, m.deleted, m.remark
-from sys_menu m
-         left join sys_role_menu rm on m.menu_id = rm.menu_id
-         left join sys_user_role ur on rm.role_id = ur.role_id
-         left join sys_role ro on ur.role_id = ro.id
-         left join sys_user u on ur.user_id = u.id
-where u.id = 10000001 and m.menu_type in ('M', 'C') and m.status = '0'  AND ro.status = 1
-order by m.parent_id, m.order_num;
-
-create table sys_im_user (
-    id bigint auto_increment primary key comment '账号Id',
-    avatar varchar(255) comment '头像',
-    nickname varchar(64) comment '系统账号名称',
-    user_key varchar(64) comment '账号标识',
-    wk_im_key varchar(64) comment '悟空IM系统账号标识',
-    create_time datetime comment '创建时间',
-    update_time datetime comment '更新时间'
-) engine=InnoDB default charset=utf8mb4 comment '悟空IM系统账号';
-
--- 待办管理菜单
-insert into sys_menu values(2000, '待办管理', '0', 5, 'todo', null, '', '', 1, 1, 'M', '0', '0', '', 'list', 'admin', sysdate(), '', null, 0, '待办管理目录');
-insert into sys_menu values(2001, '任务管理', 2000, 1, 'task', 'todo/task/index', '', '', 1, 0, 'C', '0', '0', 'todo:task:list', 'checkbox', 'admin', sysdate(), '', null, 0, '任务管理菜单');
-insert into sys_menu values(2002, '标签管理', 2000, 2, 'tag', 'todo/tag/index', '', '', 1, 0, 'C', '0', '0', 'todo:tag:list', 'collection-tag', 'admin', sysdate(), '', null, 0, '标签管理菜单');
-
--- 任务管理按钮权限
-insert into sys_menu values(2010, '任务新增', 2001, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:add', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(2011, '任务编辑', 2001, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:edit', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(2012, '任务删除', 2001, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(2013, '任务查询', 2001, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'todo:task:query', '', 'admin', sysdate(), '', null, 0, '');
-
--- 标签管理按钮权限
-insert into sys_menu values(2020, '标签新增', 2002, 1, 'add', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:add', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(2021, '标签编辑', 2002, 2, 'edit', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:edit', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(2022, '标签删除', 2002, 3, 'remove', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:remove', '', 'admin', sysdate(), '', null, 0, '');
-insert into sys_menu values(2023, '标签查询', 2002, 4, 'query', '', '', '', 1, 0, 'F', '0', '0', 'todo:tag:query', '', 'admin', sysdate(), '', null, 0, '');
-
--- 为超级管理员角色绑定待办菜单
-insert into sys_role_menu values (1, 2000);
-insert into sys_role_menu values (1, 2001);
-insert into sys_role_menu values (1, 2002);
-insert into sys_role_menu values (1, 2010);
-insert into sys_role_menu values (1, 2011);
-insert into sys_role_menu values (1, 2012);
-insert into sys_role_menu values (1, 2013);
-insert into sys_role_menu values (1, 2020);
-insert into sys_role_menu values (1, 2021);
-insert into sys_role_menu values (1, 2022);
-insert into sys_role_menu values (1, 2023);
+set foreign_key_checks = 1;

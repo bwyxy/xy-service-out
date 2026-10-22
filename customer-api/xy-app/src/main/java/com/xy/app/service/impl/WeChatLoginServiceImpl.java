@@ -3,17 +3,22 @@ package com.xy.app.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xy.app.pojo.vo.WeChatLoginVo;
 import com.xy.app.response.WechatSessionResponse;
+import com.xy.app.security.TodoUserDetails;
 import com.xy.app.service.IWeChatLoginService;
-import com.xy.common.entity.SysUser;
-import com.xy.common.utils.StringUtils;
+import com.xy.common.entity.User;
 import com.xy.common.provider.JwtTokenProvider;
-import com.xy.system.service.ISysUserService;
+import com.xy.system.service.IChatUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * 微信小程序登录
+ *
+ * <p>用户体系为客户端用户表 t_user（主键 u_id），不写后台账号表 sys_user；
+ * 登录态主题为 {@code todo_{uId}}，由 TodoUserDetailsService 解析。</p>
+ * */
 @Service
 @RequiredArgsConstructor
 public class WeChatLoginServiceImpl implements IWeChatLoginService {
@@ -24,8 +29,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     @Value("${wechat.secret}")
     private String secret;
 
-    @Autowired
-    private ISysUserService sysUserService;
+    private final IChatUserService chatUserService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -39,19 +43,19 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         WechatSessionResponse session = getSessionByCode(code);
         String openid = session.getOpenid();
 
-        SysUser sysUser = sysUserService.getUserByOpenId(openid);
-        if (sysUser == null) {
-            sysUser = addWeChatUser(openid);
+        User user = chatUserService.getByOpenId(openid);
+        if (user == null) {
+            user = chatUserService.registerByOpenId(openid);
         }
 
-        String token = jwtTokenProvider.createWeChatToken(sysUser.getUsername());
+        String token = jwtTokenProvider.createWeChatToken(TodoUserDetails.toUsername(user.getUId()));
 
         WeChatLoginVo weChatLoginVo = new WeChatLoginVo();
-        weChatLoginVo.setUserId(sysUser.getId());
+        weChatLoginVo.setUserId(user.getUId());
         weChatLoginVo.setOpenid(openid);
         weChatLoginVo.setToken(token);
-        weChatLoginVo.setNickname(sysUser.getNickname());
-        weChatLoginVo.setAvatar(sysUser.getAvatar());
+        weChatLoginVo.setNickname(user.getNickname());
+        weChatLoginVo.setAvatar(user.getAvatar());
 
         return weChatLoginVo;
     }
@@ -79,21 +83,5 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         } catch (Exception e) {
             throw new RuntimeException("调用微信接口失败", e);
         }
-    }
-
-    /**
-     * 添加微信小程序用户
-     * */
-    public SysUser addWeChatUser(String openid) {
-        SysUser sysUser = new SysUser();
-
-        sysUser.setUsername(openid);
-        sysUser.setNickname("微信用户" + StringUtils.maskOpenId(openid));
-        sysUser.setWxOpenId(openid);
-        sysUser.setCreateBy("weChatRegister");
-
-        sysUserService.addUser(sysUser);
-
-        return sysUser;
     }
 }

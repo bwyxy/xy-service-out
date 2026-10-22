@@ -1,14 +1,17 @@
 package com.xy.app.controller;
 
 import com.xy.app.pojo.vo.WeChatLoginVo;
+import com.xy.app.security.TodoUserDetails;
 import com.xy.app.service.IWeChatLoginService;
 import com.xy.common.annotation.Anonymous;
 import com.xy.common.core.domain.R;
-import com.xy.common.entity.SysUser;
+import com.xy.common.enums.ResultCode;
+import com.xy.common.entity.User;
 import com.xy.common.provider.JwtTokenProvider;
-import com.xy.framework.web.service.AuthService;
 import com.xy.common.web.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,9 +26,6 @@ public class WeChatLoginController {
 
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
-
-    @Autowired
-    private AuthService authService;
 
     /**
      * 微信小程序登录
@@ -43,10 +43,16 @@ public class WeChatLoginController {
      * */
     @GetMapping("/getInfo")
     public R<?> getInfo() {
-        SysUser sysUser = authService.getUserInfo();
-        sysUser.setPassword(null);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return R.ok(sysUser);
+        if (authentication == null || !(authentication.getPrincipal() instanceof TodoUserDetails todoUserDetails)) {
+            return R.error(ResultCode.UNAUTHORIZED);
+        }
+
+        User user = todoUserDetails.getUser();
+        user.setPassword(null);
+
+        return R.ok(user);
     }
 
     /**
