@@ -50,11 +50,18 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx273e7648254d27a5",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : true,
+            "es6" : true,
+            "postcss" : true,
+            "minified" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        /* 开启深色模式：不开的话微信不会把系统主题告诉小程序，getSystemInfoSync().theme 恒为 light、onThemeChange 也不触发，「跟随系统」形同浅色 */
+        "darkmode" : true,
+        /* 开启隐私协议检查：首次触发隐私接口时由 wx.onNeedPrivacyAuthorization 接管，拉起自定义同意弹框 */
+        "__usePrivacyCheck__" : true
     },
     "mp-alipay" : {
         "usingComponents" : true

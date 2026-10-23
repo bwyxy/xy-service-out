@@ -47,6 +47,27 @@
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "新建任务"
 					}
+				},
+				{
+					"path": "tag/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "清单管理"
+					}
+				},
+				{
+					"path": "manage/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "任务管理"
+					}
+				},
+				{
+					"path": "detail/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "任务详情"
+					}
 				}
 			]
 		},
@@ -75,10 +96,24 @@
 					}
 				},
 				{
+					"path": "matrix/detail/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "象限任务"
+					}
+				},
+				{
 					"path": "habit/index",
 					"style": {
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "习惯打卡"
+					}
+				},
+				{
+					"path": "habit/edit/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "新建习惯"
 					}
 				},
 				{
@@ -143,10 +178,24 @@
 					}
 				},
 				{
+					"path": "feedback/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "意见反馈"
+					}
+				},
+				{
 					"path": "about/index",
 					"style": {
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "关于忆"
+					}
+				},
+				{
+					"path": "agreement/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "隐私政策"
 					}
 				}
 			]

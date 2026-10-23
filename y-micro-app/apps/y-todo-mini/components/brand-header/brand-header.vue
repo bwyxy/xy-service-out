@@ -59,7 +59,7 @@ const emit = defineEmits(['back', 'more', 'theme'])
 }
 
 .brand-header__text {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 500;
 	color: $y-text-main;
 }
@@ -71,7 +71,7 @@ const emit = defineEmits(['back', 'more', 'theme'])
 
 .brand-header__back-text {
 	margin-left: 8rpx;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
@@ -88,7 +88,7 @@ const emit = defineEmits(['back', 'more', 'theme'])
 	height: 44rpx;
 	margin-right: 16rpx;
 	border-radius: 999rpx;
-	background-color: #efefe9;
+	background-color: $y-header-bg;
 }
 
 .brand-header__dot {
@@ -109,8 +109,8 @@ const emit = defineEmits(['back', 'more', 'theme'])
 	width: 44rpx;
 	height: 44rpx;
 	border-radius: 50%;
-	border: 2rpx solid #e2e2da;
-	background-color: #efefe9;
+	border: 2rpx solid $y-divider;
+	background-color: $y-header-bg;
 }
 
 .brand-header__ring-inner {

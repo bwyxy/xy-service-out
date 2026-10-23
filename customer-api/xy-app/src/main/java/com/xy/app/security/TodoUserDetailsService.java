@@ -12,13 +12,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * 复合 UserDetailsService
- *
- * <ul>
- *   <li>username 以 {@code todo_} 开头 → 从 t_user 表加载待办用户</li>
- *   <li>其他 → 委托给原有的 UserDetailsServiceImpl（从 sys_user 表加载后台管理用户）</li>
- * </ul>
- *
- * <p>与 fg-chat 的 ChatUserDetailsService（{@code chat_} 前缀）同构，保证待办与后台两套登录态互不串用。</p>
  * */
 @Slf4j
 @Primary

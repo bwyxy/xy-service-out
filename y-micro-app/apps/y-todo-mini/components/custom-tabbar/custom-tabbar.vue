@@ -100,17 +100,14 @@ function handleCreate() {
 </template>
 
 <style scoped lang="scss">
-$green-primary: #4a6b3e;
-$text-muted: #a9a9a0;
-
 .tabbar {
 	position: fixed;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	z-index: 100;
-	background-color: rgba(247, 247, 242, 0.94);
-	border-top: 2rpx solid #ecece5;
+	background-color: $y-tabbar-bg;
+	border-top: 2rpx solid $y-divider;
 	padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -135,12 +132,12 @@ $text-muted: #a9a9a0;
 
 .tabbar__text {
 	margin-top: 6rpx;
-	font-size: 22rpx;
-	color: $text-muted;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
+	color: $y-text-muted;
 }
 
 .tabbar__item--active .tabbar__text {
-	color: $green-primary;
+	color: $y-green-primary;
 }
 
 .tabbar__fab {
@@ -151,13 +148,13 @@ $text-muted: #a9a9a0;
 	width: 100rpx;
 	height: 100rpx;
 	border-radius: 50%;
-	background-color: $green-primary;
+	background-color: $y-green-primary;
 	box-shadow: 0 8rpx 20rpx rgba(74, 107, 62, 0.28);
 	transform: translateY(-18rpx);
 }
 
 .tabbar__fab-icon {
-	font-size: 48rpx;
+	font-size: calc(48rpx * var(--y-font-scale, 1));
 	line-height: 1;
 	color: #ffffff;
 }

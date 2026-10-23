@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,9 +12,11 @@ import java.time.LocalDateTime;
 
 /**
  * 订阅消息下发日志表 t_todo_notify_log
+ *
+ * <p>成功和失败都记一条，这是排查「用户说没收到提醒」的唯一凭据。
+ * 表里只有 send_time，没有 create_time/update_time，所以不继承 BaseEntity。</p>
  * */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @TableName("t_todo_notify_log")
 public class TodoNotifyLog implements Serializable {
 
@@ -44,7 +45,7 @@ public class TodoNotifyLog implements Serializable {
     private Long reminderId;
 
     /**
-     * 模板 Id
+     * 订阅消息模板 Id
      * */
     private String templateId;
 
@@ -54,12 +55,12 @@ public class TodoNotifyLog implements Serializable {
     private String page;
 
     /**
-     * 微信错误码
+     * 微信返回的 errcode，0 表示成功
      * */
     private Integer errcode;
 
     /**
-     * 微信错误信息
+     * 微信返回的 errmsg
      * */
     private String errmsg;
 

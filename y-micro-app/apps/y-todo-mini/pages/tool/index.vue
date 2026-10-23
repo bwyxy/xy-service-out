@@ -1,5 +1,6 @@
 <script setup>
 import { onShow } from '@dcloudio/uni-app'
+import { themeClass } from '@/utils/appearance'
 
 	/**
 	 * 工具 · 工具首页
@@ -50,10 +51,12 @@ onShow(() => {
 </script>
 
 <template>
-	<view class="tool">
-		<view :style="{ height: statusBarHeight + 'px' }" />
+	<view class="tool" :class="themeClass">
+		<view class="tool__top">
+			<view :style="{ height: statusBarHeight + 'px' }" />
 
-		<brand-header @more="handleHeader('更多菜单')" @theme="handleHeader('主题切换')" />
+			<brand-header @more="handleHeader('更多菜单')" @theme="handleHeader('主题切换')" />
+		</view>
 
 		<view class="tool__hero">
 			<text class="tool__title">让专注，轻一点</text>
@@ -111,6 +114,7 @@ onShow(() => {
 		<custom-tabbar active="pages/tool/index" />
 
 		<login-sheet />
+		<privacy-sheet />
 	</view>
 </template>
 
@@ -122,6 +126,14 @@ onShow(() => {
 	box-sizing: border-box;
 }
 
+/* 顶栏吸顶：状态栏留白与品牌顶栏一起钉在页面顶部，背景铺页面底色避免内容透出 */
+.tool__top {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background-color: $y-page-bg;
+}
+
 /* 标题 */
 .tool__hero {
 	display: flex;
@@ -130,7 +142,7 @@ onShow(() => {
 }
 
 .tool__title {
-	font-size: 52rpx;
+	font-size: calc(52rpx * var(--y-font-scale, 1));
 	font-weight: 700;
 	letter-spacing: 2rpx;
 	color: $y-text-main;
@@ -138,7 +150,7 @@ onShow(() => {
 
 .tool__subtitle {
 	margin-top: 16rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -160,15 +172,15 @@ onShow(() => {
 }
 
 .focus__name {
-	font-size: 34rpx;
+	font-size: calc(34rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .focus__desc {
 	margin-top: 16rpx;
-	font-size: 24rpx;
-	color: #6f8064;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 .focus__start {
@@ -179,7 +191,7 @@ onShow(() => {
 
 .focus__start-text {
 	margin-right: 8rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	font-weight: 500;
 	color: $y-green-primary;
 }
@@ -194,20 +206,20 @@ onShow(() => {
 	height: 190rpx;
 	margin-left: 24rpx;
 	border-radius: 50%;
-	border: 2rpx solid #c4d2b4;
-	background-color: rgba(255, 255, 255, 0.5);
+	border: 2rpx solid $y-green-border;
+	background-color: $y-glass-bg;
 }
 
 .focus__time {
-	font-size: 40rpx;
+	font-size: calc(40rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .focus__hint {
 	margin-top: 8rpx;
-	font-size: 20rpx;
-	color: #6f8064;
+	font-size: calc(20rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 /* 日常好帮手 */
@@ -216,7 +228,7 @@ onShow(() => {
 }
 
 .section__title {
-	font-size: 32rpx;
+	font-size: calc(32rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -230,28 +242,28 @@ onShow(() => {
 .helper {
 	display: flex;
 	flex-direction: column;
-	width: calc(50% - 10rpx);
+	width: calc(50% - 12rpx);
 	margin-bottom: 20rpx;
 	padding: 32rpx 28rpx;
 	border-radius: 28rpx;
 	background-color: $y-card-bg;
 	box-sizing: border-box;
 
-	&:nth-child(2n + 1) {
-		margin-right: 20rpx;
+	&:nth-child(2n) {
+		margin-left: 20rpx;
 	}
 }
 
 .helper__name {
 	margin-top: 20rpx;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 500;
 	color: $y-text-main;
 }
 
 .helper__desc {
 	margin-top: 12rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -283,14 +295,14 @@ onShow(() => {
 }
 
 .template__name {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 500;
 	color: $y-text-main;
 }
 
 .template__desc {
 	margin-top: 10rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -298,7 +310,7 @@ onShow(() => {
 .tool__foot {
 	display: block;
 	margin-top: 56rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 	text-align: center;
 }

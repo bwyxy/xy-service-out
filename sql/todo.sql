@@ -39,10 +39,12 @@ create table t_todo_task (
     due_date        datetime     default null comment '截止时间',
     tag_id          bigint       default null comment '清单Id todo_tag.tag_id',
     priority        tinyint      default 0 comment '优先级 0-无 1-普通 2-重要（列表页小旗子）',
-    repeat_rule     varchar(64)  default '' comment '重复规则 DAILY/WEEKLY:1,3/FREQ=WEEKLY;BYDAY=MO',
+    repeat_rule     varchar(64)  default '' comment '重复规则 DAILY/WEEKLY/MONTHLY，空表示不重复',
+    repeat_source_id bigint      default null comment '重复任务：本任务由哪一条完成后生成，用于取消完成时回滚',
     remind_before   int          default 0 comment '提前提醒分钟数，0-不提醒',
     remind_at       datetime     default null comment '下次提醒时间（服务端算好，便于索引扫描）',
     archived        tinyint      default 0 comment '是否归档 0-否 1-是',
+    archive_time    datetime     default null comment '归档时间（取消归档时清空）',
     client_id       varchar(64)  default null comment '客户端幂等Id',
     seq             bigint       default 0 comment '用户维度同步序号',
     create_by       varchar(64)  default '' comment '创建者（t_user.u_id 字符串形式）',
@@ -53,10 +55,12 @@ create table t_todo_task (
     index idx_user_deleted (user_id, deleted),
     index idx_user_due (user_id, due_date),
     index idx_parent (parent_id),
+    index idx_repeat_source (repeat_source_id),
     index idx_user_urgency (user_id, urgency_level),
     index idx_user_completed_time (user_id, completion_time),
     index idx_user_tag (user_id, tag_id),
     index idx_user_archived (user_id, archived, completed),
+    index idx_archived_completion (archived, completed, completion_time),
     index idx_user_remind (remind_at, deleted),
     index idx_user_seq (user_id, seq),
     unique key uk_user_client (user_id, client_id),
@@ -79,6 +83,7 @@ create table t_todo_tag (
     update_by   varchar(64) default '' comment '更新者（同上）',
     create_time datetime    default current_timestamp comment '创建时间',
     update_time datetime    default current_timestamp on update current_timestamp comment '更新时间',
+    deleted tinyint default 0 comment '是否删除',
     index idx_user (user_id),
     index idx_name (tag_name),
     constraint fk_tag_user foreign key (user_id) references t_user (u_id) on delete cascade
@@ -215,18 +220,38 @@ create table if not exists t_todo_focus_session (
     index idx_user_start (user_id, start_time)
 ) engine = innodb default charset = utf8mb4 comment = '番茄专注记录';
 
--- 清单模板
+-- 清单模板（模板是全局数据，不区分用户）
 create table if not exists t_todo_task_template (
     template_id bigint       primary key auto_increment,
     code        varchar(32)  not null unique comment '模板编码',
-    name        varchar(64)  not null,
-    icon        varchar(32)  default '',
-    description varchar(255) default '',
+    name        varchar(64)  not null comment '模板名，套用后即为新清单名',
+    icon        varchar(32)  default '' comment '图标名（对应前端 y-icon 的 name）',
+    description varchar(255) default '' comment '模板简介',
+    category    varchar(16)  default '' comment '分类（生活/工作/阅读）',
     items       json         default null comment '预置任务数组 [{title,priority}]',
     sort_no     int          default 0,
-    status      tinyint      default 1,
+    status      tinyint      default 1 comment '0-下架 1-上架',
     create_time datetime     default current_timestamp
 ) engine = innodb default charset = utf8mb4 comment = '清单模板';
+
+-- 模板种子数据（重复执行会按 code 覆盖内容，方便改了文案直接重跑）
+insert into t_todo_task_template (code, name, icon, description, category, items, sort_no, status) values
+('morning', '晨间计划', 'sun', '喝水、拉伸、写下今天最重要的一件事', '生活',
+ '[{"title":"喝一杯温水","priority":1},{"title":"拉伸五分钟","priority":1},{"title":"写下今天最重要的一件事","priority":2},{"title":"想清楚今天必须完成的三件事","priority":1},{"title":"出门前检查随身物品","priority":1}]', 1, 1),
+('travel', '旅行准备', 'briefcase', '证件、衣物、充电设备，出发前逐项确认', '生活',
+ '[{"title":"确认身份证与车票机票","priority":2},{"title":"换洗衣物按天数清点","priority":1},{"title":"充电器与充电宝","priority":2},{"title":"洗漱用品分装","priority":1},{"title":"常用药品","priority":1},{"title":"雨具与防晒","priority":1},{"title":"关好门窗水电","priority":2},{"title":"把行程同步给家人","priority":1}]', 2, 1),
+('review', '周复盘', 'chart', '回看本周完成的事，列出下周三个重点', '工作',
+ '[{"title":"回看本周完成的任务","priority":1},{"title":"记录本周最有价值的一件事","priority":1},{"title":"列出下周三个重点","priority":2},{"title":"安排下周的时间块","priority":1}]', 3, 1),
+('reading', '读书笔记', 'book', '摘抄、感受、可以马上用起来的一句话', '阅读',
+ '[{"title":"摘抄三句打动我的话","priority":1},{"title":"写下读到这里的一点感受","priority":1},{"title":"记下一条可以马上用起来的做法","priority":2}]', 4, 1)
+on duplicate key update
+    name = values(name),
+    icon = values(icon),
+    description = values(description),
+    category = values(category),
+    items = values(items),
+    sort_no = values(sort_no),
+    status = values(status);
 
 -- 反馈工单（替代客服消息）
 create table if not exists t_todo_feedback (

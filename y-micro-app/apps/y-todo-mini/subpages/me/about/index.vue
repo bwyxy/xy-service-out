@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+import { MINI_VERSION } from '@/utils/appearance.js'
 
 	/**
 	 * 我的 · 关于忆
@@ -9,24 +11,31 @@
 	 */
 
 /** 版本号 */
-const version = 'v1.0.0'
+const version = computed(() => {
+	return uni.getStorageSync(MINI_VERSION) || '1.0.0'
+})
 
-/** 关于信息（暂用本地数据） */
+/** 关于信息 */
 const items = [
-	{ key: 'update', label: '检查更新', value: `已是最新版本 ${version}` },
+	{ key: 'update', label: '检查更新', value: `已是最新版本 ${version.value}` },
 	{ key: 'terms', label: '用户协议', value: '' },
-	{ key: 'privacy', label: '隐私政策', value: '' },
-	{ key: 'license', label: '开源许可', value: '' }
+	{ key: 'privacy', label: '隐私政策', value: '' }
 ]
 
-/** 打开条目（待接入） */
-function openItem(label) {
-	uni.showToast({ title: `${label}（待开发）`, icon: 'none' })
+/** 打开条目：协议跳协议页对应分页，检查更新只提示当前版本 */
+function openItem(item) {
+	if (item.key === 'privacy' || item.key === 'terms') {
+		uni.navigateTo({ url: `/subpages/me/agreement/index?tab=${item.key}` })
+
+		return
+	}
+
+	uni.showToast({ title: `当前已是最新版本 ${version.value}`, icon: 'none' })
 }
 </script>
 
 <template>
-	<sub-page title="关于忆" subtitle="让每一件小事，都被记住。">
+	<sub-page title="关于忆待办" subtitle="让每一件小事，都被记住。">
 		<view class="brand">
 			<view class="brand__logo">
 				<image class="brand__image" src="/static/top_icon.png" mode="aspectFit" />
@@ -38,12 +47,12 @@ function openItem(label) {
 
 		<view class="intro">
 			<text class="intro__text">
-				忆是一款安静的待办小工具：把要做的事写下来，一件一件慢慢做完，回头看时，日子是有痕迹的。
+				忆待办是一款安静的待办小工具：把要做的事写下来，一件一件慢慢做完，回头看时，日子是有痕迹的。
 			</text>
 		</view>
 
 		<view class="group">
-			<view v-for="item in items" :key="item.key" class="row" @click="openItem(item.label)">
+			<view v-for="item in items" :key="item.key" class="row" @click="openItem(item)">
 				<text class="row__label">{{ item.label }}</text>
 				<text v-if="item.value" class="row__value">{{ item.value }}</text>
 				<y-icon name="chevron-right" size="30rpx" color="#c2c2b9" />
@@ -83,14 +92,14 @@ function openItem(label) {
 
 .brand__name {
 	margin-top: 28rpx;
-	font-size: 36rpx;
+	font-size: calc(36rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .brand__version {
 	margin-top: 12rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
@@ -103,7 +112,7 @@ function openItem(label) {
 }
 
 .intro__text {
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	line-height: 44rpx;
 	color: $y-text-sub;
 }
@@ -128,13 +137,13 @@ function openItem(label) {
 
 .row__label {
 	flex: 1;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
 .row__value {
 	margin-right: 12rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
@@ -147,13 +156,13 @@ function openItem(label) {
 }
 
 .foot__brand {
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
 .foot__copy {
 	margin-top: 12rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 </style>

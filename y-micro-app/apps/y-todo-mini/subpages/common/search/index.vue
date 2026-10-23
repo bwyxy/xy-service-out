@@ -1,14 +1,26 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onReachBottom, onShow } from '@dcloudio/uni-app'
+
+import { listTasks } from '@/api/task'
+import { listTags } from '@/api/tag'
+import { isLoggedIn } from '@/utils/session'
+import { formatDueLabel, toTimestamp } from '@/utils/date'
 
 	/**
 	 * 通用 · 搜索
 	 *
 	 * 路由：subpages/common/search/index（分包 subpages/common，按需加载）
-	 * 职责：搜索页，找找记下的那些事——按范围筛选并展示搜索结果、空态与联想词。
-	 * 目录：状态（keyword、activeFilter、results）→ 方法（clearKeyword、applySuggestion、handleCancel）→ 样式（.search-page、.search、.segment、.empty、.tip）
+	 * 职责：搜索所有清单里的任务与备注——输入关键词回车搜索，按状态筛选，结果按页累积。
+	 * 数据：复用 POST /task/list（不传 tagId 即跨清单，keyword 由后端按标题与备注模糊匹配），
+	 *       所以这里不额外开搜索接口，排序与分页行为也和列表页完全一致。
+	 * 目录：状态（keyword、activeFilter、results、total、pageNum、hasMore、loading、searched、tagNames）
+	 *       → 方法（onSearch、resetResults、loadTags、toResultItem、loadResults、selectFilter、clearKeyword、applySuggestion、handleCancel）
+	 *       → 样式（.search-page、.search、.segment、.result、.empty、.tip）
 	 */
+
+/** 任务列表每页条数 */
+const PAGE_SIZE = 20
 
 /** 搜索范围筛选 */
 const filters = [
@@ -20,29 +32,201 @@ const filters = [
 /** 关键词联想词 */
 const SUGGESTIONS = ['旅行', '计划']
 
+/** 标记图标 */
+const FLAG_SRC = {
+	important: '/static/task_important.png',
+	ordinary: '/static/task_ordinary.png'
+}
+
+/** 后端 priority → 小旗子 */
+const FLAG_BY_PRIORITY = {
+	1: 'ordinary',
+	2: 'important'
+}
+
 /** 状态栏高度，用于自定义导航栏留白 */
 const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
 
 /** 搜索关键词 */
-const keyword = ref('旅行计划')
+const keyword = ref('')
 
 /** 当前筛选 */
 const activeFilter = ref('all')
 
-/** 搜索结果（暂为空，后续接入接口） */
+/** 搜索结果（按页累积） */
 const results = ref([])
 
-/** 结果条数文案 */
-const resultText = computed(() => `共 ${results.value.length} 条`)
+/** 命中总数（后端返回，分页后本地数不出来） */
+const total = ref(0)
 
-/** 清空关键词 */
-function clearKeyword() {
-	keyword.value = ''
+/** 已加载到的页码 */
+const pageNum = ref(1)
+
+/** 是否还有下一页 */
+const hasMore = ref(false)
+
+/** 加载中标记，挡住上拉时连续触发的重复请求 */
+const loading = ref(false)
+
+/** 是否已经搜过一次：没搜过就整块不显示，免得出现「没有找到「」」 */
+const searched = ref(false)
+
+/** 清单 Id → 清单名，结果行上标出所属清单用 */
+const tagNames = ref({})
+
+/** 清单只拉一次；它只是装饰，不为它去弹登录 */
+let tagsLoaded = false
+
+/** 请求序号：连续改关键词时用来丢弃先发后到的过期响应 */
+let requestSeq = 0
+
+/** 结果条数文案 */
+const resultText = computed(() => `共 ${total.value} 条`)
+
+/** 列表页脚文案：还有下一页时提示上拉 */
+const footText = computed(() => {
+	if (!hasMore.value) {
+		return '没有更多了'
+	}
+
+	return loading.value ? '正在加载…' : '上拉加载更多'
+})
+
+/** 关键词为空就回到「还没搜」的状态，不拿空词去扫全表 */
+function onSearch() {
+	if (!keyword.value.trim()) {
+		resetResults()
+
+		return
+	}
+
+	searched.value = true
+	loadResults()
 }
 
-/** 使用联想词重新搜索 */
+/** 清空结果并复位分页 */
+function resetResults() {
+	requestSeq += 1
+	searched.value = false
+	results.value = []
+	total.value = 0
+	pageNum.value = 1
+	hasMore.value = false
+	loading.value = false
+}
+
+/** 拉取清单名（未登录时列表接口本来会拉起登录，这里不额外触发） */
+async function loadTags() {
+	if (tagsLoaded || !isLoggedIn()) {
+		return
+	}
+
+	tagsLoaded = true
+
+	const res = await listTags()
+
+	if (res.code !== 200 || !Array.isArray(res.data)) {
+		return
+	}
+
+	const map = {}
+
+	res.data.forEach((item) => {
+		map[item.tagId] = item.tagName
+	})
+
+	tagNames.value = map
+}
+
+/** 后端任务 → 结果行 */
+function toResultItem(item) {
+	return {
+		id: item.taskId,
+		title: item.title,
+		description: item.description,
+		tagId: item.tagId,
+		priority: item.priority,
+		dueTime: toTimestamp(item.dueDate),
+		done: item.completed === 1
+	}
+}
+
+/**
+ * 拉取搜索结果
+ *
+ * @param {boolean} [reset] true-从第 1 页覆盖结果；false-追加下一页（上拉加载）
+ */
+async function loadResults(reset = true) {
+	const kw = keyword.value.trim()
+
+	if (!kw || (!reset && loading.value)) {
+		return
+	}
+
+	const nextPage = reset ? 1 : pageNum.value + 1
+	const seq = (requestSeq += 1)
+
+	loading.value = true
+
+	try {
+		// 装饰性的清单名，晚一点到无所谓，不 await
+		loadTags()
+
+		// 失败提示已由 request 统一 toast；未登录时它也会先拉起登录再重放这次请求
+		const res = await listTasks({
+			status: activeFilter.value,
+			keyword: kw,
+			pageNum: nextPage,
+			pageSize: PAGE_SIZE
+		})
+
+		// 期间又改了关键词或筛选，这一页已是旧数据，直接丢弃
+		if (seq !== requestSeq || res.code !== 200 || !res.data) {
+			return
+		}
+
+		const page = res.data
+		const list = Array.isArray(page.list) ? page.list.map(toResultItem) : []
+
+		results.value = reset ? list : results.value.concat(list)
+		total.value = Number(page.total) || 0
+		pageNum.value = Number(page.pageNum) || nextPage
+		hasMore.value = Boolean(page.hasMore)
+	} finally {
+		if (seq === requestSeq) {
+			loading.value = false
+		}
+	}
+}
+
+/** 切换「全部/待完成/已完成」：搜过就重搜，没搜过只记住选择 */
+function selectFilter(key) {
+	if (key === activeFilter.value) {
+		return
+	}
+
+	activeFilter.value = key
+
+	if (searched.value) {
+		loadResults()
+	}
+}
+
+/** 打开任务详情：搜索结果点行进详情 */
+function enterDetail(item) {
+	uni.navigateTo({ url: `/subpages/common/detail/index?taskId=${item.id}` })
+}
+
+/** 清空关键词（同时收起结果） */
+function clearKeyword() {
+	keyword.value = ''
+	resetResults()
+}
+
+/** 点联想词：填进输入框并直接搜 */
 function applySuggestion(word) {
 	keyword.value = word
+	onSearch()
 }
 
 /** 取消并返回 */
@@ -55,22 +239,24 @@ function handleCancel() {
 	uni.switchTab({ url: '/pages/list/index' })
 }
 
-/** 隐藏原生 tabBar，改用自定义导航栏 */
-onShow(() => {
-	uni.hideTabBar()
+/** 上拉到底：还有下一页就追加加载 */
+onReachBottom(() => {
+	if (hasMore.value) {
+		loadResults(false)
+	}
 })
 </script>
 
 <template>
-	<view class="search-page">
-		<view :style="{ height: statusBarHeight + 'px' }" />
+	<sub-page title="搜索" subtitle="搜索所有清单里的任务与备注。">
+		<!-- <view :style="{ height: statusBarHeight + 'px' }" /> -->
 
-		<brand-header />
+		<!-- <brand-header /> -->
 
-		<view class="search-page__hero">
+		<!-- <view class="search-page__hero">
 			<text class="search-page__title">找找，记下的那些事</text>
 			<text class="search-page__subtitle">搜索所有清单里的任务与备注。</text>
-		</view>
+		</view> -->
 
 		<view class="search">
 			<view class="search__field">
@@ -84,6 +270,7 @@ onShow(() => {
 					confirm-type="search"
 					placeholder="搜索任务、备注"
 					placeholder-style="color:#a9a9a0;font-size:26rpx"
+					@confirm="onSearch"
 				/>
 				<view v-if="keyword" class="search__clear" @click="clearKeyword">
 					<y-icon name="close-circle" size="34rpx" color="#ccd1c4" />
@@ -98,19 +285,45 @@ onShow(() => {
 				:key="item.key"
 				class="segment__item"
 				:class="{ 'segment__item--active': activeFilter === item.key }"
-				@click="activeFilter = item.key"
+				@click="selectFilter(item.key)"
 			>
 				<text class="segment__label">{{ item.label }}</text>
 			</view>
 		</view>
 
-		<view class="section">
+		<view v-if="searched" class="section">
 			<view class="section__head">
 				<text class="section__title">搜索结果</text>
 				<text class="section__count">{{ resultText }}</text>
 			</view>
 
-			<view v-if="!results.length" class="empty">
+			<view v-if="results.length" class="result-list">
+				<view v-for="item in results" :key="item.id" class="result" @click="enterDetail(item)">
+					<view class="result__main">
+						<text class="result__title" :class="{ 'result__title--done': item.done }">{{ item.title }}</text>
+
+						<view class="result__meta">
+							<text v-if="tagNames[item.tagId]" class="result__tag">{{ tagNames[item.tagId] }}</text>
+							<text class="result__due">{{ formatDueLabel(item.dueTime, item.done) }}</text>
+						</view>
+
+						<text v-if="item.description" class="result__desc">{{ item.description }}</text>
+					</view>
+
+					<image
+						v-if="FLAG_BY_PRIORITY[item.priority]"
+						class="result__flag"
+						:src="FLAG_SRC[FLAG_BY_PRIORITY[item.priority]]"
+						mode="aspectFit"
+					/>
+				</view>
+
+				<view class="result-foot">
+					<text class="result-foot__text">{{ footText }}</text>
+				</view>
+			</view>
+
+			<view v-else class="empty">
 				<view class="art">
 					<view class="art__glow" />
 
@@ -158,9 +371,7 @@ onShow(() => {
 				</view>
 			</view>
 		</view>
-
-		<custom-tabbar active="pages/list/index" />
-	</view>
+	</sub-page>
 </template>
 
 <style scoped lang="scss">
@@ -179,7 +390,7 @@ onShow(() => {
 }
 
 .search-page__title {
-	font-size: 52rpx;
+	font-size: calc(52rpx * var(--y-font-scale, 1));
 	font-weight: 700;
 	letter-spacing: 2rpx;
 	color: $y-text-main;
@@ -187,7 +398,7 @@ onShow(() => {
 
 .search-page__subtitle {
 	margin-top: 16rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -206,7 +417,7 @@ onShow(() => {
 	padding: 0 24rpx;
 	box-sizing: border-box;
 	border-radius: 20rpx;
-	border: 2rpx solid #e6e6de;
+	border: 2rpx solid $y-divider;
 	background-color: $y-card-bg;
 }
 
@@ -220,7 +431,7 @@ onShow(() => {
 .search__input {
 	flex: 1;
 	height: 84rpx;
-	font-size: 28rpx;
+	font-size: calc(28rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
@@ -235,7 +446,7 @@ onShow(() => {
 .search__cancel {
 	flex-shrink: 0;
 	margin-left: 24rpx;
-	font-size: 28rpx;
+	font-size: calc(28rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
@@ -245,7 +456,7 @@ onShow(() => {
 	margin-top: 28rpx;
 	padding: 6rpx;
 	border-radius: 18rpx;
-	background-color: #edede6;
+	background-color: $y-sunken-bg;
 }
 
 .segment__item {
@@ -262,7 +473,7 @@ onShow(() => {
 }
 
 .segment__label {
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -283,13 +494,13 @@ onShow(() => {
 }
 
 .section__title {
-	font-size: 32rpx;
+	font-size: calc(32rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .section__count {
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
@@ -378,14 +589,14 @@ onShow(() => {
 
 .empty__title {
 	margin-top: 28rpx;
-	font-size: 34rpx;
+	font-size: calc(34rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .empty__desc {
 	margin-top: 14rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -402,14 +613,90 @@ onShow(() => {
 
 .empty__button-icon {
 	margin-right: 10rpx;
-	font-size: 32rpx;
+	font-size: calc(32rpx * var(--y-font-scale, 1));
 	line-height: 1;
 	color: #ffffff;
 }
 
 .empty__button-text {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: #ffffff;
+}
+
+/* 搜索结果列表 */
+.result-list {
+	margin-top: 12rpx;
+}
+
+.result {
+	display: flex;
+	align-items: flex-start;
+	padding: 32rpx 0;
+	border-bottom: 2rpx solid $y-divider;
+}
+
+.result__main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.result__title {
+	font-size: calc(30rpx * var(--y-font-scale, 1));
+	color: $y-text-main;
+}
+
+.result__title--done {
+	color: $y-text-muted;
+}
+
+.result__meta {
+	display: flex;
+	align-items: center;
+	margin-top: 14rpx;
+}
+
+.result__tag {
+	margin-right: 16rpx;
+	padding: 4rpx 16rpx;
+	border-radius: 999rpx;
+	background-color: $y-sunken-bg;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
+	color: $y-text-sub;
+}
+
+.result__due {
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-text-muted;
+}
+
+.result__desc {
+	margin-top: 12rpx;
+	font-size: calc(25rpx * var(--y-font-scale, 1));
+	line-height: 1.5;
+	color: $y-text-sub;
+}
+
+.result__flag {
+	flex-shrink: 0;
+	width: 36rpx;
+	height: 36rpx;
+	margin-top: 4rpx;
+	margin-left: 20rpx;
+}
+
+/* 分页页脚 */
+.result-foot {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 32rpx 0 8rpx;
+}
+
+.result-foot__text {
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-text-muted;
 }
 
 /* 搜索建议 */
@@ -433,7 +720,7 @@ onShow(() => {
 }
 
 .tip__title {
-	font-size: 28rpx;
+	font-size: calc(28rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -441,8 +728,8 @@ onShow(() => {
 .tip__desc {
 	display: block;
 	margin-top: 18rpx;
-	font-size: 25rpx;
-	color: #5c6b52;
+	font-size: calc(25rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 .tip__row {
@@ -452,17 +739,17 @@ onShow(() => {
 }
 
 .tip__hint {
-	font-size: 24rpx;
-	color: #5c6b52;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 .tip__chip {
 	margin-left: 16rpx;
 	padding: 8rpx 22rpx;
 	border-radius: 12rpx;
-	border: 2rpx solid #dbe4d0;
+	border: 2rpx solid $y-green-border;
 	background-color: #f2f6ec;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-green-primary;
 }
 </style>

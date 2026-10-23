@@ -4,8 +4,12 @@
  *
  * 统一「状态栏留白 + 返回顶栏 + 标题区 + 内容插槽」结构，
  * 各子页面只需传入 title / subtitle 并填充默认插槽。
+ * 状态栏留白与顶栏滚动时吸顶，标题区随内容滚走。
  * 需要固定底部操作栏时，填充 footer 插槽并开启 fixedFooter。
+ * 主题与字号类挂在最外层，子页面内的组件靠继承自动跟随主题。
  */
+import { themeClass } from '@/utils/appearance'
+
 const props = defineProps({
 	/** 页面主标题 */
 	title: { type: String, default: '' },
@@ -36,15 +40,17 @@ function handlePlaceholder(label) {
 </script>
 
 <template>
-	<view class="sub-page" :class="{ 'sub-page--fixed-footer': fixedFooter }">
-		<view :style="{ height: statusBarHeight + 'px' }" />
+	<view class="sub-page" :class="[themeClass, { 'sub-page--fixed-footer': fixedFooter }]">
+		<view class="sub-page__top">
+			<view :style="{ height: statusBarHeight + 'px' }" />
 
-		<brand-header
-			show-back
-			@back="handleBack"
-			@more="handlePlaceholder('更多菜单')"
-			@theme="handlePlaceholder('主题切换')"
-		/>
+			<brand-header
+				show-back
+				@back="handleBack"
+				@more="handlePlaceholder('更多菜单')"
+				@theme="handlePlaceholder('主题切换')"
+			/>
+		</view>
 
 		<view class="sub-page__hero">
 			<text class="sub-page__title">{{ title }}</text>
@@ -56,6 +62,7 @@ function handlePlaceholder(label) {
 		<slot name="footer" />
 
 		<login-sheet />
+		<privacy-sheet />
 	</view>
 </template>
 
@@ -71,6 +78,19 @@ function handlePlaceholder(label) {
 	padding-bottom: 240rpx;
 }
 
+/*
+ * 顶栏吸顶
+ *
+ * 状态栏留白与品牌顶栏一起钉在页面顶部：页面内容滚到下方时仍能返回和切换主题，
+ * 背景用页面底色铺满，避免下方内容从顶栏透出来。
+ */
+.sub-page__top {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background-color: $y-page-bg;
+}
+
 /* 标题 */
 .sub-page__hero {
 	display: flex;
@@ -79,7 +99,7 @@ function handlePlaceholder(label) {
 }
 
 .sub-page__title {
-	font-size: 52rpx;
+	font-size: calc(52rpx * var(--y-font-scale, 1));
 	font-weight: 700;
 	letter-spacing: 2rpx;
 	color: $y-text-main;
@@ -87,7 +107,7 @@ function handlePlaceholder(label) {
 
 .sub-page__subtitle {
 	margin-top: 16rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 </style>

@@ -1,21 +1,20 @@
 package com.xy.common.entity.todo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
- * 一次性订阅授权额度池表 t_todo_subscribe_quota（一次授权 = 一条消息）
+ * 订阅消息授权额度表 t_todo_subscribe_quota（一次性订阅：授权一次 = 可下发一条）
  *
- * <p>主键为 user_id + template_id 复合主键，MyBatis-Plus 的 byId 方法不适用，请用条件构造器查询。</p>
+ * <p>业务主键是 (user_id, template_id) 复合键，而 MyBatis-Plus 只支持单主键，
+ * 所以这里仅把 user_id 声明成逻辑主键，实际读写全部走 NotifyQuotaMapper 的手写 SQL。</p>
  * */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @TableName("t_todo_subscribe_quota")
 public class TodoSubscribeQuota implements Serializable {
 
@@ -25,6 +24,7 @@ public class TodoSubscribeQuota implements Serializable {
     /**
      * 用户 Id t_user.u_id
      * */
+    @TableId(value = "user_id", type = IdType.INPUT)
     private Long userId;
 
     /**
@@ -41,10 +41,4 @@ public class TodoSubscribeQuota implements Serializable {
      * 累计获得授权次数
      * */
     private Integer total;
-
-    /**
-     * 更新时间
-     * */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateTime;
 }

@@ -1,18 +1,53 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { user, initSession, requireLogin } from '@/utils/session'
+import { getTaskStats } from '@/api/task'
+import { user, isLoggedIn, initSession, requireLogin } from '@/utils/session'
+import { appearance, themeClass, MINI_VERSION } from '@/utils/appearance'
 
 	/**
-	 * 我的 · 我的
-	 *
-	 * 路由：pages/me/index（主包）
-	 * 职责：我的 tab 主页，照顾好每一个自己——展示用户卡、统计与设置分组；默认不登录，点击用户卡拉起登录半弹框。
-	 * 目录：状态（statusBarHeight、profile、stats、settings）→ 方法（openSetting、handleHeader、handleProfile）→ 样式（.me、.profile、.stats、.section、.row）
-	 */
+ * 我的 · 我的
+ *
+ * 路由：pages/me/index（主包）
+ * 职责：我的 tab 主页，照顾好每一个自己——展示用户卡、统计与设置分组；默认不登录，点击用户卡拉起登录半弹框。
+ * 数据：统计走 GET /task/stats（累计完成 / 连续记录天数 / 清单数），未登录时不请求，只显示占位符。
+ * 目录：状态（statusBarHeight、summary、profile、stats、settings）→ 方法（refreshStats、openSetting、handleHeader、handleProfile）→ 样式（.me、.profile、.stats、.section、.row）
+ */
+
+const version = computed(() => {
+	return uni.getStorageSync(MINI_VERSION) || '1.0.0'
+})
 
 /** 状态栏高度，用于自定义导航栏留白 */
 const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0
+
+/** 统计原始值：null 表示还没拿到（未登录或请求未回来），展示成占位符 */
+const summary = ref({ doneTotal: null, streakDays: null, tagCount: null })
+
+/** 没有数字时显示占位符，别把「未登录」显示成 0 完成 */
+function showNumber(value) {
+	return value == null ? '—' : value
+}
+
+/** 统计：三项都来自 GET /task/stats */
+const stats = computed(() => [
+	{ value: showNumber(summary.value.doneTotal), label: '累计完成' },
+	{ value: showNumber(summary.value.streakDays), label: '连续记录 / 天' },
+	{ value: showNumber(summary.value.tagCount), label: '我的清单' }
+])
+
+/** 拉统计数据：未登录不发请求，免得一进「我的」就被拉起登录半弹框 */
+async function refreshStats() {
+	if (!isLoggedIn()) {
+		return
+	}
+
+	const res = await getTaskStats()
+
+	if (res.code === 200 && res.data) {
+		summary.value = res.data
+	}
+}
 
 /** 用户卡展示信息：昵称与头像取自登录态，未登录时给出引导文案 */
 const profile = computed(() => ({
@@ -21,26 +56,33 @@ const profile = computed(() => ({
 	avatar: user.avatar
 }))
 
-/** 统计（暂用本地数据） */
-const stats = [
-	{ value: 128, label: '累计完成' },
-	{ value: 12, label: '连续记录 / 天' },
-	{ value: 4, label: '我的清单' }
-]
+/** 进入清单管理（新建 / 改名换图标 / 删除） */
+function manageTags() {
+	uni.navigateTo({ url: '/subpages/common/tag/index' })
+}
 
-/** 设置项分组 */
-const settings = [
+/** 外观与显示的现值摘要：主题 + 字号 */
+const appearanceLabel = computed(() => {
+	const themeLabel = { system: '跟随系统', light: '浅色', dark: '深色' }[appearance.theme]
+	const sizeLabel = { small: '小字', normal: '标准字号', large: '大字' }[appearance.fontSize]
+
+	return `${themeLabel || '跟随系统'} · ${sizeLabel || '标准字号'}`
+})
+
+/** 设置项分组：外观与显示那行的值跟着实际设置走 */
+const settings = computed(() => [
 	[
+		{ key: 'list', label: '清单列表', value: '', path: '/subpages/common/tag/index' },
 		{ key: 'bell', label: '提醒设置', value: '已开启', path: '/subpages/me/reminder/index' },
-		{ key: 'contrast', label: '外观与显示', value: '跟随系统', path: '/subpages/me/appearance/index' },
-		{ key: 'refresh', label: '数据同步与备份', value: '已同步', path: '/subpages/me/sync/index' }
+		{ key: 'contrast', label: '外观与显示', value: appearanceLabel.value, path: '/subpages/me/appearance/index' },
+		// { key: 'refresh', label: '数据同步与备份', value: '已同步', path: '/subpages/me/sync/index' }
 	],
 	[
 		{ key: 'archive', label: '已完成与归档', value: '', path: '/subpages/me/archive/index' },
 		{ key: 'help', label: '帮助与反馈', value: '', path: '/subpages/me/help/index' },
-		{ key: 'info', label: '关于忆待办', value: 'v1.0.0', path: '/subpages/me/about/index' }
+		{ key: 'info', label: '关于忆待办', value: `v${version.value}`, path: '/subpages/me/about/index' }
 	]
-]
+])
 
 /** 打开设置项 */
 function openSetting(item) {
@@ -61,8 +103,8 @@ function handleHeader(label) {
 /** 点击用户卡：未登录先拉起登录半弹框，已登录进入个人资料 */
 function handleProfile() {
 	if (!user.logged) {
-		// 用户取消登录不额外提示，弹框自身已给反馈
-		requireLogin().catch(() => {})
+		// 用户取消登录不额外提示，弹框自身已给反馈；登录成功后把统计补上
+		requireLogin().then(refreshStats).catch(() => {})
 
 		return
 	}
@@ -70,18 +112,20 @@ function handleProfile() {
 	uni.navigateTo({ url: '/subpages/me/profile/index' })
 }
 
-/** 隐藏原生 tabBar，改用自定义导航栏；启动时若本地已有 token，静默恢复登录态 */
+/** 隐藏原生 tabBar，改用自定义导航栏；启动时若本地已有 token，静默恢复登录态并拉统计 */
 onShow(() => {
 	uni.hideTabBar()
-	initSession()
+	initSession().then(refreshStats)
 })
 </script>
 
 <template>
-	<view class="me">
-		<view :style="{ height: statusBarHeight + 'px' }" />
+	<view class="me" :class="themeClass">
+		<view class="me__top">
+			<view :style="{ height: statusBarHeight + 'px' }" />
 
-		<brand-header @more="handleHeader('更多菜单')" @theme="handleHeader('主题切换')" />
+			<brand-header @more="handleHeader('更多菜单')" @theme="handleHeader('主题切换')" />
+		</view>
 
 		<view class="me__hero">
 			<text class="me__title">照顾好，每一个自己</text>
@@ -140,6 +184,7 @@ onShow(() => {
 		<custom-tabbar active="pages/me/index" />
 
 		<login-sheet />
+		<privacy-sheet />
 	</view>
 </template>
 
@@ -151,6 +196,14 @@ onShow(() => {
 	box-sizing: border-box;
 }
 
+/* 顶栏吸顶：状态栏留白与品牌顶栏一起钉在页面顶部，背景铺页面底色避免内容透出 */
+.me__top {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background-color: $y-page-bg;
+}
+
 /* 标题 */
 .me__hero {
 	display: flex;
@@ -159,7 +212,7 @@ onShow(() => {
 }
 
 .me__title {
-	font-size: 52rpx;
+	font-size: calc(52rpx * var(--y-font-scale, 1));
 	font-weight: 700;
 	letter-spacing: 2rpx;
 	color: $y-text-main;
@@ -167,7 +220,7 @@ onShow(() => {
 
 .me__subtitle {
 	margin-top: 16rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -189,7 +242,7 @@ onShow(() => {
 	height: 108rpx;
 	margin-right: 24rpx;
 	border-radius: 50%;
-	background-color: rgba(255, 255, 255, 0.72);
+	background-color: $y-glass-bg;
 	overflow: hidden;
 }
 
@@ -205,15 +258,15 @@ onShow(() => {
 }
 
 .profile__name {
-	font-size: 36rpx;
+	font-size: calc(36rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .profile__desc {
 	margin-top: 12rpx;
-	font-size: 24rpx;
-	color: #6f8064;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 /* 统计 */
@@ -233,20 +286,20 @@ onShow(() => {
 	align-items: center;
 
 	& + & {
-		border-left: 2rpx solid #d3ddc6;
+		border-left: 2rpx solid $y-green-border;
 	}
 }
 
 .stats__value {
-	font-size: 48rpx;
+	font-size: calc(48rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .stats__label {
 	margin-top: 10rpx;
-	font-size: 22rpx;
-	color: #6f8064;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 /* 设置 */
@@ -255,7 +308,7 @@ onShow(() => {
 }
 
 .section__title {
-	font-size: 32rpx;
+	font-size: calc(32rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -280,13 +333,13 @@ onShow(() => {
 .row__label {
 	flex: 1;
 	margin-left: 24rpx;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
 .row__value {
 	margin-right: 12rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
@@ -299,13 +352,13 @@ onShow(() => {
 }
 
 .me__foot-text {
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
 .me__foot-brand {
 	margin-top: 12rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 </style>

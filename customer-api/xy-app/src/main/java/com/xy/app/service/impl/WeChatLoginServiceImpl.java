@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xy.app.pojo.vo.WeChatLoginVo;
 import com.xy.app.response.WechatSessionResponse;
 import com.xy.app.security.TodoUserDetails;
+import com.xy.app.service.ITagService;
 import com.xy.app.service.IWeChatLoginService;
 import com.xy.common.entity.User;
 import com.xy.common.provider.JwtTokenProvider;
@@ -31,6 +32,8 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
 
     private final IChatUserService chatUserService;
 
+    private final ITagService tagService;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -47,6 +50,9 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         if (user == null) {
             user = chatUserService.registerByOpenId(openid);
         }
+
+        // 首次登录给他自己的默认清单（幂等，已有默认清单则跳过）
+        tagService.initDefaultTags(user.getUId());
 
         String token = jwtTokenProvider.createWeChatToken(TodoUserDetails.toUsername(user.getUId()));
 

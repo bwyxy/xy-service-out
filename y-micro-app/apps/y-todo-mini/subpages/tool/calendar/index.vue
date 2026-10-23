@@ -1,32 +1,28 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+
+import { completeTask, getMonthTasks, listTasks } from '@/api/task'
+import { formatClock, pad2, toTimestamp, weekdayChar } from '@/utils/date'
 
 	/**
 	 * 工具 · 日历视图
 	 *
 	 * 路由：subpages/tool/calendar/index（分包 subpages/tool，按需加载）
 	 * 职责：日历视图页，按日期安排每一件事——月历网格、月份切换与选中日任务。
-	 * 目录：状态（viewYear、viewMonth、selectedDay、cells）→ 方法（changeMonth、selectDay、addTask）→ 样式（.card、.month、.grid、.task）
+	 * 数据：点阵与「本月有 N 天」来自 POST /task/month（只算未归档任务），
+	 *       选中日的任务来自 POST /task/list 的 date 参数（同为未归档口径）。
+	 * 目录：状态（viewYear、viewMonth、selectedDay、dayCountMap、dayTasks）
+	 *       → 计算（monthLabel、todayDay、cells、selectedLabel、busyDays）
+	 *       → 方法（loadMonth、loadDay、changeMonth、selectDay、toggleTask、addTask）
+	 *       → 样式（.card、.month、.grid、.task）
 	 */
 
 /** 周标签，索引 0 为周一 */
 const WEEK_LABELS = ['一', '二', '三', '四', '五', '六', '日']
 
-/** 各日期的任务（暂用本地数据，后续接入接口） */
-const MOCK_TASKS = {
-	'10-3': [{ id: 1, title: '整理季度总结提纲', time: '09:30' }],
-	'10-8': [
-		{ id: 2, title: '和设计团队对齐首页方案', time: '14:00' },
-		{ id: 3, title: '去超市买晚餐食材', time: '18:30' }
-	],
-	'10-12': [{ id: 4, title: '预约周末体检', time: '10:00' }],
-	'10-18': [{ id: 5, title: '读《也许你该找个人聊聊》', time: '21:00' }],
-	'10-22': [
-		{ id: 6, title: '整理产品改版思路', time: '10:00' },
-		{ id: 7, title: '汇总本周用户反馈', time: '15:30' },
-		{ id: 8, title: '晨间拉伸 15 分钟', time: '08:15', done: true }
-	]
-}
+/** 选中日的任务一次拉满：一天的任务量级很小，不做分页 */
+const DAY_PAGE_SIZE = 100
 
 const now = new Date()
 
@@ -37,8 +33,29 @@ const viewMonth = ref(now.getMonth() + 1)
 /** 当前选中的日 */
 const selectedDay = ref(now.getDate())
 
+/** 本月每天的到期任务数，键为 yyyy-MM-dd；没有任务的日期不在表里 */
+const dayCountMap = ref({})
+
+/** 本月有安排的天数（后端算好，前端不重复数一遍） */
+const busyDays = ref(0)
+
+/** 选中日的任务 */
+const dayTasks = ref([])
+
+/** 正在提交完成状态的任务 Id，挡住连点 */
+const togglingIds = ref([])
+
+/** 请求序号：切月份/切日期很快时，用来丢弃过期响应 */
+let monthSeq = 0
+let daySeq = 0
+
 /** 年月标题 */
 const monthLabel = computed(() => `${viewYear.value}年${viewMonth.value}月`)
+
+/** 选中日期 key，格式 yyyy-MM-dd（后端 LocalDate 直接解析） */
+const selectedKey = computed(() =>
+	`${viewYear.value}-${pad2(viewMonth.value)}-${pad2(selectedDay.value)}`
+)
 
 /** 今天的日序（非本月时为 -1） */
 const todayDay = computed(() => {
@@ -51,7 +68,7 @@ const todayDay = computed(() => {
 
 /** 某天是否有安排 */
 function taskCountOf(day) {
-	return (MOCK_TASKS[`${viewMonth.value}-${day}`] || []).length
+	return dayCountMap.value[`${viewYear.value}-${pad2(viewMonth.value)}-${pad2(day)}`] || 0
 }
 
 /** 日期网格，固定 6 行 42 格 */
@@ -82,52 +99,127 @@ const cells = computed(() => {
 	return list
 })
 
-/** 选中日期的任务 */
-const dayTasks = computed(() => MOCK_TASKS[`${viewMonth.value}-${selectedDay.value}`] || [])
+/** 选中日期文案：10月23日 · 周五 */
+const selectedLabel = computed(() =>
+	`${viewMonth.value}月${selectedDay.value}日 · 周${weekdayChar(selectedKey.value)}`
+)
 
-/** 选中日期文案 */
-const selectedLabel = computed(() => {
-	const date = new Date(viewYear.value, viewMonth.value - 1, selectedDay.value)
-	const week = WEEK_LABELS[(date.getDay() + 6) % 7]
-
-	return `${viewMonth.value}月${selectedDay.value}日 · 周${week}`
-})
-
-/** 本月有安排的天数 */
-const busyDays = computed(() => {
-	let count = 0
-
-	for (let day = 1; day <= new Date(viewYear.value, viewMonth.value, 0).getDate(); day += 1) {
-		if (taskCountOf(day)) {
-			count += 1
-		}
+/** 后端任务 → 选中日任务项 */
+function toTaskItem(item) {
+	return {
+		id: item.taskId,
+		title: item.title,
+		time: formatClock(toTimestamp(item.dueDate)),
+		done: item.completed === 1
 	}
+}
 
-	return count
-})
+/** 拉取本月点阵：月份切来切去时丢弃过期响应 */
+async function loadMonth() {
+	const seq = (monthSeq += 1)
 
-/** 切换月份 */
+	try {
+		const res = await getMonthTasks({ month: `${viewYear.value}-${pad2(viewMonth.value)}` })
+
+		if (seq !== monthSeq || res.code !== 200 || !res.data) {
+			return
+		}
+
+		const map = {}
+
+		;(res.data.days || []).forEach((item) => {
+			map[item.date] = Number(item.total) || 0
+		})
+
+		dayCountMap.value = map
+		busyDays.value = Number(res.data.busyDays) || 0
+	} catch (error) {
+		console.warn('[calendar] 加载月视图失败', error)
+	}
+}
+
+/** 拉取选中日的任务；失败提示已由 request 统一 toast，这里不动本地状态 */
+async function loadDay() {
+	const seq = (daySeq += 1)
+
+	try {
+		const res = await listTasks({
+			status: 'all',
+			date: selectedKey.value,
+			pageNum: 1,
+			pageSize: DAY_PAGE_SIZE
+		})
+
+		if (seq !== daySeq || res.code !== 200 || !res.data) {
+			return
+		}
+
+		dayTasks.value = Array.isArray(res.data.list) ? res.data.list.map(toTaskItem) : []
+	} catch (error) {
+		console.warn('[calendar] 加载当日任务失败', error)
+	}
+}
+
+/** 切换月份：直接跳到 1 号，再把月视图与当日任务一起刷新 */
 function changeMonth(step) {
 	const date = new Date(viewYear.value, viewMonth.value - 1 + step, 1)
 
 	viewYear.value = date.getFullYear()
 	viewMonth.value = date.getMonth() + 1
 	selectedDay.value = 1
+
+	loadMonth()
+	loadDay()
 }
 
 /** 选中日期 */
 function selectDay(cell) {
-	if (!cell.day) {
+	if (!cell.day || cell.day === selectedDay.value) {
 		return
 	}
 
 	selectedDay.value = cell.day
+	loadDay()
+}
+
+/** 勾选 / 取消勾选：把目标状态提交给后端，成功后再落到本地 */
+async function toggleTask(task) {
+	if (togglingIds.value.includes(task.id)) {
+		return
+	}
+
+	const target = task.done ? 0 : 1
+
+	togglingIds.value = togglingIds.value.concat(task.id)
+
+	try {
+		const res = await completeTask({ taskId: task.id, completed: target })
+
+		if (res.code === 200) {
+			task.done = target === 1
+		}
+	} catch (error) {
+		console.warn('[calendar] 标记任务失败', error)
+	} finally {
+		togglingIds.value = togglingIds.value.filter((id) => id !== task.id)
+	}
+}
+
+/** 打开任务详情：点行进详情，点左侧圆圈才是勾选完成 */
+function enterDetail(task) {
+	uni.navigateTo({ url: `/subpages/common/detail/index?taskId=${task.id}` })
 }
 
 /** 添加任务 */
 function addTask() {
 	uni.navigateTo({ url: '/subpages/common/create/index' })
 }
+
+/** 每次展示都重拉：在别处新建/完成/删除任务后回到本页，点阵与列表都是新的 */
+onShow(() => {
+	loadMonth()
+	loadDay()
+})
 </script>
 
 <template>
@@ -176,8 +268,8 @@ function addTask() {
 			</view>
 
 			<view v-if="dayTasks.length" class="tasks">
-				<view v-for="task in dayTasks" :key="task.id" class="task">
-					<view class="task__check" :class="{ 'task__check--done': task.done }">
+				<view v-for="task in dayTasks" :key="task.id" class="task" @click="enterDetail(task)">
+					<view class="task__check" :class="{ 'task__check--done': task.done }" @click.stop="toggleTask(task)">
 						<y-icon v-if="task.done" name="check" size="24rpx" color="#ffffff" />
 					</view>
 
@@ -216,11 +308,11 @@ function addTask() {
 	width: 56rpx;
 	height: 56rpx;
 	border-radius: 50%;
-	background-color: #f2f2ec;
+	background-color: $y-sunken-bg;
 }
 
 .month__label {
-	font-size: 32rpx;
+	font-size: calc(32rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -232,7 +324,7 @@ function addTask() {
 
 .week__label {
 	flex: 1;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 	text-align: center;
 }
@@ -253,7 +345,7 @@ function addTask() {
 }
 
 .grid__day {
-	font-size: 28rpx;
+	font-size: calc(28rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
@@ -284,7 +376,7 @@ function addTask() {
 	margin-top: 24rpx;
 	padding-top: 24rpx;
 	border-top: 2rpx solid $y-divider;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 	text-align: center;
 }
@@ -301,7 +393,7 @@ function addTask() {
 }
 
 .section__title {
-	font-size: 32rpx;
+	font-size: calc(32rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -316,7 +408,7 @@ function addTask() {
 
 .section__add-text {
 	margin-left: 6rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-green-tag-text;
 }
 
@@ -341,7 +433,7 @@ function addTask() {
 	margin-right: 24rpx;
 	box-sizing: border-box;
 	border-radius: 50%;
-	border: 3rpx solid #ccd1c3;
+	border: 3rpx solid $y-check-border;
 }
 
 .task__check--done {
@@ -351,7 +443,7 @@ function addTask() {
 
 .task__title {
 	flex: 1;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
@@ -361,7 +453,7 @@ function addTask() {
 
 .task__time {
 	margin-left: 20rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
@@ -374,14 +466,14 @@ function addTask() {
 }
 
 .empty__title {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 500;
 	color: $y-text-main;
 }
 
 .empty__desc {
 	margin-top: 14rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 </style>

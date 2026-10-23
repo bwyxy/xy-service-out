@@ -73,4 +73,6 @@ public class TodoTag extends BaseEntity implements Serializable {
      * 更新者
      * */
     private String updateBy;
+
+    private Integer deleted;
 }

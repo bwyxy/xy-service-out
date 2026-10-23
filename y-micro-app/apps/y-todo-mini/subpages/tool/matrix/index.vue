@@ -1,64 +1,79 @@
 <script setup>
+import { computed, ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+
+import { getQuadrantTasks } from '@/api/task'
+import { QUADRANTS } from '@/utils/quadrant'
 
 	/**
 	 * 工具 · 四象限
 	 *
 	 * 路由：subpages/tool/matrix/index（分包 subpages/tool，按需加载）
 	 * 职责：四象限页，先做真正重要的事——按紧急与重要程度分四格展示任务。
-	 * 目录：状态（QUADRANTS）→ 方法（openQuadrant）→ 样式（.matrix、.quadrant、.note）
+	 * 数据：POST /task/quadrant 一次返回四格的待完成件数与前几条预览（只算未完成、未归档的）；
+	 *       点某一格进 subpages/tool/matrix/detail，那边复用 POST /task/list 的 urgencyLevel 过滤翻全部。
+	 * 目录：状态（groups、requestSeq）→ 计算（quadrants）→ 方法（loadMatrix、openQuadrant）
+	 *       → 样式（.matrix、.quadrant、.note）
 	 */
 
-/** 四象限（暂用本地数据，后续接入接口） */
-const QUADRANTS = [
-	{
-		key: 'urgent-important',
-		name: '重要且紧急',
-		tip: '立刻去做',
-		color: '#c2793c',
-		bg: '#faf1e7',
-		tasks: ['和设计团队对齐首页方案', '汇总本周用户反馈']
-	},
-	{
-		key: 'important',
-		name: '重要不紧急',
-		tip: '安排时间',
-		color: '#4a6b3e',
-		bg: '#eaf0e0',
-		tasks: ['整理产品改版思路', '学习 LiveKit 部署文档']
-	},
-	{
-		key: 'urgent',
-		name: '紧急不重要',
-		tip: '尽快处理',
-		color: '#a98a2f',
-		bg: '#f6f2e2',
-		tasks: ['回复合作方邮件']
-	},
-	{
-		key: 'other',
-		name: '不重要不紧急',
-		tip: '有空再说',
-		color: '#8e8e85',
-		bg: '#f0f0ea',
-		tasks: ['整理桌面收藏夹']
-	}
-]
+/** 紧急程度 → { total, tasks }，后端没回来的那几格按空格渲染 */
+const groups = ref({})
 
-/** 打开象限详情（待接入） */
-function openQuadrant(name) {
-	uni.showToast({ title: `${name}（待开发）`, icon: 'none' })
+/** 请求序号：快速进出页面时丢弃过期响应 */
+let requestSeq = 0
+
+/** 四格数据：名称、配色、件数与预览都在这里拼好，模板里不再兜底 */
+const quadrants = computed(() => QUADRANTS.map((item) => {
+	const group = groups.value[item.level] || {}
+
+	return {
+		...item,
+		total: Number(group.total) || 0,
+		tasks: Array.isArray(group.tasks) ? group.tasks : []
+	}
+}))
+
+/** 拉四象限概览；失败提示已由 request 统一 toast，这里只保证不把异常抛到页面外 */
+async function loadMatrix() {
+	const seq = (requestSeq += 1)
+
+	try {
+		const res = await getQuadrantTasks()
+
+		if (seq !== requestSeq || res.code !== 200 || !res.data) {
+			return
+		}
+
+		const map = {}
+
+		;(res.data.groups || []).forEach((item) => {
+			map[item.urgencyLevel] = item
+		})
+
+		groups.value = map
+	} catch (error) {
+		console.warn('[matrix] 加载四象限失败', error)
+	}
 }
+
+/** 打开某个象限：进该象限的任务列表页看全部 */
+function openQuadrant(level) {
+	uni.navigateTo({ url: `/subpages/tool/matrix/detail/index?level=${level}` })
+}
+
+/** 每次展示都重拉：在别处完成或新建任务后回到本页，格子里的件数与预览都是新的 */
+onShow(loadMatrix)
 </script>
 
 <template>
 	<sub-page title="四象限" subtitle="先做真正重要的事。">
 		<view class="matrix">
 			<view
-				v-for="item in QUADRANTS"
+				v-for="item in quadrants"
 				:key="item.key"
 				class="quadrant"
 				:style="{ backgroundColor: item.bg }"
-				@click="openQuadrant(item.name)"
+				@click="openQuadrant(item.level)"
 			>
 				<view class="quadrant__head">
 					<view class="quadrant__bar" :style="{ backgroundColor: item.color }" />
@@ -68,11 +83,14 @@ function openQuadrant(name) {
 				<text class="quadrant__tip" :style="{ color: item.color }">{{ item.tip }}</text>
 
 				<view class="quadrant__list">
-					<text v-for="task in item.tasks" :key="task" class="quadrant__task">{{ task }}</text>
+					<text v-for="task in item.tasks" :key="task.taskId" class="quadrant__task">{{ task.title }}</text>
 					<text v-if="!item.tasks.length" class="quadrant__empty">还没有任务</text>
+					<text v-if="item.total > item.tasks.length" class="quadrant__more">
+						还有 {{ item.total - item.tasks.length }} 件
+					</text>
 				</view>
 
-				<text class="quadrant__count">{{ item.tasks.length }} 件</text>
+				<text class="quadrant__count">{{ item.total }} 件</text>
 			</view>
 		</view>
 
@@ -93,7 +111,7 @@ function openQuadrant(name) {
 .quadrant {
 	display: flex;
 	flex-direction: column;
-	width: calc(50% - 10rpx);
+	width: calc(50% - 12rpx);
 	min-height: 320rpx;
 	margin-bottom: 20rpx;
 	padding: 28rpx 24rpx;
@@ -118,14 +136,14 @@ function openQuadrant(name) {
 }
 
 .quadrant__name {
-	font-size: 28rpx;
+	font-size: calc(28rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .quadrant__tip {
 	margin-top: 12rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 }
 
 .quadrant__list {
@@ -136,18 +154,25 @@ function openQuadrant(name) {
 .quadrant__task {
 	display: block;
 	margin-bottom: 14rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	line-height: 34rpx;
-	color: #5c5c55;
+	color: $y-text-body;
 }
 
 .quadrant__empty {
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-text-muted;
+}
+
+.quadrant__more {
+	display: block;
+	margin-top: 4rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
 .quadrant__count {
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 }
 
@@ -164,8 +189,8 @@ function openQuadrant(name) {
 .note__text {
 	flex: 1;
 	margin-left: 14rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	line-height: 36rpx;
-	color: #5c6b52;
+	color: $y-green-text;
 }
 </style>

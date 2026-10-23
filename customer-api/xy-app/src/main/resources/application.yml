@@ -35,6 +35,37 @@ mybatis-plus:
 wechat:
   appid: ${WECHAT_APPID}
   secret: ${WECHAT_SECRET}
+  # 订阅消息（字段 key 必须与小程序后台模板详情里的关键词一致，否则微信返回 47003）
+  subscribe:
+    reminder-template-id: ${WECHAT_REMINDER_TEMPLATE_ID}
+    page: pages/list/index
+    tip-text: 到点啦，记得完成今天的安排
+    title-key: thing1
+    start-time-key: time2
+    memo-key: thing3
+    tip-key: thing5
+    remind-time-key: time8
+
+# 任务提醒下发
+todo:
+  remind:
+    # 扫描间隔
+    scan-interval-ms: 30000
+    # 每轮最多处理条数
+    batch-size: 200
+    # 失败重试上限，超过置为 failed
+    max-retry: 3
+    # 占位「下发中」超过多少分钟视为卡死，回收重发
+    sending-timeout-minutes: 10
+
+  # 已完成任务自动归档
+  archive:
+    # 完成超过多少天自动归档，0 表示不自动归档
+    auto-days: 30
+    # 扫描间隔
+    scan-interval-ms: 3600000
+    # 启动后延迟多久跑首轮，避开启动高峰
+    initial-delay-ms: 60000
 
 # Swagger 配置
 swagger:

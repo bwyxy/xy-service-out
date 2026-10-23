@@ -5,8 +5,8 @@ import { ref } from 'vue'
 	 * 我的 · 帮助与反馈
 	 *
 	 * 路由：subpages/me/help/index（分包 subpages/me，按需加载）
-	 * 职责：帮助与反馈页，有问题我们一起看看——常见问题折叠与反馈/客服入口。
-	 * 目录：状态（faqs、contacts）→ 方法（toggleFaq、openContact）→ 样式（.section、.faqs、.faq、.group）
+	 * 职责：帮助与反馈页，有问题我们一起看看——常见问题折叠与意见反馈入口。
+	 * 目录：状态（faqs）→ 方法（toggleFaq、openFeedback）→ 样式（.section、.faqs、.faq、.group）
 	 */
 
 /** 常见问题（暂用本地数据） */
@@ -37,20 +37,14 @@ const faqs = ref([
 	}
 ])
 
-/** 联系方式（暂用本地数据） */
-const contacts = [
-	{ key: 'feedback', icon: 'message', label: '意见反馈', desc: '告诉我们哪里可以更好' },
-	{ key: 'service', icon: 'user', label: '联系客服', desc: '工作日 9:00 - 18:00' }
-]
-
 /** 展开 / 收起问题 */
 function toggleFaq(item) {
 	item.open = !item.open
 }
 
-/** 打开联系入口（待接入） */
-function openContact(label) {
-	uni.showToast({ title: `${label}（待开发）`, icon: 'none' })
+/** 进入意见反馈 */
+function openFeedback() {
+	uni.navigateTo({ url: '/subpages/me/feedback/index' })
 }
 </script>
 
@@ -80,17 +74,12 @@ function openContact(label) {
 			<text class="section__title">还想要更多帮助</text>
 
 			<view class="group">
-				<view
-					v-for="item in contacts"
-					:key="item.key"
-					class="row"
-					@click="openContact(item.label)"
-				>
-					<y-icon :name="item.icon" size="38rpx" />
+				<view class="row" @click="openFeedback">
+					<y-icon name="message" size="38rpx" />
 
 					<view class="row__text">
-						<text class="row__label">{{ item.label }}</text>
-						<text class="row__desc">{{ item.desc }}</text>
+						<text class="row__label">意见反馈</text>
+						<text class="row__desc">告诉我们哪里可以更好</text>
 					</view>
 
 					<y-icon name="chevron-right" size="30rpx" color="#c2c2b9" />
@@ -108,7 +97,7 @@ function openContact(label) {
 }
 
 .section__title {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -138,7 +127,7 @@ function openContact(label) {
 .faq__question {
 	flex: 1;
 	margin-right: 16rpx;
-	font-size: 28rpx;
+	font-size: calc(28rpx * var(--y-font-scale, 1));
 	line-height: 40rpx;
 	color: $y-text-main;
 }
@@ -148,8 +137,8 @@ function openContact(label) {
 	margin-top: 16rpx;
 	padding: 20rpx 24rpx;
 	border-radius: 18rpx;
-	background-color: #f4f4ee;
-	font-size: 24rpx;
+	background-color: $y-sunken-bg;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	line-height: 38rpx;
 	color: $y-text-sub;
 }
@@ -180,13 +169,13 @@ function openContact(label) {
 }
 
 .row__label {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
 .row__desc {
 	margin-top: 10rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -194,7 +183,7 @@ function openContact(label) {
 .foot {
 	display: block;
 	margin-top: 56rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 	text-align: center;
 }

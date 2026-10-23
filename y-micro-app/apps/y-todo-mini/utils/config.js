@@ -20,3 +20,11 @@ export const TOKEN_KEY = 'xy_todo_token'
 
 /** 请求超时时间（毫秒） */
 export const REQUEST_TIMEOUT = 15000
+
+/**
+ * 任务提醒订阅消息模板 Id
+ *
+ * 必须与后端 application.yml 的 wechat.subscribe.reminder-template-id 保持一致，
+ * 否则上报授权时后端会因为模板不匹配直接拒绝。
+ */
+export const REMINDER_TEMPLATE_ID = 'BxqEHs6-5c-giwcoSe_S74k8FHRNo-tygxD0lelwrhw'

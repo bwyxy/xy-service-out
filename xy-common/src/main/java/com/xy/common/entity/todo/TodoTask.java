@@ -93,9 +93,14 @@ public class TodoTask extends BaseEntity implements Serializable {
     private Integer priority;
 
     /**
-     * 重复规则 DAILY / WEEKLY:1,3 / FREQ=WEEKLY;BYDAY=MO
+     * 重复规则 DAILY / WEEKLY / MONTHLY，空串表示不重复
      * */
     private String repeatRule;
+
+    /**
+     * 重复任务：本任务由哪一条「完成后」生成，用于取消完成时回滚
+     * */
+    private Long repeatSourceId;
 
     /**
      * 提前提醒分钟数，0-不提醒
@@ -112,6 +117,12 @@ public class TodoTask extends BaseEntity implements Serializable {
      * 是否归档 0-否 1-是
      * */
     private Integer archived;
+
+    /**
+     * 归档时间（手动归档或完成满一定天数自动归档时写入，取消归档清空）
+     * */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime archiveTime;
 
     /**
      * 客户端幂等 Id

@@ -113,7 +113,7 @@ function toggle(item, event) {
 	height: 112rpx;
 	margin-right: 28rpx;
 	border-radius: 50%;
-	background-color: rgba(255, 255, 255, 0.72);
+	background-color: $y-glass-bg;
 }
 
 .status__text {
@@ -123,15 +123,15 @@ function toggle(item, event) {
 }
 
 .status__title {
-	font-size: 34rpx;
+	font-size: calc(34rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
 
 .status__desc {
 	margin-top: 8rpx;
-	font-size: 24rpx;
-	color: #6f8064;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
+	color: $y-green-text;
 }
 
 /* 操作 */
@@ -152,7 +152,7 @@ function toggle(item, event) {
 
 .actions__primary-text {
 	margin-left: 12rpx;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 500;
 	color: #ffffff;
 }
@@ -165,13 +165,13 @@ function toggle(item, event) {
 	height: 92rpx;
 	margin-left: 20rpx;
 	border-radius: 24rpx;
-	border: 2rpx solid #d8e2cb;
+	border: 2rpx solid $y-green-border;
 	background-color: $y-card-bg;
 }
 
 .actions__second-text {
 	margin-left: 12rpx;
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-green-primary;
 }
 
@@ -200,13 +200,13 @@ function toggle(item, event) {
 }
 
 .row__label {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
 .row__desc {
 	margin-top: 10rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -223,8 +223,8 @@ function toggle(item, event) {
 .tip__text {
 	flex: 1;
 	margin-left: 14rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	line-height: 36rpx;
-	color: #5c6b52;
+	color: $y-green-text;
 }
 </style>

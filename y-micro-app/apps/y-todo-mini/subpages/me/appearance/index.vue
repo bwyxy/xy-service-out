@@ -1,12 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { appearance, setFontSize, setPreference, setTheme } from '@/utils/appearance'
 
 	/**
 	 * 我的 · 外观与显示
 	 *
 	 * 路由：subpages/me/appearance/index（分包 subpages/me，按需加载）
 	 * 职责：外观与显示设置页，看着顺眼才愿意每天打开——主题模式、字号档位与显示偏好。
-	 * 目录：状态（theme、fontSize、preferences）→ 方法（selectTheme、selectFontSize、toggle）→ 样式（.section、.themes、.size、.group）
+	 * 数据：全部读写 utils/appearance 里的本地设置，改完立刻生效，不上传后端。
+	 * 目录：状态（THEMES、FONT_SIZES、preferences）→ 方法（selectTheme、selectFontSize、toggle）→ 样式（.section、.themes、.size、.group）
 	 */
 
 /** 主题模式 */
@@ -23,33 +25,26 @@ const FONT_SIZES = [
 	{ key: 'large', label: '大' }
 ]
 
-/** 当前主题 */
-const theme = ref('system')
-
-/** 当前字号 */
-const fontSize = ref('normal')
-
-/** 显示偏好 */
-const preferences = ref([
-	{ key: 'showDone', label: '显示已完成任务', desc: '关闭后「今日」只显示待完成', on: true },
-	{ key: 'showProgress', label: '首页显示进度卡', desc: '在「今日」顶部展示完成进度', on: true },
-	{ key: 'weekStart', label: '周一开始一周', desc: '日历与周视图的起始日', on: true }
+/** 显示偏好：开关值直接读设置项，改完即写回本地 */
+const preferences = computed(() => [
+	{ key: 'showDone', label: '显示已完成任务', desc: '关闭后「今日」只显示待完成', on: appearance.showDone },
+	{ key: 'showProgress', label: '首页显示进度卡', desc: '在「今日」顶部展示完成进度', on: appearance.showProgress },
+	{ key: 'weekStart', label: '周一开始一周', desc: '日历与周视图的起始日', on: appearance.weekStart }
 ])
 
-/** 切换主题（待接入主题实现） */
+/** 切换主题：本页根节点也挂着主题类，选完就能看到效果 */
 function selectTheme(key) {
-	theme.value = key
-	uni.showToast({ title: '主题切换（待开发）', icon: 'none' })
+	setTheme(key)
 }
 
-/** 切换字号（待接入字号实现） */
+/** 切换字号 */
 function selectFontSize(key) {
-	fontSize.value = key
+	setFontSize(key)
 }
 
 /** 切换开关 */
 function toggle(item, event) {
-	item.on = event.detail.value
+	setPreference(item.key, event.detail.value)
 }
 </script>
 
@@ -63,7 +58,7 @@ function toggle(item, event) {
 					v-for="item in THEMES"
 					:key="item.key"
 					class="theme"
-					:class="{ 'theme--active': theme === item.key }"
+					:class="{ 'theme--active': appearance.theme === item.key }"
 					@click="selectTheme(item.key)"
 				>
 					<view class="theme__icon" :class="'theme__icon--' + item.key">
@@ -72,7 +67,7 @@ function toggle(item, event) {
 
 					<text class="theme__label">{{ item.label }}</text>
 
-					<y-icon v-if="theme === item.key" name="check" size="28rpx" />
+					<y-icon v-if="appearance.theme === item.key" name="check" size="28rpx" />
 				</view>
 			</view>
 		</view>
@@ -85,7 +80,7 @@ function toggle(item, event) {
 					v-for="item in FONT_SIZES"
 					:key="item.key"
 					class="size"
-					:class="{ 'size--active': fontSize === item.key }"
+					:class="{ 'size--active': appearance.fontSize === item.key }"
 					@click="selectFontSize(item.key)"
 				>
 					<text class="size__label">{{ item.label }}</text>
@@ -122,7 +117,7 @@ function toggle(item, event) {
 }
 
 .section__title {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	font-weight: 600;
 	color: $y-text-main;
 }
@@ -150,7 +145,7 @@ function toggle(item, event) {
 }
 
 .theme--active {
-	border-color: #d8e2cb;
+	border-color: $y-green-border;
 	background-color: $y-green-soft;
 }
 
@@ -161,16 +156,16 @@ function toggle(item, event) {
 	width: 88rpx;
 	height: 88rpx;
 	border-radius: 50%;
-	background-color: #f2f2ec;
+	background-color: $y-sunken-bg;
 }
 
 .theme__icon--dark {
-	background-color: #3a3a34;
+	background-color: $y-contrast-chip;
 }
 
 .theme__label {
 	margin: 16rpx 0 12rpx;
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
@@ -180,7 +175,7 @@ function toggle(item, event) {
 	margin-top: 24rpx;
 	padding: 6rpx;
 	border-radius: 18rpx;
-	background-color: #edede6;
+	background-color: $y-sunken-bg;
 }
 
 .size {
@@ -197,7 +192,7 @@ function toggle(item, event) {
 }
 
 .size__label {
-	font-size: 26rpx;
+	font-size: calc(26rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -231,13 +226,13 @@ function toggle(item, event) {
 }
 
 .row__label {
-	font-size: 30rpx;
+	font-size: calc(30rpx * var(--y-font-scale, 1));
 	color: $y-text-main;
 }
 
 .row__desc {
 	margin-top: 10rpx;
-	font-size: 22rpx;
+	font-size: calc(22rpx * var(--y-font-scale, 1));
 	color: $y-text-sub;
 }
 
@@ -245,7 +240,7 @@ function toggle(item, event) {
 .foot {
 	display: block;
 	margin-top: 56rpx;
-	font-size: 24rpx;
+	font-size: calc(24rpx * var(--y-font-scale, 1));
 	color: $y-text-muted;
 	text-align: center;
 }

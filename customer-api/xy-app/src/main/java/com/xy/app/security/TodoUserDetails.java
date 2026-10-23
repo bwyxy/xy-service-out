@@ -14,9 +14,6 @@ import java.util.Collections;
 
 /**
  * 待办客户端用户 UserDetails（基于 t_user 表）
- *
- * <p>与后台管理端的 LoginUser（基于 sys_user 表）完全隔离，username 统一为 {@code todo_{uId}}，
- * 使 JwtAuthenticationFilter 能按前缀区分两套用户体系，避免待办 token 与后台 token 互相可用。</p>
  * */
 public class TodoUserDetails implements UserDetails {
 
